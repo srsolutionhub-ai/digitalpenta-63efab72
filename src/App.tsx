@@ -25,7 +25,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/get-proposal" element={<GetProposal />} />
           <Route path="/services/:category" element={<ServiceCategory />} />
-          <Route path="/services/:category/:subService" element={<ServiceCategory />} />
+          <Route path="/services/:category/:subService" element={<SubServicePage />} />
           {/* Placeholder routes */}
           <Route path="/portfolio" element={<NotFound />} />
           <Route path="/blog" element={<NotFound />} />
