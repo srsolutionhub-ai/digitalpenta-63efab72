@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const stats = [
-  { value: 500, suffix: "+", label: "Projects Delivered" },
-  { value: 12, suffix: "+", label: "Countries Served" },
-  { value: 100, prefix: "₹", suffix: "Cr+", label: "Revenue Generated" },
-  { value: 98, suffix: "%", label: "Client Retention" },
+  { value: 500, suffix: "+", label: "Projects Delivered", sub: "Across 5 pillars" },
+  { value: 12, suffix: "+", label: "Countries Served", sub: "India & MENA" },
+  { value: 100, prefix: "₹", suffix: "Cr+", label: "Revenue Generated", sub: "For our clients" },
+  { value: 98, suffix: "%", label: "Client Retention", sub: "Year over year" },
 ];
 
 function AnimatedNumber({ value, prefix = "", suffix = "" }: { value: number; prefix?: string; suffix?: string }) {
@@ -17,12 +18,12 @@ function AnimatedNumber({ value, prefix = "", suffix = "" }: { value: number; pr
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
           started.current = true;
-          const duration = 1500;
+          const duration = 1800;
           const start = performance.now();
           const animate = (now: number) => {
             const elapsed = now - start;
             const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
+            const eased = 1 - Math.pow(1 - progress, 4);
             setCount(Math.round(eased * value));
             if (progress < 1) requestAnimationFrame(animate);
           };
@@ -36,22 +37,28 @@ function AnimatedNumber({ value, prefix = "", suffix = "" }: { value: number; pr
   }, [value]);
 
   return (
-    <div ref={ref} className="font-display font-bold text-3xl md:text-4xl text-foreground">
+    <div ref={ref} className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl text-foreground tracking-tight">
       {prefix}{count}{suffix}
     </div>
   );
 }
 
 export default function StatsSection() {
+  const sectionRef = useScrollReveal<HTMLElement>();
+
   return (
-    <section className="border-y border-border bg-card/20">
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <section ref={sectionRef} className="relative border-y border-border/50 bg-card/10 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] via-transparent to-accent/[0.02]" />
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x divide-border/30">
           {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
+            <div key={stat.label} className="text-center lg:px-8" data-reveal>
               <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-              <p className="text-xs text-muted-foreground mt-1 font-mono uppercase tracking-wider">
+              <p className="text-sm font-display font-semibold text-foreground/80 mt-2">
                 {stat.label}
+              </p>
+              <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                {stat.sub}
               </p>
             </div>
           ))}
