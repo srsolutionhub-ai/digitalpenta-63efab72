@@ -1,5 +1,6 @@
 import { Star, Quote } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { motion, useInView } from "motion/react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 const testimonials = [
   {
@@ -41,59 +42,101 @@ const testimonials = [
   },
 ];
 
+function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const [transform, setTransform] = useState("");
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMove = useCallback((e: React.MouseEvent) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTransform(`perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`);
+  }, []);
+
+  const handleLeave = useCallback(() => setTransform(""), []);
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={{ transform, transition: transform ? "transform 0.1s ease" : "transform 0.4s ease" }}
+      className={className}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function TestimonialsSection() {
-  const sectionRef = useScrollReveal<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
   const featured = testimonials.find(t => t.featured);
   const others = testimonials.filter(t => !t.featured);
 
   return (
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-4" ref={sectionRef}>
-        <div className="text-center max-w-2xl mx-auto mb-16" data-reveal>
+    <section className="py-24 md:py-32 cv-auto">
+      <div className="container mx-auto px-4" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
           <span className="text-xs font-mono text-primary uppercase tracking-widest">Testimonials</span>
           <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3 mb-4">
             Trusted by <span className="text-gradient">Industry Leaders</span>
           </h2>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
-          {/* Featured testimonial */}
           {featured && (
-            <div data-reveal className="lg:col-span-2 rounded-2xl glass border border-primary/15 p-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
-              <Quote className="w-10 h-10 text-primary/20 mb-6" />
-              <p className="text-lg font-display font-medium text-foreground/90 leading-relaxed mb-8">
-                "{featured.quote}"
-              </p>
-              <div className="flex gap-0.5 mb-4">
-                {Array.from({ length: featured.rating }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <p className="font-display font-bold text-foreground">{featured.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{featured.role}</p>
-            </div>
-          )}
-
-          {/* Other testimonials */}
-          <div className="lg:col-span-3 grid sm:grid-cols-2 gap-4">
-            {others.slice(0, 4).map((t) => (
-              <div
-                key={t.name}
-                data-reveal
-                className="rounded-2xl glass border border-border/30 p-6 hover:bg-card/60 hover:border-primary/15 transition-all duration-500"
-              >
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-2"
+            >
+              <TiltCard className="rounded-2xl glass border border-primary/15 p-8 relative overflow-hidden h-full">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
+                <Quote className="w-10 h-10 text-primary/20 mb-6" />
+                <p className="text-lg font-display font-medium text-foreground/90 leading-relaxed mb-8">
+                  "{featured.quote}"
+                </p>
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: featured.rating }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm text-foreground/80 leading-relaxed mb-5">"{t.quote}"</p>
-                <div>
-                  <p className="text-sm font-display font-semibold text-foreground">{t.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{t.role}</p>
-                </div>
-              </div>
+                <p className="font-display font-bold text-foreground">{featured.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{featured.role}</p>
+              </TiltCard>
+            </motion.div>
+          )}
+
+          <div className="lg:col-span-3 grid sm:grid-cols-2 gap-4">
+            {others.slice(0, 4).map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <TiltCard className="rounded-2xl glass border border-border/30 p-6 hover:bg-card/60 hover:border-primary/15 transition-all duration-500 h-full">
+                  <div className="flex gap-0.5 mb-3">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground/80 leading-relaxed mb-5">"{t.quote}"</p>
+                  <div>
+                    <p className="text-sm font-display font-semibold text-foreground">{t.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{t.role}</p>
+                  </div>
+                </TiltCard>
+              </motion.div>
             ))}
           </div>
         </div>
