@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
 
 const posts = [
   {
@@ -10,7 +11,7 @@ const posts = [
     date: "Mar 2026",
     readTime: "6 min read",
     slug: "ai-reshaping-marketing-2026",
-    accent: "border-t-violet-500",
+    gradient: "from-violet-500/20 to-purple-600/10",
   },
   {
     title: "SEO Strategy for Middle East Markets: A Complete Guide",
@@ -19,7 +20,7 @@ const posts = [
     date: "Mar 2026",
     readTime: "8 min read",
     slug: "seo-middle-east-guide",
-    accent: "border-t-cyan-500",
+    gradient: "from-cyan-500/20 to-blue-600/10",
   },
   {
     title: "The ROI of Marketing Automation: Real Numbers from Real Clients",
@@ -28,20 +29,26 @@ const posts = [
     date: "Feb 2026",
     readTime: "5 min read",
     slug: "roi-marketing-automation",
-    accent: "border-t-emerald-500",
+    gradient: "from-emerald-500/20 to-green-600/10",
   },
 ];
 
 export default function BlogPreviewSection() {
-  const sectionRef = useScrollReveal<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-24 md:py-32 relative">
+    <section className="py-24 md:py-32 relative cv-auto">
       <div className="absolute inset-0 bg-card/20" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="container mx-auto px-4 relative z-10" ref={sectionRef}>
-        <div className="flex items-end justify-between mb-16" data-reveal>
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-end justify-between mb-16"
+        >
           <div>
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Insights</span>
             <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3">
@@ -51,34 +58,48 @@ export default function BlogPreviewSection() {
           <Link to="/blog" className="hidden md:flex items-center gap-1.5 text-sm text-primary hover:text-foreground transition-colors font-display font-semibold">
             All articles <ArrowUpRight className="w-4 h-4" />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-3 gap-4">
-          {posts.map((post) => (
-            <Link
-              key={post.title}
-              to={`/blog/${post.slug}`}
-              data-reveal
-              className={`group rounded-2xl glass border border-border/30 overflow-hidden flex flex-col transition-all duration-500 hover:border-primary/20 hover:shadow-2xl border-t-2 ${post.accent}`}
+          {posts.map((post, i) => (
+            <motion.div
+              key={post.slug}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="p-7 flex flex-col flex-1">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10">{post.category}</span>
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    {post.readTime}
+              <Link
+                to={`/blog/${post.slug}`}
+                className="group rounded-2xl glass border border-border/30 overflow-hidden flex flex-col transition-all duration-500 hover:border-primary/20 hover:shadow-2xl h-full shimmer-card"
+              >
+                {/* Gradient image placeholder */}
+                <div className={`h-32 bg-gradient-to-br ${post.gradient} relative`}>
+                  <svg className="absolute inset-0 w-full h-full opacity-[0.06]" viewBox="0 0 200 100">
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-foreground" fontSize="40" fontFamily="Plus Jakarta Sans" fontWeight="800">
+                      BLOG
+                    </text>
+                  </svg>
+                </div>
+
+                <div className="p-7 flex flex-col flex-1">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10">{post.category}</span>
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      {post.readTime}
+                    </div>
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-foreground mb-3 group-hover:text-primary transition-colors leading-snug">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed flex-1">{post.excerpt}</p>
+                  <div className="mt-5 pt-4 border-t border-border/30 flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground font-mono">{post.date}</span>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
-                <h3 className="font-display font-bold text-lg text-foreground mb-3 group-hover:text-primary transition-colors leading-snug">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-1">{post.excerpt}</p>
-                <div className="mt-5 pt-4 border-t border-border/30 flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground font-mono">{post.date}</span>
-                  <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>
