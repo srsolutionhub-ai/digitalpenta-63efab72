@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "motion/react";
 
 const services = [
   {
-    title: "Digital Marketing",
-    href: "/services/digital-marketing",
-    icon: Megaphone,
-    color: "text-violet-400",
+    title: "Digital Marketing", href: "/services/digital-marketing", icon: Megaphone, color: "text-violet-400",
     subs: [
       { title: "SEO", href: "/services/digital-marketing/seo" },
       { title: "PPC Management", href: "/services/digital-marketing/ppc" },
@@ -21,10 +19,7 @@ const services = [
     ],
   },
   {
-    title: "Public Relations",
-    href: "/services/public-relations",
-    icon: Newspaper,
-    color: "text-cyan-400",
+    title: "Public Relations", href: "/services/public-relations", icon: Newspaper, color: "text-cyan-400",
     subs: [
       { title: "Media Relations", href: "/services/public-relations/media-relations" },
       { title: "Brand Reputation", href: "/services/public-relations/brand-reputation" },
@@ -36,10 +31,7 @@ const services = [
     ],
   },
   {
-    title: "Development",
-    href: "/services/development",
-    icon: Code2,
-    color: "text-emerald-400",
+    title: "Development", href: "/services/development", icon: Code2, color: "text-emerald-400",
     subs: [
       { title: "Website Development", href: "/services/development/website" },
       { title: "Mobile App", href: "/services/development/mobile-app" },
@@ -51,10 +43,7 @@ const services = [
     ],
   },
   {
-    title: "AI Solutions",
-    href: "/services/ai-solutions",
-    icon: Brain,
-    color: "text-amber-400",
+    title: "AI Solutions", href: "/services/ai-solutions", icon: Brain, color: "text-amber-400",
     subs: [
       { title: "AI Strategy", href: "/services/ai-solutions/strategy" },
       { title: "AI Chatbot", href: "/services/ai-solutions/chatbot" },
@@ -66,10 +55,7 @@ const services = [
     ],
   },
   {
-    title: "Automation",
-    href: "/services/automation",
-    icon: Zap,
-    color: "text-orange-400",
+    title: "Automation", href: "/services/automation", icon: Zap, color: "text-orange-400",
     subs: [
       { title: "Marketing Automation", href: "/services/automation/marketing" },
       { title: "Workflow Automation", href: "/services/automation/workflow" },
@@ -97,7 +83,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -105,6 +91,12 @@ export default function Navbar() {
     setMobileOpen(false);
     setMegaOpen(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   return (
     <header
@@ -141,52 +133,56 @@ export default function Navbar() {
               Services <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${megaOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {megaOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[800px]">
-                <div className="bg-background/95 backdrop-blur-2xl rounded-2xl border border-border/30 shadow-2xl shadow-background/80 overflow-hidden">
-                  <div className="grid grid-cols-6 gap-0">
-                    <div className="col-span-4 grid grid-cols-3 gap-0 p-6">
-                      {services.map((cat) => (
-                        <div key={cat.title} className="mb-4">
-                          <Link
-                            to={cat.href}
-                            className="flex items-center gap-2 font-display font-semibold text-sm text-foreground hover:text-primary transition-colors mb-2"
-                          >
-                            <cat.icon className={`w-4 h-4 ${cat.color}`} />
-                            {cat.title}
-                          </Link>
-                          <ul className="space-y-0.5">
-                            {cat.subs.map((s) => (
-                              <li key={s.href}>
-                                <Link
-                                  to={s.href}
-                                  className="text-xs text-muted-foreground hover:text-foreground transition-colors block py-0.5 pl-6"
-                                >
-                                  {s.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                    {/* CTA card */}
-                    <div className="col-span-2 bg-card/40 border-l border-border/20 p-6 flex flex-col justify-between">
-                      <div>
-                        <p className="text-xs font-mono text-primary uppercase tracking-widest mb-2">Get Started</p>
-                        <h3 className="font-display font-bold text-lg text-foreground mb-2">Need a custom strategy?</h3>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          Our experts craft tailored solutions across all five pillars — no cookie-cutter approaches.
-                        </p>
+            <AnimatePresence>
+              {megaOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[800px]"
+                >
+                  <div className="bg-background/95 backdrop-blur-2xl rounded-2xl border border-border/30 shadow-2xl shadow-background/80 overflow-hidden">
+                    <div className="grid grid-cols-6 gap-0">
+                      <div className="col-span-4 grid grid-cols-3 gap-0 p-6">
+                        {services.map((cat) => (
+                          <div key={cat.title} className="mb-4">
+                            <Link
+                              to={cat.href}
+                              className="flex items-center gap-2 font-display font-semibold text-sm text-foreground hover:text-primary transition-colors mb-2"
+                            >
+                              <cat.icon className={`w-4 h-4 ${cat.color}`} />
+                              {cat.title}
+                            </Link>
+                            <ul className="space-y-0.5">
+                              {cat.subs.map((s) => (
+                                <li key={s.href}>
+                                  <Link to={s.href} className="text-xs text-muted-foreground hover:text-foreground transition-colors block py-0.5 pl-6">
+                                    {s.title}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
                       </div>
-                      <Link to="/get-proposal" className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-display font-semibold hover:text-foreground transition-colors">
-                        Get Free Proposal <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
+                      <div className="col-span-2 bg-card/40 border-l border-border/20 p-6 flex flex-col justify-between">
+                        <div>
+                          <p className="text-xs font-mono text-primary uppercase tracking-widest mb-2">Get Started</p>
+                          <h3 className="font-display font-bold text-lg text-foreground mb-2">Need a custom strategy?</h3>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            Our experts craft tailored solutions across all five pillars — no cookie-cutter approaches.
+                          </p>
+                        </div>
+                        <Link to="/get-proposal" className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-display font-semibold hover:text-foreground transition-colors">
+                          Get Free Proposal <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {navLinks.map((l) => (
@@ -213,51 +209,77 @@ export default function Navbar() {
         </div>
 
         <button
-          className="lg:hidden p-2 text-foreground"
+          className="lg:hidden p-2 text-foreground relative z-50"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-2xl z-40 overflow-y-auto">
-          <nav className="container px-4 py-8 space-y-6">
-            <div>
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-4">Services</p>
-              <div className="space-y-1">
-                {services.map((cat) => (
-                  <Link
-                    key={cat.href}
-                    to={cat.href}
-                    className="flex items-center gap-3 py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
+      {/* Mobile Menu — full screen with staggered animation */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-2xl z-40 overflow-y-auto"
+          >
+            <nav className="container px-4 py-8 space-y-6">
+              <div>
+                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-4">Services</p>
+                <div className="space-y-1">
+                  {services.map((cat, i) => (
+                    <motion.div
+                      key={cat.href}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      <Link
+                        to={cat.href}
+                        className="flex items-center gap-3 py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
+                      >
+                        <cat.icon className={`w-5 h-5 ${cat.color}`} />
+                        {cat.title}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              <div className="border-t border-border/30 pt-6 space-y-1">
+                {navLinks.map((l, i) => (
+                  <motion.div
+                    key={l.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.25 + i * 0.05 }}
                   >
-                    <cat.icon className={`w-5 h-5 ${cat.color}`} />
-                    {cat.title}
-                  </Link>
+                    <Link
+                      to={l.href}
+                      className="block py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
+                    >
+                      {l.title}
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-            <div className="border-t border-border/30 pt-6 space-y-1">
-              {navLinks.map((l) => (
-                <Link
-                  key={l.href}
-                  to={l.href}
-                  className="block py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
-                >
-                  {l.title}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.5 }}
+              >
+                <Link to="/get-proposal" className="block pt-4">
+                  <Button className="w-full rounded-full font-display font-bold text-base py-6 shadow-lg shadow-primary/20">
+                    Get A Proposal
+                  </Button>
                 </Link>
-              ))}
-            </div>
-            <Link to="/get-proposal" className="block pt-4">
-              <Button className="w-full rounded-full font-display font-bold text-base py-6 shadow-lg shadow-primary/20">
-                Get A Proposal
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      )}
+              </motion.div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
