@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ParticleFieldProps {
   count?: number;
@@ -6,8 +7,11 @@ interface ParticleFieldProps {
 }
 
 export default function ParticleField({ count = 30, className = "" }: ParticleFieldProps) {
+  const isMobile = useIsMobile();
+  const actualCount = isMobile ? Math.min(count, 15) : count;
+
   const particles = useMemo(() => {
-    return Array.from({ length: count }, (_, i) => ({
+    return Array.from({ length: actualCount }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
@@ -16,7 +20,7 @@ export default function ParticleField({ count = 30, className = "" }: ParticleFi
       duration: Math.random() * 6 + 6,
       opacity: Math.random() * 0.4 + 0.1,
     }));
-  }, [count]);
+  }, [actualCount]);
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>

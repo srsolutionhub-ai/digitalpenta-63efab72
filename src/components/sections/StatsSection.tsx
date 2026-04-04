@@ -43,25 +43,31 @@ export default function StatsSection() {
     <section ref={ref} className="relative border-y border-border/50 bg-card/10 overflow-hidden cv-auto">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] via-transparent to-accent/[0.02]" />
       
-      {/* Decorative dot grid */}
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `radial-gradient(circle, hsl(var(--foreground)) 1px, transparent 1px)`,
         backgroundSize: "24px 24px",
       }} />
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x divide-border/30">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 24 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center lg:px-8"
+              className="text-center lg:px-8 relative"
             >
               <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={isInView} />
               <p className="text-sm font-display font-semibold text-foreground/80 mt-2">{stat.label}</p>
               <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{stat.sub}</p>
+              
+              {/* Glow separator — hidden on last item and mobile */}
+              {i < stats.length - 1 && (
+                <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-16">
+                  <div className="w-full h-full bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

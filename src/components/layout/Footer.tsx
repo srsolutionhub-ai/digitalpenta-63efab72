@@ -55,8 +55,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-border/30">
-      {/* Gradient separator */}
+    <footer className="relative border-t border-border/30 cv-auto">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       {/* CTA Banner */}
@@ -64,6 +63,19 @@ export default function Footer() {
         <div className="rounded-3xl glass border border-border/20 p-10 md:p-16 text-center relative overflow-hidden">
           <div className="absolute inset-0 mesh-gradient opacity-40" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]" />
+          
+          {/* Floating geometric shapes */}
+          <svg className="absolute top-6 left-8 w-16 h-16 opacity-[0.06] animate-float" viewBox="0 0 60 60" fill="none">
+            <polygon points="30,5 55,50 5,50" stroke="hsl(var(--primary))" strokeWidth="1" />
+          </svg>
+          <svg className="absolute bottom-8 right-10 w-12 h-12 opacity-[0.06] animate-float-slow" viewBox="0 0 50 50" fill="none">
+            <circle cx="25" cy="25" r="20" stroke="hsl(var(--accent))" strokeWidth="1" />
+            <circle cx="25" cy="25" r="10" stroke="hsl(var(--accent))" strokeWidth="0.5" />
+          </svg>
+          <svg className="absolute top-10 right-[20%] w-10 h-10 opacity-[0.04] animate-breathe" viewBox="0 0 40 40" fill="none">
+            <rect x="5" y="5" width="30" height="30" rx="4" stroke="hsl(var(--primary))" strokeWidth="0.8" transform="rotate(15 20 20)" />
+          </svg>
+
           <div className="relative z-10">
             <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mb-4">
               Ready to Scale Your <span className="text-gradient">Digital Presence</span>?
@@ -83,7 +95,6 @@ export default function Footer() {
       {/* Newsletter + Links */}
       <div className="container mx-auto px-4 pb-16">
         <div className="grid lg:grid-cols-5 gap-12 mb-12">
-          {/* Newsletter */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2.5 mb-4">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center border border-primary/20">
@@ -116,7 +127,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
           {footerSections.map((section) => (
             <div key={section.title}>
               <h3 className="font-display font-semibold text-sm text-foreground mb-4">
@@ -139,7 +149,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom */}
       <div className="border-t border-border/20">
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-xs text-muted-foreground">
