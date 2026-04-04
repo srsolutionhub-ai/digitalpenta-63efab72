@@ -3,6 +3,41 @@ import { ArrowUpRight, Clock } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 
+/* Generative SVG art headers per blog category */
+const blogArt: Record<string, JSX.Element> = {
+  "AI & Marketing": (
+    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
+      <circle cx="80" cy="60" r="20" stroke="hsl(252, 60%, 63%)" strokeWidth="0.8" />
+      <circle cx="80" cy="60" r="8" fill="hsl(252, 60%, 63%)" opacity=".3" />
+      <circle cx="180" cy="40" r="12" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" />
+      <circle cx="220" cy="80" r="16" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" />
+      <line x1="100" y1="60" x2="168" y2="40" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" strokeDasharray="4 3" />
+      <line x1="192" y1="40" x2="204" y2="80" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" strokeDasharray="4 3" />
+      {[40, 120, 250].map((x, i) => <circle key={i} cx={x} cy={20 + i * 30} r="2" fill="hsl(var(--foreground))" opacity=".15" />)}
+    </svg>
+  ),
+  "SEO": (
+    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
+      <path d="M20 90 Q80 30 150 60 Q220 90 280 30" stroke="hsl(190, 100%, 50%)" strokeWidth="1.5" />
+      <circle cx="150" cy="60" r="4" fill="hsl(190, 100%, 50%)" opacity=".6" />
+      <rect x="40" y="15" width="60" height="8" rx="4" fill="hsl(190, 100%, 50%)" opacity=".1" />
+      <rect x="40" y="28" width="40" height="6" rx="3" fill="hsl(190, 100%, 50%)" opacity=".06" />
+      <circle cx="25" cy="19" r="6" stroke="hsl(190, 100%, 50%)" strokeWidth="0.8" />
+      <line x1="29" y1="23" x2="35" y2="29" stroke="hsl(190, 100%, 50%)" strokeWidth="0.8" />
+    </svg>
+  ),
+  "Automation": (
+    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
+      <rect x="30" y="40" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
+      <rect x="130" y="30" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
+      <rect x="230" y="50" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
+      <path d="M80 55 L130 45" stroke="hsl(160, 84%, 39%)" strokeWidth="0.5" strokeDasharray="4 2" />
+      <path d="M180 45 L230 65" stroke="hsl(160, 84%, 39%)" strokeWidth="0.5" strokeDasharray="4 2" />
+      <polygon points="55 52 55 58 60 55" fill="hsl(160, 84%, 39%)" opacity=".4" />
+    </svg>
+  ),
+};
+
 const posts = [
   {
     title: "How AI is Reshaping Digital Marketing in 2026",
@@ -72,13 +107,8 @@ export default function BlogPreviewSection() {
                 to={`/blog/${post.slug}`}
                 className="group rounded-2xl glass border border-border/30 overflow-hidden flex flex-col transition-all duration-500 hover:border-primary/20 hover:shadow-2xl h-full shimmer-card"
               >
-                {/* Gradient image placeholder */}
-                <div className={`h-32 bg-gradient-to-br ${post.gradient} relative`}>
-                  <svg className="absolute inset-0 w-full h-full opacity-[0.06]" viewBox="0 0 200 100">
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-current text-foreground" fontSize="40" fontFamily="Plus Jakarta Sans" fontWeight="800">
-                      BLOG
-                    </text>
-                  </svg>
+                <div className={`h-32 bg-gradient-to-br ${post.gradient} relative overflow-hidden`}>
+                  {blogArt[post.category]}
                 </div>
 
                 <div className="p-7 flex flex-col flex-1">

@@ -3,6 +3,57 @@ import { ArrowUpRight } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 
+/* Background SVG patterns per service */
+const patterns: Record<string, JSX.Element> = {
+  "Digital Marketing": (
+    <svg className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.04]" viewBox="0 0 100 100" fill="none">
+      <path d="M10 80 L30 40 L50 60 L70 20 L90 50" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="90" cy="50" r="4" fill="currentColor" />
+      <circle cx="70" cy="20" r="3" fill="currentColor" />
+    </svg>
+  ),
+  "Public Relations": (
+    <svg className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.04]" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="0.5" />
+      <circle cx="50" cy="50" r="20" stroke="currentColor" strokeWidth="0.5" />
+      <circle cx="50" cy="50" r="10" stroke="currentColor" strokeWidth="0.5" />
+      {[0, 60, 120, 180, 240, 300].map((a) => {
+        const r = 30, x = 50 + r * Math.cos((a * Math.PI) / 180), y = 50 + r * Math.sin((a * Math.PI) / 180);
+        return <line key={a} x1="50" y1="50" x2={x} y2={y} stroke="currentColor" strokeWidth="0.3" />;
+      })}
+    </svg>
+  ),
+  "Development": (
+    <svg className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.04]" viewBox="0 0 100 100" fill="none">
+      <text x="15" y="35" fontSize="10" fill="currentColor" fontFamily="monospace">{"<div>"}</text>
+      <text x="25" y="50" fontSize="10" fill="currentColor" fontFamily="monospace">{"{ }"}</text>
+      <text x="15" y="65" fontSize="10" fill="currentColor" fontFamily="monospace">{"</>"}</text>
+      <rect x="60" y="25" width="30" height="50" rx="4" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="60" y1="38" x2="90" y2="38" stroke="currentColor" strokeWidth="0.3" />
+    </svg>
+  ),
+  "AI Solutions": (
+    <svg className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.04]" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="40" r="12" stroke="currentColor" strokeWidth="0.8" />
+      <circle cx="30" cy="70" r="8" stroke="currentColor" strokeWidth="0.5" />
+      <circle cx="70" cy="70" r="8" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="50" y1="52" x2="30" y2="62" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="50" y1="52" x2="70" y2="62" stroke="currentColor" strokeWidth="0.5" />
+      <line x1="30" y1="70" x2="70" y2="70" stroke="currentColor" strokeWidth="0.3" strokeDasharray="3 3" />
+    </svg>
+  ),
+  "Automation": (
+    <svg className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.04]" viewBox="0 0 100 100" fill="none">
+      <rect x="20" y="30" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="0.5" />
+      <rect x="60" y="30" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="0.5" />
+      <rect x="40" y="60" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="0.5" />
+      <path d="M40 37 L60 37" stroke="currentColor" strokeWidth="0.5" markerEnd="url(#arrow)" />
+      <path d="M50 44 L50 60" stroke="currentColor" strokeWidth="0.5" />
+      <path d="M30 44 L30 55 L40 67" stroke="currentColor" strokeWidth="0.5" />
+    </svg>
+  ),
+};
+
 const pillars = [
   {
     title: "Digital Marketing",
@@ -78,7 +129,6 @@ export default function ServicesSection() {
   return (
     <section className="py-24 md:py-32 cv-auto">
       <div className="container mx-auto px-4" ref={ref}>
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -94,7 +144,6 @@ export default function ServicesSection() {
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {pillars.map((p, i) => (
             <motion.div
@@ -106,8 +155,13 @@ export default function ServicesSection() {
             >
               <Link
                 to={p.href}
-                className="group relative rounded-2xl glass border border-border/30 p-7 flex flex-col h-full transition-all duration-500 hover:bg-card/60 hover:border-primary/20 hover:shadow-2xl rotating-border shimmer-card"
+                className="group relative rounded-2xl glass border border-border/30 p-7 flex flex-col h-full transition-all duration-500 hover:bg-card/60 hover:border-primary/20 hover:shadow-2xl rotating-border shimmer-card overflow-hidden"
               >
+                {/* Background SVG pattern */}
+                <div className={`absolute inset-0 ${p.iconColor} pointer-events-none`}>
+                  {patterns[p.title]}
+                </div>
+
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex items-center justify-between mb-5">
                     <div className={`w-12 h-12 rounded-xl ${p.iconBg} border flex items-center justify-center ${p.iconColor}`}>
