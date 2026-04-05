@@ -21,7 +21,7 @@ export default function IndustriesSection() {
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} className="py-20 relative overflow-hidden cv-auto">
+    <section ref={ref} className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-card/20" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />

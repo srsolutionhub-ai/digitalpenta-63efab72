@@ -73,7 +73,7 @@ export default function BlogPreviewSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-24 md:py-32 relative cv-auto">
+    <section className="py-24 md:py-32 relative">
       <div className="absolute inset-0 bg-card/20" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 

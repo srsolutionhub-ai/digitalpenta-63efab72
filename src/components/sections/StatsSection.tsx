@@ -40,7 +40,7 @@ export default function StatsSection() {
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} className="relative border-y border-border/50 bg-card/10 overflow-hidden cv-auto">
+    <section ref={ref} className="relative border-y border-border/50 bg-card/10 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] via-transparent to-accent/[0.02]" />
       
       <div className="absolute inset-0 opacity-[0.03]" style={{

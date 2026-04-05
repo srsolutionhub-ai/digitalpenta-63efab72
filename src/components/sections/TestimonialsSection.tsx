@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
   const others = testimonials.filter(t => !t.featured);
 
   return (
-    <section className="py-24 md:py-32 cv-auto">
+    <section className="py-24 md:py-32">
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
