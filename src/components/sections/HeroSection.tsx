@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import ParticleField from "@/components/ui/particle-field";
 import { motion } from "motion/react";
+import heroBg from "@/assets/hero-bg.jpg";
 
 /* Abstract geometric node illustration — interconnected orbits */
 function HeroIllustration() {
@@ -16,7 +17,6 @@ function HeroIllustration() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Orbits */}
       <motion.circle cx="250" cy="250" r="180" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" strokeDasharray="6 6" opacity="0.2"
         initial={{ rotate: 0 }} animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 250px" }}
@@ -29,12 +29,8 @@ function HeroIllustration() {
         initial={{ rotate: 0 }} animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 250px" }}
       />
-
-      {/* Center node */}
       <circle cx="250" cy="250" r="8" fill="hsl(252, 60%, 63%)" opacity="0.6" />
       <circle cx="250" cy="250" r="3" fill="hsl(190, 100%, 50%)" />
-
-      {/* Orbiting nodes — 5 pillars */}
       {[
         { cx: 430, cy: 250, color: "hsl(252, 60%, 63%)", r: 6 },
         { cx: 306, cy: 420, color: "hsl(190, 100%, 50%)", r: 5 },
@@ -52,14 +48,10 @@ function HeroIllustration() {
           <circle cx={node.cx} cy={node.cy} r={node.r + 10} stroke={node.color} strokeWidth="0.3" opacity="0.1" />
         </g>
       ))}
-
-      {/* Decorative hexagons */}
       <motion.polygon points="250,60 280,77 280,111 250,128 220,111 220,77" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" opacity="0.06" fill="none"
         animate={{ rotate: [0, 60] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 94px" }}
       />
-
-      {/* Floating small dots */}
       {[
         { x: 170, y: 190 }, { x: 330, y: 310 }, { x: 380, y: 170 },
         { x: 120, y: 280 }, { x: 290, y: 180 }, { x: 200, y: 350 },
@@ -83,6 +75,17 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Background image */}
+      <img
+        src={heroBg}
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+        width={1920}
+        height={1080}
+        className="absolute inset-0 w-full h-full object-cover opacity-20"
+      />
+
       <ParticleField count={25} />
 
       {/* Breathing gradient orbs */}
@@ -92,7 +95,6 @@ export default function HeroSection() {
 
       <div className="absolute inset-0 mesh-gradient" />
 
-      {/* Grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -103,7 +105,6 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-4 pt-28 pb-20 relative z-10">
         <div className="flex items-center gap-12 lg:gap-20">
-          {/* Left content */}
           <div className="max-w-3xl flex-1">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -215,7 +216,6 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right illustration — hidden on mobile */}
           <div className="hidden lg:block w-[420px] xl:w-[480px] flex-shrink-0">
             <HeroIllustration />
           </div>

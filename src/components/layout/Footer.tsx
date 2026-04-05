@@ -55,7 +55,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-border/30 cv-auto">
+    <footer className="relative border-t border-border/30">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       {/* CTA Banner */}
