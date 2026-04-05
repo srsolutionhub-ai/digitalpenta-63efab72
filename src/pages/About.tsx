@@ -83,11 +83,6 @@ export default function About() {
           <div className="mb-10 rounded-2xl overflow-hidden border border-border/30" data-reveal>
             <img src={teamOffice} alt="Digital Penta team collaborating in office" loading="lazy" width={1024} height={1024} className="w-full h-64 md:h-80 object-cover" />
           </div>
-            <span className="text-xs font-mono text-primary uppercase tracking-widest">Leadership</span>
-            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
-              The Minds Behind <span className="text-gradient">The Machine</span>
-            </h2>
-          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {team.map((t) => (
               <div key={t.initials} data-reveal className="rounded-2xl glass border border-border/30 p-6 text-center group hover:bg-card/60 hover:border-primary/15 transition-all duration-500">
