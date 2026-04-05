@@ -3,40 +3,9 @@ import { ArrowUpRight, Clock } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 
-/* Generative SVG art headers per blog category */
-const blogArt: Record<string, JSX.Element> = {
-  "AI & Marketing": (
-    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
-      <circle cx="80" cy="60" r="20" stroke="hsl(252, 60%, 63%)" strokeWidth="0.8" />
-      <circle cx="80" cy="60" r="8" fill="hsl(252, 60%, 63%)" opacity=".3" />
-      <circle cx="180" cy="40" r="12" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" />
-      <circle cx="220" cy="80" r="16" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" />
-      <line x1="100" y1="60" x2="168" y2="40" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" strokeDasharray="4 3" />
-      <line x1="192" y1="40" x2="204" y2="80" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" strokeDasharray="4 3" />
-      {[40, 120, 250].map((x, i) => <circle key={i} cx={x} cy={20 + i * 30} r="2" fill="hsl(var(--foreground))" opacity=".15" />)}
-    </svg>
-  ),
-  "SEO": (
-    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
-      <path d="M20 90 Q80 30 150 60 Q220 90 280 30" stroke="hsl(190, 100%, 50%)" strokeWidth="1.5" />
-      <circle cx="150" cy="60" r="4" fill="hsl(190, 100%, 50%)" opacity=".6" />
-      <rect x="40" y="15" width="60" height="8" rx="4" fill="hsl(190, 100%, 50%)" opacity=".1" />
-      <rect x="40" y="28" width="40" height="6" rx="3" fill="hsl(190, 100%, 50%)" opacity=".06" />
-      <circle cx="25" cy="19" r="6" stroke="hsl(190, 100%, 50%)" strokeWidth="0.8" />
-      <line x1="29" y1="23" x2="35" y2="29" stroke="hsl(190, 100%, 50%)" strokeWidth="0.8" />
-    </svg>
-  ),
-  "Automation": (
-    <svg viewBox="0 0 300 120" className="absolute inset-0 w-full h-full" fill="none" opacity="0.2">
-      <rect x="30" y="40" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
-      <rect x="130" y="30" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
-      <rect x="230" y="50" width="50" height="30" rx="6" stroke="hsl(160, 84%, 39%)" strokeWidth="0.8" />
-      <path d="M80 55 L130 45" stroke="hsl(160, 84%, 39%)" strokeWidth="0.5" strokeDasharray="4 2" />
-      <path d="M180 45 L230 65" stroke="hsl(160, 84%, 39%)" strokeWidth="0.5" strokeDasharray="4 2" />
-      <polygon points="55 52 55 58 60 55" fill="hsl(160, 84%, 39%)" opacity=".4" />
-    </svg>
-  ),
-};
+import blogAiImg from "@/assets/blog-ai.jpg";
+import blogSeoImg from "@/assets/blog-seo.jpg";
+import blogAutoImg from "@/assets/blog-automation.jpg";
 
 const posts = [
   {
@@ -46,7 +15,7 @@ const posts = [
     date: "Mar 2026",
     readTime: "6 min read",
     slug: "ai-reshaping-marketing-2026",
-    gradient: "from-violet-500/20 to-purple-600/10",
+    image: blogAiImg,
   },
   {
     title: "SEO Strategy for Middle East Markets: A Complete Guide",
@@ -55,7 +24,7 @@ const posts = [
     date: "Mar 2026",
     readTime: "8 min read",
     slug: "seo-middle-east-guide",
-    gradient: "from-cyan-500/20 to-blue-600/10",
+    image: blogSeoImg,
   },
   {
     title: "The ROI of Marketing Automation: Real Numbers from Real Clients",
@@ -64,7 +33,7 @@ const posts = [
     date: "Feb 2026",
     readTime: "5 min read",
     slug: "roi-marketing-automation",
-    gradient: "from-emerald-500/20 to-green-600/10",
+    image: blogAutoImg,
   },
 ];
 
@@ -107,8 +76,16 @@ export default function BlogPreviewSection() {
                 to={`/blog/${post.slug}`}
                 className="group rounded-2xl glass border border-border/30 overflow-hidden flex flex-col transition-all duration-500 hover:border-primary/20 hover:shadow-2xl h-full shimmer-card"
               >
-                <div className={`h-32 bg-gradient-to-br ${post.gradient} relative overflow-hidden`}>
-                  {blogArt[post.category]}
+                <div className="h-32 relative overflow-hidden">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    width={800}
+                    height={512}
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
                 </div>
 
                 <div className="p-7 flex flex-col flex-1">

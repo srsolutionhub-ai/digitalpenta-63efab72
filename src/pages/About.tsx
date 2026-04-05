@@ -1,6 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import { Shield, Target, Eye, MapPin } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import teamOffice from "@/assets/team-office.jpg";
 
 const team = [
   { name: "Founder & CEO", role: "Strategy & Vision", initials: "DP" },
@@ -74,6 +75,14 @@ export default function About() {
       <section className="py-20" ref={teamRef}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-14" data-reveal>
+            <span className="text-xs font-mono text-primary uppercase tracking-widest">Leadership</span>
+            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
+              The Minds Behind <span className="text-gradient">The Machine</span>
+            </h2>
+          </div>
+          <div className="mb-10 rounded-2xl overflow-hidden border border-border/30" data-reveal>
+            <img src={teamOffice} alt="Digital Penta team collaborating in office" loading="lazy" width={1024} height={1024} className="w-full h-64 md:h-80 object-cover" />
+          </div>
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Leadership</span>
             <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
               The Minds Behind <span className="text-gradient">The Machine</span>
