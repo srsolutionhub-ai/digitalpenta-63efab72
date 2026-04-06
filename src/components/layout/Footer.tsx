@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Linkedin, Twitter, Instagram, Youtube } from "lucide-react";
+import { ArrowRight, Linkedin, Twitter, Instagram, Youtube, MapPin, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -7,21 +7,23 @@ const footerSections = [
   {
     title: "Services",
     links: [
-      { label: "Digital Marketing", href: "/services/digital-marketing" },
-      { label: "Public Relations", href: "/services/public-relations" },
-      { label: "Development", href: "/services/development" },
-      { label: "AI Solutions", href: "/services/ai-solutions" },
-      { label: "Automation", href: "/services/automation" },
+      { label: "SEO & Content Marketing", href: "/services/digital-marketing/seo" },
+      { label: "Social Media Marketing", href: "/services/digital-marketing/social-media" },
+      { label: "Performance Marketing", href: "/services/digital-marketing/performance" },
+      { label: "Web Design & Development", href: "/services/development/website" },
+      { label: "Email & WhatsApp Marketing", href: "/services/digital-marketing/email" },
+      { label: "Brand Strategy", href: "/services/public-relations/brand-reputation" },
     ],
   },
   {
     title: "Company",
     links: [
       { label: "About Us", href: "/about" },
-      { label: "Portfolio", href: "/portfolio" },
+      { label: "Case Studies", href: "/portfolio" },
       { label: "Blog", href: "/blog" },
+      { label: "Careers", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Get a Proposal", href: "/get-proposal" },
+      { label: "Privacy Policy", href: "/privacy" },
     ],
   },
   {
@@ -34,60 +36,45 @@ const footerSections = [
       { label: "SaaS", href: "/industries/saas" },
     ],
   },
-  {
-    title: "Locations",
-    links: [
-      { label: "Delhi, India", href: "/locations/delhi" },
-      { label: "Dubai, UAE", href: "/locations/dubai" },
-      { label: "Abu Dhabi, UAE", href: "/locations/abu-dhabi" },
-      { label: "Riyadh, KSA", href: "/locations/riyadh" },
-      { label: "Doha, Qatar", href: "/locations/doha" },
-    ],
-  },
 ];
 
 const socials = [
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Twitter, href: "#", label: "Twitter" },
   { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Linkedin, href: "#", label: "LinkedIn" },
   { icon: Youtube, href: "#", label: "YouTube" },
+  { icon: Twitter, href: "#", label: "Twitter/X" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-border/30">
+    <footer className="relative border-t border-border/30 pb-16 lg:pb-0">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
       {/* CTA Banner */}
       <div className="container mx-auto px-4 py-20">
-        <div className="rounded-3xl glass border border-border/20 p-10 md:p-16 text-center relative overflow-hidden">
-          <div className="absolute inset-0 mesh-gradient opacity-40" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]" />
-          
-          {/* Floating geometric shapes */}
-          <svg className="absolute top-6 left-8 w-16 h-16 opacity-[0.06] animate-float" viewBox="0 0 60 60" fill="none">
-            <polygon points="30,5 55,50 5,50" stroke="hsl(var(--primary))" strokeWidth="1" />
-          </svg>
-          <svg className="absolute bottom-8 right-10 w-12 h-12 opacity-[0.06] animate-float-slow" viewBox="0 0 50 50" fill="none">
-            <circle cx="25" cy="25" r="20" stroke="hsl(var(--accent))" strokeWidth="1" />
-            <circle cx="25" cy="25" r="10" stroke="hsl(var(--accent))" strokeWidth="0.5" />
-          </svg>
-          <svg className="absolute top-10 right-[20%] w-10 h-10 opacity-[0.04] animate-breathe" viewBox="0 0 40 40" fill="none">
-            <rect x="5" y="5" width="30" height="30" rx="4" stroke="hsl(var(--primary))" strokeWidth="0.8" transform="rotate(15 20 20)" />
-          </svg>
-
+        <div className="rounded-3xl overflow-hidden relative p-10 md:p-16 text-center"
+          style={{ background: "linear-gradient(135deg, hsl(252, 60%, 63%) 0%, hsl(190, 100%, 50%) 100%)" }}>
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
+            backgroundSize: "30px 30px",
+          }} />
           <div className="relative z-10">
-            <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mb-4">
-              Ready to Scale Your <span className="text-gradient">Digital Presence</span>?
+            <h2 className="font-display font-extrabold text-3xl md:text-5xl text-white mb-4">
+              Ready to 5X Your Business? Let's Talk.
             </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto mb-8 text-base">
-              Let's craft a strategy that drives measurable results for your business across India and the Middle East.
+            <p className="text-white/80 max-w-lg mx-auto mb-8 text-base">
+              Book a FREE 30-minute strategy call with our growth experts. No commitment. No fluff. Just a plan.
             </p>
-            <Link to="/get-proposal">
-              <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
-                Start Your Project <ArrowRight className="w-4 h-4" />
+            <Link to="/contact">
+              <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/90 shadow-xl">
+                📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
+            <div className="flex items-center justify-center gap-6 mt-6 text-white/70 text-xs font-mono">
+              <span>✓ No credit card</span>
+              <span>✓ Cancel anytime</span>
+              <span>✓ Response within 24 hours</span>
+            </div>
           </div>
         </div>
       </div>
@@ -95,22 +82,45 @@ export default function Footer() {
       {/* Newsletter + Links */}
       <div className="container mx-auto px-4 pb-16">
         <div className="grid lg:grid-cols-5 gap-12 mb-12">
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center border border-primary/20">
-                <span className="font-display font-extrabold text-primary text-xs">DP</span>
-              </div>
+              <svg viewBox="0 0 40 40" className="w-8 h-8" fill="none">
+                <defs>
+                  <linearGradient id="pentaGradFoot" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="hsl(252, 60%, 63%)" />
+                    <stop offset="100%" stopColor="hsl(190, 100%, 50%)" />
+                  </linearGradient>
+                </defs>
+                <polygon points="20,2 38,14 32,34 8,34 2,14" stroke="url(#pentaGradFoot)" strokeWidth="1.5" fill="hsl(252, 60%, 63%)" fillOpacity="0.1" />
+                <text x="20" y="24" textAnchor="middle" fill="url(#pentaGradFoot)" fontSize="12" fontWeight="800" fontFamily="Plus Jakarta Sans, sans-serif">DP</text>
+              </svg>
               <span className="font-display font-bold text-foreground">
                 Digital<span className="text-gradient">Penta</span>
               </span>
             </Link>
-            <p className="text-xs text-muted-foreground leading-relaxed mb-5">
-              Five powers. One seamless force driving growth across India & the Middle East.
+            <p className="text-xs text-muted-foreground leading-relaxed mb-5 max-w-xs">
+              5X Your Digital Presence. India's results-driven digital marketing agency helping brands dominate online with SEO, Ads, Social Media, Development & AI.
             </p>
-            <div className="flex gap-2">
+
+            {/* Contact info */}
+            <div className="space-y-2 mb-5">
+              <a href="mailto:contact@digitalpenta.in" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <Mail className="w-3.5 h-3.5" /> contact@digitalpenta.in
+              </a>
+              <a href="tel:+91XXXXXXXXXX" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <Phone className="w-3.5 h-3.5" /> +91-XXXXXXXXXX
+              </a>
+              <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                <MapPin className="w-3.5 h-3.5" /> Delhi, India
+              </span>
+            </div>
+
+            {/* Newsletter */}
+            <p className="text-xs font-display font-semibold text-foreground mb-2">Subscribe to our newsletter</p>
+            <div className="flex gap-2 max-w-xs">
               <Input placeholder="Your email" className="bg-secondary/40 border-border/30 text-xs h-9" />
               <Button size="sm" className="rounded-lg px-3 h-9 text-xs font-display font-semibold">
-                Join
+                Subscribe
               </Button>
             </div>
             <div className="flex items-center gap-2 mt-5">
@@ -152,7 +162,7 @@ export default function Footer() {
       <div className="border-t border-border/20">
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Digital Penta. All rights reserved.
+            © {new Date().getFullYear()} Digital Penta. All rights reserved. | Delhi, India | contact@digitalpenta.in
           </span>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>

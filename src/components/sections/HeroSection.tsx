@@ -3,10 +3,40 @@ import { ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import ParticleField from "@/components/ui/particle-field";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import heroBg from "@/assets/hero-bg.jpg";
 
-/* Abstract geometric node illustration — interconnected orbits */
+const switcherWords = ["SEO", "Paid Ads", "Social Media", "Web Design", "Content"];
+
+function TextSwitcher() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => setIndex((i) => (i + 1) % switcherWords.length), 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className="inline-block relative w-[200px] sm:w-[260px] h-[1.2em] align-bottom overflow-hidden">
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={switcherWords[index]}
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -40, opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute left-0 text-gradient whitespace-nowrap"
+        >
+          {switcherWords[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+/* Floating keyword tags behind hero */
+const floatingTags = ["₹ROI", "#Growth", "SEO", "Ads", "Leads", "#Digital", "ROAS", "CTR"];
+
+/* Abstract geometric orbit illustration */
 function HeroIllustration() {
   return (
     <motion.svg
@@ -48,20 +78,6 @@ function HeroIllustration() {
           <circle cx={node.cx} cy={node.cy} r={node.r + 10} stroke={node.color} strokeWidth="0.3" opacity="0.1" />
         </g>
       ))}
-      <motion.polygon points="250,60 280,77 280,111 250,128 220,111 220,77" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" opacity="0.06" fill="none"
-        animate={{ rotate: [0, 60] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        style={{ transformOrigin: "250px 94px" }}
-      />
-      {[
-        { x: 170, y: 190 }, { x: 330, y: 310 }, { x: 380, y: 170 },
-        { x: 120, y: 280 }, { x: 290, y: 180 }, { x: 200, y: 350 },
-      ].map((d, i) => (
-        <motion.circle
-          key={i} cx={d.x} cy={d.y} r="1.5" fill="hsl(var(--foreground))" opacity="0.1"
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
-        />
-      ))}
     </motion.svg>
   );
 }
@@ -70,12 +86,8 @@ export default function HeroSection() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
-  const headlineWords = ["Five", "Powers."];
-  const subHeadlineWords = ["Infinite", "Possibilities."];
-
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background image */}
       <img
         src={heroBg}
         alt=""
@@ -87,6 +99,24 @@ export default function HeroSection() {
       />
 
       <ParticleField count={25} />
+
+      {/* Floating keyword tags */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {floatingTags.map((tag, i) => (
+          <span
+            key={tag}
+            className="absolute text-[10px] font-mono text-foreground/[0.08] px-2 py-1 rounded-full border border-foreground/[0.04]"
+            style={{
+              left: `${10 + (i * 12) % 80}%`,
+              top: `${15 + (i * 17) % 65}%`,
+              animation: `float ${5 + i}s ease-in-out infinite`,
+              animationDelay: `${i * 0.7}s`,
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
 
       {/* Breathing gradient orbs */}
       <div className="absolute top-[15%] right-[10%] w-[500px] h-[500px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
@@ -114,105 +144,78 @@ export default function HeroSection() {
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span className="text-[11px] font-mono text-muted-foreground tracking-wider uppercase">
-                Trusted by 500+ brands across 12+ countries
+                Trusted by 500+ brands across India & Middle East
               </span>
             </motion.div>
 
             <h1
               className="font-display font-extrabold leading-[0.95] tracking-tight mb-8"
-              style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
+              style={{ fontSize: "clamp(2.2rem, 5.5vw, 5rem)" }}
             >
-              <span className="block text-foreground">
-                {headlineWords.map((word, i) => (
-                  <motion.span
-                    key={word}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={loaded ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.8, delay: 0.2 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="inline-block mr-[0.25em]"
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </span>
-              <span className="block text-gradient mt-1">
-                {subHeadlineWords.map((word, i) => (
-                  <motion.span
-                    key={word}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={loaded ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.8, delay: 0.4 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="inline-block mr-[0.25em]"
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </span>
+              <motion.span
+                initial={{ opacity: 0, y: 40 }}
+                animate={loaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="block text-foreground"
+              >
+                India's #1 Digital Marketing
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 40 }}
+                animate={loaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="block text-gradient mt-1"
+              >
+                Agency for 5X Growth
+              </motion.span>
             </h1>
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}
               animate={loaded ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed mb-12"
+              transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed mb-5"
             >
-              We unite Digital Marketing, PR, Development, AI & Automation into one seamless force — 
-              driving exponential growth for brands across India and the Middle East.
+              We help Indian brands dominate Google, Instagram & Meta — with data-driven{" "}
+              <TextSwitcher /> campaigns that convert visitors into paying customers.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={loaded ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col sm:flex-row items-start gap-4"
+              transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col sm:flex-row items-start gap-4 mb-10"
             >
-              <Link to="/get-proposal">
-                <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2.5 group shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02]">
-                  Get Your Free Proposal
+              <Link to="/contact">
+                <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2.5 group bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all duration-300 hover:scale-[1.02]">
+                  🚀 Get Free Strategy Call
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/portfolio">
                 <Button variant="outline" size="lg" className="rounded-full px-10 py-6 font-display font-semibold text-base gap-2.5 border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300">
                   <Play className="w-4 h-4" />
-                  View Our Work
+                  Watch Our Work
                 </Button>
               </Link>
             </motion.div>
 
+            {/* Floating trust badges */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={loaded ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-20 flex items-center gap-8"
+              transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-wrap items-center gap-4"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  {["hsl(var(--primary))", "hsl(var(--accent))", "hsl(160, 84%, 39%)", "hsl(38, 92%, 50%)"].map((c, i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center"
-                      style={{ backgroundColor: `${c.replace(")", " / 0.15)")}`, borderColor: `${c.replace(")", " / 0.3)")}` }}
-                    >
-                      <span className="text-[9px] font-bold" style={{ color: c }}>★</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="text-left">
-                  <p className="text-sm font-display font-semibold text-foreground">4.9/5</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">on Clutch</p>
-                </div>
-              </div>
-              <div className="w-px h-8 bg-border/50" />
-              <div>
-                <p className="text-sm font-display font-medium text-foreground">Google Partner</p>
-                <p className="text-[10px] text-muted-foreground font-mono">Premier Certified</p>
-              </div>
-              <div className="hidden sm:block w-px h-8 bg-border/50" />
-              <div className="hidden sm:block">
-                <p className="text-sm font-display font-medium text-foreground">Meta Partner</p>
-                <p className="text-[10px] text-muted-foreground font-mono">Business Partner</p>
-              </div>
+              {[
+                { text: "⭐ 4.9 Google Rating", color: "border-amber-500/20 bg-amber-500/5" },
+                { text: "500+ Happy Clients", color: "border-primary/20 bg-primary/5" },
+                { text: "₹10Cr+ Ad Spend Managed", color: "border-accent/20 bg-accent/5" },
+              ].map((badge) => (
+                <span key={badge.text} className={`text-xs font-mono text-foreground/70 px-4 py-2 rounded-full border ${badge.color}`}>
+                  {badge.text}
+                </span>
+              ))}
             </motion.div>
           </div>
 
