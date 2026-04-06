@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Reduced motion: disable non-essential animations */
 @media (prefers-reduced-motion: reduce) {
@@ -8,10 +10,6 @@
     transition-duration: 0.01ms !important;
   }
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer base {
   :root {
@@ -201,7 +199,6 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
     mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
   }
-
 }
 
 @keyframes fadeIn {

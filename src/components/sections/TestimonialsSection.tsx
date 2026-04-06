@@ -1,14 +1,54 @@
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, BadgeCheck } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useCallback } from "react";
 
 const testimonials = [
-  { quote: "Digital Penta transformed our digital presence completely. The integrated approach across marketing and development delivered 3x the results we expected.", name: "Rajesh Kumar", role: "CEO, PropTech Ventures", rating: 5, featured: true, initials: "RK", color: "from-violet-500 to-purple-600" },
-  { quote: "Their understanding of both Indian and Middle Eastern markets is unmatched. Our brand visibility in Dubai grew 400% in just six months.", name: "Fatima Al-Hassan", role: "Marketing Director, Gulf Retail Group", rating: 5, initials: "FA", color: "from-cyan-500 to-blue-600" },
-  { quote: "The AI-powered automation they built saved us 200+ hours per month. ROI was visible within the first quarter.", name: "Amit Sharma", role: "Founder, HealthTech Solutions", rating: 5, initials: "AS", color: "from-emerald-500 to-green-600" },
-  { quote: "From PR crisis management to rebuilding our online reputation — they handled everything with precision and speed.", name: "Sarah Chen", role: "VP Communications, FinServe Global", rating: 5, initials: "SC", color: "from-amber-500 to-orange-600" },
-  { quote: "Best development team we've worked with. Our e-commerce platform handles 10x the traffic now with zero downtime.", name: "Omar Al-Rashid", role: "CTO, Souq Digital", rating: 5, initials: "OA", color: "from-rose-500 to-pink-600" },
-  { quote: "They don't just execute — they think strategically. That's rare in this industry.", name: "Priya Patel", role: "CMO, EduLearn India", rating: 5, initials: "PP", color: "from-indigo-500 to-violet-600" },
+  {
+    quote: "Digital Penta took our salon from 0 to 2000 Instagram followers in 3 months and our booking rate doubled!",
+    name: "Priya S.",
+    role: "Beauty Salon Owner, Jaipur",
+    rating: 5,
+    featured: true,
+    initials: "PS",
+    color: "from-violet-500 to-purple-600",
+    badge: "Verified Client",
+  },
+  {
+    quote: "Best ROI we've ever seen on Google Ads. 4X return in the first month!",
+    name: "Rahul M.",
+    role: "E-commerce Founder, Delhi",
+    rating: 5,
+    initials: "RM",
+    color: "from-cyan-500 to-blue-600",
+    badge: "Google Review",
+  },
+  {
+    quote: "Professional team, transparent reporting, and real results. Highly recommend for any growing business!",
+    name: "Ankit T.",
+    role: "Real Estate Developer, Mumbai",
+    rating: 5,
+    initials: "AT",
+    color: "from-emerald-500 to-green-600",
+    badge: "Verified Client",
+  },
+  {
+    quote: "Their WhatsApp automation alone saved us 100+ hours per month. The ROI was visible within the first quarter.",
+    name: "Sneha K.",
+    role: "D2C Brand Founder, Bangalore",
+    rating: 5,
+    initials: "SK",
+    color: "from-amber-500 to-orange-600",
+    badge: "Verified Client",
+  },
+  {
+    quote: "They don't just execute — they think strategically. Our organic traffic grew 312% in 6 months.",
+    name: "Vikram P.",
+    role: "SaaS Startup CEO, Pune",
+    rating: 5,
+    initials: "VP",
+    color: "from-rose-500 to-pink-600",
+    badge: "Google Review",
+  },
 ];
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -24,16 +64,10 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
     setTransform(`perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`);
   }, []);
 
-  const handleLeave = useCallback(() => setTransform(""), []);
-
   return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
+    <div ref={cardRef} onMouseMove={handleMove} onMouseLeave={() => setTransform("")}
       style={{ transform, transition: transform ? "transform 0.1s ease" : "transform 0.4s ease" }}
-      className={className}
-    >
+      className={className}>
       {children}
     </div>
   );
@@ -64,7 +98,7 @@ export default function TestimonialsSection() {
         >
           <span className="text-xs font-mono text-primary uppercase tracking-widest">Testimonials</span>
           <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3 mb-4">
-            Trusted by <span className="text-gradient">Industry Leaders</span>
+            500+ Brands. Real Results. <span className="text-gradient">Real Reviews.</span>
           </h2>
         </motion.div>
 
@@ -82,9 +116,9 @@ export default function TestimonialsSection() {
                 <p className="text-lg font-display font-medium text-foreground/90 leading-relaxed mb-8">
                   "{featured.quote}"
                 </p>
-                <div className="flex gap-0.5 mb-4">
+                <div className="flex gap-1 mb-4">
                   {Array.from({ length: featured.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <Star key={i} className="w-4 h-4 fill-[hsl(30,100%,50%)] text-[hsl(30,100%,50%)]" />
                   ))}
                 </div>
                 <div className="flex items-center gap-3">
@@ -93,13 +127,16 @@ export default function TestimonialsSection() {
                     <p className="font-display font-bold text-foreground">{featured.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{featured.role}</p>
                   </div>
+                  <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-mono text-accent">
+                    <BadgeCheck className="w-3 h-3" /> {featured.badge}
+                  </span>
                 </div>
               </TiltCard>
             </motion.div>
           )}
 
           <div className="lg:col-span-3 grid sm:grid-cols-2 gap-4">
-            {others.slice(0, 4).map((t, i) => (
+            {others.map((t, i) => (
               <motion.div
                 key={t.name}
                 initial={{ opacity: 0, y: 40 }}
@@ -109,7 +146,7 @@ export default function TestimonialsSection() {
                 <TiltCard className="rounded-2xl glass border border-border/30 p-6 hover:bg-card/60 hover:border-primary/15 transition-all duration-500 h-full">
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: t.rating }).map((_, j) => (
-                      <Star key={j} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      <Star key={j} className="w-3 h-3 fill-[hsl(30,100%,50%)] text-[hsl(30,100%,50%)]" />
                     ))}
                   </div>
                   <p className="text-sm text-foreground/80 leading-relaxed mb-5">"{t.quote}"</p>
@@ -120,6 +157,9 @@ export default function TestimonialsSection() {
                       <p className="text-[11px] text-muted-foreground">{t.role}</p>
                     </div>
                   </div>
+                  <span className="inline-flex items-center gap-1 text-[9px] font-mono text-accent mt-3">
+                    <BadgeCheck className="w-3 h-3" /> {t.badge}
+                  </span>
                 </TiltCard>
               </motion.div>
             ))}
