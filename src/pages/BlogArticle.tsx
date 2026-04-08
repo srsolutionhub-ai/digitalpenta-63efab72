@@ -2,8 +2,9 @@ import Layout from "@/components/layout/Layout";
 import { Link, useParams } from "react-router-dom";
 import { ChevronRight, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, Copy, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { toast } from "sonner";
+import { motion, useScroll } from "motion/react";
+import { useRef, useMemo } from "react";
 
 interface ArticleData {
   title: string;
@@ -157,7 +158,6 @@ const articlesData: Record<string, ArticleData> = {
   },
 };
 
-// Get all article slugs and metadata for sidebar
 const allArticles = Object.entries(articlesData).map(([slug, data]) => ({
   slug,
   title: data.title,
@@ -187,9 +187,9 @@ function handleShare(platform: string, title: string) {
 export default function BlogArticle() {
   const { slug } = useParams<{ slug: string }>();
   const article = articlesData[slug || ""] || null;
-  const sectionRef = useScrollReveal<HTMLDivElement>();
+  const articleRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: articleRef, offset: ["start start", "end end"] });
 
-  // Fallback for unknown slugs
   const displayArticle: ArticleData = article || {
     title: slug?.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || "Article",
     category: "General",
@@ -205,12 +205,17 @@ export default function BlogArticle() {
     ],
   };
 
-  // Related articles: same category, exclude current, limit 3
+  // Extract headings for TOC
+  const headings = useMemo(() => {
+    return displayArticle.content
+      .filter((b) => b.startsWith("## "))
+      .map((b) => b.split("\n")[0].replace("## ", ""));
+  }, [displayArticle.content]);
+
   const related = allArticles
     .filter((a) => a.category === displayArticle.category && a.slug !== slug)
     .slice(0, 3);
 
-  // If less than 3 related, fill with other articles
   const moreRelated =
     related.length < 3
       ? [
@@ -223,9 +228,15 @@ export default function BlogArticle() {
 
   return (
     <Layout>
-      <div className="pt-24 pb-0">
+      {/* Reading progress bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent z-[60] origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+
+      <div className="pt-24 pb-0" ref={articleRef}>
         <div className="container mx-auto px-4">
-          <nav className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
+          <nav className="flex items-center gap-1 text-xs text-muted-foreground font-mono" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
             <ChevronRight className="w-3 h-3" />
             <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
@@ -235,12 +246,16 @@ export default function BlogArticle() {
         </div>
       </div>
 
-      <section className="pt-8 pb-20" ref={sectionRef}>
+      <section className="pt-8 pb-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Main Article Column */}
             <div className="lg:w-2/3">
-              <div data-reveal>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
                 <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10">
                   {displayArticle.category}
                 </span>
@@ -250,7 +265,7 @@ export default function BlogArticle() {
 
                 {/* Author Card */}
                 <div className="flex items-center gap-4 mb-8 p-4 rounded-xl bg-muted/30 border border-border/20">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary font-bold text-sm shrink-0 ring-2 ring-primary/10">
                     {displayArticle.authorInitials}
                   </div>
                   <div>
@@ -269,68 +284,65 @@ export default function BlogArticle() {
                 {/* Social Sharing */}
                 <div className="flex items-center gap-2 mb-10">
                   <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider mr-2">Share</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full border-border/30"
-                    onClick={() => handleShare("twitter", displayArticle.title)}
-                    aria-label="Share on Twitter"
-                  >
-                    <Twitter className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full border-border/30"
-                    onClick={() => handleShare("linkedin", displayArticle.title)}
-                    aria-label="Share on LinkedIn"
-                  >
-                    <Linkedin className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full border-border/30"
-                    onClick={() => handleShare("facebook", displayArticle.title)}
-                    aria-label="Share on Facebook"
-                  >
-                    <Facebook className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full border-border/30"
-                    onClick={() => handleShare("copy", displayArticle.title)}
-                    aria-label="Copy link"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </Button>
+                  {[
+                    { icon: Twitter, platform: "twitter", label: "Twitter" },
+                    { icon: Linkedin, platform: "linkedin", label: "LinkedIn" },
+                    { icon: Facebook, platform: "facebook", label: "Facebook" },
+                    { icon: Copy, platform: "copy", label: "Copy link" },
+                  ].map((s) => (
+                    <Button
+                      key={s.platform}
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 rounded-full border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all"
+                      onClick={() => handleShare(s.platform, displayArticle.title)}
+                      aria-label={`Share on ${s.label}`}
+                    >
+                      <s.icon className="w-3.5 h-3.5" />
+                    </Button>
+                  ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Article Content */}
-              <div className="prose-custom" data-reveal>
+              <div className="prose-custom">
                 {displayArticle.content.map((block, i) => {
                   if (block.startsWith("## ")) {
                     const heading = block.split("\n")[0].replace("## ", "");
                     const body = block.split("\n").slice(2).join("\n");
                     return (
-                      <div key={i} className="mb-8">
-                        <h2 className="font-display font-bold text-xl md:text-2xl text-foreground mb-3">{heading}</h2>
+                      <motion.div
+                        key={i}
+                        className="mb-8"
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 0.5, delay: 0.05 }}
+                      >
+                        <h2 id={heading.toLowerCase().replace(/\s+/g, "-")} className="font-display font-bold text-xl md:text-2xl text-foreground mb-3 scroll-mt-24">
+                          {heading}
+                        </h2>
                         <p className="text-muted-foreground leading-relaxed text-[15px]">{body}</p>
-                      </div>
+                      </motion.div>
                     );
                   }
                   return (
-                    <p key={i} className="text-muted-foreground leading-relaxed text-[15px] mb-6">
+                    <motion.p
+                      key={i}
+                      className="text-muted-foreground leading-relaxed text-[15px] mb-6"
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.5 }}
+                    >
                       {block}
-                    </p>
+                    </motion.p>
                   );
                 })}
               </div>
 
               {/* Bottom CTA */}
-              <div className="mt-12 pt-8 border-t border-border/30 flex items-center justify-between" data-reveal>
+              <div className="mt-12 pt-8 border-t border-border/30 flex items-center justify-between">
                 <Link to="/blog">
                   <Button variant="ghost" className="gap-2 font-display text-sm">
                     <ArrowLeft className="w-4 h-4" /> Back to Blog
@@ -350,8 +362,35 @@ export default function BlogArticle() {
             </div>
 
             {/* Sidebar */}
-            <aside className="lg:w-1/3" data-reveal>
+            <aside className="lg:w-1/3">
               <div className="lg:sticky lg:top-28 space-y-8">
+                {/* Table of Contents */}
+                {headings.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="p-5 rounded-2xl border border-border/20 bg-muted/10"
+                  >
+                    <h3 className="font-display font-bold text-sm uppercase tracking-wider text-muted-foreground mb-3">
+                      In This Article
+                    </h3>
+                    <ul className="space-y-1.5">
+                      {headings.map((h, i) => (
+                        <li key={i}>
+                          <a
+                            href={`#${h.toLowerCase().replace(/\s+/g, "-")}`}
+                            className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 py-1"
+                          >
+                            <span className="w-1 h-1 rounded-full bg-primary/40" />
+                            {h}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+
                 {/* Related Articles */}
                 <div>
                   <h3 className="font-display font-bold text-sm uppercase tracking-wider text-muted-foreground mb-4">
@@ -381,7 +420,7 @@ export default function BlogArticle() {
                 </div>
 
                 {/* CTA Card */}
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10">
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/10">
                   <h3 className="font-display font-bold text-foreground mb-2">Need Expert Help?</h3>
                   <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
                     Get a free strategy consultation with our digital marketing experts.

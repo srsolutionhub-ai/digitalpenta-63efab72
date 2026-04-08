@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -101,15 +101,28 @@ const navLinks = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const location = useLocation();
+  const [lastY, setLastY] = useState(0);
+
+  const onScroll = useCallback(() => {
+    const y = window.scrollY;
+    setScrolled(y > 20);
+    // Hide navbar on scroll down, show on scroll up (only after 200px)
+    if (y > 200) {
+      setHidden(y > lastY && y - lastY > 5);
+    } else {
+      setHidden(false);
+    }
+    setLastY(y);
+  }, [lastY]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [onScroll]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -126,18 +139,23 @@ export default function Navbar() {
       <AnnounceBar />
       <header
         className={`sticky top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          hidden && !mobileOpen ? "-translate-y-full" : "translate-y-0"
+        } ${
           scrolled
-            ? "bg-background/80 backdrop-blur-2xl shadow-xl shadow-background/30 border-b border-border/20"
+            ? "bg-background/70 backdrop-blur-3xl shadow-2xl shadow-background/40 border-b border-border/10"
             : "bg-transparent"
         }`}
       >
+        {/* Animated gradient line at bottom */}
         <div className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`}>
           <div className="h-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
         </div>
 
         <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4">
           <Link to="/" className="flex items-center gap-2 group">
-            <PentagonLogo />
+            <motion.div whileHover={{ rotate: 15 }} transition={{ type: "spring", stiffness: 300 }}>
+              <PentagonLogo />
+            </motion.div>
             <span className="font-display font-bold text-lg tracking-tight text-foreground">
               Digital<span className="text-gradient">Penta</span>
             </span>
@@ -156,28 +174,30 @@ export default function Navbar() {
               <AnimatePresence>
                 {megaOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[800px]"
                   >
-                    <div className="bg-background/95 backdrop-blur-2xl rounded-2xl border border-border/30 shadow-2xl shadow-background/80 overflow-hidden">
+                    <div className="bg-background/95 backdrop-blur-3xl rounded-2xl border border-border/20 shadow-2xl shadow-primary/5 overflow-hidden">
                       <div className="grid grid-cols-6 gap-0">
                         <div className="col-span-4 grid grid-cols-3 gap-0 p-6">
                           {services.map((cat) => (
                             <div key={cat.title} className="mb-4">
                               <Link
                                 to={cat.href}
-                                className="flex items-center gap-2 font-display font-semibold text-sm text-foreground hover:text-primary transition-colors mb-2"
+                                className="flex items-center gap-2 font-display font-semibold text-sm text-foreground hover:text-primary transition-colors mb-2 group"
                               >
-                                <cat.icon className={`w-4 h-4 ${cat.color}`} />
+                                <span className="p-1 rounded-md bg-muted/50 group-hover:bg-primary/10 transition-colors">
+                                  <cat.icon className={`w-3.5 h-3.5 ${cat.color}`} />
+                                </span>
                                 {cat.title}
                               </Link>
                               <ul className="space-y-0.5">
                                 {cat.subs.map((s) => (
                                   <li key={s.href}>
-                                    <Link to={s.href} className="text-xs text-muted-foreground hover:text-foreground transition-colors block py-0.5 pl-6">
+                                    <Link to={s.href} className="text-xs text-muted-foreground hover:text-foreground hover:translate-x-0.5 transition-all block py-0.5 pl-7">
                                       {s.title}
                                     </Link>
                                   </li>
@@ -186,7 +206,7 @@ export default function Navbar() {
                             </div>
                           ))}
                         </div>
-                        <div className="col-span-2 bg-card/40 border-l border-border/20 p-6 flex flex-col justify-between">
+                        <div className="col-span-2 bg-gradient-to-b from-primary/5 to-accent/5 border-l border-border/10 p-6 flex flex-col justify-between">
                           <div>
                             <p className="text-xs font-mono text-primary uppercase tracking-widest mb-2">Get Started</p>
                             <h3 className="font-display font-bold text-lg text-foreground mb-2">Need a custom strategy?</h3>
@@ -194,8 +214,8 @@ export default function Navbar() {
                               Our experts craft tailored solutions across all five pillars — no cookie-cutter approaches.
                             </p>
                           </div>
-                          <Link to="/get-proposal" className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-display font-semibold hover:text-foreground transition-colors">
-                            Get Free Proposal <ArrowRight className="w-3.5 h-3.5" />
+                          <Link to="/get-proposal" className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-display font-semibold hover:text-foreground transition-colors group">
+                            Get Free Proposal <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                           </Link>
                         </div>
                       </div>
@@ -209,13 +229,20 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 to={l.href}
-                className={`px-4 py-2 text-sm font-display font-medium rounded-lg transition-colors ${
+                className={`relative px-4 py-2 text-sm font-display font-medium rounded-lg transition-colors ${
                   location.pathname === l.href
-                    ? "text-foreground bg-card/40"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-card/40"
                 }`}
               >
                 {l.title}
+                {location.pathname === l.href && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
           </nav>
@@ -231,19 +258,30 @@ export default function Navbar() {
           <button
             className="lg:hidden p-2 text-foreground relative z-50"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <AnimatePresence mode="wait">
+              {mobileOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <X className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Menu className="w-5 h-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
         </div>
 
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-2xl z-40 overflow-y-auto"
+              className="lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-3xl z-40 overflow-y-auto"
             >
               <nav className="container px-4 py-8 space-y-6">
                 <div>
@@ -260,7 +298,9 @@ export default function Navbar() {
                           to={cat.href}
                           className="flex items-center gap-3 py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
                         >
-                          <cat.icon className={`w-5 h-5 ${cat.color}`} />
+                          <span className="p-1.5 rounded-lg bg-muted/50">
+                            <cat.icon className={`w-5 h-5 ${cat.color}`} />
+                          </span>
                           {cat.title}
                         </Link>
                       </motion.div>
