@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
+import MagneticCard from "@/components/ui/magnetic-card";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -24,6 +25,46 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
   }, [inView, target]);
   return <span ref={ref}>{count}{suffix}</span>;
 }
+
+// Category-specific SVG hero illustrations
+const categoryIllustrations: Record<string, React.ReactNode> = {
+  "digital-marketing": (
+    <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
+      <circle cx="100" cy="100" r="80" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" strokeDasharray="4 4" />
+      <circle cx="100" cy="100" r="50" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" strokeDasharray="4 4" />
+      <circle cx="100" cy="100" r="20" fill="hsl(252, 60%, 63%)" fillOpacity="0.1" />
+      <path d="M60 100 L100 60 L140 100 L100 140Z" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" />
+    </svg>
+  ),
+  "public-relations": (
+    <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
+      <rect x="40" y="40" width="120" height="120" rx="20" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" strokeDasharray="4 4" />
+      <rect x="60" y="60" width="80" height="80" rx="10" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" />
+      <circle cx="100" cy="100" r="15" fill="hsl(190, 100%, 50%)" fillOpacity="0.1" />
+    </svg>
+  ),
+  development: (
+    <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
+      <path d="M70 60 L40 100 L70 140" stroke="hsl(160, 60%, 45%)" strokeWidth="1" strokeLinecap="round" />
+      <path d="M130 60 L160 100 L130 140" stroke="hsl(160, 60%, 45%)" strokeWidth="1" strokeLinecap="round" />
+      <line x1="110" y1="50" x2="90" y2="150" stroke="hsl(160, 60%, 45%)" strokeWidth="0.5" />
+    </svg>
+  ),
+  "ai-solutions": (
+    <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
+      <polygon points="100,30 170,70 170,130 100,170 30,130 30,70" stroke="hsl(45, 90%, 55%)" strokeWidth="0.5" />
+      <polygon points="100,60 140,80 140,120 100,140 60,120 60,80" stroke="hsl(45, 90%, 55%)" strokeWidth="0.5" strokeDasharray="4 4" />
+      <circle cx="100" cy="100" r="10" fill="hsl(45, 90%, 55%)" fillOpacity="0.15" />
+    </svg>
+  ),
+  automation: (
+    <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
+      <circle cx="100" cy="100" r="70" stroke="hsl(25, 90%, 50%)" strokeWidth="0.5" strokeDasharray="4 4" />
+      <path d="M100 30 L100 170 M30 100 L170 100" stroke="hsl(25, 90%, 50%)" strokeWidth="0.5" />
+      <circle cx="100" cy="100" r="8" fill="hsl(25, 90%, 50%)" fillOpacity="0.15" />
+    </svg>
+  ),
+};
 
 const categoryData: Record<string, {
   title: string; tagline: string; description: string;
@@ -202,6 +243,10 @@ export default function ServiceCategory() {
       <section className="pt-32 pb-20 relative overflow-hidden" ref={heroRef}>
         <div className="absolute inset-0 mesh-gradient" />
         <div className="absolute top-[15%] right-[5%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
+        {/* Category illustration */}
+        <div className="absolute top-10 right-10 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] pointer-events-none">
+          {categoryIllustrations[category || ""] || null}
+        </div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 32 }}
@@ -209,6 +254,12 @@ export default function ServiceCategory() {
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1 text-xs text-muted-foreground font-mono mb-6">
+              <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+              <span className="mx-1">›</span>
+              <span className="text-foreground">{data.title}</span>
+            </nav>
             <span className={`text-xs font-mono uppercase tracking-widest ${data.accentClass}`}>{data.title}</span>
             <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-foreground mt-4 mb-6">
               {data.tagline.split(".")[0]}. <span className="text-gradient">{data.tagline.split(".")[1]?.trim() || ""}</span>
@@ -229,7 +280,7 @@ export default function ServiceCategory() {
       </section>
 
       {/* ── Stats ── */}
-      <section className="py-16 border-y border-border/30" ref={statsRef}>
+      <section className="py-16 border-y border-border/30 relative overflow-hidden" ref={statsRef}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto text-center">
             {data.stats.map((s, i) => (
@@ -238,11 +289,16 @@ export default function ServiceCategory() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative"
               >
-                <span className="font-mono font-bold text-3xl md:text-4xl text-gradient">
+                {/* Ghosted watermark */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                  <span className="font-display font-extrabold text-[80px] text-foreground/[0.03] leading-none">{s.value}</span>
+                </div>
+                <span className="font-mono font-bold text-3xl md:text-4xl text-gradient relative z-10">
                   <AnimatedCounter target={s.value} suffix={s.suffix} />
                 </span>
-                <p className="text-xs text-muted-foreground mt-1 font-display">{s.label}</p>
+                <p className="text-xs text-muted-foreground mt-1 font-display relative z-10">{s.label}</p>
               </motion.div>
             ))}
           </div>
@@ -264,16 +320,24 @@ export default function ServiceCategory() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
               >
-                <Link
-                  to={s.href}
-                  className="group rounded-xl glass border border-border/30 p-6 block hover:border-primary/20 transition-all duration-500 h-full"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-display font-semibold text-foreground">{s.title}</h3>
-                    <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                </Link>
+                <MagneticCard intensity={3}>
+                  <Link
+                    to={s.href}
+                    className="group rounded-xl glass border border-border/30 p-6 block hover:border-primary/20 transition-all duration-500 h-full relative overflow-hidden"
+                  >
+                    {/* Numbered badge */}
+                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary/5 flex items-center justify-center">
+                      <span className="text-[10px] font-mono text-primary/40">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    {/* Bottom border animate from left */}
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-accent w-0 group-hover:w-full transition-all duration-500" />
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="font-display font-semibold text-foreground group-hover:text-primary transition-colors">{s.title}</h3>
+                      <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </Link>
+                </MagneticCard>
               </motion.div>
             ))}
           </div>
@@ -306,11 +370,15 @@ export default function ServiceCategory() {
                   transition={{ duration: 0.5, delay: i * 0.12 }}
                   className="relative text-center pt-12"
                 >
-                  {/* Ghosted number */}
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 font-display font-extrabold text-[48px] text-foreground/[0.04] select-none pointer-events-none leading-none">
                     {i + 1}
                   </div>
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary border-2 border-background z-10" />
+                  <motion.div
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary border-2 border-background z-10"
+                    initial={{ scale: 0 }}
+                    animate={processInView ? { scale: 1 } : {}}
+                    transition={{ duration: 0.3, delay: i * 0.12 + 0.2 }}
+                  />
                   <p className="text-sm font-display font-medium text-foreground mt-2">{step}</p>
                 </motion.div>
               ))}
@@ -320,7 +388,14 @@ export default function ServiceCategory() {
           {/* Mobile: vertical */}
           <div className="md:hidden space-y-0">
             {data.process.map((step, i) => (
-              <div key={step} className="flex gap-4 relative">
+              <motion.div
+                key={step}
+                className="flex gap-4 relative"
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+              >
                 <div className="absolute left-0 top-0 font-display font-extrabold text-[40px] text-foreground/[0.04] select-none pointer-events-none leading-none -translate-x-2">
                   {i + 1}
                 </div>
@@ -331,7 +406,7 @@ export default function ServiceCategory() {
                 <div className="pb-6">
                   <p className="text-sm font-display font-medium text-foreground">{step}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -342,8 +417,17 @@ export default function ServiceCategory() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display font-semibold text-lg text-foreground mb-6">Tools & Platforms We Use</h2>
           <div className="flex flex-wrap justify-center gap-3">
-            {data.tools.map((t) => (
-              <span key={t} className="px-4 py-2 rounded-full glass border border-border/30 text-xs font-mono text-muted-foreground">{t}</span>
+            {data.tools.map((t, i) => (
+              <motion.span
+                key={t}
+                className="px-4 py-2 rounded-full glass border border-border/30 text-xs font-mono text-muted-foreground hover:border-primary/20 hover:text-foreground transition-all cursor-default"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+              >
+                {t}
+              </motion.span>
             ))}
           </div>
         </div>
@@ -357,11 +441,13 @@ export default function ServiceCategory() {
           </h2>
           <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {data.relatedCases.map((c) => (
-              <Link key={c.title} to="/portfolio" className="group rounded-2xl glass border border-border/30 p-6 hover:border-primary/20 transition-all duration-500">
-                <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{c.industry}</span>
-                <h3 className="font-display font-bold text-lg text-foreground mt-1 group-hover:text-primary transition-colors">{c.title}</h3>
-                <span className="font-mono font-bold text-2xl text-gradient mt-2 block">{c.metric}</span>
-              </Link>
+              <MagneticCard key={c.title} intensity={4}>
+                <Link to="/portfolio" className="group rounded-2xl glass border border-border/30 p-6 block hover:border-primary/20 transition-all duration-500 hover:shadow-lg hover:shadow-primary/5">
+                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{c.industry}</span>
+                  <h3 className="font-display font-bold text-lg text-foreground mt-1 group-hover:text-primary transition-colors">{c.title}</h3>
+                  <span className="font-mono font-bold text-2xl text-gradient mt-2 block">{c.metric}</span>
+                </Link>
+              </MagneticCard>
             ))}
           </div>
         </div>
@@ -375,36 +461,62 @@ export default function ServiceCategory() {
           </h2>
           <Accordion type="single" collapsible>
             {data.faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="border-border/50">
-                <AccordionTrigger className="font-display text-foreground text-left">{faq.q}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">{faq.a}</AccordionContent>
+              <AccordionItem key={i} value={`faq-${i}`} className="border-border/50 group">
+                <AccordionTrigger className="font-display text-foreground text-left hover:text-primary transition-colors">
+                  <span className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-primary/40">{String(i + 1).padStart(2, "0")}</span>
+                    {faq.q}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pl-9">{faq.a}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         </div>
       </section>
 
+      {/* ── Floating CTA (sticky) ── */}
+      <motion.div
+        className="fixed bottom-6 right-6 z-40 hidden lg:block"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 0.5 }}
+      >
+        <Link to="/get-proposal">
+          <Button className="rounded-full px-6 font-display font-bold shadow-2xl shadow-primary/20 bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white hover:opacity-90">
+            Start with {data.title} →
+          </Button>
+        </Link>
+      </motion.div>
+
       {/* ── CTA ── */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
         <div className="absolute inset-0 mesh-gradient" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mb-4">
-            Ready to Get Started with <span className="text-gradient">{data.title}</span>?
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto mb-8">
-            Let's build a custom strategy tailored to your business goals and market.
-          </p>
-          <Link to="/get-proposal">
-            <Button size="lg" className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
-              Get Your Free Proposal →
-            </Button>
-          </Link>
-          <div className="flex flex-wrap justify-center gap-6 mt-6 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> No credit card</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Cancel anytime</span>
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Response within 24hrs</span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mb-4">
+              Ready to Get Started with <span className="text-gradient">{data.title}</span>?
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto mb-8">
+              Let's build a custom strategy tailored to your business goals and market.
+            </p>
+            <Link to="/get-proposal">
+              <Button size="lg" className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
+                Get Your Free Proposal →
+              </Button>
+            </Link>
+            <div className="flex flex-wrap justify-center gap-6 mt-6 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> No credit card</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Cancel anytime</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Response within 24hrs</span>
+            </div>
+          </motion.div>
         </div>
       </section>
     </Layout>
