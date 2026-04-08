@@ -39,6 +39,7 @@ const GOOGLE_CALENDAR_URL = "https://calendar.google.com/calendar/appointments/s
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const formInView = useInView(formRef, { once: true });
 
@@ -58,6 +59,21 @@ export default function Contact() {
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               Whether you have a project in mind or just want to explore possibilities — we're here to help you grow.
             </p>
+            {/* Response time indicator */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full glass border border-accent/20"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Clock className="w-4 h-4 text-accent" />
+              </motion.div>
+              <span className="text-xs font-mono text-accent">We typically respond in 2 hours</span>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -75,7 +91,11 @@ export default function Contact() {
               className="lg:col-span-3 rounded-2xl glass border border-border/30 p-8"
             >
               {submitted ? (
-                <div className="text-center py-16">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center py-16"
+                >
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-5">
                     <Send className="w-7 h-7 text-primary" />
                   </div>
@@ -87,7 +107,7 @@ export default function Contact() {
                     <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> No spam, ever</span>
                     <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-accent" /> Response within 24hrs</span>
                   </div>
-                </div>
+                </motion.div>
               ) : (
                 <form
                   onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
@@ -97,13 +117,24 @@ export default function Contact() {
                   <p className="text-sm text-muted-foreground mb-4">Fill out the form and we'll craft a custom strategy for your brand.</p>
 
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Full Name *</label>
-                      <Input placeholder="John Doe" required className="bg-secondary/50 border-border/50" />
+                    <div className="relative">
+                      <label className={`absolute left-3 transition-all duration-300 pointer-events-none ${focusedField === 'name' ? 'top-1 text-[9px] text-primary' : 'top-2.5 text-xs text-muted-foreground'} font-display font-medium`}>Full Name *</label>
+                      <Input
+                        required
+                        className="bg-secondary/50 border-border/50 pt-5 focus:border-primary/40"
+                        onFocus={() => setFocusedField('name')}
+                        onBlur={(e) => !e.target.value && setFocusedField(null)}
+                      />
                     </div>
-                    <div>
-                      <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Email *</label>
-                      <Input type="email" placeholder="john@company.com" required className="bg-secondary/50 border-border/50" />
+                    <div className="relative">
+                      <label className={`absolute left-3 transition-all duration-300 pointer-events-none ${focusedField === 'email' ? 'top-1 text-[9px] text-primary' : 'top-2.5 text-xs text-muted-foreground'} font-display font-medium`}>Email *</label>
+                      <Input
+                        type="email"
+                        required
+                        className="bg-secondary/50 border-border/50 pt-5 focus:border-primary/40"
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={(e) => !e.target.value && setFocusedField(null)}
+                      />
                     </div>
                   </div>
 
@@ -169,7 +200,7 @@ export default function Contact() {
               className="lg:col-span-2 space-y-4"
             >
               {/* Google Calendar booking */}
-              <div className="rounded-2xl glass border border-primary/20 p-6">
+              <div className="rounded-2xl glass border border-primary/20 p-6 hover-glow transition-all duration-500">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <Calendar className="w-5 h-5 text-primary" />
@@ -192,7 +223,7 @@ export default function Contact() {
 
               {/* Office cards */}
               {offices.map((o) => (
-                <div key={o.city} className="rounded-2xl glass border border-border/30 p-5">
+                <div key={o.city} className="rounded-2xl glass border border-border/30 p-5 hover:border-primary/15 transition-all duration-500 group">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-lg">{o.flag}</span>
                     <h3 className="font-display font-semibold text-sm text-foreground">{o.city}</h3>
@@ -213,9 +244,9 @@ export default function Contact() {
                 href="https://wa.me/919876543210?text=Hi%20Digital%20Penta!%20I%27d%20like%20to%20discuss%20a%20project."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-2xl glass border border-emerald-500/20 p-5 hover:bg-card/60 transition-colors"
+                className="flex items-center gap-3 rounded-2xl glass border border-emerald-500/20 p-5 hover:bg-card/60 transition-colors group"
               >
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MessageCircle className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div>
