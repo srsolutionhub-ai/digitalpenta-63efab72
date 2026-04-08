@@ -1,24 +1,73 @@
 import Layout from "@/components/layout/Layout";
-import { Shield, Target, Eye, MapPin } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import teamOffice from "@/assets/team-office.jpg";
+import { Shield, Target, Eye, MapPin, Award, Users, Globe, Zap, Heart, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { motion, useInView } from "motion/react";
+import { useRef, useEffect, useState } from "react";
+
+/* ── Animated counter ── */
+function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const duration = 2000;
+    const step = Math.ceil(target / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+
+  return <span ref={ref}>{prefix}{count}{suffix}</span>;
+}
+
+/* ── Data ── */
+const stats = [
+  { value: 500, suffix: "+", label: "Clients Served" },
+  { value: 3, suffix: "X", label: "Average ROI" },
+  { value: 50, suffix: "+", label: "Team Members" },
+  { value: 8, suffix: "+", label: "Countries" },
+];
+
+const values = [
+  { icon: TrendingUp, title: "Results First", desc: "Every decision we make is measured against growth. No vanity metrics — only numbers that matter to your bottom line.", featured: true },
+  { icon: Shield, title: "Radical Transparency", desc: "Real-time dashboards, weekly reports, and honest conversations. You always know where your money is going." },
+  { icon: Zap, title: "Speed to Market", desc: "We launch campaigns in 7 days, not 7 weeks. Agile sprints and rapid iteration keep you ahead of competitors." },
+  { icon: Heart, title: "Client Obsession", desc: "98% retention rate because we treat your business like our own. Dedicated teams, not revolving account managers." },
+  { icon: Globe, title: "India-MENA Expertise", desc: "Deep cultural fluency across Indian and Middle Eastern markets. We don't just translate — we localize." },
+];
 
 const team = [
-  { name: "Founder & CEO", role: "Strategy & Vision", initials: "DP" },
-  { name: "Head of Marketing", role: "Digital Marketing & PR", initials: "HM" },
-  { name: "CTO", role: "Development & AI", initials: "CT" },
-  { name: "Creative Director", role: "Design & Branding", initials: "CD" },
-  { name: "VP Operations", role: "Automation & Delivery", initials: "VP" },
-  { name: "Head of Growth", role: "Performance & Analytics", initials: "HG" },
+  { name: "Arjun Mehta", role: "Founder & CEO", focus: "Strategy & Vision", initials: "AM" },
+  { name: "Sneha Kapoor", role: "Head of Marketing", focus: "Digital Marketing & PR", initials: "SK" },
+  { name: "Vikram Reddy", role: "CTO", focus: "Development & AI", initials: "VR" },
+  { name: "Priya Sharma", role: "Creative Director", focus: "Design & Branding", initials: "PS" },
+  { name: "Rohan Patel", role: "VP Operations", focus: "Automation & Delivery", initials: "RP" },
+  { name: "Aisha Khan", role: "Head of Growth", focus: "Performance & Analytics", initials: "AK" },
 ];
 
 const timeline = [
-  { year: "2020", event: "Founded in Delhi with a vision to unify digital services" },
-  { year: "2021", event: "Expanded to Dubai, serving first Middle East clients" },
-  { year: "2022", event: "Launched AI Solutions & Automation division" },
-  { year: "2023", event: "100+ active clients across 8 countries" },
-  { year: "2024", event: "Opened offices in Riyadh and Abu Dhabi" },
-  { year: "2025", event: "500+ projects delivered, ₹100Cr+ revenue generated for clients" },
+  { year: "2020", event: "Founded in Delhi with a vision to unify digital services under one roof" },
+  { year: "2021", event: "Expanded to Dubai, serving first Middle East enterprise clients" },
+  { year: "2022", event: "Launched AI Solutions & Automation division — 100+ clients milestone" },
+  { year: "2023", event: "Opened Riyadh office, ₹50Cr+ client revenue generated" },
+  { year: "2024", event: "Google Premier Partner & Meta Business Partner certifications" },
+  { year: "2025", event: "500+ projects delivered, ₹100Cr+ total revenue generated for clients" },
+];
+
+const awards = [
+  "Google Premier Partner",
+  "Meta Business Partner",
+  "HubSpot Solutions Partner",
+  "Clutch Top Agency 2024",
+  "Deloitte Fast 50",
+  "ISO 27001 Certified",
 ];
 
 const offices = [
@@ -30,101 +79,259 @@ const offices = [
 ];
 
 export default function About() {
-  const heroRef = useScrollReveal<HTMLDivElement>();
-  const missionRef = useScrollReveal<HTMLDivElement>();
-  const teamRef = useScrollReveal<HTMLDivElement>();
-  const timelineRef = useScrollReveal<HTMLDivElement>();
-  const officesRef = useScrollReveal<HTMLDivElement>();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroInView = useInView(heroRef, { once: true });
+  const storyRef = useRef<HTMLDivElement>(null);
+  const storyInView = useInView(storyRef, { once: true });
+  const valuesRef = useRef<HTMLDivElement>(null);
+  const valuesInView = useInView(valuesRef, { once: true });
+  const teamRef = useRef<HTMLDivElement>(null);
+  const teamInView = useInView(teamRef, { once: true });
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const timelineInView = useInView(timelineRef, { once: true });
 
   return (
     <Layout>
-      <section className="pt-32 pb-20 relative">
+      {/* ── Hero ── */}
+      <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0 mesh-gradient" />
+        <div className="absolute top-[20%] right-[5%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
+        <div className="absolute bottom-[10%] left-[10%] w-[300px] h-[300px] rounded-full bg-accent/6 blur-[120px] animate-breathe-slow" />
+
         <div className="container mx-auto px-4 relative z-10" ref={heroRef}>
-          <div className="max-w-3xl" data-reveal>
-            <span className="text-xs font-mono text-primary uppercase tracking-widest">About Us</span>
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-3xl"
+          >
+            <span className="text-xs font-mono text-primary uppercase tracking-widest">About Digital Penta</span>
             <h1 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl text-foreground mt-4 mb-6">
-              We Build <span className="text-gradient">Growth Systems</span>, Not Just Campaigns.
+              About Digital Penta — India's Leading{" "}
+              <span className="text-gradient">Digital Marketing Agency</span>
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">
-              Digital Penta was born from a simple insight: brands don't need five agencies — they need one that thinks across all five dimensions.
+              We don't just run campaigns — we build growth systems. Born in India, scaling across the Middle East,
+              Digital Penta is the full-stack digital partner for brands that refuse to settle.
             </p>
-          </div>
+          </motion.div>
+
+          {/* Stats counter row */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14"
+          >
+            {stats.map((s, i) => (
+              <div key={s.label} className="rounded-2xl glass border border-border/30 p-6 text-center">
+                <span className="font-mono font-bold text-3xl md:text-4xl text-gradient">
+                  <AnimatedCounter target={s.value} suffix={s.suffix} />
+                </span>
+                <p className="text-xs text-muted-foreground mt-2 font-display">{s.label}</p>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      <section className="py-20 border-y border-border/30" ref={missionRef}>
-        <div className="container mx-auto px-4 grid md:grid-cols-2 gap-6">
-          <div className="rounded-2xl glass border border-border/30 p-8" data-reveal>
-            <Target className="w-6 h-6 text-primary mb-4" />
-            <h2 className="font-display font-bold text-2xl text-foreground mb-3">Our Mission</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              To empower businesses across India and the Middle East with integrated digital solutions that drive measurable, sustainable growth — eliminating the chaos of fragmented agencies.
-            </p>
-          </div>
-          <div className="rounded-2xl glass border border-border/30 p-8" data-reveal>
-            <Eye className="w-6 h-6 text-accent mb-4" />
-            <h2 className="font-display font-bold text-2xl text-foreground mb-3">Our Vision</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              To become the most trusted full-stack digital partner for enterprises and ambitious brands in the India-MENA corridor by 2028.
-            </p>
-          </div>
+      {/* ── Our Story ── */}
+      <section className="py-24 border-y border-border/30 relative overflow-hidden" ref={storyRef}>
+        <div className="absolute top-8 left-8 font-display font-extrabold text-[120px] leading-none text-foreground/[0.03] select-none pointer-events-none">
+          2020
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            animate={storyInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="grid md:grid-cols-2 gap-12 items-center"
+          >
+            <div>
+              <span className="text-xs font-mono text-primary uppercase tracking-widest">Our Story</span>
+              <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3 mb-6">
+                From a Delhi Startup to a <span className="text-gradient">Global Force</span>
+              </h2>
+              <div className="space-y-4 text-muted-foreground leading-relaxed">
+                <p>
+                  Digital Penta was born in 2020 from a simple frustration: brands were juggling five different agencies
+                  for marketing, PR, development, AI, and automation — with none of them talking to each other.
+                </p>
+                <p>
+                  We asked: what if one team could think across all five dimensions? The name "Penta" — meaning five —
+                  became our philosophy. Five integrated pillars. One unified growth engine.
+                </p>
+                <p>
+                  Today, we're 50+ specialists strong, operating across India and the Middle East, helping
+                  500+ brands achieve measurable, compounding growth.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-2xl glass border border-border/30 p-6">
+                <Target className="w-6 h-6 text-primary mb-3" />
+                <h3 className="font-display font-bold text-foreground mb-2">Our Mission</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  To empower businesses across India and the Middle East with integrated digital solutions
+                  that drive measurable, sustainable growth.
+                </p>
+              </div>
+              <div className="rounded-2xl glass border border-border/30 p-6">
+                <Eye className="w-6 h-6 text-accent mb-3" />
+                <h3 className="font-display font-bold text-foreground mb-2">Our Vision</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  To become the most trusted full-stack digital partner for enterprises in the India-MENA corridor by 2028.
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="py-20" ref={teamRef}>
+      {/* ── Core Values (Bento) ── */}
+      <section className="py-24" ref={valuesRef}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-reveal>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={valuesInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14"
+          >
+            <span className="text-xs font-mono text-primary uppercase tracking-widest">Core Values</span>
+            <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
+              The Five Pillars of <span className="text-gradient">Penta</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            {values.map((v, i) => (
+              <motion.div
+                key={v.title}
+                initial={{ opacity: 0, y: 32 }}
+                animate={valuesInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className={`rounded-2xl glass border p-8 transition-all duration-500 hover:border-primary/20 ${
+                  v.featured
+                    ? "md:row-span-2 border-primary/20 bg-primary/[0.03]"
+                    : "border-border/30"
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${
+                  v.featured ? "bg-primary/15" : "bg-secondary/60"
+                }`}>
+                  <v.icon className={`w-5 h-5 ${v.featured ? "text-primary" : "text-muted-foreground"}`} />
+                </div>
+                <h3 className="font-display font-bold text-xl text-foreground mb-3">{v.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{v.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Team ── */}
+      <section className="py-24 bg-card/20" ref={teamRef}>
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={teamInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14"
+          >
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Leadership</span>
             <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
               The Minds Behind <span className="text-gradient">The Machine</span>
             </h2>
-          </div>
-          <div className="mb-10 rounded-2xl overflow-hidden border border-border/30" data-reveal>
-            <img src={teamOffice} alt="Digital Penta team collaborating in office" loading="lazy" width={1024} height={1024} className="w-full h-64 md:h-80 object-cover" />
-          </div>
+            <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
+              50+ specialists across marketing, tech, design, and strategy — led by a team obsessed with your growth.
+            </p>
+          </motion.div>
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {team.map((t) => (
-              <div key={t.initials} data-reveal className="rounded-2xl glass border border-border/30 p-6 text-center group hover:bg-card/60 hover:border-primary/15 transition-all duration-500">
-                <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
-                  <span className="font-display font-bold text-primary text-lg">{t.initials}</span>
+            {team.map((t, i) => (
+              <motion.div
+                key={t.initials}
+                initial={{ opacity: 0, y: 32 }}
+                animate={teamInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group rounded-2xl glass border border-border/30 p-6 text-center hover:border-primary/20 transition-all duration-500 relative overflow-hidden"
+              >
+                <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                  <span className="font-display font-bold text-primary text-xl">{t.initials}</span>
                 </div>
-                <h3 className="font-display font-semibold text-foreground">{t.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{t.role}</p>
-              </div>
+                <h3 className="font-display font-bold text-foreground">{t.name}</h3>
+                <p className="text-sm text-primary font-display font-medium mt-1">{t.role}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t.focus}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-card/20" ref={timelineRef}>
+      {/* ── Timeline ── */}
+      <section className="py-24 relative overflow-hidden" ref={timelineRef}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-reveal>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={timelineInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14"
+          >
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Our Journey</span>
             <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
               From Startup to <span className="text-gradient">Scale-up</span>
             </h2>
-          </div>
-          <div className="max-w-2xl mx-auto space-y-0" data-reveal>
+          </motion.div>
+
+          <div className="max-w-2xl mx-auto">
             {timeline.map((t, i) => (
-              <div key={t.year} className="flex gap-6 group">
+              <motion.div
+                key={t.year}
+                initial={{ opacity: 0, x: -24 }}
+                animate={timelineInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="flex gap-6 group relative"
+              >
+                {/* Ghosted year watermark */}
+                <div className="absolute -left-16 md:-left-24 top-0 font-display font-extrabold text-[48px] md:text-[64px] text-foreground/[0.03] select-none pointer-events-none leading-none">
+                  {t.year}
+                </div>
                 <div className="flex flex-col items-center">
-                  <div className="w-3 h-3 rounded-full bg-primary border-2 border-background" />
+                  <div className="w-3 h-3 rounded-full bg-primary border-2 border-background z-10" />
                   {i < timeline.length - 1 && <div className="w-px h-full bg-border/50" />}
                 </div>
                 <div className="pb-8">
-                  <span className="font-mono text-xs text-primary">{t.year}</span>
-                  <p className="text-foreground mt-1">{t.event}</p>
+                  <span className="font-mono text-xs text-primary font-bold">{t.year}</span>
+                  <p className="text-foreground mt-1 leading-relaxed">{t.event}</p>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Awards & Certifications ── */}
+      <section className="py-16 border-y border-border/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <span className="text-xs font-mono text-primary uppercase tracking-widest">Recognition</span>
+            <h2 className="font-display font-bold text-2xl text-foreground mt-3">Awards & Certifications</h2>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3">
+            {awards.map((a) => (
+              <div key={a} className="flex items-center gap-2 px-5 py-3 rounded-full glass border border-border/30">
+                <Award className="w-4 h-4 text-primary" />
+                <span className="text-sm font-display font-medium text-foreground">{a}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20" ref={officesRef}>
+      {/* ── Offices ── */}
+      <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14" data-reveal>
+          <div className="text-center mb-14">
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Locations</span>
             <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mt-3">
               Global Reach, <span className="text-gradient">Local Expertise</span>
@@ -132,7 +339,7 @@ export default function About() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {offices.map((o) => (
-              <div key={o.city} data-reveal className="rounded-2xl glass border border-border/30 p-5 text-center hover:border-primary/15 transition-all duration-500">
+              <div key={o.city} className="rounded-2xl glass border border-border/30 p-5 text-center hover:border-primary/15 transition-all duration-500">
                 <MapPin className="w-4 h-4 text-primary mx-auto mb-2" />
                 <h3 className="font-display font-semibold text-sm text-foreground">{o.city}</h3>
                 <p className="text-xs text-muted-foreground">{o.country}</p>
@@ -141,6 +348,30 @@ export default function About() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Banner ── */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+        <div className="absolute inset-0 mesh-gradient" />
+        <div className="container mx-auto px-4 relative z-10 text-center">
+          <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mb-4">
+            Ready to 5X Your Business? <span className="text-gradient">Let's Talk.</span>
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto mb-8">
+            Book a FREE 30-minute strategy call with our growth experts. No commitment. No fluff. Just a plan.
+          </p>
+          <Link to="/contact">
+            <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
+              📅 Book Free Strategy Call
+            </Button>
+          </Link>
+          <div className="flex flex-wrap justify-center gap-6 mt-6 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> No credit card</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Cancel anytime</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-accent" /> Response within 24hrs</span>
           </div>
         </div>
       </section>

@@ -1,10 +1,28 @@
 import Layout from "@/components/layout/Layout";
 import { Link } from "react-router-dom";
-import { Clock, ArrowUpRight } from "lucide-react";
-import { useState } from "react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { Clock, ArrowUpRight, User } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion, useInView } from "motion/react";
 
 const categories = ["All", "Marketing", "SEO", "AI", "Automation", "Development", "PR"];
+
+const authors: Record<string, { name: string; initials: string }> = {
+  Marketing: { name: "Sneha K.", initials: "SK" },
+  SEO: { name: "Rohan P.", initials: "RP" },
+  AI: { name: "Vikram R.", initials: "VR" },
+  Automation: { name: "Aisha K.", initials: "AK" },
+  Development: { name: "Vikram R.", initials: "VR" },
+  PR: { name: "Priya S.", initials: "PS" },
+};
+
+const categoryPatterns: Record<string, string> = {
+  AI: "M10 10 L60 40 L30 80 Z M70 20 L90 60 L50 70 Z",
+  SEO: "M20 20 H80 V80 H20 Z M30 30 H70 V70 H30 Z",
+  Marketing: "M50 10 L90 80 L10 80 Z",
+  Automation: "M10 50 Q50 10 90 50 Q50 90 10 50 Z",
+  Development: "M20 20 L80 20 L80 80 L20 80 Z M35 35 L65 35 L65 65 L35 65 Z",
+  PR: "M50 15 L85 40 L70 80 L30 80 L15 40 Z",
+};
 
 const articles = [
   {
@@ -76,53 +94,85 @@ const articles = [
 
 export default function Blog() {
   const [active, setActive] = useState("All");
-  const sectionRef = useScrollReveal<HTMLDivElement>();
-  const featured = articles.find(a => a.featured);
-  const filtered = (active === "All" ? articles : articles.filter(a => a.category === active)).filter(a => !a.featured);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+  const featured = articles.find((a) => a.featured);
+  const filtered = (active === "All" ? articles : articles.filter((a) => a.category === active)).filter((a) => !a.featured);
 
   return (
     <Layout>
-      <section className="pt-32 pb-10 relative">
+      {/* ── Hero ── */}
+      <section className="pt-32 pb-10 relative overflow-hidden">
         <div className="absolute inset-0 mesh-gradient" />
-        <div className="container mx-auto px-4 relative z-10" ref={sectionRef}>
-          <div className="max-w-3xl" data-reveal>
+        <div className="absolute top-[30%] right-[10%] w-[300px] h-[300px] rounded-full bg-accent/6 blur-[120px] animate-breathe" />
+        <div className="container mx-auto px-4 relative z-10" ref={ref}>
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl"
+          >
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Blog</span>
             <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mt-4 mb-4">
-              Insights & <span className="text-gradient">Ideas</span>
+              Digital Marketing <span className="text-gradient">Insights & Ideas</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-xl">
-              Strategies, trends, and deep-dives from our team of digital experts.
+              Strategies, trends, and deep-dives from India's leading digital marketing experts.
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="pb-24">
         <div className="container mx-auto px-4">
-          {/* Featured */}
+          {/* ── Featured Article ── */}
           {featured && (
-            <Link
-              to={`/blog/${featured.slug}`}
-              className="group block rounded-2xl glass border border-border/30 overflow-hidden mb-10 hover:border-primary/20 transition-all duration-500"
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="grid md:grid-cols-2">
-                <div className="h-48 md:h-auto bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
-                <div className="p-8 md:p-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10">{featured.category}</span>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {featured.readTime}</span>
+              <Link
+                to={`/blog/${featured.slug}`}
+                className="group block rounded-2xl glass border border-border/30 overflow-hidden mb-10 hover:border-primary/20 transition-all duration-500"
+              >
+                <div className="grid md:grid-cols-2">
+                  <div className="h-48 md:h-auto bg-gradient-to-br from-primary/20 via-accent/10 to-transparent relative overflow-hidden">
+                    {/* Category SVG pattern */}
+                    <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path d={categoryPatterns[featured.category] || ""} fill="currentColor" />
+                    </svg>
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm">
+                      <span className="text-xs font-mono text-primary font-bold">Featured</span>
+                    </div>
                   </div>
-                  <h2 className="font-display font-bold text-2xl text-foreground mb-3 group-hover:text-primary transition-colors">{featured.title}</h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">{featured.excerpt}</p>
-                  <span className="text-xs font-mono text-muted-foreground">{featured.date}</span>
+                  <div className="p-8 md:p-10">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10">{featured.category}</span>
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {featured.readTime} read
+                      </span>
+                    </div>
+                    <h2 className="font-display font-bold text-2xl text-foreground mb-3 group-hover:text-primary transition-colors">{featured.title}</h2>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-5">{featured.excerpt}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-primary">{authors[featured.category]?.initials}</span>
+                      </div>
+                      <div>
+                        <span className="text-xs font-display font-medium text-foreground">{authors[featured.category]?.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-2">{featured.date}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           )}
 
-          {/* Filters */}
+          {/* ── Filters ── */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {categories.map(c => (
+            {categories.map((c) => (
               <button
                 key={c}
                 onClick={() => setActive(c)}
@@ -137,25 +187,49 @@ export default function Blog() {
             ))}
           </div>
 
-          {/* Grid */}
+          {/* ── Grid ── */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((a) => (
-              <Link
+            {filtered.map((a, i) => (
+              <motion.div
                 key={a.slug}
-                to={`/blog/${a.slug}`}
-                className="group rounded-2xl glass border border-border/30 p-7 flex flex-col hover:border-primary/20 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10">{a.category}</span>
-                  <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />{a.readTime}</span>
-                </div>
-                <h3 className="font-display font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors leading-snug">{a.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed flex-1">{a.excerpt}</p>
-                <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-muted-foreground">{a.date}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </Link>
+                <Link
+                  to={`/blog/${a.slug}`}
+                  className="group rounded-2xl glass border border-border/30 overflow-hidden flex flex-col hover:border-primary/20 hover:shadow-xl transition-all duration-500 h-full"
+                >
+                  {/* SVG pattern header */}
+                  <div className="h-28 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent relative overflow-hidden">
+                    <svg className="absolute inset-0 w-full h-full opacity-[0.07]" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path d={categoryPatterns[a.category] || ""} fill="currentColor" />
+                    </svg>
+                    <div className="absolute top-3 left-3">
+                      <span className="text-[10px] font-mono text-primary uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 backdrop-blur-sm">{a.category}</span>
+                    </div>
+                    <div className="absolute top-3 right-3">
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1 px-2 py-0.5 rounded-full bg-background/50 backdrop-blur-sm">
+                        <Clock className="w-3 h-3" />{a.readTime}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-display font-bold text-base text-foreground mb-2 group-hover:text-primary transition-colors leading-snug">{a.title}</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed flex-1">{a.excerpt}</p>
+                    <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-[8px] font-bold text-primary">{authors[a.category]?.initials}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-muted-foreground">{a.date}</span>
+                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
