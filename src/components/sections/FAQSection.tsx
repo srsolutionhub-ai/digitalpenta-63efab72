@@ -71,12 +71,17 @@ export default function FAQSection() {
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="rounded-xl glass border border-border/30 px-6 data-[state=open]:border-primary/20 transition-colors"
+                className="rounded-xl glass border border-border/30 px-6 data-[state=open]:border-primary/20 transition-all duration-300 hover:bg-card/40 group"
               >
-                <AccordionTrigger className="text-sm font-display font-semibold text-foreground hover:no-underline py-5 text-left">
-                  {faq.q}
+                <AccordionTrigger className="text-sm font-display font-semibold text-foreground hover:no-underline py-5 text-left gap-4">
+                  <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-mono text-primary/40 group-data-[state=open]:text-primary transition-colors shrink-0 w-6">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {faq.q}
+                  </div>
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5">
+                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5 pl-10">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

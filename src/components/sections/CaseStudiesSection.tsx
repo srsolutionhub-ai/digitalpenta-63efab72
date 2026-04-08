@@ -2,6 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import MagneticCard from "@/components/ui/magnetic-card";
 
 import caseProptech from "@/assets/case-proptech.jpg";
 import caseHealthcare from "@/assets/case-healthcare.jpg";
@@ -17,6 +18,7 @@ const cases = [
     services: ["SEO", "PPC", "Automation"],
     image: caseProptech,
     accentLine: "bg-violet-500",
+    glowColor: "shadow-violet-500/20",
   },
   {
     title: "Healthcare SaaS",
@@ -26,6 +28,7 @@ const cases = [
     services: ["Digital Marketing", "PR", "Development"],
     image: caseHealthcare,
     accentLine: "bg-cyan-500",
+    glowColor: "shadow-cyan-500/20",
   },
   {
     title: "D2C Fashion Brand",
@@ -35,6 +38,7 @@ const cases = [
     services: ["Social Media", "Influencer", "Performance"],
     image: caseEcommerce,
     accentLine: "bg-emerald-500",
+    glowColor: "shadow-emerald-500/20",
   },
   {
     title: "Fintech Startup",
@@ -44,6 +48,7 @@ const cases = [
     services: ["App Dev", "AI Chatbot", "Marketing"],
     image: caseFintech,
     accentLine: "bg-amber-500",
+    glowColor: "shadow-amber-500/20",
   },
 ];
 
@@ -80,44 +85,53 @@ export default function CaseStudiesSection() {
               transition={{ duration: 0.6, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
               className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center"
             >
-              <Link
-                to="/portfolio"
-                className="group relative rounded-2xl glass border border-border/30 overflow-hidden transition-all duration-500 hover:border-primary/20 hover:shadow-2xl block shimmer-card"
-              >
-                <div className="h-40 relative overflow-hidden">
-                  <img
-                    src={c.image}
-                    alt={c.title}
-                    loading="lazy"
-                    width={800}
-                    height={512}
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                  <div className={`absolute bottom-0 left-8 w-1 h-16 ${c.accentLine} rounded-full opacity-60`} />
-                </div>
+              <MagneticCard intensity={4}>
+                <Link
+                  to="/portfolio"
+                  className={`group relative rounded-2xl glass border border-border/30 overflow-hidden transition-all duration-500 hover:border-primary/20 hover:shadow-2xl hover:${c.glowColor} block shimmer-card`}
+                >
+                  <div className="h-40 relative overflow-hidden">
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      loading="lazy"
+                      width={800}
+                      height={512}
+                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                    <div className={`absolute bottom-0 left-8 w-1 h-16 ${c.accentLine} rounded-full opacity-60`} />
 
-                <div className="p-8">
-                  <div className="flex items-start justify-between mb-5">
-                    <div>
-                      <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">{c.industry}</span>
-                      <h3 className="font-display font-bold text-xl text-foreground mt-1">{c.title}</h3>
-                    </div>
-                    <ArrowUpRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </div>
-                  <div className="mb-5">
-                    <span className="font-display font-extrabold text-5xl text-gradient">{c.metric}</span>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono">{c.metricLabel}</p>
-                  </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {c.services.map((s) => (
-                      <span key={s} className="text-[10px] px-3 py-1.5 rounded-full bg-secondary/60 text-secondary-foreground font-mono border border-border/30">
-                        {s}
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+                      <span className="text-sm font-display font-semibold text-primary flex items-center gap-2">
+                        View Case Study <ArrowUpRight className="w-4 h-4" />
                       </span>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </Link>
+
+                  <div className="p-8">
+                    <div className="flex items-start justify-between mb-5">
+                      <div>
+                        <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">{c.industry}</span>
+                        <h3 className="font-display font-bold text-xl text-foreground mt-1">{c.title}</h3>
+                      </div>
+                      <ArrowUpRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </div>
+                    <div className="mb-5">
+                      <span className="font-display font-extrabold text-5xl text-gradient">{c.metric}</span>
+                      <p className="text-xs text-muted-foreground mt-1 font-mono">{c.metricLabel}</p>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      {c.services.map((s) => (
+                        <span key={s} className="text-[10px] px-3 py-1.5 rounded-full bg-secondary/60 text-secondary-foreground font-mono border border-border/30">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              </MagneticCard>
             </motion.div>
           ))}
         </div>

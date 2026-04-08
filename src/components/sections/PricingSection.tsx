@@ -1,13 +1,14 @@
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const plans = [
   {
     name: "Starter",
     price: "₹9,999",
+    annual: "₹7,999",
     period: "/month",
     desc: "Perfect for small businesses & startups getting started with digital marketing.",
     features: ["SEO (On-page + Off-page)", "Social Media (2 platforms)", "Monthly Performance Report", "Dedicated Account Manager", "Email Support"],
@@ -17,6 +18,7 @@ const plans = [
   {
     name: "Growth",
     price: "₹24,999",
+    annual: "₹19,999",
     period: "/month",
     desc: "For scaling brands that want full-funnel marketing with measurable ROI.",
     features: ["Full SEO Suite", "Social Media (3 platforms)", "Google & Meta Ads Management", "Bi-weekly Strategy Calls", "Content Marketing (4 blogs/mo)", "Monthly Analytics Dashboard", "Priority Support"],
@@ -27,6 +29,7 @@ const plans = [
   {
     name: "Enterprise",
     price: "Custom",
+    annual: "Custom",
     period: "",
     desc: "Full-service, dedicated team with custom strategy for large brands & enterprises.",
     features: ["All Growth Features", "Dedicated Cross-functional Team", "Custom AI & Automation", "PR & Reputation Management", "Weekly Strategy Meetings", "Custom Development", "24/7 Priority Support"],
@@ -38,6 +41,7 @@ const plans = [
 export default function PricingSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [annual, setAnnual] = useState(false);
 
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
@@ -47,13 +51,32 @@ export default function PricingSection() {
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="text-center max-w-2xl mx-auto mb-10"
         >
           <span className="text-xs font-mono text-primary uppercase tracking-widest">Pricing</span>
           <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3 mb-4">
             Transparent Pricing. <span className="text-gradient">Zero Hidden Costs.</span>
           </h2>
           <p className="text-muted-foreground text-sm">Choose a plan that fits your growth stage. Scale up anytime.</p>
+        </motion.div>
+
+        {/* Monthly/Annual toggle */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex items-center justify-center gap-3 mb-12"
+        >
+          <span className={`text-sm font-display font-medium transition-colors ${!annual ? "text-foreground" : "text-muted-foreground"}`}>Monthly</span>
+          <button
+            onClick={() => setAnnual(!annual)}
+            className={`relative w-12 h-6 rounded-full transition-colors ${annual ? "bg-primary" : "bg-secondary"}`}
+          >
+            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${annual ? "translate-x-6" : "translate-x-0.5"}`} />
+          </button>
+          <span className={`text-sm font-display font-medium transition-colors ${annual ? "text-foreground" : "text-muted-foreground"}`}>
+            Annual <span className="text-[10px] font-mono text-accent ml-1">Save 20%</span>
+          </span>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto items-stretch">
@@ -63,15 +86,15 @@ export default function PricingSection() {
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative rounded-2xl glass border p-7 flex flex-col ${
+              className={`relative rounded-2xl glass border p-7 flex flex-col transition-all duration-500 ${
                 plan.featured
-                  ? "border-primary/30 shadow-xl shadow-primary/10 scale-[1.02] md:scale-105"
-                  : "border-border/30"
+                  ? "border-primary/30 shadow-xl shadow-primary/10 shimmer-border"
+                  : "border-border/30 hover:border-primary/15"
               }`}
             >
               {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-primary-foreground bg-primary px-4 py-1 rounded-full">
-                  {plan.badge}
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-primary-foreground bg-primary px-4 py-1 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> {plan.badge}
                 </span>
               )}
               <div className="mb-6">
@@ -79,15 +102,23 @@ export default function PricingSection() {
                 <p className="text-xs text-muted-foreground leading-relaxed">{plan.desc}</p>
               </div>
               <div className="mb-6">
-                <span className="font-display font-extrabold text-4xl text-foreground">{plan.price}</span>
+                <span className="font-display font-extrabold text-4xl text-foreground">
+                  {annual ? plan.annual : plan.price}
+                </span>
                 <span className="text-sm text-muted-foreground">{plan.period}</span>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                {plan.features.map((f, fi) => (
+                  <motion.li
+                    key={f}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.3, delay: 0.3 + i * 0.1 + fi * 0.04 }}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
                     <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                     {f}
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
               <Link to={plan.name === "Enterprise" ? "/contact" : "/get-proposal"}>

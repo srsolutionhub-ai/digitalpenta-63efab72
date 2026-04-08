@@ -3,6 +3,7 @@ import { ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import ParticleField from "@/components/ui/particle-field";
+import ScrollIndicator from "@/components/ui/scroll-indicator";
 import { motion, AnimatePresence } from "motion/react";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -16,13 +17,13 @@ function TextSwitcher() {
   }, []);
 
   return (
-    <span className="inline-block relative w-[200px] sm:w-[260px] h-[1.2em] align-bottom overflow-hidden">
+    <span className="inline-block relative min-w-[220px] sm:min-w-[280px] h-[1.2em] align-bottom overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.span
           key={switcherWords[index]}
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -40, opacity: 0 }}
+          initial={{ y: 40, opacity: 0, filter: "blur(4px)" }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: -40, opacity: 0, filter: "blur(4px)" }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="absolute left-0 text-gradient whitespace-nowrap"
         >
@@ -100,12 +101,15 @@ export default function HeroSection() {
 
       <ParticleField count={25} />
 
-      {/* Floating keyword tags */}
+      {/* Floating keyword tags – upgraded visibility */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {floatingTags.map((tag, i) => (
-          <span
+          <motion.span
             key={tag}
-            className="absolute text-[10px] font-mono text-foreground/[0.08] px-2 py-1 rounded-full border border-foreground/[0.04]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 + i * 0.2, duration: 0.6 }}
+            className="absolute text-[10px] font-mono text-foreground/[0.15] px-3 py-1.5 rounded-full border border-primary/[0.08] bg-primary/[0.03] backdrop-blur-sm"
             style={{
               left: `${10 + (i * 12) % 80}%`,
               top: `${15 + (i * 17) % 65}%`,
@@ -114,7 +118,7 @@ export default function HeroSection() {
             }}
           >
             {tag}
-          </span>
+          </motion.span>
         ))}
       </div>
 
@@ -212,7 +216,7 @@ export default function HeroSection() {
                 { text: "500+ Happy Clients", color: "border-primary/20 bg-primary/5" },
                 { text: "₹10Cr+ Ad Spend Managed", color: "border-accent/20 bg-accent/5" },
               ].map((badge) => (
-                <span key={badge.text} className={`text-xs font-mono text-foreground/70 px-4 py-2 rounded-full border ${badge.color}`}>
+                <span key={badge.text} className={`text-xs font-mono text-foreground/70 px-4 py-2 rounded-full border ${badge.color} hover-glow transition-all duration-300`}>
                   {badge.text}
                 </span>
               ))}
@@ -224,6 +228,8 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
+
+      <ScrollIndicator />
     </section>
   );
 }
