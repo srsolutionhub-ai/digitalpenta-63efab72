@@ -176,8 +176,8 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed mb-5"
             >
-              We help Indian brands dominate Google, Instagram & Meta — with data-driven{" "}
-              <TextSwitcher /> campaigns that convert visitors into paying customers.
+              We help Indian brands dominate Google, Instagram & Meta — with data-driven
+              campaigns in <TextSwitcher /> that convert visitors into paying customers.
             </motion.p>
 
             <motion.div
