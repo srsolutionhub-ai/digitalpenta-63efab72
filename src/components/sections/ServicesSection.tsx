@@ -11,6 +11,8 @@ const pillars = [
     icon: Search,
     iconColor: "text-violet-400",
     iconBg: "bg-violet-500/10 border-violet-500/20",
+    hoverBg: "hover:bg-violet-500/[0.03]",
+    popular: true,
   },
   {
     title: "Social Media Marketing",
@@ -19,6 +21,7 @@ const pillars = [
     icon: Share2,
     iconColor: "text-cyan-400",
     iconBg: "bg-cyan-500/10 border-cyan-500/20",
+    hoverBg: "hover:bg-cyan-500/[0.03]",
   },
   {
     title: "Performance Marketing",
@@ -27,6 +30,8 @@ const pillars = [
     icon: Target,
     iconColor: "text-emerald-400",
     iconBg: "bg-emerald-500/10 border-emerald-500/20",
+    hoverBg: "hover:bg-emerald-500/[0.03]",
+    popular: true,
   },
   {
     title: "Website Design & Development",
@@ -35,6 +40,7 @@ const pillars = [
     icon: Globe,
     iconColor: "text-amber-400",
     iconBg: "bg-amber-500/10 border-amber-500/20",
+    hoverBg: "hover:bg-amber-500/[0.03]",
   },
   {
     title: "Email & WhatsApp Marketing",
@@ -43,6 +49,7 @@ const pillars = [
     icon: Mail,
     iconColor: "text-orange-400",
     iconBg: "bg-orange-500/10 border-orange-500/20",
+    hoverBg: "hover:bg-orange-500/[0.03]",
   },
   {
     title: "Brand Strategy & Identity",
@@ -51,6 +58,7 @@ const pillars = [
     icon: Palette,
     iconColor: "text-pink-400",
     iconBg: "bg-pink-500/10 border-pink-500/20",
+    hoverBg: "hover:bg-pink-500/[0.03]",
   },
 ];
 
@@ -88,11 +96,20 @@ export default function ServicesSection() {
               >
                 <Link
                   to={p.href}
-                  className="group relative rounded-2xl glass border border-border/30 overflow-hidden flex flex-col h-full transition-all duration-500 hover:bg-card/60 hover:border-primary/20 hover:shadow-2xl hover:-translate-y-2 rotating-border"
+                  className={`group relative rounded-2xl glass border border-border/30 overflow-hidden flex flex-col h-full transition-all duration-500 ${p.hoverBg} hover:border-primary/20 hover:shadow-2xl hover:-translate-y-2 border-animate-left`}
                 >
+                  {/* Popular badge */}
+                  {p.popular && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <span className="text-[9px] font-mono font-bold text-primary-foreground bg-primary px-2.5 py-1 rounded-full">
+                        Popular
+                      </span>
+                    </div>
+                  )}
+
                   <div className="p-7 flex flex-col h-full">
                     <div className="flex items-center justify-between mb-5">
-                      <div className={`w-14 h-14 rounded-xl ${p.iconBg} border flex items-center justify-center shadow-lg`}
+                      <div className={`w-14 h-14 rounded-xl ${p.iconBg} border flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500`}
                         style={{ boxShadow: "0 4px 20px -4px hsl(var(--primary) / 0.15)" }}>
                         <Icon className={`w-6 h-6 ${p.iconColor}`} />
                       </div>

@@ -1,5 +1,5 @@
 import Layout from "@/components/layout/Layout";
-import { Shield, Target, Eye, MapPin, Award, Users, Globe, Zap, Heart, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Shield, Target, Eye, MapPin, Award, Users, Globe, Zap, Heart, TrendingUp, CheckCircle2, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
@@ -36,20 +36,20 @@ const stats = [
 ];
 
 const values = [
-  { icon: TrendingUp, title: "Results First", desc: "Every decision we make is measured against growth. No vanity metrics — only numbers that matter to your bottom line.", featured: true },
-  { icon: Shield, title: "Radical Transparency", desc: "Real-time dashboards, weekly reports, and honest conversations. You always know where your money is going." },
-  { icon: Zap, title: "Speed to Market", desc: "We launch campaigns in 7 days, not 7 weeks. Agile sprints and rapid iteration keep you ahead of competitors." },
-  { icon: Heart, title: "Client Obsession", desc: "98% retention rate because we treat your business like our own. Dedicated teams, not revolving account managers." },
-  { icon: Globe, title: "India-MENA Expertise", desc: "Deep cultural fluency across Indian and Middle Eastern markets. We don't just translate — we localize." },
+  { icon: TrendingUp, title: "Results First", desc: "Every decision we make is measured against growth. No vanity metrics — only numbers that matter to your bottom line.", featured: true, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  { icon: Shield, title: "Radical Transparency", desc: "Real-time dashboards, weekly reports, and honest conversations. You always know where your money is going.", color: "text-violet-400", bg: "bg-violet-500/10" },
+  { icon: Zap, title: "Speed to Market", desc: "We launch campaigns in 7 days, not 7 weeks. Agile sprints and rapid iteration keep you ahead of competitors.", color: "text-orange-400", bg: "bg-orange-500/10" },
+  { icon: Heart, title: "Client Obsession", desc: "98% retention rate because we treat your business like our own. Dedicated teams, not revolving account managers.", color: "text-pink-400", bg: "bg-pink-500/10" },
+  { icon: Globe, title: "India-MENA Expertise", desc: "Deep cultural fluency across Indian and Middle Eastern markets. We don't just translate — we localize.", color: "text-cyan-400", bg: "bg-cyan-500/10" },
 ];
 
 const team = [
-  { name: "Arjun Mehta", role: "Founder & CEO", focus: "Strategy & Vision", initials: "AM" },
-  { name: "Sneha Kapoor", role: "Head of Marketing", focus: "Digital Marketing & PR", initials: "SK" },
-  { name: "Vikram Reddy", role: "CTO", focus: "Development & AI", initials: "VR" },
-  { name: "Priya Sharma", role: "Creative Director", focus: "Design & Branding", initials: "PS" },
-  { name: "Rohan Patel", role: "VP Operations", focus: "Automation & Delivery", initials: "RP" },
-  { name: "Aisha Khan", role: "Head of Growth", focus: "Performance & Analytics", initials: "AK" },
+  { name: "Arjun Mehta", role: "Founder & CEO", focus: "Strategy & Vision", initials: "AM", gradient: "from-violet-500 to-purple-600", linkedin: "#" },
+  { name: "Sneha Kapoor", role: "Head of Marketing", focus: "Digital Marketing & PR", initials: "SK", gradient: "from-cyan-500 to-blue-600", linkedin: "#" },
+  { name: "Vikram Reddy", role: "CTO", focus: "Development & AI", initials: "VR", gradient: "from-emerald-500 to-green-600", linkedin: "#" },
+  { name: "Priya Sharma", role: "Creative Director", focus: "Design & Branding", initials: "PS", gradient: "from-pink-500 to-rose-600", linkedin: "#" },
+  { name: "Rohan Patel", role: "VP Operations", focus: "Automation & Delivery", initials: "RP", gradient: "from-amber-500 to-orange-600", linkedin: "#" },
+  { name: "Aisha Khan", role: "Head of Growth", focus: "Performance & Analytics", initials: "AK", gradient: "from-indigo-500 to-violet-600", linkedin: "#" },
 ];
 
 const timeline = [
@@ -123,8 +123,8 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14"
           >
-            {stats.map((s, i) => (
-              <div key={s.label} className="rounded-2xl glass border border-border/30 p-6 text-center">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-2xl glass border border-border/30 p-6 text-center hover-glow transition-all duration-500">
                 <span className="font-mono font-bold text-3xl md:text-4xl text-gradient">
                   <AnimatedCounter target={s.value} suffix={s.suffix} />
                 </span>
@@ -168,7 +168,7 @@ export default function About() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl glass border border-border/30 p-6">
+              <div className="rounded-2xl glass border border-border/30 p-6 hover-glow transition-all duration-500">
                 <Target className="w-6 h-6 text-primary mb-3" />
                 <h3 className="font-display font-bold text-foreground mb-2">Our Mission</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -176,7 +176,7 @@ export default function About() {
                   that drive measurable, sustainable growth.
                 </p>
               </div>
-              <div className="rounded-2xl glass border border-border/30 p-6">
+              <div className="rounded-2xl glass border border-border/30 p-6 hover-glow transition-all duration-500">
                 <Eye className="w-6 h-6 text-accent mb-3" />
                 <h3 className="font-display font-bold text-foreground mb-2">Our Vision</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -210,16 +210,14 @@ export default function About() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={valuesInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className={`rounded-2xl glass border p-8 transition-all duration-500 hover:border-primary/20 ${
+                className={`rounded-2xl glass border p-8 transition-all duration-500 hover:border-primary/20 group ${
                   v.featured
                     ? "md:row-span-2 border-primary/20 bg-primary/[0.03]"
                     : "border-border/30"
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${
-                  v.featured ? "bg-primary/15" : "bg-secondary/60"
-                }`}>
-                  <v.icon className={`w-5 h-5 ${v.featured ? "text-primary" : "text-muted-foreground"}`} />
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${v.bg} group-hover:scale-110 transition-transform duration-500`}>
+                  <v.icon className={`w-5 h-5 ${v.color}`} />
                 </div>
                 <h3 className="font-display font-bold text-xl text-foreground mb-3">{v.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{v.desc}</p>
@@ -256,12 +254,22 @@ export default function About() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 className="group rounded-2xl glass border border-border/30 p-6 text-center hover:border-primary/20 transition-all duration-500 relative overflow-hidden"
               >
-                <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <span className="font-display font-bold text-primary text-xl">{t.initials}</span>
+                {/* Gradient avatar ring */}
+                <div className="relative mx-auto mb-4 w-20 h-20">
+                  <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${t.gradient} opacity-20 group-hover:opacity-40 transition-opacity`} />
+                  <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${t.gradient} p-[2px]`}>
+                    <div className="w-full h-full rounded-full bg-card flex items-center justify-center">
+                      <span className="font-display font-bold text-primary text-xl">{t.initials}</span>
+                    </div>
+                  </div>
                 </div>
                 <h3 className="font-display font-bold text-foreground">{t.name}</h3>
                 <p className="text-sm text-primary font-display font-medium mt-1">{t.role}</p>
                 <p className="text-xs text-muted-foreground mt-1">{t.focus}</p>
+                {/* Hover LinkedIn reveal */}
+                <a href={t.linkedin} className="mt-3 inline-flex items-center gap-1 text-[10px] font-mono text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-primary">
+                  <Linkedin className="w-3 h-3" /> Connect
+                </a>
               </motion.div>
             ))}
           </div>
@@ -292,12 +300,15 @@ export default function About() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="flex gap-6 group relative"
               >
-                {/* Ghosted year watermark */}
                 <div className="absolute -left-16 md:-left-24 top-0 font-display font-extrabold text-[48px] md:text-[64px] text-foreground/[0.03] select-none pointer-events-none leading-none">
                   {t.year}
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="w-3 h-3 rounded-full bg-primary border-2 border-background z-10" />
+                  <motion.div
+                    className="w-3 h-3 rounded-full bg-primary border-2 border-background z-10"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, delay: i * 0.4, repeat: Infinity, ease: "easeInOut" }}
+                  />
                   {i < timeline.length - 1 && <div className="w-px h-full bg-border/50" />}
                 </div>
                 <div className="pb-8">
@@ -310,8 +321,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Awards & Certifications ── */}
-      <section className="py-16 border-y border-border/30">
+      {/* ── Awards & Certifications – Interactive Marquee ── */}
+      <section className="py-16 border-y border-border/30 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Recognition</span>
@@ -319,10 +330,14 @@ export default function About() {
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {awards.map((a) => (
-              <div key={a} className="flex items-center gap-2 px-5 py-3 rounded-full glass border border-border/30">
+              <motion.div
+                key={a}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="flex items-center gap-2 px-5 py-3 rounded-full glass border border-border/30 hover:border-primary/20 transition-colors cursor-default"
+              >
                 <Award className="w-4 h-4 text-primary" />
                 <span className="text-sm font-display font-medium text-foreground">{a}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -339,7 +354,7 @@ export default function About() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {offices.map((o) => (
-              <div key={o.city} className="rounded-2xl glass border border-border/30 p-5 text-center hover:border-primary/15 transition-all duration-500">
+              <div key={o.city} className="rounded-2xl glass border border-border/30 p-5 text-center hover:border-primary/15 transition-all duration-500 hover-glow">
                 <MapPin className="w-4 h-4 text-primary mx-auto mb-2" />
                 <h3 className="font-display font-semibold text-sm text-foreground">{o.city}</h3>
                 <p className="text-xs text-muted-foreground">{o.country}</p>

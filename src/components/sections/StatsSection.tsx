@@ -50,8 +50,8 @@ export default function StatsSection() {
         backgroundSize: "24px 24px",
       }} />
 
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+      <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-0">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -60,12 +60,23 @@ export default function StatsSection() {
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-center lg:px-8 relative"
             >
-              <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={isInView} />
-              <p className="text-sm font-display font-semibold text-foreground/80 mt-2">{stat.label}</p>
-              <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{stat.sub}</p>
+              {/* Ghosted watermark number */}
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display font-extrabold text-[140px] md:text-[180px] text-foreground/[0.02] select-none pointer-events-none leading-none">
+                {stat.prefix}{stat.value}
+              </span>
+              <div className="relative">
+                <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={isInView} />
+                <p className="text-sm font-display font-semibold text-foreground/80 mt-3">{stat.label}</p>
+                <p className="text-[11px] text-muted-foreground font-mono mt-1">{stat.sub}</p>
+              </div>
               {i < stats.length - 1 && (
-                <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-16">
-                  <div className="w-full h-full bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
+                <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-20">
+                  <motion.div
+                    className="w-full h-full"
+                    style={{ background: "linear-gradient(to bottom, transparent, hsl(var(--glow-violet) / 0.3), hsl(var(--glow-cyan) / 0.2), transparent)" }}
+                    animate={{ opacity: [0.3, 0.8, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  />
                 </div>
               )}
             </motion.div>
@@ -76,10 +87,10 @@ export default function StatsSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-10"
+          className="text-center mt-12"
         >
           <Link to="/get-proposal">
-            <Button variant="outline" className="rounded-full font-display font-semibold text-sm gap-2 border-primary/30 hover:bg-primary/5">
+            <Button variant="outline" className="rounded-full font-display font-semibold text-sm gap-2 border-primary/30 hover:bg-primary/5 hover-glow">
               Join 500+ brands scaling with Digital Penta <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </Link>

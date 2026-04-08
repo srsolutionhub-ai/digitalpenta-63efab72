@@ -62,15 +62,21 @@ export default function ProcessSection() {
                   initial={{ opacity: 0, y: 40 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: 0.2 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col items-center text-center relative"
+                  className="flex flex-col items-center text-center relative group"
                 >
                   {/* Large ghosted number */}
                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[120px] font-display font-extrabold text-foreground/[0.03] select-none leading-none pointer-events-none">
                     {step.num}
                   </span>
-                  <div className={`w-[104px] h-[104px] rounded-2xl ${step.bg} border flex flex-col items-center justify-center mb-6 shadow-lg ${step.glow} relative`}>
+                  <div className={`w-[104px] h-[104px] rounded-2xl ${step.bg} border flex flex-col items-center justify-center mb-6 shadow-lg ${step.glow} relative group-hover:scale-105 transition-transform duration-500`}>
                     <Icon className={`w-6 h-6 ${step.color} mb-1`} />
                     <span className={`text-[10px] font-mono ${step.color} tracking-wider`}>{step.num}</span>
+                    {/* Pulsing dot */}
+                    <motion.div
+                      className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${step.bg.replace("/10", "/40")}`}
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, ease: "easeInOut" }}
+                    />
                   </div>
                   <h3 className="font-display font-bold text-lg text-foreground mb-2">{step.title}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed max-w-[180px]">{step.desc}</p>
