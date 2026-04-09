@@ -6,6 +6,7 @@ import WhatsAppFloat from "@/components/ui/whatsapp-float";
 import MobileStickyBar from "@/components/ui/mobile-sticky-bar";
 import ExitIntentPopup from "@/components/ui/exit-intent-popup";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
+import CookieConsent from "@/components/ui/cookie-consent";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <MobileStickyBar />
       <ExitIntentPopup />
       <LeadCaptureBar />
+      <CookieConsent />
     </div>
   );
 }
