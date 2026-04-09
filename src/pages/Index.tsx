@@ -11,6 +11,7 @@ import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import PricingSection from "@/components/sections/PricingSection";
 import FAQSection from "@/components/sections/FAQSection";
 import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
+import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 
 /* Marquee stripe separator */
 function MarqueeStripe() {
@@ -38,6 +39,7 @@ const Index = () => {
       <MarqueeStripe />
       <WhyUsSection />
       <CaseStudiesSection />
+      <WebsiteAuditSection />
       <TestimonialsSection />
       <PricingSection />
       <FAQSection />

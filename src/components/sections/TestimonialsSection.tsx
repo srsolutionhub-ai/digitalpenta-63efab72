@@ -51,27 +51,32 @@ const testimonials = [
   },
 ];
 
-function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
-  const [transform, setTransform] = useState("");
-  const cardRef = useRef<HTMLDivElement>(null);
+import React from "react";
 
-  const handleMove = useCallback((e: React.MouseEvent) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTransform(`perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`);
-  }, []);
+const TiltCard = React.forwardRef<HTMLDivElement, { children: React.ReactNode; className?: string }>(
+  ({ children, className }, forwardedRef) => {
+    const [transform, setTransform] = useState("");
+    const cardRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <div ref={cardRef} onMouseMove={handleMove} onMouseLeave={() => setTransform("")}
-      style={{ transform, transition: transform ? "transform 0.1s ease" : "transform 0.4s ease" }}
-      className={className}>
-      {children}
-    </div>
-  );
-}
+    const handleMove = useCallback((e: React.MouseEvent) => {
+      const card = cardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      setTransform(`perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`);
+    }, []);
+
+    return (
+      <div ref={cardRef} onMouseMove={handleMove} onMouseLeave={() => setTransform("")}
+        style={{ transform, transition: transform ? "transform 0.1s ease" : "transform 0.4s ease" }}
+        className={className}>
+        {children}
+      </div>
+    );
+  }
+);
+TiltCard.displayName = "TiltCard";
 
 function Avatar({ initials, gradient }: { initials: string; gradient: string }) {
   return (
