@@ -1,199 +1,94 @@
 
 
-## Premium Platform-Wide Design & UX Upgrade — Senior Design Audit
+## Multi-Feature Implementation Plan
 
-### Current State Assessment
+### Overview
+Four deliverables: (1) Cookie consent banner, (2) IndustryPage + LocationPage premium upgrade, (3) Free Website Audit lead-gen section, (4) Fix TestimonialsSection ref warning. Browser testing deferred to post-implementation.
 
-The site is solid but has several areas that prevent it from reaching award-winning status:
+---
 
-**Homepage Issues Found:**
-- Hero text switcher causes layout shift — "Paid Ads" vs "Social Media" have different widths causing paragraph reflow
-- Floating keyword tags are barely visible (0.08 opacity) — wasted visual opportunity
-- Case study cards lack hover glow/depth — feel flat compared to competitor sites
-- Stats section feels cramped — no breathing room or visual hierarchy
-- WhyUs bento grid has uneven card heights on certain breakpoints
-- Blog preview section uses placeholder images that may 404
-- No video/motion content anywhere — top agencies use video backgrounds or micro-interactions
-- Pricing section Growth card scale(1.05) looks jarring on mobile
-- Industries section is a simple marquee — feels like an afterthought
-- No social proof video testimonials or video case studies
-- Missing "before/after" or results showcase with visual impact
+### 1. Cookie Consent Banner (GDPR/DPDP)
 
-**Cross-Page Issues:**
-- About page team cards are basic circles with initials — no depth or personality
-- Contact page Google Calendar card is a placeholder — needs better UX
-- Portfolio cards all use gradient-only headers — no visual differentiation
-- Blog page SVG patterns are too subtle to notice
-- GetProposal wizard lacks progress animation and visual polish
-- Service category pages have uniform layouts — no visual variety
-- No page-level hero illustrations or unique visual identity per page
-- No client logos/real brand imagery (understandable for demo, but design should accommodate)
-- No cookie consent banner (GDPR/compliance gap)
-- Location and Industry pages are template-based with no unique flair
+**New file: `src/components/ui/cookie-consent.tsx`**
+- Fixed bottom bar with glassmorphism styling matching existing LeadCaptureBar
+- "Accept All" primary button, "Reject" outline button, "Privacy Policy" link to `/privacy`
+- Persists choice in `localStorage` key `dp-cookie-consent`
+- AnimatePresence slide-up entrance, dismissed on accept/reject
+- Only shows if no prior consent stored
 
-### Design Upgrade Plan
+**Edit: `src/components/layout/Layout.tsx`**
+- Import and add `<CookieConsent />` after `<LeadCaptureBar />`
 
-**Phase 1 — Homepage Cinematic Upgrade**
+---
 
-1. **Hero Section Rewrite**
-   - Fix TextSwitcher: use `min-width` based on longest word to prevent layout shift
-   - Add a subtle video-loop background option (CSS gradient animation as fallback)
-   - Upgrade floating tags to animated gradient-bordered pills with slight parallax on scroll
-   - Add a "scroll indicator" animated chevron at bottom of hero
-   - Add client logo strip directly below hero (before partners section) showing 5-6 brand silhouettes
+### 2. IndustryPage + LocationPage Premium Upgrade
 
-2. **Stats Section — Full-Width Visual Impact**
-   - Redesign as full-bleed section with large number watermarks behind each stat (200px ghosted)
-   - Add animated count-up with easing and decimal precision for "3X"
-   - Add subtle particle/sparkle effect on each number when it finishes counting
-   - Divider lines between stats use animated gradient pulse
+**Edit: `src/pages/IndustryPage.tsx`**
+- Replace static sections with `motion.div` staggered reveals (same pattern as upgraded ServiceCategory)
+- Wrap service cards in `MagneticCard` component
+- Add ghosted watermark numbers on case study metric (text-foreground/[0.03] at 120px)
+- Add gradient accent line on hero section
+- Challenges cards: add numbered index badges (01, 02, 03...)
+- Services cards: add shimmer-border on hover
+- CTA section: add animated glow orbs (same as Footer CTA)
 
-3. **Services Section — Interactive Hover Cards**
-   - Add icon-to-illustration morph on hover (icon scales up, gains glow halo)
-   - Add subtle gradient background shift on hover (card bg tints to match icon color)
-   - Add "Popular" badge on SEO and Performance Marketing cards
-   - Bottom border animates from left on hover
+**Edit: `src/pages/LocationPage.tsx`**
+- Same motion treatment: staggered section reveals
+- Wrap office card and testimonial card in `MagneticCard`
+- Add gradient top-border on testimonial card
+- Services tags: animate in with stagger
+- Add animated MapPin icon with pulse effect
+- CTA section: glow orbs + gradient border
 
-4. **Case Studies — Immersive Cards**
-   - Add magnetic cursor effect on hover (card follows cursor slightly)
-   - Add gradient glow shadow on hover matching the accent line color
-   - Add "View Case Study →" overlay text that slides up on hover
-   - Metrics use animated counter on scroll-in
+---
 
-5. **Testimonials — Carousel + Video Placeholder**
-   - Add auto-scrolling carousel for mobile (swipe-enabled)
-   - Add "Watch Video Review" CTA on featured testimonial (placeholder)
-   - Star ratings use orange gradient fill animation on scroll-in
+### 3. Free Website Audit Lead-Gen Section
 
-6. **Pricing — Glass Morphism Upgrade**
-   - Remove jarring scale(1.05) on Growth card, replace with elevated shadow + gradient border
-   - Add feature comparison toggle (Monthly vs Annual with 20% discount)
-   - Add animated checkmark entrance for features list
+**New file: `src/components/sections/WebsiteAuditSection.tsx`**
 
-7. **FAQ — Interactive Design**
-   - Add numbered markers (01-08) with accent color
-   - Add hover highlight on each item before expansion
-   - Smooth spring animation on accordion open/close
+Multi-step smart lead capture flow:
+1. **Step 1 — URL Input**: Large input field "Enter your website URL" + "Audit My Website Free" CTA button. Gradient-bordered card with magnetic hover.
+2. **Step 2 — Scanning Animation**: After URL submit, show a simulated scanning UI with:
+   - Rotating radar/scanner CSS animation (pure CSS, no Lottie dependency)
+   - Progress bar filling over ~8 seconds with status text cycling: "Crawling pages...", "Analyzing SEO...", "Checking performance...", "Generating report..."
+   - During this animation, a slide-in form appears: Name, Email, WhatsApp number fields with floating labels
+   - "Send me the full report" button
+3. **Step 3 — Mock Report Results**: After ~30 seconds (or when form is filled), display a mock audit card showing:
+   - Overall Score (randomized 45-72 range to create urgency)
+   - SEO Score, Performance, Accessibility, Best Practices gauges (circular progress rings)
+   - 3-4 "Issues Found" items (generic but realistic: "Missing meta descriptions on 12 pages", "Images not optimized", etc.)
+   - "Get Detailed Report + Action Plan" CTA linking to `/get-proposal`
 
-8. **New: Horizontal Scrolling Results Reel**
-   - Add a new section between Case Studies and Testimonials
-   - Horizontal scroll of 6-8 client result snapshots (metric + logo + one-liner)
-   - Auto-scrolls, pauses on hover, click to expand
+**Data flow**: On form submit, insert into Supabase `contacts` table with source = "Website Audit Tool", including the URL in the message field.
 
-**Phase 2 — About Page Premium Rewrite**
+**Edit: `src/pages/Index.tsx`**
+- Import and add `<WebsiteAuditSection />` after `<CaseStudiesSection />` (before Testimonials)
 
-- Replace basic initials with gradient avatar rings + role badge underneath
-- Add hover state that reveals LinkedIn icon + bio snippet
-- Story section: add parallax background with year markers
-- Core values: add hover-activated micro-animations (icons pulse/rotate)
-- Awards strip: convert to interactive marquee with hover-pause
-- Add "Our Culture" photo grid section (placeholder images with glassmorphism overlay)
-- Add a video testimonial placeholder section
+---
 
-**Phase 3 — Contact Page UX Enhancement**
+### 4. Fix TestimonialsSection Ref Warning
 
-- Form: add floating labels (label moves up on focus), validation shake animation on error
-- Google Calendar: replace static card with interactive date picker preview (visual only)
-- Add real-time "We typically respond in 2 hours" with animated clock icon
-- Office cards: add hover map preview popup
-- WhatsApp card: add QR code that actually links to wa.me
-- Add live chat widget placeholder (bottom-right, distinct from WhatsApp float)
+**Edit: `src/components/sections/TestimonialsSection.tsx`**
+- `TiltCard` is a function component receiving refs via `motion.div` parent — the console error is from passing ref to TiltCard itself
+- Wrap `TiltCard` with `React.forwardRef` or remove the ref pass from the parent `motion.div`
 
-**Phase 4 — Portfolio Page Gallery Mode**
+---
 
-- Add "Gallery" vs "Grid" view toggle
-- Gallery mode: full-width horizontal scroll with parallax images
-- Add filter animation (cards animate out/in with stagger on category change)
-- Add "View Live Site" and "Read Case Study" dual CTAs on hover overlay
-- Add client industry icon badges on each card
-- Add metric counter animation on scroll
+### Files Summary
 
-**Phase 5 — Blog Page Content Hub**
+| Action | File |
+|--------|------|
+| Create | `src/components/ui/cookie-consent.tsx` |
+| Create | `src/components/sections/WebsiteAuditSection.tsx` |
+| Edit | `src/components/layout/Layout.tsx` |
+| Edit | `src/pages/IndustryPage.tsx` |
+| Edit | `src/pages/LocationPage.tsx` |
+| Edit | `src/pages/Index.tsx` |
+| Edit | `src/components/sections/TestimonialsSection.tsx` |
 
-- Featured article: full-width hero with gradient overlay and large typography
-- Add "Trending" badge on most-read articles
-- Category pills use colored dots matching category theme
-- Add search bar with instant filter
-- Add "Load More" with skeleton loading states
-- Article cards: add estimated read progress bar on hover
-
-**Phase 6 — Service Category Pages**
-
-- Add unique hero illustration per category (SVG composition)
-- Process timeline: add connecting animated dots that pulse sequentially
-- Tools section: convert to interactive icon grid with tooltips
-- Add "Start with [Category]" floating CTA that sticks on scroll
-- Sub-service cards: add numbered badges and hover flip to show key metric
-
-**Phase 7 — GetProposal Wizard Polish**
-
-- Add animated progress bar with step labels
-- Each step transition: slide + fade animation
-- Service/Goal selection: add subtle bounce on select
-- Budget slider: replace dropdown with visual slider with markers
-- Review step: add editable summary with inline edit capability
-- Add confetti animation on submission success
-
-**Phase 8 — Global Design System Enhancements**
-
-- Add `shimmer-border` utility: animated gradient border that rotates
-- Add `hover-glow` utility: colored box-shadow on hover
-- Add `magnetic-hover` utility: card follows cursor within 5px range
-- Add `text-reveal` animation: text clips in from left on scroll
-- Add `stagger-children` utility for grid item entrance animations
-- Add subtle noise texture overlay to all glass elements
-- Add custom scrollbar styling (thin, accent-colored)
-
-**Phase 9 — SEO & Performance Polish**
-
-- Add `<link rel="preload">` for hero background image
-- Add `content-visibility: auto` for below-fold sections (with `contain-intrinsic-size`)
-- Ensure all images use `loading="lazy"` except hero
-- Add breadcrumb JSON-LD on all pages
-- Add sitemap meta link
-- Verify all H1-H6 hierarchy is correct across pages
-- Add alt text audit for all SVG illustrations
-
-### Technical Details
-
-**Files to Edit:**
-- `src/index.css` — new utility classes, custom scrollbar, noise texture
-- `src/components/sections/HeroSection.tsx` — TextSwitcher fix, scroll indicator, enhanced tags
-- `src/components/sections/StatsSection.tsx` — full-width redesign, sparkle effects
-- `src/components/sections/ServicesSection.tsx` — hover enhancements, badges
-- `src/components/sections/CaseStudiesSection.tsx` — glow shadows, hover overlays
-- `src/components/sections/TestimonialsSection.tsx` — mobile carousel, video placeholder
-- `src/components/sections/PricingSection.tsx` — glass upgrade, remove jarring scale
-- `src/components/sections/FAQSection.tsx` — numbered markers, spring animations
-- `src/components/sections/WhyUsSection.tsx` — height fixes, micro-animations
-- `src/components/sections/ProcessSection.tsx` — pulsing timeline dots
-- `src/components/sections/IndustriesSection.tsx` — richer cards instead of plain marquee
-- `src/components/sections/BlogPreviewSection.tsx` — hover effects, read progress
-- `src/pages/About.tsx` — team cards, culture section, parallax
-- `src/pages/Contact.tsx` — floating labels, calendar preview, validation
-- `src/pages/Portfolio.tsx` — gallery toggle, filter animations
-- `src/pages/Blog.tsx` — search, trending badges, skeleton loading
-- `src/pages/ServiceCategory.tsx` — hero illustrations, floating CTA
-- `src/pages/GetProposal.tsx` — animated progress, confetti, slider
-- `src/pages/BlogArticle.tsx` — reading progress bar, TOC sidebar
-- `src/components/layout/Navbar.tsx` — scroll-based background blur enhancement
-- `src/components/layout/Footer.tsx` — newsletter success state, hover effects
-
-**New Files to Create:**
-- `src/components/ui/scroll-indicator.tsx` — animated down-chevron for hero
-- `src/components/ui/magnetic-card.tsx` — reusable magnetic hover wrapper
-
-**No external dependencies needed** — all effects built with Framer Motion + CSS.
-
-### Execution Order
-1. Global CSS utilities + design tokens (index.css)
-2. Homepage sections upgrade (Hero → Stats → Services → Process → CaseStudies → Testimonials → Pricing → FAQ)
-3. About page premium rewrite
-4. Contact page UX enhancement
-5. Portfolio gallery mode
-6. Blog content hub
-7. Service category pages
-8. GetProposal wizard polish
-9. SEO & performance polish
-10. Build verification
+### Technical Notes
+- Scanner animation uses CSS keyframes (`@keyframes scan-rotate`) — no external Lottie/animation library needed
+- Circular score gauges use SVG `<circle>` with `stroke-dasharray` + `stroke-dashoffset` animated via CSS transitions
+- Supabase insert uses existing `contacts` table with RLS allowing anonymous inserts
+- All motion uses `framer-motion` (`motion/react`) consistent with existing codebase
 
