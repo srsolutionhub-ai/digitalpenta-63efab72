@@ -7,6 +7,7 @@ import MobileStickyBar from "@/components/ui/mobile-sticky-bar";
 import ExitIntentPopup from "@/components/ui/exit-intent-popup";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 import CookieConsent from "@/components/ui/cookie-consent";
+import SmartCTA from "@/components/ui/smart-cta";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -20,6 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <ExitIntentPopup />
       <LeadCaptureBar />
       <CookieConsent />
+      <SmartCTA />
     </div>
   );
 }
