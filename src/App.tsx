@@ -7,6 +7,8 @@ import { lazy, Suspense } from "react";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
+import CustomCursor from "@/components/ui/custom-cursor";
+import useSmoothScroll from "@/hooks/useSmoothScroll";
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -62,14 +64,24 @@ function AnimatedRoutes() {
   );
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+function AppShell() {
+  useSmoothScroll();
+  return (
+    <>
+      <CustomCursor />
       <Toaster />
       <Sonner />
       <BrowserRouter>
         <AnimatedRoutes />
       </BrowserRouter>
+    </>
+  );
+}
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppShell />
     </TooltipProvider>
   </QueryClientProvider>
 );

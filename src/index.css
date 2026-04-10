@@ -66,7 +66,23 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto; /* Lenis handles smooth scrolling */
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Skip to content for accessibility */
+  .skip-to-content {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary focus:text-primary-foreground focus:font-display focus:font-bold focus:text-sm;
+  }
+
+  /* Focus visible ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 
   body {
@@ -369,4 +385,70 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, hsl(var(--glow-violet) / 0.6), hsl(var(--glow-cyan) / 0.5));
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-bg {
+  background: linear-gradient(
+    -45deg,
+    hsl(var(--glow-violet) / 0.08),
+    hsl(var(--glow-cyan) / 0.06),
+    hsl(var(--glow-violet) / 0.04),
+    hsl(var(--glow-cyan) / 0.08)
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Sparkle burst for counters */
+@keyframes sparkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+}
+
+.sparkle-burst {
+  animation: sparkle 0.6s ease-out forwards;
+}
+
+/* Form field error shake */
+@keyframes fieldShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+.field-shake {
+  animation: fieldShake 0.4s ease-out;
+}
+
+/* CSS confetti */
+@keyframes confettiFall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti-piece {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  z-index: 9999;
+  animation: confettiFall 3s ease-in forwards;
+}
+
+/* Icon glow halo on hover */
+.icon-glow-halo {
+  transition: box-shadow 0.5s ease, transform 0.5s ease;
+}
+.group:hover .icon-glow-halo {
+  box-shadow: 0 0 30px -4px currentColor;
+  transform: scale(1.15);
 }

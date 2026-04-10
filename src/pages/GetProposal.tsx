@@ -36,9 +36,25 @@ export default function GetProposal() {
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
+    // CSS confetti
+    const confettiColors = ["hsl(252,60%,63%)", "hsl(190,100%,50%)", "hsl(20,90%,50%)", "hsl(160,84%,39%)", "hsl(30,100%,50%)"];
+
     return (
       <Layout>
-        <section className="pt-32 pb-20 min-h-screen flex items-center">
+        <section className="pt-32 pb-20 min-h-screen flex items-center relative overflow-hidden">
+          {/* Confetti */}
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div
+              key={i}
+              className="confetti-piece rounded-sm"
+              style={{
+                left: `${Math.random() * 100}%`,
+                backgroundColor: confettiColors[i % confettiColors.length],
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+              }}
+            />
+          ))}
           <div className="container mx-auto px-4 text-center">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}

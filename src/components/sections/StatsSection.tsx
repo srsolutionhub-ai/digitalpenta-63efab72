@@ -13,6 +13,7 @@ const stats = [
 
 function AnimatedNumber({ value, prefix = "", suffix = "", inView }: { value: number; prefix?: string; suffix?: string; inView: boolean }) {
   const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
   const started = useRef(false);
 
   useEffect(() => {
@@ -26,14 +27,20 @@ function AnimatedNumber({ value, prefix = "", suffix = "", inView }: { value: nu
         const eased = 1 - Math.pow(1 - progress, 4);
         setCount(Math.round(eased * value));
         if (progress < 1) requestAnimationFrame(animate);
+        else setDone(true);
       };
       requestAnimationFrame(animate);
     }
   }, [value, inView]);
 
   return (
-    <span className="font-mono font-extrabold text-4xl md:text-5xl lg:text-6xl text-gradient tracking-tight">
+    <span className="font-mono font-extrabold text-4xl md:text-5xl lg:text-6xl text-gradient tracking-tight relative">
       {prefix}{count}{suffix}
+      {done && (
+        <svg className="absolute -top-2 -right-2 w-5 h-5 sparkle-burst" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z" fill="hsl(var(--glow-cyan))" opacity="0.7" />
+        </svg>
+      )}
     </span>
   );
 }
