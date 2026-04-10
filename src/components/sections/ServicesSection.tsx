@@ -108,12 +108,11 @@ export default function ServicesSection() {
                   )}
 
                   <div className="p-7 flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-5">
-                      <div className={`w-14 h-14 rounded-xl ${p.iconBg} border flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500`}
-                        style={{ boxShadow: "0 4px 20px -4px hsl(var(--primary) / 0.15)" }}>
-                        <Icon className={`w-6 h-6 ${p.iconColor}`} />
-                      </div>
-                      <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
+                     <div className="flex items-center justify-between mb-5">
+                       <div className={`icon-glow-halo w-14 h-14 rounded-xl ${p.iconBg} border flex items-center justify-center shadow-lg ${p.iconColor}`}>
+                         <Icon className={`w-6 h-6 ${p.iconColor}`} />
+                       </div>
+                       <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
                     </div>
                     <h3 className="font-display font-bold text-lg text-foreground mb-2">{p.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed flex-1">{p.desc}</p>
