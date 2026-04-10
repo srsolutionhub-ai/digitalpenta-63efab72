@@ -127,7 +127,7 @@ export default function HeroSection() {
       <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] rounded-full bg-accent/6 blur-[130px] animate-breathe-slow" />
       <div className="absolute top-[60%] right-[40%] w-[300px] h-[300px] rounded-full bg-glow-violet/5 blur-[100px] animate-pulse-glow" />
 
-      <div className="absolute inset-0 mesh-gradient" />
+      <div className="absolute inset-0 mesh-gradient animated-gradient-bg" />
 
       <div
         className="absolute inset-0 opacity-[0.02]"

@@ -110,9 +110,20 @@ export default function Contact() {
                 </motion.div>
               ) : (
                 <form
-                  onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    // Honeypot check
+                    const hp = form.querySelector<HTMLInputElement>('[name="website_url"]');
+                    if (hp && hp.value) return;
+                    setSubmitted(true);
+                  }}
                   className="space-y-5"
                 >
+                  {/* Honeypot field */}
+                  <div className="absolute -left-[9999px]" aria-hidden="true">
+                    <input type="text" name="website_url" tabIndex={-1} autoComplete="off" />
+                  </div>
                   <h2 className="font-display font-bold text-xl text-foreground mb-1">Send Us a Message</h2>
                   <p className="text-sm text-muted-foreground mb-4">Fill out the form and we'll craft a custom strategy for your brand.</p>
 
