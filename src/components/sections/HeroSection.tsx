@@ -7,7 +7,7 @@ import ScrollIndicator from "@/components/ui/scroll-indicator";
 import { motion, AnimatePresence } from "motion/react";
 import heroBg from "@/assets/hero-bg.jpg";
 
-const switcherWords = ["SEO", "Paid Ads", "Social Media", "Web Design", "Content"];
+const switcherWords = ["For Real Estate", "For Healthcare", "For Ecommerce", "For SaaS", "For D2C"];
 
 function TextSwitcher() {
   const [index, setIndex] = useState(0);
@@ -17,7 +17,7 @@ function TextSwitcher() {
   }, []);
 
   return (
-    <span className="inline-block relative min-w-[220px] sm:min-w-[280px] h-[1.2em] align-bottom overflow-hidden">
+    <span className="inline-block relative min-w-[220px] sm:min-w-[320px] h-[1.2em] align-bottom overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.span
           key={switcherWords[index]}
@@ -48,23 +48,23 @@ function HeroIllustration() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.circle cx="250" cy="250" r="180" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" strokeDasharray="6 6" opacity="0.2"
+      <motion.circle cx="250" cy="250" r="180" stroke="hsl(256, 90%, 60%)" strokeWidth="0.5" strokeDasharray="6 6" opacity="0.2"
         initial={{ rotate: 0 }} animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 250px" }}
       />
-      <motion.circle cx="250" cy="250" r="130" stroke="hsl(190, 100%, 50%)" strokeWidth="0.5" strokeDasharray="4 8" opacity="0.15"
+      <motion.circle cx="250" cy="250" r="130" stroke="hsl(162, 100%, 42%)" strokeWidth="0.5" strokeDasharray="4 8" opacity="0.15"
         initial={{ rotate: 0 }} animate={{ rotate: -360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 250px" }}
       />
-      <motion.circle cx="250" cy="250" r="80" stroke="hsl(252, 60%, 63%)" strokeWidth="0.5" opacity="0.1"
+      <motion.circle cx="250" cy="250" r="80" stroke="hsl(256, 90%, 60%)" strokeWidth="0.5" opacity="0.1"
         initial={{ rotate: 0 }} animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "250px 250px" }}
       />
-      <circle cx="250" cy="250" r="8" fill="hsl(252, 60%, 63%)" opacity="0.6" />
-      <circle cx="250" cy="250" r="3" fill="hsl(190, 100%, 50%)" />
+      <circle cx="250" cy="250" r="8" fill="hsl(256, 90%, 60%)" opacity="0.6" />
+      <circle cx="250" cy="250" r="3" fill="hsl(162, 100%, 42%)" />
       {[
-        { cx: 430, cy: 250, color: "hsl(252, 60%, 63%)", r: 6 },
-        { cx: 306, cy: 420, color: "hsl(190, 100%, 50%)", r: 5 },
+        { cx: 430, cy: 250, color: "hsl(256, 90%, 60%)", r: 6 },
+        { cx: 306, cy: 420, color: "hsl(162, 100%, 42%)", r: 5 },
         { cx: 139, cy: 370, color: "hsl(160, 84%, 39%)", r: 5 },
         { cx: 139, cy: 130, color: "hsl(38, 92%, 50%)", r: 5 },
         { cx: 306, cy: 80, color: "hsl(20, 90%, 55%)", r: 5 },
@@ -101,7 +101,7 @@ export default function HeroSection() {
 
       <ParticleField count={25} />
 
-      {/* Floating keyword tags – upgraded visibility */}
+      {/* Floating keyword tags */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {floatingTags.map((tag, i) => (
           <motion.span
@@ -148,7 +148,7 @@ export default function HeroSection() {
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span className="text-[11px] font-mono text-muted-foreground tracking-wider uppercase">
-                Trusted by 500+ brands across India & Middle East
+                Trusted by 100+ brands across India & Middle East
               </span>
             </motion.div>
 
@@ -162,7 +162,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="block text-foreground"
               >
-                India's #1 Digital Marketing
+                India's Most Results-Driven
               </motion.span>
               <motion.span
                 initial={{ opacity: 0, y: 40 }}
@@ -170,7 +170,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="block text-gradient mt-1"
               >
-                Agency for 5X Growth
+                Digital Marketing Agency
               </motion.span>
             </h1>
 
@@ -180,8 +180,8 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed mb-5"
             >
-              We help Indian brands dominate Google, Instagram & Meta — with data-driven
-              campaigns in <TextSwitcher /> that convert visitors into paying customers.
+              We help brands dominate Google, Instagram & Meta — with data-driven
+              campaigns <TextSwitcher /> that convert visitors into paying customers.
             </motion.p>
 
             <motion.div
@@ -192,19 +192,19 @@ export default function HeroSection() {
             >
               <Link to="/contact">
                 <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2.5 group bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 transition-all duration-300 hover:scale-[1.02]">
-                  🚀 Get Free Strategy Call
+                  🚀 Get Free Audit
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/portfolio">
                 <Button variant="outline" size="lg" className="rounded-full px-10 py-6 font-display font-semibold text-base gap-2.5 border-border/40 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300">
                   <Play className="w-4 h-4" />
-                  Watch Our Work
+                  See Our Results
                 </Button>
               </Link>
             </motion.div>
 
-            {/* Floating trust badges */}
+            {/* Trust badges */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={loaded ? { opacity: 1, y: 0 } : {}}
@@ -212,9 +212,10 @@ export default function HeroSection() {
               className="flex flex-wrap items-center gap-4"
             >
               {[
-                { text: "⭐ 4.9 Google Rating", color: "border-amber-500/20 bg-amber-500/5" },
-                { text: "500+ Happy Clients", color: "border-primary/20 bg-primary/5" },
-                { text: "₹10Cr+ Ad Spend Managed", color: "border-accent/20 bg-accent/5" },
+                { text: "100+ Clients", color: "border-primary/20 bg-primary/5" },
+                { text: "₹10Cr+ Revenue", color: "border-accent/20 bg-accent/5" },
+                { text: "95% Retention", color: "border-amber-500/20 bg-amber-500/5" },
+                { text: "5 Years", color: "border-primary/20 bg-primary/5" },
               ].map((badge) => (
                 <span key={badge.text} className={`text-xs font-mono text-foreground/70 px-4 py-2 rounded-full border ${badge.color} hover-glow transition-all duration-300`}>
                   {badge.text}

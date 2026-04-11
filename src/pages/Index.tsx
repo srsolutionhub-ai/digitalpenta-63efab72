@@ -29,10 +29,36 @@ function MarqueeStripe() {
   );
 }
 
+/* Trust Strip */
+function TrustStrip() {
+  const items = [
+    "★★★★★ 4.9 Google Rating",
+    "100+ Clients Served",
+    "₹10Cr+ Revenue Generated",
+    "Google Partner",
+    "Delhi Based, Globally Trusted",
+  ];
+  return (
+    <div className="bg-primary/5 border-y border-primary/10 py-3 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          {items.map((item, i) => (
+            <span key={i} className="text-xs font-mono text-foreground/60 whitespace-nowrap">
+              {item}
+              {i < items.length - 1 && <span className="ml-6 text-primary/30">|</span>}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Index = () => {
   return (
     <Layout>
       <HeroSection />
+      <TrustStrip />
       <PartnersSection />
       <StatsSection />
       <MarqueeStripe />

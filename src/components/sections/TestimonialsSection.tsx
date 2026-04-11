@@ -1,6 +1,8 @@
-import { Star, Quote, BadgeCheck } from "lucide-react";
+import { Star, Quote, BadgeCheck, Play } from "lucide-react";
 import { motion, useInView } from "motion/react";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import React from "react";
 
 const testimonials = [
   {
@@ -51,10 +53,8 @@ const testimonials = [
   },
 ];
 
-import React from "react";
-
 const TiltCard = React.forwardRef<HTMLDivElement, { children: React.ReactNode; className?: string }>(
-  ({ children, className }, forwardedRef) => {
+  ({ children, className }, _forwardedRef) => {
     const [transform, setTransform] = useState("");
     const cardRef = useRef<HTMLDivElement>(null);
 
@@ -86,15 +86,66 @@ function Avatar({ initials, gradient }: { initials: string; gradient: string }) 
   );
 }
 
+function StaggeredStars({ count, delay = 0 }: { count: number; delay?: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: count }).map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3, delay: delay + i * 0.08, ease: "backOut" }}
+        >
+          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function VideoReviewCard() {
+  return (
+    <TiltCard className="rounded-2xl glass border border-border/30 p-6 hover:bg-card/60 hover:border-primary/15 transition-all duration-500 h-full flex flex-col items-center justify-center text-center min-h-[200px]">
+      <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <Play className="w-6 h-6 text-primary ml-0.5" />
+      </div>
+      <p className="font-display font-semibold text-sm text-foreground mb-1">Watch Video Reviews</p>
+      <p className="text-[11px] text-muted-foreground">Hear from our clients directly</p>
+      <span className="inline-flex items-center gap-1 text-[9px] font-mono text-accent mt-3">
+        <BadgeCheck className="w-3 h-3" /> Coming Soon
+      </span>
+    </TiltCard>
+  );
+}
+
 export default function TestimonialsSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const featured = testimonials.find(t => t.featured);
   const others = testimonials.filter(t => !t.featured);
 
+  // Embla carousel for mobile
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+
+    // Auto-scroll
+    const interval = setInterval(() => {
+      if (emblaApi.canScrollNext()) emblaApi.scrollNext();
+      else emblaApi.scrollTo(0);
+    }, 4000);
+
+    return () => { emblaApi.off("select", onSelect); clearInterval(interval); };
+  }, [emblaApi]);
+
   return (
     <section className="py-24 md:py-32">
-      <div className="container mx-auto px-4" ref={ref}>
+      <div className="container mx-auto px-4" ref={sectionRef}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -103,30 +154,25 @@ export default function TestimonialsSection() {
         >
           <span className="text-xs font-mono text-primary uppercase tracking-widest">Testimonials</span>
           <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3 mb-4">
-            500+ Brands. Real Results. <span className="text-gradient">Real Reviews.</span>
+            100+ Brands. Real Results. <span className="text-gradient">Real Reviews.</span>
           </h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
+        {/* Desktop layout */}
+        <div className="hidden lg:grid lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
           {featured && (
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               className="lg:col-span-2"
             >
               <TiltCard className="rounded-2xl glass border border-primary/15 p-8 relative overflow-hidden h-full">
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
                 <Quote className="w-10 h-10 text-primary/20 mb-6" />
-                <p className="text-lg font-display font-medium text-foreground/90 leading-relaxed mb-8">
-                  "{featured.quote}"
-                </p>
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: featured.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[hsl(30,100%,50%)] text-[hsl(30,100%,50%)]" />
-                  ))}
-                </div>
-                <div className="flex items-center gap-3">
+                <p className="text-lg font-display font-medium text-foreground/90 leading-relaxed mb-8">"{featured.quote}"</p>
+                <StaggeredStars count={featured.rating} delay={0.3} />
+                <div className="flex items-center gap-3 mt-4">
                   <Avatar initials={featured.initials} gradient={featured.color} />
                   <div>
                     <p className="font-display font-bold text-foreground">{featured.name}</p>
@@ -146,15 +192,11 @@ export default function TestimonialsSection() {
                 key={t.name}
                 initial={{ opacity: 0, y: 40 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.08 }}
               >
                 <TiltCard className="rounded-2xl glass border border-border/30 p-6 hover:bg-card/60 hover:border-primary/15 transition-all duration-500 h-full">
-                  <div className="flex gap-0.5 mb-3">
-                    {Array.from({ length: t.rating }).map((_, j) => (
-                      <Star key={j} className="w-3 h-3 fill-[hsl(30,100%,50%)] text-[hsl(30,100%,50%)]" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-foreground/80 leading-relaxed mb-5">"{t.quote}"</p>
+                  <StaggeredStars count={t.rating} delay={0.2 + i * 0.1} />
+                  <p className="text-sm text-foreground/80 leading-relaxed mb-5 mt-3">"{t.quote}"</p>
                   <div className="flex items-center gap-3">
                     <Avatar initials={t.initials} gradient={t.color} />
                     <div>
@@ -167,6 +209,50 @@ export default function TestimonialsSection() {
                   </span>
                 </TiltCard>
               </motion.div>
+            ))}
+            {/* Video card placeholder */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <VideoReviewCard />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Mobile carousel */}
+        <div className="lg:hidden">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-4">
+              {testimonials.map((t, i) => (
+                <div key={t.name} className="flex-[0_0_85%] min-w-0">
+                  <div className="rounded-2xl glass border border-border/30 p-6 h-full">
+                    <StaggeredStars count={t.rating} delay={0.1} />
+                    <p className="text-sm text-foreground/80 leading-relaxed mb-5 mt-3">"{t.quote}"</p>
+                    <div className="flex items-center gap-3">
+                      <Avatar initials={t.initials} gradient={t.color} />
+                      <div>
+                        <p className="text-sm font-display font-semibold text-foreground">{t.name}</p>
+                        <p className="text-[11px] text-muted-foreground">{t.role}</p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[9px] font-mono text-accent mt-3">
+                      <BadgeCheck className="w-3 h-3" /> {t.badge}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => emblaApi?.scrollTo(i)}
+                className={`w-2 h-2 rounded-full transition-all ${i === selectedIndex ? "bg-primary w-6" : "bg-border"}`}
+              />
             ))}
           </div>
         </div>
