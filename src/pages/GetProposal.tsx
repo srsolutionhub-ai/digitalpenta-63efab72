@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const steps = ["About You", "Services", "Goals", "Budget", "Review"];
 
@@ -34,15 +36,48 @@ export default function GetProposal() {
   };
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      // Save to contacts first
+      const { data: contact, error: contactErr } = await supabase.from("contacts").insert({
+        name: data.name.trim(),
+        email: data.email.trim(),
+        phone: data.phone.trim() || null,
+        company: data.company.trim() || null,
+        service: data.services.join(", ") || "Multiple Services",
+        budget_range: data.budget,
+        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}`.trim(),
+        source: "Website Proposal Form",
+      }).select("id").single();
+
+      if (contactErr) throw contactErr;
+
+      // Save to leads
+      await supabase.from("leads").insert({
+        contact_id: contact?.id || null,
+        service: data.services.join(", ") || "Multiple Services",
+        budget: data.budget,
+        timeline: data.timeline,
+      });
+
+      setSubmitted(true);
+      toast.success("Proposal request submitted!");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (submitted) {
-    // CSS confetti
-    const confettiColors = ["hsl(252,60%,63%)", "hsl(190,100%,50%)", "hsl(20,90%,50%)", "hsl(160,84%,39%)", "hsl(30,100%,50%)"];
+    const confettiColors = ["hsl(256,90%,60%)", "hsl(162,100%,42%)", "hsl(20,90%,50%)", "hsl(160,84%,39%)", "hsl(30,100%,50%)"];
 
     return (
       <Layout>
         <section className="pt-32 pb-20 min-h-screen flex items-center relative overflow-hidden">
-          {/* Confetti */}
           {Array.from({ length: 30 }).map((_, i) => (
             <div
               key={i}
@@ -62,10 +97,7 @@ export default function GetProposal() {
               transition={{ type: "spring", stiffness: 200 }}
             >
               <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
+                <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 0.5, delay: 0.3 }}>
                   <Sparkles className="w-10 h-10 text-primary" />
                 </motion.div>
               </div>
@@ -86,6 +118,10 @@ export default function GetProposal() {
     <Layout>
       <section className="pt-32 pb-20 relative">
         <div className="absolute inset-0 mesh-gradient" />
+        {/* Honeypot */}
+        <div className="absolute -left-[9999px]" aria-hidden="true">
+          <input type="text" name="fax_number" tabIndex={-1} autoComplete="off" />
+        </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-10">
@@ -96,7 +132,6 @@ export default function GetProposal() {
               <p className="text-sm text-muted-foreground">Takes less than 3 minutes. No obligation.</p>
             </div>
 
-            {/* Animated Progress Bar */}
             <div className="mb-10">
               <div className="flex items-center justify-between mb-3">
                 {steps.map((s, i) => (
@@ -118,7 +153,6 @@ export default function GetProposal() {
                   </div>
                 ))}
               </div>
-              {/* Progress bar */}
               <div className="w-full h-1 bg-secondary/50 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-gradient-to-r from-primary to-accent rounded-full"
@@ -128,7 +162,6 @@ export default function GetProposal() {
               </div>
             </div>
 
-            {/* Steps with animation */}
             <div className="rounded-xl glass p-8 noise-texture">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -175,9 +208,7 @@ export default function GetProposal() {
                       <div className="grid grid-cols-2 gap-2">
                         {serviceOptions.map(s => (
                           <motion.button
-                            key={s}
-                            whileTap={{ scale: 0.97 }}
-                            onClick={() => toggleItem("services", s)}
+                            key={s} whileTap={{ scale: 0.97 }} onClick={() => toggleItem("services", s)}
                             className={`text-left px-4 py-3 rounded-lg text-sm transition-all border ${
                               data.services.includes(s)
                                 ? "bg-primary/10 border-primary/40 text-foreground shadow-sm shadow-primary/10"
@@ -199,9 +230,7 @@ export default function GetProposal() {
                       <div className="grid grid-cols-2 gap-2">
                         {goalOptions.map(g => (
                           <motion.button
-                            key={g}
-                            whileTap={{ scale: 0.97 }}
-                            onClick={() => toggleItem("goals", g)}
+                            key={g} whileTap={{ scale: 0.97 }} onClick={() => toggleItem("goals", g)}
                             className={`text-left px-4 py-3 rounded-lg text-sm transition-all border ${
                               data.goals.includes(g)
                                 ? "bg-primary/10 border-primary/40 text-foreground shadow-sm shadow-primary/10"
@@ -221,11 +250,7 @@ export default function GetProposal() {
                       <h2 className="font-display font-semibold text-lg text-foreground mb-4">Budget & Timeline</h2>
                       <div>
                         <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Monthly Budget</label>
-                        <select
-                          value={data.budget}
-                          onChange={e => setData({...data, budget: e.target.value})}
-                          className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground"
-                        >
+                        <select value={data.budget} onChange={e => setData({...data, budget: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground">
                           <option>Under ₹5L / $5K</option>
                           <option>₹5L - ₹15L / $5K - $15K</option>
                           <option>₹15L - ₹50L / $15K - $50K</option>
@@ -234,11 +259,7 @@ export default function GetProposal() {
                       </div>
                       <div>
                         <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Timeline</label>
-                        <select
-                          value={data.timeline}
-                          onChange={e => setData({...data, timeline: e.target.value})}
-                          className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground"
-                        >
+                        <select value={data.timeline} onChange={e => setData({...data, timeline: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground">
                           <option>ASAP</option>
                           <option>1-3 months</option>
                           <option>3-6 months</option>
@@ -248,10 +269,8 @@ export default function GetProposal() {
                       <div>
                         <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Additional Details</label>
                         <textarea
-                          value={data.message}
-                          onChange={e => setData({...data, message: e.target.value})}
-                          rows={3}
-                          placeholder="Any specifics..."
+                          value={data.message} onChange={e => setData({...data, message: e.target.value})}
+                          rows={3} placeholder="Any specifics..."
                           className="flex w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         />
                       </div>
@@ -277,18 +296,14 @@ export default function GetProposal() {
                         <div className="py-2 border-b border-border/50">
                           <span className="text-muted-foreground block mb-1">Services</span>
                           <div className="flex flex-wrap gap-1">
-                            {data.services.map(s => (
-                              <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>
-                            ))}
+                            {data.services.map(s => <span key={s} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>)}
                             {data.services.length === 0 && <span className="text-muted-foreground">—</span>}
                           </div>
                         </div>
                         <div className="py-2 border-b border-border/50">
                           <span className="text-muted-foreground block mb-1">Goals</span>
                           <div className="flex flex-wrap gap-1">
-                            {data.goals.map(g => (
-                              <span key={g} className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{g}</span>
-                            ))}
+                            {data.goals.map(g => <span key={g} className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{g}</span>)}
                             {data.goals.length === 0 && <span className="text-muted-foreground">—</span>}
                           </div>
                         </div>
@@ -306,7 +321,6 @@ export default function GetProposal() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Nav */}
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-border/50">
                 {step > 0 ? (
                   <Button variant="ghost" onClick={() => setStep(step - 1)} className="gap-1 text-sm">
@@ -318,8 +332,8 @@ export default function GetProposal() {
                     Next <ArrowRight className="w-3.5 h-3.5" />
                   </Button>
                 ) : (
-                  <Button onClick={() => setSubmitted(true)} className="rounded-full px-6 font-display font-semibold text-sm bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white hover:opacity-90">
-                    Submit Proposal Request
+                  <Button onClick={handleSubmit} disabled={loading} className="rounded-full px-6 font-display font-semibold text-sm bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white hover:opacity-90">
+                    {loading ? "Submitting..." : "Submit Proposal Request"}
                   </Button>
                 )}
               </div>
