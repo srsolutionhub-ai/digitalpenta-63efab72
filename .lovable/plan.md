@@ -1,154 +1,123 @@
+## Platform Alignment & Quality Upgrade Plan
 
-
-## Futuristic Advanced Digital Marketing Agency Platform Upgrade
-
-### Current State
-The platform already has premium foundations: dark theme, glassmorphism, Framer Motion animations, magnetic cards, shimmer borders, particle fields, cookie consent, exit-intent popup, and a 3-step Website Audit lead-gen tool. The architecture uses React 18 + Vite 5 + Tailwind + Supabase with lazy-loaded routes and ~200KB JS budget.
-
-### What's Missing to Reach "Top Agency" Status
-
-After auditing against Awwwards/DesignRush 2026 winners and competitive agency sites, these gaps remain:
+Based on the master build document, the platform has all major features implemented but needs alignment with the exact brand specifications, content, and several functional gaps. This plan addresses every deviation.
 
 ---
 
-### Phase 1 — Smooth Scroll & Cursor Experience (Global)
+### 1. Brand Color Alignment
 
-**Custom cursor effect** — Replace default cursor with a soft glowing dot that scales on interactive elements. Pure CSS + minimal JS, no library needed. Disabled on mobile/touch.
+Update CSS custom properties in `src/index.css` to match the document's exact brand colors:
 
-**Smooth scroll with Lenis** — Add `lenis` (2KB gzipped) for butter-smooth inertia scrolling that top Awwwards sites use. Integrates with Framer Motion's `useScroll`.
+- Primary purple: `#6C3BF5` (currently close but verify HSL values)
+- Teal accent: `#00D4AA` (document says this, not `#00D4FF`)
+- Dark BG: `#1A1A2E` (currently `225 60% 6%` which is `#0A0F1A` — needs correction)
+- Mid Dark: `#2D2D5E`
+- Warning Orange: `#FF6B35`
+- Success Green: `#00C853`
 
-**Files**: `src/components/ui/custom-cursor.tsx`, `src/hooks/useSmoothScroll.ts`, `src/App.tsx`, `index.css`
+### 2. Contact Info & Domain Corrections
 
----
+Update across all files (`Footer.tsx`, `Contact.tsx`, `index.html`, WhatsApp float, schemas):
 
-### Phase 2 — Homepage Cinematic Enhancements
+- Phone: `+91-88601-00039`
+- Email: `support@digitalpenta.com`
+- Address:  `Corporate Office -  Delhi, India`
+- Facebook: `facebook.com/digitalpenta`
+- Domain: Change all `digitalpenta.com` references to `digitalpenta.com`
+- Organization schema telephone: update from `+91-XXXXXXXXXX`
 
-1. **Hero video-gradient background** — Replace static mesh gradient with an animated CSS gradient that shifts through brand colors (no video file, pure CSS `@keyframes`). Adds depth without load cost.
+### 3. Hero Section Content Update
 
-2. **Horizontal Results Reel** — New section between CaseStudies and Testimonials: auto-scrolling horizontal strip of 6-8 client result cards (metric + one-liner). CSS scroll-snap, pauses on hover.
+In `HeroSection.tsx`:
 
-3. **Stats Section counter sparkle** — Add micro SVG sparkle burst when each counter finishes animating. Pure SVG + CSS animation.
+- H1: "India's Most Results-Driven Digital Marketing Agency"
+- Rotating subtext: "For Real Estate | For Healthcare | For Ecommerce | For SaaS"
+- CTAs: "Get Free Audit" (primary) + "See Our Results" (ghost)
+- Counters: "100+ Clients | ₹10Cr+ Revenue | 95% Retention | 5 Years"
 
-4. **Services Section icon morph** — On hover, service icons scale up with a radial glow halo behind them (CSS `box-shadow` transition + scale).
+### 4. Homepage Meta & Schema Updates
 
-**Files**: `src/components/sections/HeroSection.tsx`, `src/components/sections/ResultsReelSection.tsx` (new), `src/components/sections/StatsSection.tsx`, `src/components/sections/ServicesSection.tsx`, `src/pages/Index.tsx`
+In `index.html`:
 
----
+- Meta description: per document spec mentioning "Delhi's top digital marketing agency"
+- Add `LocalBusiness` JSON-LD schema with actual address/phone
+- Update canonical and OG URLs to `digitalpenta.com`
 
-### Phase 3 — Interactive Client Dashboard Preview
+### 5. FAQ Section Content Alignment
 
-Add a "Live Dashboard Preview" section on homepage showing an animated mockup of the client reporting dashboard — charts that draw on scroll, KPI cards that count up. This demonstrates the agency's tech sophistication. No real data, purely visual.
+Update `FAQSection.tsx` to use the document's 8 exact questions:
 
-**Files**: `src/components/sections/DashboardPreviewSection.tsx` (new), `src/pages/Index.tsx`
+1. How much does digital marketing cost in India?
+2. How long does SEO take to show results?
+3. Do you work with clients in Dubai and UAE?
+4. What makes Digital Penta different from other agencies?
+5. Do you offer performance-based pricing?
+6. Can I see a live demo of your client dashboard?
+7. Which industries do you specialize in?
+8. How do I get started with Digital Penta?
 
----
+Update the FAQ schema in `index.html` to match.
 
-### Phase 4 — AI-Powered Smart CTA System
+### 6. Testimonials Auto-Carousel
 
-Create an intelligent CTA component that rotates messaging based on scroll depth and time-on-page:
-- 0-30s: "Get Free Audit"
-- 30-60s: "Book Strategy Call"  
-- 60s+: "Talk to Our Expert Now"
+Upgrade `TestimonialsSection.tsx`:
 
-Uses existing floating CTA infrastructure, no external dependencies.
+- Add Embla carousel (already installed) for auto-scrolling on mobile
+- Video review placeholder card with play button overlay
+- Staggered star rating animation on scroll-in
 
-**Files**: `src/components/ui/smart-cta.tsx` (new), `src/components/layout/Layout.tsx`
+### 7. Forms → Supabase Integration
 
----
+**Contact.tsx**: Ensure form data saves to `contacts` table with proper fields (name, email, phone, company, service, message, budget_range, source="Website Contact Form"). Add inline validation with shake animation on error, green checkmark on valid blur.
 
-### Phase 5 — Testimonials Video Card + Auto-Carousel
+**GetProposal.tsx**: Save to `leads` table on submit. Add CSS confetti on success. Honeypot field on both forms.
 
-- Add a "Watch Video Review" card placeholder with play button overlay
-- Auto-carousel with swipe on mobile using existing Embla carousel dependency
-- Staggered star rating fill animation
+### 8. WhatsApp Pre-filled Message
 
-**Files**: `src/components/sections/TestimonialsSection.tsx`
+Update `whatsapp-float.tsx` to use:
 
----
+- Phone: `918860100039`
+- Pre-filled: "Hi Digital Penta, I'd like to discuss my project"
 
-### Phase 6 — Blog Article Reading Experience
+### 9. Service Page Title/Meta Format
 
-- Estimated reading time calculation
-- Sticky floating TOC sidebar that highlights current section
-- "Copy link" with toast feedback
-- Social share buttons (Twitter, LinkedIn, Facebook — URL-based, no SDK)
-- Related articles grid at bottom
+Update `ServiceCategory.tsx` and `SubServicePage.tsx` document titles to follow:
 
-**Files**: `src/pages/BlogArticle.tsx`
+- Format: `[Service] Agency in Delhi | Digital Penta | 2026`
 
----
+### 10. Trust Strip Below Hero
 
-### Phase 7 — Performance & SEO Hardening
-
-1. **Resource hints** — Add `<link rel="preload">` for critical fonts, `<link rel="dns-prefetch">` for Supabase
-2. **Image optimization** — Audit all `<img>` tags for `loading="lazy"`, `decoding="async"`, explicit `width`/`height`
-3. **Breadcrumb JSON-LD** — Add dynamic breadcrumbs schema on all inner pages
-4. **`will-change` optimization** — Add `will-change: transform` to animated elements, remove after animation completes
-5. **Font subsetting** — Reduce Google Fonts load by specifying only Latin charset
-
-**Files**: `index.html`, `src/components/layout/Layout.tsx`, various section files
-
----
-
-### Phase 8 — Advanced Form UX
-
-- **Contact form**: Add real-time validation with inline error shake animation
-- **GetProposal wizard**: Add confetti animation on success (pure CSS, no library)
-- **All forms**: Add honeypot field for spam prevention (hidden input)
-
-**Files**: `src/pages/Contact.tsx`, `src/pages/GetProposal.tsx`
-
----
-
-### Phase 9 — Accessibility & PWA Basics
-
-- **Skip to content** link for keyboard nav
-- **Focus-visible** ring styling for all interactive elements
-- **`aria-label`** audit on icon-only buttons
-- **Web App Manifest** for PWA installability (basic `manifest.json`)
-
-**Files**: `index.html`, `public/manifest.json` (new), `src/index.css`
+Add a trust strip component below HeroSection showing:
+"★★★★★ 4.9 Google Rating | 500+ Clients Served | ₹50Cr+ Revenue Generated | Google Partner | Delhi Based, Globally Trusted"
 
 ---
 
-### Technical Constraints
-- **No new heavy libraries** — Only `lenis` (~2KB) added. Everything else uses existing Framer Motion, CSS, and SVG
-- **No GSAP/Three.js/Lottie** — Staying within the <200KB gzipped JS budget
-- **No external SDKs** — Social sharing uses URL-based intents
-- **Mobile-first** — Custom cursor disabled on touch devices, animations respect `prefers-reduced-motion`
+### Files to Edit
+
+
+| File                                              | Changes                                        |
+| ------------------------------------------------- | ---------------------------------------------- |
+| `src/index.css`                                   | Brand color alignment                          |
+| `index.html`                                      | Domain, meta, LocalBusiness schema, FAQ schema |
+| `src/components/sections/HeroSection.tsx`         | H1, subtexts, CTAs, counters                   |
+| `src/components/sections/FAQSection.tsx`          | 8 document-specified questions                 |
+| `src/components/sections/TestimonialsSection.tsx` | Embla carousel, video card                     |
+| `src/components/layout/Footer.tsx`                | Contact info, domain                           |
+| `src/pages/Contact.tsx`                           | Supabase insert, validation, honeypot          |
+| `src/pages/GetProposal.tsx`                       | Supabase insert, confetti, honeypot            |
+| `src/components/ui/whatsapp-float.tsx`            | Phone number, pre-filled message               |
+| `src/pages/ServiceCategory.tsx`                   | Title format                                   |
+| `src/pages/SubServicePage.tsx`                    | Title format                                   |
+| `src/pages/Index.tsx`                             | Add trust strip                                |
+| `src/components/sections/PartnersSection.tsx`     | Trust strip content                            |
+
 
 ### Execution Order
-1. Smooth scroll + custom cursor (global foundation)
-2. Homepage cinematic enhancements + Results Reel
-3. Dashboard Preview section
-4. Smart CTA system
-5. Testimonials upgrade
-6. Blog reading experience
-7. Performance & SEO hardening
-8. Advanced form UX
-9. Accessibility & PWA
-10. Full build verification + end-to-end testing
 
-### Files Summary
-
-| Action | File |
-|--------|------|
-| Create | `src/components/ui/custom-cursor.tsx` |
-| Create | `src/hooks/useSmoothScroll.ts` |
-| Create | `src/components/sections/ResultsReelSection.tsx` |
-| Create | `src/components/sections/DashboardPreviewSection.tsx` |
-| Create | `src/components/ui/smart-cta.tsx` |
-| Create | `public/manifest.json` |
-| Edit | `src/App.tsx` |
-| Edit | `src/index.css` |
-| Edit | `index.html` |
-| Edit | `src/components/layout/Layout.tsx` |
-| Edit | `src/pages/Index.tsx` |
-| Edit | `src/components/sections/HeroSection.tsx` |
-| Edit | `src/components/sections/StatsSection.tsx` |
-| Edit | `src/components/sections/ServicesSection.tsx` |
-| Edit | `src/components/sections/TestimonialsSection.tsx` |
-| Edit | `src/pages/BlogArticle.tsx` |
-| Edit | `src/pages/Contact.tsx` |
-| Edit | `src/pages/GetProposal.tsx` |
-
+1. Brand colors + domain corrections (global foundation)
+2. Hero content + trust strip + FAQ alignment
+3. Forms → Supabase integration with validation
+4. Testimonials carousel upgrade
+5. WhatsApp + contact info updates
+6. Service page meta format
+7. Build verification + QA
