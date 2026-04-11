@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Linkedin, Twitter, Instagram, Youtube, MapPin, Mail, Phone } from "lucide-react";
+import { ArrowRight, Linkedin, Twitter, Instagram, Youtube, Facebook, MapPin, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "motion/react";
+import { supabase } from "@/integrations/supabase/client";
 
 const footerSections = [
   {
@@ -41,19 +42,21 @@ const footerSections = [
 ];
 
 const socials = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Youtube, href: "#", label: "YouTube" },
-  { icon: Twitter, href: "#", label: "Twitter/X" },
+  { icon: Instagram, href: "https://www.instagram.com/digitalpenta", label: "Instagram" },
+  { icon: Facebook, href: "https://facebook.com/digitalpenta", label: "Facebook" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/digitalpenta", label: "LinkedIn" },
+  { icon: Youtube, href: "https://www.youtube.com/@digitalpenta", label: "YouTube" },
+  { icon: Twitter, href: "https://twitter.com/digitalpenta", label: "Twitter/X" },
 ];
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.includes("@")) {
+      await supabase.from("newsletter_subscribers").insert({ email, source: "Footer" });
       setSubscribed(true);
       setEmail("");
     }
@@ -71,13 +74,12 @@ export default function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="rounded-3xl overflow-hidden relative p-10 md:p-16 text-center"
-          style={{ background: "linear-gradient(135deg, hsl(252, 60%, 63%) 0%, hsl(190, 100%, 50%) 100%)" }}
+          style={{ background: "linear-gradient(135deg, hsl(256, 90%, 60%) 0%, hsl(162, 100%, 42%) 100%)" }}
         >
           <div className="absolute inset-0 opacity-20" style={{
             backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
             backgroundSize: "30px 30px",
           }} />
-          {/* Animated glow orbs */}
           <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-white/10 blur-[100px] animate-breathe" />
           <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full bg-white/10 blur-[80px] animate-breathe" style={{ animationDelay: "2s" }} />
           <div className="relative z-10">
@@ -109,11 +111,11 @@ export default function Footer() {
               <svg viewBox="0 0 40 40" className="w-8 h-8 group-hover:scale-110 transition-transform" fill="none">
                 <defs>
                   <linearGradient id="pentaGradFoot" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="hsl(252, 60%, 63%)" />
-                    <stop offset="100%" stopColor="hsl(190, 100%, 50%)" />
+                    <stop offset="0%" stopColor="hsl(256, 90%, 60%)" />
+                    <stop offset="100%" stopColor="hsl(162, 100%, 42%)" />
                   </linearGradient>
                 </defs>
-                <polygon points="20,2 38,14 32,34 8,34 2,14" stroke="url(#pentaGradFoot)" strokeWidth="1.5" fill="hsl(252, 60%, 63%)" fillOpacity="0.1" />
+                <polygon points="20,2 38,14 32,34 8,34 2,14" stroke="url(#pentaGradFoot)" strokeWidth="1.5" fill="hsl(256, 90%, 60%)" fillOpacity="0.1" />
                 <text x="20" y="24" textAnchor="middle" fill="url(#pentaGradFoot)" fontSize="12" fontWeight="800" fontFamily="Plus Jakarta Sans, sans-serif">DP</text>
               </svg>
               <span className="font-display font-bold text-foreground">
@@ -126,14 +128,14 @@ export default function Footer() {
 
             {/* Contact info */}
             <div className="space-y-2 mb-5">
-              <a href="mailto:contact@digitalpenta.in" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group">
-                <Mail className="w-3.5 h-3.5 group-hover:text-primary transition-colors" /> contact@digitalpenta.in
+              <a href="mailto:support@digitalpenta.com" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group">
+                <Mail className="w-3.5 h-3.5 group-hover:text-primary transition-colors" /> support@digitalpenta.com
               </a>
-              <a href="tel:+91XXXXXXXXXX" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group">
-                <Phone className="w-3.5 h-3.5 group-hover:text-primary transition-colors" /> +91-XXXXXXXXXX
+              <a href="tel:+918860100039" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group">
+                <Phone className="w-3.5 h-3.5 group-hover:text-primary transition-colors" /> +91-88601-00039
               </a>
               <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5" /> Delhi, India
+                <MapPin className="w-3.5 h-3.5" /> Corporate Office - Delhi, India
               </span>
             </div>
 
@@ -167,6 +169,8 @@ export default function Footer() {
                 <a
                   key={s.label}
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="w-8 h-8 rounded-lg bg-secondary/40 border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/5 transition-all duration-300"
                 >
@@ -201,7 +205,7 @@ export default function Footer() {
       <div className="border-t border-border/20">
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Digital Penta. All rights reserved. | Delhi, India | contact@digitalpenta.in
+            © {new Date().getFullYear()} Digital Penta. All rights reserved. | Corporate Office - Delhi, India | support@digitalpenta.com
           </span>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>

@@ -13,50 +13,52 @@
 
 @layer base {
   :root {
-    --background: 225 60% 6%;
+    --background: 240 47% 14%;
     --foreground: 220 20% 90%;
 
-    --card: 225 50% 9%;
+    --card: 240 40% 17%;
     --card-foreground: 220 20% 90%;
 
-    --popover: 225 50% 9%;
+    --popover: 240 40% 17%;
     --popover-foreground: 220 20% 90%;
 
-    --primary: 252 60% 63%;
+    --primary: 256 90% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 225 40% 14%;
+    --secondary: 240 38% 20%;
     --secondary-foreground: 220 20% 85%;
 
-    --muted: 225 30% 12%;
+    --muted: 240 30% 18%;
     --muted-foreground: 220 15% 55%;
 
-    --accent: 190 100% 50%;
-    --accent-foreground: 225 60% 6%;
+    --accent: 162 100% 42%;
+    --accent-foreground: 240 47% 14%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 225 25% 15%;
-    --input: 225 25% 15%;
-    --ring: 252 60% 63%;
+    --border: 240 25% 22%;
+    --input: 240 25% 22%;
+    --ring: 256 90% 60%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 225 50% 7%;
+    --sidebar-background: 240 45% 15%;
     --sidebar-foreground: 220 20% 85%;
-    --sidebar-primary: 252 60% 63%;
+    --sidebar-primary: 256 90% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 40% 14%;
+    --sidebar-accent: 240 38% 20%;
     --sidebar-accent-foreground: 220 20% 85%;
-    --sidebar-border: 225 25% 15%;
-    --sidebar-ring: 252 60% 63%;
+    --sidebar-border: 240 25% 22%;
+    --sidebar-ring: 256 90% 60%;
 
     /* Custom tokens */
-    --glow-violet: 252 60% 63%;
-    --glow-cyan: 190 100% 50%;
-    --surface-glass: 225 50% 12%;
-    --gradient-cta: linear-gradient(135deg, hsl(20, 90%, 50%), hsl(30, 100%, 45%));
+    --glow-violet: 256 90% 60%;
+    --glow-cyan: 162 100% 42%;
+    --warning-orange: 18 100% 60%;
+    --success-green: 152 100% 39%;
+    --surface-glass: 240 40% 17%;
+    --gradient-cta: linear-gradient(135deg, hsl(18, 100%, 60%), hsl(30, 100%, 45%));
   }
 }
 

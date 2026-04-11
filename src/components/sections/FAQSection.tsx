@@ -9,36 +9,36 @@ import {
 
 const faqs = [
   {
-    q: "How soon will I see results from digital marketing?",
-    a: "Most clients see initial improvements within 30-60 days. SEO takes 3-6 months for significant organic growth, while paid ads can generate leads within the first week. We provide transparent weekly reporting so you can track progress from day one.",
+    q: "How much does digital marketing cost in India?",
+    a: "Digital marketing costs in India range from ₹15,000/month for startups to ₹5,00,000+/month for enterprise brands. At Digital Penta, our Starter plan begins at ₹9,999/month. The final cost depends on your goals, channels, and competition. We offer transparent pricing with no hidden fees.",
   },
   {
-    q: "Do you work with small businesses and startups?",
-    a: "Absolutely! Our Starter plan begins at ₹9,999/month — designed specifically for small businesses, D2C brands, and early-stage startups. We scale our services as you grow.",
+    q: "How long does SEO take to show results?",
+    a: "SEO typically shows initial improvements within 30-60 days, with significant organic growth in 3-6 months. Competitive keywords may take 6-12 months. We provide transparent weekly reporting so you can track progress from day one, and our clients see an average 340% increase in organic traffic.",
+  },
+  {
+    q: "Do you work with clients in Dubai and UAE?",
+    a: "Yes! We serve clients across India and the Middle East including Dubai, Abu Dhabi, Riyadh, and Doha. Our remote-first teams deliver seamlessly across time zones with native Arabic-speaking PR and content specialists for the MENA region.",
   },
   {
     q: "What makes Digital Penta different from other agencies?",
-    a: "We integrate five disciplines — Marketing, PR, Development, AI & Automation — under one roof. No fragmented agencies, no communication gaps. Plus, we're ROI-obsessed: every campaign is tied to measurable KPIs.",
+    a: "We integrate five disciplines — Marketing, PR, Development, AI & Automation — under one roof. No fragmented agencies, no communication gaps. Plus, we're ROI-obsessed: every campaign is tied to measurable KPIs. Our 95% client retention rate speaks for itself.",
   },
   {
     q: "Do you offer performance-based pricing?",
-    a: "Yes, for select services like PPC and performance marketing, we offer hybrid models with a base fee plus performance bonuses. Contact us to discuss what works best for your goals.",
+    a: "Yes, for select services like PPC and performance marketing, we offer hybrid models with a base fee plus performance bonuses. This aligns our incentives with your success. Contact us to discuss what works best for your goals.",
+  },
+  {
+    q: "Can I see a live demo of your client dashboard?",
+    a: "Absolutely! We offer a live walkthrough of our real-time client dashboard that shows traffic, leads, ad spend, ROAS, and more — all in one place. Book a free strategy call and we'll give you a full demo tailored to your industry.",
   },
   {
     q: "Which industries do you specialize in?",
-    a: "We have deep expertise in Real Estate, Healthcare, E-commerce/D2C, Finance/Fintech, SaaS, Education, and Hospitality. Our strategies are tailored to each industry's unique challenges.",
+    a: "We have deep expertise in Real Estate, Healthcare, E-commerce/D2C, Finance/Fintech, SaaS, Education, and Hospitality. Our strategies are tailored to each industry's unique challenges, audience behavior, and competitive landscape.",
   },
   {
-    q: "How do you report results and track ROI?",
-    a: "You get a dedicated dashboard with real-time analytics, plus bi-weekly or monthly detailed reports. We track every metric that matters — leads, conversions, ROAS, organic rankings, and more.",
-  },
-  {
-    q: "Can I start with just one service?",
-    a: "Of course! Many clients start with one pillar (like SEO or social media) and expand as they see results. Our modular approach lets you scale at your own pace.",
-  },
-  {
-    q: "Do you work with clients outside Delhi/India?",
-    a: "Yes! We serve clients across India and the Middle East (Dubai, Abu Dhabi, Riyadh, Doha). Our remote-first teams deliver seamlessly across time zones.",
+    q: "How do I get started with Digital Penta?",
+    a: "Getting started is easy: 1) Book a free 30-minute strategy call, 2) We'll conduct a website audit and competitor analysis, 3) Receive a custom growth plan with clear KPIs and pricing, 4) Approve and we launch within 7 days. No long-term contracts required.",
   },
 ];
 
