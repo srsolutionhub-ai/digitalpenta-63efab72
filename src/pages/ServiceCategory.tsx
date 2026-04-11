@@ -224,6 +224,12 @@ export default function ServiceCategory() {
   const processRef = useRef<HTMLDivElement>(null);
   const processInView = useInView(processRef, { once: true });
 
+  useEffect(() => {
+    if (data) {
+      document.title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
+    }
+  }, [data]);
+
   if (!data) {
     return (
       <Layout>

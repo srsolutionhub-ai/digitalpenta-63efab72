@@ -5,10 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getSubServiceData } from "@/data/subServiceData";
 import { motion } from "motion/react";
+import { useEffect } from "react";
 
 export default function SubServicePage() {
   const { category, subService } = useParams<{ category: string; subService: string }>();
   const data = getSubServiceData(category || "", subService || "");
+
+  useEffect(() => {
+    if (data) {
+      document.title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
+    }
+  }, [data]);
 
   if (!data) {
     return (
