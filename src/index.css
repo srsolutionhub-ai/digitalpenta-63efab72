@@ -14,47 +14,51 @@
 @layer base {
   :root {
     --background: 240 47% 14%;
-    --foreground: 220 20% 90%;
+    --foreground: 220 20% 92%;
 
     --card: 240 40% 17%;
-    --card-foreground: 220 20% 90%;
+    --card-foreground: 220 20% 92%;
 
     --popover: 240 40% 17%;
-    --popover-foreground: 220 20% 90%;
+    --popover-foreground: 220 20% 92%;
 
-    --primary: 256 90% 60%;
+    --primary: 256 90% 62%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 38% 20%;
+    --secondary: 240 38% 21%;
     --secondary-foreground: 220 20% 85%;
 
-    --muted: 240 30% 18%;
-    --muted-foreground: 220 15% 55%;
+    --muted: 240 30% 19%;
+    --muted-foreground: 220 15% 58%;
 
-    --accent: 162 100% 42%;
+    --accent: 162 100% 44%;
     --accent-foreground: 240 47% 14%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 25% 22%;
-    --input: 240 25% 22%;
-    --ring: 256 90% 60%;
+    --border: 240 25% 24%;
+    --input: 240 25% 24%;
+    --ring: 256 90% 62%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
     --sidebar-background: 240 45% 15%;
     --sidebar-foreground: 220 20% 85%;
-    --sidebar-primary: 256 90% 60%;
+    --sidebar-primary: 256 90% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 38% 20%;
+    --sidebar-accent: 240 38% 21%;
     --sidebar-accent-foreground: 220 20% 85%;
-    --sidebar-border: 240 25% 22%;
-    --sidebar-ring: 256 90% 60%;
+    --sidebar-border: 240 25% 24%;
+    --sidebar-ring: 256 90% 62%;
 
-    /* Custom tokens */
-    --glow-violet: 256 90% 60%;
-    --glow-cyan: 162 100% 42%;
+    /* Premium tokens */
+    --glass-bg: 240 40% 17% / 0.5;
+    --glass-border: 256 60% 70% / 0.15;
+    --glass-blur: 20px;
+    --card-gradient-top: linear-gradient(90deg, hsl(256 90% 62%) 0%, hsl(162 100% 44%) 100%);
+    --glow-violet: 256 90% 62%;
+    --glow-cyan: 162 100% 44%;
     --warning-orange: 18 100% 60%;
     --success-green: 152 100% 39%;
     --surface-glass: 240 40% 17%;
@@ -102,11 +106,40 @@
 
 @layer utilities {
   .glass {
-    @apply bg-card/40 backdrop-blur-xl border border-border/50;
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
   }
 
   .glass-hover {
     @apply hover:bg-card/60 hover:border-primary/30 transition-all duration-300;
+  }
+
+  /* Premium card — gradient top border */
+  .card-premium {
+    position: relative;
+    background: hsl(240 40% 17% / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(256 60% 70% / 0.12);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .card-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--card-gradient-top);
+    opacity: 0.7;
+  }
+
+  .card-premium:hover::before {
+    opacity: 1;
   }
 
   .glow-border {
@@ -134,8 +167,28 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--glow-violet)), hsl(var(--glow-cyan)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(256 90% 72%) 0%,
+      hsl(200 100% 65%) 50%,
+      hsl(162 100% 54%) 100%
+    );
+  }
+
+  /* Hero-specific gradient — brighter */
+  .text-gradient-hero {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(
+      120deg,
+      hsl(256 100% 78%) 0%,
+      hsl(190 100% 65%) 40%,
+      hsl(162 100% 60%) 100%
+    );
   }
 
   .mesh-gradient {
