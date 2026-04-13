@@ -15,25 +15,13 @@ export default function SmartCTA() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Show after 5s
     const showTimer = setTimeout(() => setVisible(true), 5000);
-
-    // Rotate stages
     const interval = setInterval(() => {
       setStage((s) => Math.min(s + 1, ctaStages.length - 1));
     }, 30000);
-
-    // Hide on scroll to top
-    const onScroll = () => {
-      setVisible(window.scrollY > 300);
-    };
+    const onScroll = () => { setVisible(window.scrollY > 300); };
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      clearTimeout(showTimer);
-      clearInterval(interval);
-      window.removeEventListener("scroll", onScroll);
-    };
+    return () => { clearTimeout(showTimer); clearInterval(interval); window.removeEventListener("scroll", onScroll); };
   }, []);
 
   const current = ctaStages[stage];
@@ -50,7 +38,7 @@ export default function SmartCTA() {
           className="fixed bottom-20 right-4 z-50 hidden md:block"
         >
           <Link to={current.href}>
-            <Button className="rounded-full px-6 py-5 font-display font-bold text-sm gap-2 bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300">
+            <Button className="rounded-full px-6 py-5 font-display font-bold text-sm gap-2">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={stage}
