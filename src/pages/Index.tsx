@@ -15,20 +15,6 @@ import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 
-/* Marquee stripe separator */
-function MarqueeStripe() {
-  const text = "SEO  •  SOCIAL MEDIA  •  PAID ADS  •  BRANDING  •  WEB DESIGN  •  AI SOLUTIONS  •  AUTOMATION  •  ";
-  return (
-    <div className="border-y border-border/20 bg-card/10 overflow-hidden py-3 marquee-mask">
-      <div className="flex whitespace-nowrap animate-marquee-slow">
-        <span className="text-xs font-display font-bold uppercase tracking-[0.2em] text-foreground/[0.06] italic px-4">{text}</span>
-        <span className="text-xs font-display font-bold uppercase tracking-[0.2em] text-foreground/[0.06] italic px-4">{text}</span>
-        <span className="text-xs font-display font-bold uppercase tracking-[0.2em] text-foreground/[0.06] italic px-4">{text}</span>
-      </div>
-    </div>
-  );
-}
-
 /* Trust Strip */
 function TrustStrip() {
   const items = [
@@ -39,13 +25,13 @@ function TrustStrip() {
     "Delhi Based, Globally Trusted",
   ];
   return (
-    <div className="bg-primary/5 border-y border-primary/10 py-3 overflow-hidden">
+    <div className="border-y border-border py-3 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           {items.map((item, i) => (
-            <span key={i} className="text-xs font-mono text-foreground/60 whitespace-nowrap">
+            <span key={i} className="type-label text-muted-foreground whitespace-nowrap font-mono">
               {item}
-              {i < items.length - 1 && <span className="ml-6 text-primary/30">|</span>}
+              {i < items.length - 1 && <span className="ml-6 text-border">|</span>}
             </span>
           ))}
         </div>
@@ -61,10 +47,8 @@ const Index = () => {
       <TrustStrip />
       <PartnersSection />
       <StatsSection />
-      <MarqueeStripe />
       <ServicesSection />
       <ProcessSection />
-      <MarqueeStripe />
       <WhyUsSection />
       <CaseStudiesSection />
       <ResultsReelSection />

@@ -6,35 +6,22 @@ import { useRef, useState } from "react";
 
 const plans = [
   {
-    name: "Starter",
-    price: "₹9,999",
-    annual: "₹7,999",
-    period: "/month",
+    name: "Starter", price: "₹9,999", annual: "₹7,999", period: "/month",
     desc: "Perfect for small businesses & startups getting started with digital marketing.",
     features: ["SEO (On-page + Off-page)", "Social Media (2 platforms)", "Monthly Performance Report", "Dedicated Account Manager", "Email Support"],
-    cta: "Get Started",
-    featured: false,
+    cta: "Get Started", featured: false,
   },
   {
-    name: "Growth",
-    price: "₹24,999",
-    annual: "₹19,999",
-    period: "/month",
+    name: "Growth", price: "₹24,999", annual: "₹19,999", period: "/month",
     desc: "For scaling brands that want full-funnel marketing with measurable ROI.",
     features: ["Full SEO Suite", "Social Media (3 platforms)", "Google & Meta Ads Management", "Bi-weekly Strategy Calls", "Content Marketing (4 blogs/mo)", "Monthly Analytics Dashboard", "Priority Support"],
-    cta: "Get Started",
-    featured: true,
-    badge: "Most Popular",
+    cta: "Get Started", featured: true, badge: "Most Popular",
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    annual: "Custom",
-    period: "",
+    name: "Enterprise", price: "Custom", annual: "Custom", period: "",
     desc: "Full-service, dedicated team with custom strategy for large brands & enterprises.",
     features: ["All Growth Features", "Dedicated Cross-functional Team", "Custom AI & Automation", "PR & Reputation Management", "Weekly Strategy Meetings", "Custom Development", "24/7 Priority Support"],
-    cta: "Contact Us",
-    featured: false,
+    cta: "Contact Us", featured: false,
   },
 ];
 
@@ -44,8 +31,7 @@ export default function PricingSection() {
   const [annual, setAnnual] = useState(false);
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0 bg-card/20" />
+    <section className="py-28 md:py-36 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
@@ -53,19 +39,18 @@ export default function PricingSection() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-2xl mx-auto mb-10"
         >
-          <span className="text-xs font-mono text-primary uppercase tracking-widest">Pricing</span>
-          <h2 className="font-display font-extrabold text-3xl md:text-5xl text-foreground mt-3 mb-4">
-            Transparent Pricing. <span className="text-gradient">Zero Hidden Costs.</span>
+          <span className="type-label text-primary font-mono">Pricing</span>
+          <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
+            Transparent Pricing. <span className="text-primary">Zero Hidden Costs.</span>
           </h2>
-          <p className="text-muted-foreground text-sm">Choose a plan that fits your growth stage. Scale up anytime.</p>
+          <p className="type-body">Choose a plan that fits your growth stage. Scale up anytime.</p>
         </motion.div>
 
-        {/* Monthly/Annual toggle */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex items-center justify-center gap-3 mb-12"
+          className="flex items-center justify-center gap-3 mb-16"
         >
           <span className={`text-sm font-display font-medium transition-colors ${!annual ? "text-foreground" : "text-muted-foreground"}`}>Monthly</span>
           <button
@@ -75,7 +60,7 @@ export default function PricingSection() {
             <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${annual ? "translate-x-6" : "translate-x-0.5"}`} />
           </button>
           <span className={`text-sm font-display font-medium transition-colors ${annual ? "text-foreground" : "text-muted-foreground"}`}>
-            Annual <span className="text-[10px] font-mono text-accent ml-1">Save 20%</span>
+            Annual <span className="type-label text-accent ml-1">Save 20%</span>
           </span>
         </motion.div>
 
@@ -86,14 +71,12 @@ export default function PricingSection() {
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative rounded-2xl glass border p-7 flex flex-col transition-all duration-500 ${
-                plan.featured
-                  ? "border-primary/30 shadow-xl shadow-primary/10 shimmer-border"
-                  : "border-border/30 hover:border-primary/15"
+              className={`relative rounded-2xl card-surface p-7 flex flex-col hover-lift ${
+                plan.featured ? "ring-1 ring-primary/30" : ""
               }`}
             >
               {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold text-primary-foreground bg-primary px-4 py-1 rounded-full flex items-center gap-1">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 type-label font-bold text-primary-foreground bg-primary px-4 py-1 rounded-full flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> {plan.badge}
                 </span>
               )}
@@ -108,26 +91,16 @@ export default function PricingSection() {
                 <span className="text-sm text-muted-foreground">{plan.period}</span>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f, fi) => (
-                  <motion.li
-                    key={f}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.3, delay: 0.3 + i * 0.1 + fi * 0.04 }}
-                    className="flex items-start gap-2 text-sm text-muted-foreground"
-                  >
+                {plan.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
                     <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                     {f}
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
               <Link to={plan.name === "Enterprise" ? "/contact" : "/get-proposal"}>
                 <Button
-                  className={`w-full rounded-full font-display font-bold ${
-                    plan.featured
-                      ? "bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg"
-                      : ""
-                  }`}
+                  className="w-full rounded-full font-display font-bold"
                   variant={plan.featured ? "default" : "outline"}
                 >
                   {plan.cta}
