@@ -185,6 +185,37 @@ function handleShare(platform: string, title: string) {
   window.open(shareUrls[platform], "_blank", "noopener,noreferrer,width=600,height=400");
 }
 
+function MobileTOC({ headings }: { headings: string[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="lg:hidden mb-6 rounded-xl border border-border/20 bg-muted/10 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-display font-semibold text-foreground"
+      >
+        In This Article
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <ul className="px-4 pb-3 space-y-1.5">
+          {headings.map((h, i) => (
+            <li key={i}>
+              <a
+                href={`#${h.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={() => setOpen(false)}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 py-1"
+              >
+                <span className="w-1 h-1 rounded-full bg-primary/40" />
+                {h}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function BlogArticle() {
   const { slug } = useParams<{ slug: string }>();
   const article = articlesData[slug || ""] || null;
