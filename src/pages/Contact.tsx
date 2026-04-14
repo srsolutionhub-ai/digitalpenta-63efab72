@@ -182,17 +182,20 @@ export default function Contact() {
                       <Input
                         required value={formData.name}
                         onChange={e => { setFormData({...formData, name: e.target.value}); setErrors({...errors, name: false}); }}
+                        onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                         placeholder="Your name"
-                        className={inputClass("name")}
+                        className={`min-h-[52px] ${inputClass("name")}`}
                       />
                     </div>
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Email *</label>
                       <Input
                         type="email" required value={formData.email}
+                        inputMode="email"
                         onChange={e => { setFormData({...formData, email: e.target.value}); setErrors({...errors, email: false}); }}
+                        onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                         placeholder="you@company.com"
-                        className={inputClass("email")}
+                        className={`min-h-[52px] ${inputClass("email")}`}
                       />
                     </div>
                   </div>
@@ -200,18 +203,18 @@ export default function Contact() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Phone</label>
-                      <Input placeholder="+91 98765 43210" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="bg-secondary/50 border-border/50" />
+                      <Input placeholder="+91 98765 43210" inputMode="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} className="bg-secondary/50 border-border/50 min-h-[52px]" />
                     </div>
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Company</label>
-                      <Input placeholder="Company Name" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} className="bg-secondary/50 border-border/50" />
+                      <Input placeholder="Company Name" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} className="bg-secondary/50 border-border/50 min-h-[52px]" />
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Service Interested In *</label>
-                      <select required value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex h-10 w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
+                      <select required value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex min-h-[52px] w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
                         <option value="">Select a service</option>
                         {services.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
