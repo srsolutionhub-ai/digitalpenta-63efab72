@@ -1,15 +1,15 @@
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const results = [
-  { metric: "312%", label: "Organic Traffic Growth", client: "SaaS Startup, Pune" },
-  { metric: "4.2X", label: "ROAS on Google Ads", client: "E-commerce, Delhi" },
-  { metric: "2,000+", label: "Instagram Followers / Month", client: "Beauty Brand, Jaipur" },
-  { metric: "₹1.2Cr", label: "Revenue Generated in Q1", client: "Real Estate, Mumbai" },
-  { metric: "70%", label: "Reduction in Support Tickets", client: "D2C Brand, Bangalore" },
-  { metric: "45%", label: "Lower Cost Per Lead", client: "Fintech Startup, Hyderabad" },
-  { metric: "98%", label: "Client Retention Rate", client: "Across All Verticals" },
-  { metric: "3X", label: "Email Open Rate Improvement", client: "EdTech, Chennai" },
+  { metric: "312%", label: "Organic Traffic Growth", client: "SaaS Startup, Pune", service: "SEO & Content Strategy", accent: "border-violet-500/60" },
+  { metric: "4.2X", label: "ROAS on Google Ads", client: "E-commerce, Delhi", service: "PPC Management", accent: "border-cyan-500/60" },
+  { metric: "2,000+", label: "Instagram Followers / Month", client: "Beauty Brand, Jaipur", service: "Social Media Marketing", accent: "border-pink-500/60" },
+  { metric: "₹1.2Cr", label: "Revenue Generated in Q1", client: "Real Estate, Mumbai", service: "Performance Marketing", accent: "border-emerald-500/60" },
+  { metric: "70%", label: "Reduction in Support Tickets", client: "D2C Brand, Bangalore", service: "AI Chatbot", accent: "border-amber-500/60" },
+  { metric: "45%", label: "Lower Cost Per Lead", client: "Fintech Startup, Hyderabad", service: "Google Ads + SEO", accent: "border-blue-500/60" },
+  { metric: "98%", label: "Client Retention Rate", client: "Across All Verticals", service: "Full-Service Retainer", accent: "border-violet-500/60" },
+  { metric: "3X", label: "Email Open Rate Improvement", client: "EdTech, Chennai", service: "Email Marketing Automation", accent: "border-orange-500/60" },
 ];
 
 export default function ResultsReelSection() {
@@ -31,21 +31,38 @@ export default function ResultsReelSection() {
       </motion.div>
 
       <div className="relative marquee-mask">
-        <div className="flex gap-4 animate-marquee-slow hover:[animation-play-state:paused]">
+        <div className="flex gap-4 animate-marquee-slow group/reel">
           {[...results, ...results].map((r, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 w-[280px] rounded-2xl card-surface p-6 hover-lift"
-            >
-              <span className="text-3xl font-mono font-extrabold text-primary">
-                {r.metric}
-              </span>
-              <p className="text-sm font-display font-semibold text-foreground/80 mt-2">{r.label}</p>
-              <p className="type-label text-muted-foreground font-mono mt-1">{r.client}</p>
-            </div>
+            <ResultCard key={i} r={r} />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ResultCard({ r }: { r: typeof results[0] }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className={`flex-shrink-0 w-[280px] rounded-2xl card-surface p-6 hover-lift border-l-2 ${r.accent} relative`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ animationPlayState: hovered ? "paused" : "running" }}
+    >
+      <span className="text-3xl font-mono font-extrabold text-primary">
+        {r.metric}
+      </span>
+      <p className="text-sm font-display font-semibold text-foreground/80 mt-2">{r.label}</p>
+      <p className="type-label text-muted-foreground font-mono mt-1">{r.client}</p>
+
+      {hovered && (
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-mono whitespace-nowrap z-10 shadow-lg">
+          {r.service}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rotate-45 bg-foreground" />
+        </div>
+      )}
+    </div>
   );
 }
