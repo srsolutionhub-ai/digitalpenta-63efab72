@@ -45,8 +45,6 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", company: "", service: "", budget: "", message: "",
   });
-  const setFormDataState = setFormData;
-  });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLDivElement>(null);
   const formInView = useInView(formRef, { once: true });
