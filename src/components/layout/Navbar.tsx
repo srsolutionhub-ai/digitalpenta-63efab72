@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
@@ -248,9 +248,19 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
+            <a href="tel:+918860100039" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono">
+              <Phone className="w-3.5 h-3.5" />
+              +91-88601-00039
+            </a>
+            <div className="w-px h-5 bg-border/50" />
+            <Link to="/contact">
+              <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
+                Book Free Call
+              </Button>
+            </Link>
             <Link to="/get-proposal">
-              <Button size="sm" className="font-display font-bold text-xs tracking-wide rounded-full px-7 bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-shadow animate-pulse-glow">
-                Get Free Audit →
+              <Button size="sm" className="rounded-full font-display font-bold text-xs px-5 h-8">
+                Get Proposal →
               </Button>
             </Link>
           </div>

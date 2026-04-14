@@ -14,6 +14,7 @@ import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
 import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
+import UrgencyStrip from "@/components/ui/urgency-strip";
 
 /* Trust Strip */
 function TrustStrip() {
@@ -44,15 +45,16 @@ const Index = () => {
   return (
     <Layout>
       <HeroSection />
+      <UrgencyStrip />
       <TrustStrip />
       <PartnersSection />
+      <WebsiteAuditSection />
       <StatsSection />
       <ServicesSection />
       <ProcessSection />
       <WhyUsSection />
       <CaseStudiesSection />
       <ResultsReelSection />
-      <WebsiteAuditSection />
       <DashboardPreviewSection />
       <TestimonialsSection />
       <PricingSection />
