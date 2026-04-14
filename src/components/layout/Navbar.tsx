@@ -4,28 +4,7 @@ import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRig
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
-
-/* Pentagon SVG Logo */
-function PentagonLogo() {
-  return (
-    <svg viewBox="0 0 40 40" className="w-9 h-9" fill="none">
-      <defs>
-        <linearGradient id="pentaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="hsl(252, 60%, 63%)" />
-          <stop offset="100%" stopColor="hsl(190, 100%, 50%)" />
-        </linearGradient>
-      </defs>
-      <polygon
-        points="20,2 38,14 32,34 8,34 2,14"
-        stroke="url(#pentaGrad)"
-        strokeWidth="1.5"
-        fill="hsl(252, 60%, 63%)"
-        fillOpacity="0.1"
-      />
-      <text x="20" y="24" textAnchor="middle" fill="url(#pentaGrad)" fontSize="12" fontWeight="800" fontFamily="Plus Jakarta Sans, sans-serif">DP</text>
-    </svg>
-  );
-}
+import logo from "@/assets/digital-penta-logo.png";
 
 const services = [
   {
@@ -110,7 +89,6 @@ export default function Navbar() {
   const onScroll = useCallback(() => {
     const y = window.scrollY;
     setScrolled(y > 20);
-    // Hide navbar on scroll down, show on scroll up (only after 200px)
     if (y > 200) {
       setHidden(y > lastY && y - lastY > 5);
     } else {
@@ -146,16 +124,13 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        {/* Animated gradient line at bottom */}
         <div className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`}>
           <div className="h-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
         </div>
 
         <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4">
           <Link to="/" className="flex items-center gap-2 group">
-            <motion.div whileHover={{ rotate: 15 }} transition={{ type: "spring", stiffness: 300 }}>
-              <PentagonLogo />
-            </motion.div>
+            <img src={logo} alt="Digital Penta" className="w-9 h-9 object-contain" />
             <span className="font-display font-bold text-lg tracking-tight text-foreground">
               Digital<span className="text-gradient">Penta</span>
             </span>
@@ -284,69 +259,94 @@ export default function Navbar() {
           </button>
         </div>
 
+        {/* Mobile Bottom Sheet */}
         <AnimatePresence>
           {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-3xl z-40 overflow-y-auto"
-            >
-              <nav className="container px-4 py-8 space-y-6">
-                <div>
-                  <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-4">Services</p>
-                  <div className="space-y-1">
-                    {services.map((cat, i) => (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="lg:hidden fixed inset-0 top-16 bg-background/60 backdrop-blur-sm z-30"
+                onClick={() => setMobileOpen(false)}
+              />
+              {/* Bottom sheet */}
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(_, info) => {
+                  if (info.offset.y > 100) setMobileOpen(false);
+                }}
+                className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border/30 rounded-t-3xl overflow-y-auto"
+                style={{ maxHeight: "65vh" }}
+              >
+                {/* Drag handle */}
+                <div className="flex justify-center pt-3 pb-2">
+                  <div className="w-10 h-1 rounded-full bg-border/60" />
+                </div>
+
+                <nav className="px-6 pb-8 space-y-5">
+                  <div>
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-3">Services</p>
+                    <div className="space-y-1">
+                      {services.map((cat, i) => (
+                        <motion.div
+                          key={cat.href}
+                          initial={{ opacity: 0, x: -16 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: i * 0.04 }}
+                        >
+                          <Link
+                            to={cat.href}
+                            className="flex items-center gap-3 py-2.5 text-base font-display font-semibold text-foreground hover:text-primary transition-colors"
+                          >
+                            <span className="p-1.5 rounded-lg bg-muted/50">
+                              <cat.icon className={`w-4 h-4 ${cat.color}`} />
+                            </span>
+                            {cat.title}
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border-t border-border/30 pt-4 space-y-1">
+                    {navLinks.map((l, i) => (
                       <motion.div
-                        key={cat.href}
-                        initial={{ opacity: 0, x: -20 }}
+                        key={l.href}
+                        initial={{ opacity: 0, x: -16 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: i * 0.05 }}
+                        transition={{ duration: 0.3, delay: 0.2 + i * 0.04 }}
                       >
                         <Link
-                          to={cat.href}
-                          className="flex items-center gap-3 py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
+                          to={l.href}
+                          className="block py-2.5 text-base font-display font-semibold text-foreground hover:text-primary transition-colors"
                         >
-                          <span className="p-1.5 rounded-lg bg-muted/50">
-                            <cat.icon className={`w-5 h-5 ${cat.color}`} />
-                          </span>
-                          {cat.title}
+                          {l.title}
                         </Link>
                       </motion.div>
                     ))}
                   </div>
-                </div>
-                <div className="border-t border-border/30 pt-6 space-y-1">
-                  {navLinks.map((l, i) => (
-                    <motion.div
-                      key={l.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.25 + i * 0.05 }}
-                    >
-                      <Link
-                        to={l.href}
-                        className="block py-3 text-lg font-display font-semibold text-foreground hover:text-primary transition-colors"
-                      >
-                        {l.title}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.5 }}
-                >
-                  <Link to="/get-proposal" className="block pt-4">
-                    <Button className="w-full rounded-full font-display font-bold text-base py-6 bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg">
-                      Get Free Audit →
-                    </Button>
-                  </Link>
-                </motion.div>
-              </nav>
-            </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.4 }}
+                  >
+                    <Link to="/get-proposal" className="block pt-2">
+                      <Button className="w-full rounded-full font-display font-bold text-base py-6">
+                        Get Free Proposal →
+                      </Button>
+                    </Link>
+                  </motion.div>
+                </nav>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </header>
