@@ -177,26 +177,26 @@ export default function GetProposal() {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Full Name *</label>
-                          <Input value={data.name} onChange={e => setData({...data, name: e.target.value})} placeholder="John Doe" className="bg-secondary/50 border-border/50" />
+                          <Input value={data.name} onChange={e => setData({...data, name: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="John Doe" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Email *</label>
-                          <Input type="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} placeholder="john@company.com" className="bg-secondary/50 border-border/50" />
+                          <Input type="email" inputMode="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="john@company.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Phone</label>
-                          <Input value={data.phone} onChange={e => setData({...data, phone: e.target.value})} placeholder="+91 98765 43210" className="bg-secondary/50 border-border/50" />
+                          <Input inputMode="tel" value={data.phone} onChange={e => setData({...data, phone: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="+91 98765 43210" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Company</label>
-                          <Input value={data.company} onChange={e => setData({...data, company: e.target.value})} placeholder="Company Name" className="bg-secondary/50 border-border/50" />
+                          <Input value={data.company} onChange={e => setData({...data, company: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="Company Name" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                       </div>
                       <div>
                         <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Website</label>
-                        <Input value={data.website} onChange={e => setData({...data, website: e.target.value})} placeholder="https://yoursite.com" className="bg-secondary/50 border-border/50" />
+                        <Input inputMode="url" value={data.website} onChange={e => setData({...data, website: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="https://yoursite.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                       </div>
                     </div>
                   )}
