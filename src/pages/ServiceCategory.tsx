@@ -317,7 +317,36 @@ export default function ServiceCategory() {
           <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-10">
             Our <span className="text-gradient">{data.title}</span> Services
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Mobile: horizontal scroll */}
+          <div className="md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide">
+            {data.subServices.map((s, i) => (
+              <motion.div
+                key={s.href}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                className="flex-shrink-0 w-[280px] snap-center"
+              >
+                <Link
+                  to={s.href}
+                  className="group rounded-xl card-surface p-6 block hover:border-primary/20 transition-all duration-500 h-full relative overflow-hidden"
+                >
+                  <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary/5 flex items-center justify-center">
+                    <span className="text-[10px] font-mono text-primary/40">{String(i + 1).padStart(2, "0")}</span>
+                  </div>
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="font-display font-semibold text-foreground group-hover:text-primary transition-colors">{s.title}</h3>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop: grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data.subServices.map((s, i) => (
               <motion.div
                 key={s.href}
@@ -329,13 +358,11 @@ export default function ServiceCategory() {
                 <MagneticCard intensity={3}>
                   <Link
                     to={s.href}
-                    className="group rounded-xl glass border border-border/30 p-6 block hover:border-primary/20 transition-all duration-500 h-full relative overflow-hidden"
+                    className="group rounded-xl card-surface p-6 block hover:border-primary/20 transition-all duration-500 h-full relative overflow-hidden"
                   >
-                    {/* Numbered badge */}
                     <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary/5 flex items-center justify-center">
                       <span className="text-[10px] font-mono text-primary/40">{String(i + 1).padStart(2, "0")}</span>
                     </div>
-                    {/* Bottom border animate from left */}
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-accent w-0 group-hover:w-full transition-all duration-500" />
                     <div className="flex items-start justify-between mb-3">
                       <h3 className="font-display font-semibold text-foreground group-hover:text-primary transition-colors">{s.title}</h3>
