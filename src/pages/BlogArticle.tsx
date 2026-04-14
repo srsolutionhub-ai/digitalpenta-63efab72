@@ -455,6 +455,7 @@ export default function BlogArticle() {
           </div>
         </div>
       </section>
+      <BlogStickyCTA />
     </Layout>
   );
 }
