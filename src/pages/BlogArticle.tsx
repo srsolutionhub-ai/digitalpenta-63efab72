@@ -1,11 +1,11 @@
 import Layout from "@/components/layout/Layout";
 import { Link, useParams } from "react-router-dom";
 import BlogStickyCTA from "@/components/ui/blog-sticky-cta";
-import { ChevronRight, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, Copy, ArrowUpRight } from "lucide-react";
+import { ChevronRight, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, Copy, ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion, useScroll } from "motion/react";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 
 interface ArticleData {
   title: string;
@@ -185,6 +185,37 @@ function handleShare(platform: string, title: string) {
   window.open(shareUrls[platform], "_blank", "noopener,noreferrer,width=600,height=400");
 }
 
+function MobileTOC({ headings }: { headings: string[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="lg:hidden mb-6 rounded-xl border border-border/20 bg-muted/10 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-display font-semibold text-foreground"
+      >
+        In This Article
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <ul className="px-4 pb-3 space-y-1.5">
+          {headings.map((h, i) => (
+            <li key={i}>
+              <a
+                href={`#${h.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={() => setOpen(false)}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 py-1"
+              >
+                <span className="w-1 h-1 rounded-full bg-primary/40" />
+                {h}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function BlogArticle() {
   const { slug } = useParams<{ slug: string }>();
   const article = articlesData[slug || ""] || null;
@@ -264,16 +295,16 @@ export default function BlogArticle() {
                   {displayArticle.title}
                 </h1>
 
-                {/* Author Card */}
-                <div className="flex items-center gap-4 mb-8 p-4 rounded-xl bg-muted/30 border border-border/20">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary font-bold text-sm shrink-0 ring-2 ring-primary/10">
+                {/* Author Card - compact on mobile */}
+                <div className="flex items-center gap-3 md:gap-4 mb-8 p-3 md:p-4 rounded-xl bg-muted/30 border border-border/20">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center text-primary font-bold text-xs md:text-sm shrink-0 ring-2 ring-primary/10">
                     {displayArticle.authorInitials}
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground">{displayArticle.author}</p>
                     <p className="text-xs text-muted-foreground">{displayArticle.authorRole}</p>
                   </div>
-                  <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                  <div className="hidden sm:flex items-center gap-3 text-xs text-muted-foreground">
                     <span>{displayArticle.date}</span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
@@ -281,6 +312,11 @@ export default function BlogArticle() {
                     </span>
                   </div>
                 </div>
+
+                {/* Mobile TOC accordion */}
+                {headings.length > 0 && (
+                  <MobileTOC headings={headings} />
+                )}
 
                 {/* Social Sharing */}
                 <div className="flex items-center gap-2 mb-10">
@@ -306,7 +342,7 @@ export default function BlogArticle() {
               </motion.div>
 
               {/* Article Content */}
-              <div className="prose-custom">
+              <div className="prose-custom text-[16px] md:text-[15px] leading-[1.9] md:leading-relaxed">
                 {displayArticle.content.map((block, i) => {
                   if (block.startsWith("## ")) {
                     const heading = block.split("\n")[0].replace("## ", "");
@@ -363,7 +399,7 @@ export default function BlogArticle() {
             </div>
 
             {/* Sidebar */}
-            <aside className="lg:w-1/3">
+            <aside className="hidden lg:block lg:w-1/3">
               <div className="lg:sticky lg:top-28 space-y-8">
                 {/* Table of Contents */}
                 {headings.length > 0 && (
