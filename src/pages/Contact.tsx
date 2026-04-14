@@ -45,6 +45,8 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", company: "", service: "", budget: "", message: "",
   });
+  const setFormDataState = setFormData;
+  });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLDivElement>(null);
   const formInView = useInView(formRef, { once: true });
@@ -113,12 +115,35 @@ export default function Contact() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full glass border border-accent/20"
+              className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full card-surface"
             >
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-                <Clock className="w-4 h-4 text-accent" />
-              </motion.div>
-              <span className="text-xs font-mono text-accent">We typically respond in 2 hours</span>
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="text-xs font-mono text-muted-foreground">Average response time: <span className="text-foreground font-semibold">47 minutes</span></span>
+            </motion.div>
+
+            {/* Quick-select intent buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.65 }}
+              className="flex flex-wrap justify-center gap-3 mt-6"
+            >
+              {[
+                { label: "I need SEO", value: "SEO & Content Marketing" },
+                { label: "I need Ads", value: "Performance Marketing (PPC)" },
+                { label: "I want a full audit", value: "Multiple Services" },
+              ].map((intent) => (
+                <button
+                  key={intent.label}
+                  onClick={() => {
+                    setFormData((prev) => ({ ...prev, service: intent.value }));
+                    formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  className="px-5 py-2 rounded-full card-surface text-sm font-display font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all hover-lift"
+                >
+                  {intent.label}
+                </button>
+              ))}
             </motion.div>
           </div>
         </div>

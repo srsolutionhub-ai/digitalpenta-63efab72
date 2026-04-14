@@ -1,5 +1,6 @@
 import Layout from "@/components/layout/Layout";
 import { Link, useParams } from "react-router-dom";
+import BlogStickyCTA from "@/components/ui/blog-sticky-cta";
 import { ChevronRight, Clock, ArrowLeft, Share2, Twitter, Linkedin, Facebook, Copy, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
