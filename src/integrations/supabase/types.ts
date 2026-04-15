@@ -251,6 +251,42 @@ export type Database = {
         }
         Relationships: []
       }
+      client_campaigns: {
+        Row: {
+          client_id: string
+          health_score: number | null
+          id: string
+          ppc_data: Json | null
+          report_month: string | null
+          report_pdf_url: string | null
+          seo_data: Json | null
+          social_data: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          client_id: string
+          health_score?: number | null
+          id?: string
+          ppc_data?: Json | null
+          report_month?: string | null
+          report_pdf_url?: string | null
+          seo_data?: Json | null
+          social_data?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          health_score?: number | null
+          id?: string
+          ppc_data?: Json | null
+          report_month?: string | null
+          report_pdf_url?: string | null
+          seo_data?: Json | null
+          social_data?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           assigned_to: string | null
@@ -496,48 +532,149 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          client_email: string
+          client_id: string | null
+          client_name: string
+          created_at: string | null
+          currency: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          items: Json
+          paid_at: string | null
+          payment_gateway: string | null
+          payment_link: string | null
+          quotation_id: string | null
+          status: string | null
+          subtotal: number
+          tax_amount: number | null
+          total: number
+        }
+        Insert: {
+          client_email: string
+          client_id?: string | null
+          client_name: string
+          created_at?: string | null
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          items?: Json
+          paid_at?: string | null
+          payment_gateway?: string | null
+          payment_link?: string | null
+          quotation_id?: string | null
+          status?: string | null
+          subtotal: number
+          tax_amount?: number | null
+          total: number
+        }
+        Update: {
+          client_email?: string
+          client_id?: string | null
+          client_name?: string
+          created_at?: string | null
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          items?: Json
+          paid_at?: string | null
+          payment_gateway?: string | null
+          payment_link?: string | null
+          quotation_id?: string | null
+          status?: string | null
+          subtotal?: number
+          tax_amount?: number | null
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_quotation_id_fkey"
+            columns: ["quotation_id"]
+            isOneToOne: false
+            referencedRelation: "quotations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
+          assigned_to: string | null
           budget: string | null
           closing_date: string | null
+          company: string | null
           contact_id: string | null
           conversion_probability: number | null
           created_at: string | null
+          email: string | null
           estimated_value: number | null
           id: string
           lead_score: number
+          name: string | null
+          notes: string | null
+          phone: string | null
           service: string
+          source: string | null
           status: string | null
           timeline: string | null
           updated_at: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          website: string | null
         }
         Insert: {
+          assigned_to?: string | null
           budget?: string | null
           closing_date?: string | null
+          company?: string | null
           contact_id?: string | null
           conversion_probability?: number | null
           created_at?: string | null
+          email?: string | null
           estimated_value?: number | null
           id?: string
           lead_score?: number
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
           service: string
+          source?: string | null
           status?: string | null
           timeline?: string | null
           updated_at?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          website?: string | null
         }
         Update: {
+          assigned_to?: string | null
           budget?: string | null
           closing_date?: string | null
+          company?: string | null
           contact_id?: string | null
           conversion_probability?: number | null
           created_at?: string | null
+          email?: string | null
           estimated_value?: number | null
           id?: string
           lead_score?: number
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
           service?: string
+          source?: string | null
           status?: string | null
           timeline?: string | null
           updated_at?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          website?: string | null
         }
         Relationships: [
           {
@@ -716,6 +853,63 @@ export type Database = {
         }
         Relationships: []
       }
+      quotations: {
+        Row: {
+          client_email: string
+          client_id: string | null
+          client_name: string
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          id: string
+          items: Json
+          notes: string | null
+          quote_number: string
+          status: string | null
+          subtotal: number
+          tax_amount: number | null
+          tax_rate: number | null
+          total: number
+          validity_date: string | null
+        }
+        Insert: {
+          client_email: string
+          client_id?: string | null
+          client_name: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          quote_number: string
+          status?: string | null
+          subtotal?: number
+          tax_amount?: number | null
+          tax_rate?: number | null
+          total?: number
+          validity_date?: string | null
+        }
+        Update: {
+          client_email?: string
+          client_id?: string | null
+          client_name?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          items?: Json
+          notes?: string | null
+          quote_number?: string
+          status?: string | null
+          subtotal?: number
+          tax_amount?: number | null
+          tax_rate?: number | null
+          total?: number
+          validity_date?: string | null
+        }
+        Relationships: []
+      }
       seo_data: {
         Row: {
           created_at: string | null
@@ -764,6 +958,48 @@ export type Database = {
           page_speed_score?: number | null
           page_title?: string | null
           page_url?: string
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          id: string
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          id?: string
+          message: string
+          sender_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -1114,11 +1350,25 @@ export type Database = {
           service_id: string
         }[]
       }
+      get_user_role: { Args: { _user_id: string }; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_admin"
+        | "account_manager"
+        | "finance"
+        | "content_writer"
+        | "seo_specialist"
+        | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1245,6 +1495,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_admin",
+        "account_manager",
+        "finance",
+        "content_writer",
+        "seo_specialist",
+        "client",
+      ],
+    },
   },
 } as const
