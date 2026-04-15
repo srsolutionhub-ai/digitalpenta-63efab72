@@ -56,7 +56,18 @@ export default function Leads() {
 
   const updateLead = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
-      const { error } = await supabase.from("leads").update(updates).eq("id", id);
+      const { error } = await supabase.from("leads").update({
+        name: updates.name || null,
+        email: updates.email || null,
+        phone: updates.phone || null,
+        company: updates.company || null,
+        website: updates.website || null,
+        source: updates.source || null,
+        budget: updates.budget_range || null,
+        service: updates.service || "General",
+        status: updates.status || "new",
+        notes: updates.notes || null,
+      }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
