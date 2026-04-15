@@ -130,7 +130,7 @@ export default function Navbar() {
 
         <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4">
           <Link to="/" className="flex items-center gap-2 group">
-            <img src={logo} alt="Digital Penta" className="w-9 h-9 object-contain" />
+            <img src={logo} alt="Digital Penta logo" width={36} height={36} decoding="async" className="w-9 h-9 object-contain" />
             <span className="font-display font-bold text-lg tracking-tight text-foreground">
               Digital<span className="text-gradient">Penta</span>
             </span>
