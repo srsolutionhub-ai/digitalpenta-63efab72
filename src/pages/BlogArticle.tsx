@@ -260,6 +260,29 @@ export default function BlogArticle() {
 
   return (
     <Layout>
+      {/* Article JSON-LD Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": displayArticle.title,
+          "description": displayArticle.excerpt,
+          "author": {
+            "@type": "Person",
+            "name": displayArticle.author
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digital Penta",
+            "url": "https://digitalpenta.com"
+          },
+          "datePublished": displayArticle.date,
+          "dateModified": displayArticle.date,
+          "mainEntityOfPage": `https://digitalpenta.com/blog/${slug}`,
+          "url": `https://digitalpenta.com/blog/${slug}`
+        }) }}
+      />
       {/* Reading progress bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent z-[60] origin-left"
