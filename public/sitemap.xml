@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static pages -->
+  <url><loc>https://digitalpenta.com/</loc><lastmod>2026-04-15</lastmod><priority>1.0</priority></url>
+  <url><loc>https://digitalpenta.com/about</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/contact</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/get-proposal</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/portfolio</loc><lastmod>2026-04-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://digitalpenta.com/blog</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/privacy</loc><lastmod>2026-04-15</lastmod><priority>0.3</priority></url>
+  <url><loc>https://digitalpenta.com/terms</loc><lastmod>2026-04-15</lastmod><priority>0.3</priority></url>
+
+  <!-- Service Category pages -->
+  <url><loc>https://digitalpenta.com/services/digital-marketing</loc><lastmod>2026-04-15</lastmod><priority>0.9</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations</loc><lastmod>2026-04-15</lastmod><priority>0.9</priority></url>
+  <url><loc>https://digitalpenta.com/services/development</loc><lastmod>2026-04-15</lastmod><priority>0.9</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions</loc><lastmod>2026-04-15</lastmod><priority>0.9</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation</loc><lastmod>2026-04-15</lastmod><priority>0.9</priority></url>
+
+  <!-- Sub-service pages: Digital Marketing -->
+  <url><loc>https://digitalpenta.com/services/digital-marketing/seo</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/ppc</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/social-media</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/content</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/email</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/influencer</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/video</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/performance</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Sub-service pages: Public Relations -->
+  <url><loc>https://digitalpenta.com/services/public-relations/media-relations</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/brand-reputation</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/crisis</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/digital-pr</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/press-release</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/thought-leadership</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/event-pr</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Sub-service pages: Development -->
+  <url><loc>https://digitalpenta.com/services/development/website</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/mobile-app</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/ecommerce</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/web-app</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/cms</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/api</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/ui-ux</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Sub-service pages: AI Solutions -->
+  <url><loc>https://digitalpenta.com/services/ai-solutions/strategy</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/chatbot</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/content-gen</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/predictive</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/computer-vision</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/nlp</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/marketing</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Sub-service pages: Automation -->
+  <url><loc>https://digitalpenta.com/services/automation/marketing</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/workflow</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/crm</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/sales</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/social</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/reporting</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/whatsapp</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Industry pages -->
+  <url><loc>https://digitalpenta.com/industries/real-estate</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/healthcare</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/education</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/ecommerce</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/finance</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/hospitality</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/industries/saas</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Location pages -->
+  <url><loc>https://digitalpenta.com/locations/delhi</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/mumbai</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/bangalore</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/pune</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/hyderabad</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/noida</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/gurgaon</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/lucknow</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/jaipur</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/kota</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/dubai</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/abu-dhabi</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/riyadh</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/doha</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/locations/bahrain</loc><lastmod>2026-04-15</lastmod><priority>0.8</priority></url>
+
+  <!-- Blog articles -->
+  <url><loc>https://digitalpenta.com/blog/ai-reshaping-marketing-2026</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/blog/seo-middle-east-guide</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/blog/roi-marketing-automation</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/blog/scalable-web-apps-react</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/blog/pr-crisis-management</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+  <url><loc>https://digitalpenta.com/blog/whatsapp-marketing-india</loc><lastmod>2026-04-15</lastmod><priority>0.6</priority></url>
+</urlset>

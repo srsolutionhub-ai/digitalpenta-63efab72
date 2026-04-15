@@ -6,9 +6,9 @@ interface ParticleFieldProps {
   className?: string;
 }
 
-export default function ParticleField({ count = 30, className = "" }: ParticleFieldProps) {
+export default function ParticleField({ count = 12, className = "" }: ParticleFieldProps) {
   const isMobile = useIsMobile();
-  const actualCount = isMobile ? Math.min(count, 15) : count;
+  const actualCount = isMobile ? Math.min(count, 8) : count;
 
   const particles = useMemo(() => {
     return Array.from({ length: actualCount }, (_, i) => ({
