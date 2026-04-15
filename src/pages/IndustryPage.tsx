@@ -30,6 +30,26 @@ export default function IndustryPage() {
 
   return (
     <Layout>
+      {/* Industry Article JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": `${data.title} Digital Marketing`,
+          "description": data.description,
+          "provider": {
+            "@type": "Organization",
+            "name": "Digital Penta",
+            "url": "https://digitalpenta.com"
+          },
+          "areaServed": [
+            { "@type": "Country", "name": "India" },
+            { "@type": "Country", "name": "United Arab Emirates" }
+          ],
+          "url": `https://digitalpenta.com/industries/${industry}`
+        }) }}
+      />
       <div className="pt-24 pb-0">
         <div className="container mx-auto px-4">
           <nav className="flex items-center gap-1 text-xs text-muted-foreground font-mono">

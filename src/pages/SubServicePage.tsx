@@ -32,6 +32,27 @@ export default function SubServicePage() {
 
   return (
     <Layout>
+      {/* Service JSON-LD Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": data.title,
+          "description": data.heroDescription,
+          "provider": {
+            "@type": "Organization",
+            "name": "Digital Penta",
+            "url": "https://digitalpenta.com"
+          },
+          "areaServed": [
+            { "@type": "Country", "name": "India" },
+            { "@type": "Country", "name": "United Arab Emirates" },
+            { "@type": "Country", "name": "Saudi Arabia" }
+          ],
+          "url": `https://digitalpenta.com/services/${category}/${subService}`
+        }) }}
+      />
       {/* Breadcrumb */}
       <div className="pt-24 pb-0">
         <div className="container mx-auto px-4">
