@@ -67,7 +67,6 @@ export default function Leads() {
 
   const createLead = useMutation({
     mutationFn: async (lead: Record<string, any>) => {
-      // Calculate score
       let score = 0;
       if (lead.budget_range === "5L+") score += 3;
       else if (lead.budget_range === "1L-5L") score += 2;
@@ -76,7 +75,19 @@ export default function Leads() {
       if (lead.source === "referral") score += 2;
       score = Math.min(score + 1, 10);
 
-      const { error } = await supabase.from("leads").insert({ ...lead, lead_score: score, service: lead.service || "General" });
+      const { error } = await supabase.from("leads").insert({
+        name: lead.name || null,
+        email: lead.email || null,
+        phone: lead.phone || null,
+        company: lead.company || null,
+        website: lead.website || null,
+        source: lead.source || null,
+        budget: lead.budget_range || null,
+        service: lead.service || "General",
+        status: lead.status || "new",
+        lead_score: score,
+        notes: lead.notes || null,
+      });
       if (error) throw error;
     },
     onSuccess: () => {

@@ -9,6 +9,7 @@ import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
 import CustomCursor from "@/components/ui/custom-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -25,7 +26,26 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Auth pages
+const Login = lazy(() => import("./pages/auth/Login"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+
+// Dashboard pages
+const AdminLayout = lazy(() => import("./pages/dashboard/admin/AdminLayout"));
+const DashboardHome = lazy(() => import("./pages/dashboard/admin/DashboardHome"));
+const Leads = lazy(() => import("./pages/dashboard/admin/Leads"));
+const Billing = lazy(() => import("./pages/dashboard/admin/Billing"));
+
+const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
+const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
+const ClientInvoices = lazy(() => import("./pages/dashboard/client/ClientInvoices"));
+const ClientSupport = lazy(() => import("./pages/dashboard/client/ClientSupport"));
+
 const queryClient = new QueryClient();
+
+const ADMIN_ROLES = ["super_admin", "account_manager", "finance", "content_writer", "seo_specialist"];
+const CLIENT_ROLES = ["client"];
 
 function PageLoader() {
   return (
@@ -43,6 +63,7 @@ function AnimatedRoutes() {
       <PageTransition key={location.pathname}>
         <Suspense fallback={<PageLoader />}>
           <Routes location={location}>
+            {/* Public routes */}
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -56,6 +77,40 @@ function AnimatedRoutes() {
             <Route path="/locations/:location" element={<LocationPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+
+            {/* Auth routes */}
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
+
+            {/* Admin dashboard */}
+            <Route
+              path="/dashboard/admin"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<DashboardHome />} />
+              <Route path="leads" element={<Leads />} />
+              <Route path="billing" element={<Billing />} />
+            </Route>
+
+            {/* Client dashboard */}
+            <Route
+              path="/dashboard/client"
+              element={
+                <ProtectedRoute allowedRoles={CLIENT_ROLES}>
+                  <ClientLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<ClientHome />} />
+              <Route path="invoices" element={<ClientInvoices />} />
+              <Route path="support" element={<ClientSupport />} />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
