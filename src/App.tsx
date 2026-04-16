@@ -36,6 +36,8 @@ const AdminLayout = lazy(() => import("./pages/dashboard/admin/AdminLayout"));
 const DashboardHome = lazy(() => import("./pages/dashboard/admin/DashboardHome"));
 const Leads = lazy(() => import("./pages/dashboard/admin/Leads"));
 const Billing = lazy(() => import("./pages/dashboard/admin/Billing"));
+const BlogManager = lazy(() => import("./pages/dashboard/admin/BlogManager"));
+const SettingsPage = lazy(() => import("./pages/dashboard/admin/SettingsPage"));
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
@@ -95,6 +97,8 @@ function AnimatedRoutes() {
               <Route index element={<DashboardHome />} />
               <Route path="leads" element={<Leads />} />
               <Route path="billing" element={<Billing />} />
+              <Route path="blog" element={<BlogManager />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
 
             {/* Client dashboard */}
