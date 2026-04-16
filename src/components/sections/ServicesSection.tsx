@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Search, Share2, Target, Globe, Mail, Palette } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import servicesBanner from "@/assets/services-banner-graphic.jpg";
 
 const pillars = [
   {
@@ -55,8 +56,22 @@ export default function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-28 md:py-36">
-      <div className="container mx-auto px-4" ref={ref}>
+    <section className="py-28 md:py-36 relative overflow-hidden">
+      {/* Premium background banner */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src={servicesBanner}
+          alt="Analytics dashboard visualization"
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+          width={1200}
+          height={600}
+          style={{ opacity: 0.08 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+      </div>
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}

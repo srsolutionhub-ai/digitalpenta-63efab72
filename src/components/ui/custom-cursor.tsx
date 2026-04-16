@@ -5,20 +5,20 @@ export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const [hovering, setHovering] = useState(false);
   const [visible, setVisible] = useState(false);
+  const posRef = useRef({ x: 0, y: 0 });
+  const smoothRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Disable on touch devices
     if ("ontouchstart" in window || window.matchMedia("(pointer: coarse)").matches) return;
 
-    const pos = { x: 0, y: 0 };
-    const smoothPos = { x: 0, y: 0 };
-
     const onMove = (e: MouseEvent) => {
-      pos.x = e.clientX;
-      pos.y = e.clientY;
+      posRef.current.x = e.clientX;
+      posRef.current.y = e.clientY;
       if (!visible) setVisible(true);
+      // Dot follows instantly via transform — no React re-render
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+        dotRef.current.style.left = `${e.clientX}px`;
+        dotRef.current.style.top = `${e.clientY}px`;
       }
     };
 
@@ -33,24 +33,26 @@ export default function CustomCursor() {
 
     let animId: number;
     const animate = () => {
-      smoothPos.x += (pos.x - smoothPos.x) * 0.15;
-      smoothPos.y += (pos.y - smoothPos.y) * 0.15;
+      const pos = posRef.current;
+      const smooth = smoothRef.current;
+      smooth.x += (pos.x - smooth.x) * 0.12;
+      smooth.y += (pos.y - smooth.y) * 0.12;
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${smoothPos.x}px, ${smoothPos.y}px)`;
+        ringRef.current.style.left = `${smooth.x}px`;
+        ringRef.current.style.top = `${smooth.y}px`;
       }
       animId = requestAnimationFrame(animate);
     };
 
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
+    document.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseover", onOver, { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
     animId = requestAnimationFrame(animate);
 
-    // Hide default cursor globally
     document.documentElement.style.cursor = "none";
     const style = document.createElement("style");
-    style.textContent = "a,button,input,textarea,select,[role='button']{cursor:none!important}";
+    style.textContent = "*, *::before, *::after { cursor: none !important; }";
     document.head.appendChild(style);
 
     return () => {
@@ -64,7 +66,6 @@ export default function CustomCursor() {
     };
   }, [visible]);
 
-  // Don't render on touch
   if (typeof window !== "undefined" && ("ontouchstart" in window || window.matchMedia("(pointer: coarse)").matches)) {
     return null;
   }
@@ -73,24 +74,32 @@ export default function CustomCursor() {
     <>
       <div
         ref={dotRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-[width,height,opacity] duration-150"
+        className="pointer-events-none fixed z-[9999]"
         style={{
-          width: hovering ? 8 : 6,
-          height: hovering ? 8 : 6,
+          width: hovering ? 10 : 6,
+          height: hovering ? 10 : 6,
           borderRadius: "50%",
           backgroundColor: "white",
           opacity: visible ? 1 : 0,
+          transform: "translate(-50%, -50%)",
+          transition: "width 0.15s, height 0.15s, opacity 0.15s",
+          willChange: "left, top",
+          mixBlendMode: "difference",
         }}
       />
       <div
         ref={ringRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9998] -translate-x-1/2 -translate-y-1/2 mix-blend-difference transition-[width,height,border-color,opacity] duration-300"
+        className="pointer-events-none fixed z-[9998]"
         style={{
           width: hovering ? 48 : 32,
           height: hovering ? 48 : 32,
           borderRadius: "50%",
-          border: `1.5px solid ${hovering ? "hsl(252, 60%, 63%)" : "rgba(255,255,255,0.5)"}`,
-          opacity: visible ? 0.7 : 0,
+          border: `1.5px solid ${hovering ? "hsl(252, 60%, 63%)" : "rgba(255,255,255,0.4)"}`,
+          opacity: visible ? 0.6 : 0,
+          transform: "translate(-50%, -50%)",
+          transition: "width 0.25s ease-out, height 0.25s ease-out, border-color 0.25s, opacity 0.2s",
+          willChange: "left, top",
+          mixBlendMode: "difference",
         }}
       />
     </>

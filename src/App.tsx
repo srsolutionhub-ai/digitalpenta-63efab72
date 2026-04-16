@@ -30,6 +30,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const InviteAccept = lazy(() => import("./pages/auth/InviteAccept"));
 
 // Dashboard pages
 const AdminLayout = lazy(() => import("./pages/dashboard/admin/AdminLayout"));
@@ -84,6 +85,7 @@ function AnimatedRoutes() {
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/forgot-password" element={<ForgotPassword />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
+            <Route path="/auth/invite-accept" element={<InviteAccept />} />
 
             {/* Admin dashboard */}
             <Route

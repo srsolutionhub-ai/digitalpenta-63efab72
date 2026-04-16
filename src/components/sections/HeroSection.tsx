@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import heroBanner from "@/assets/hero-banner-graphic.jpg";
 
 const clientLogos = ["Zomato", "Lenskart", "PharmEasy", "Vedantu", "CarDekho"];
 
@@ -14,13 +15,29 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Dot grid background */}
+      {/* Premium background graphic */}
+      <div className="absolute inset-0">
+        <img
+          src={heroBanner}
+          alt="Digital marketing growth visualization"
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          width={1920}
+          height={800}
+          style={{ opacity: 0.35 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+      </div>
+
+      {/* Dot grid overlay */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `radial-gradient(circle, hsl(var(--foreground) / 0.35) 1px, transparent 1px)`,
           backgroundSize: "24px 24px",
-          opacity: 0.04,
+          opacity: 0.03,
         }}
       />
 

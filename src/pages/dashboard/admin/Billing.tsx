@@ -79,6 +79,21 @@ function QuotationsTab() {
       });
       if (error) throw error;
       await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
+
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("send-notification", {
+        body: {
+          type: "invoice_created",
+          data: {
+            invoice_number: "Auto-generated",
+            client_name: quote.client_name,
+            client_email: quote.client_email,
+            total: quote.total,
+            due_date: dueDate.toISOString().slice(0, 10),
+            status: "sent",
+          },
+        },
+      }).catch(() => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-quotations"] });

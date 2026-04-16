@@ -83,6 +83,24 @@ export default function Contact() {
         source: "Website Contact Form",
       });
       if (error) throw error;
+
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("send-notification", {
+        body: {
+          type: "new_lead",
+          data: {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            phone: formData.phone.trim(),
+            company: formData.company.trim(),
+            service: formData.service,
+            budget_range: formData.budget,
+            message: formData.message.trim(),
+            source: "Website Contact Form",
+          },
+        },
+      }).catch(() => {});
+
       setSubmitted(true);
       toast.success("Message sent successfully!");
     } catch {
