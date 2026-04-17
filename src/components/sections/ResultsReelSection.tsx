@@ -35,11 +35,10 @@ export default function ResultsReelSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background" />
       </div>
       <motion.div
-        className="relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}
-        className="text-center mb-10"
+        className="text-center mb-10 relative z-10"
       >
         <span className="type-label text-primary font-mono">Proven Results</span>
         <h2 className="font-display type-h2 text-foreground mt-2">
@@ -47,7 +46,7 @@ export default function ResultsReelSection() {
         </h2>
       </motion.div>
 
-      <div className="relative marquee-mask">
+      <div className="relative marquee-mask z-10">
         <div className="flex gap-4 animate-marquee-slow group/reel">
           {[...results, ...results].map((r, i) => (
             <ResultCard key={i} r={r} />
