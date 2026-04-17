@@ -1,6 +1,7 @@
 import { Shield, Layers, Globe, TrendingUp, Users, Clock, Zap, BarChart3 } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import whyusBanner from "@/assets/whyus-banner-graphic.jpg";
 
 const bentoItems = [
   { icon: Layers, title: "Integrated 5-Pillar Approach", desc: "Marketing, PR, Development, AI & Automation — all under one roof. No fragmented agencies, no communication gaps. One team, one vision, compounding results.", size: "lg" },
@@ -18,6 +19,28 @@ export default function WhyUsSection() {
 
   return (
     <section className="py-28 md:py-36 relative overflow-hidden">
+      {/* Premium background graphic */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src={whyusBanner}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+          width={1920}
+          height={1080}
+          style={{ opacity: 0.18 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 0%, hsl(var(--background) / 0.6) 75%, hsl(var(--background)) 100%)",
+          }}
+        />
+      </div>
       <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}

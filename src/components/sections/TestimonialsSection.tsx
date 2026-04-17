@@ -2,6 +2,7 @@ import { Star, Quote, BadgeCheck, Play } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import testimonialsBanner from "@/assets/testimonials-banner-graphic.jpg";
 
 const testimonials = [
   { quote: "Digital Penta took our salon from 0 to 2000 Instagram followers in 3 months and our booking rate doubled!", name: "Priya S.", role: "Beauty Salon Owner, Jaipur", rating: 5, featured: true, initials: "PS", badge: "Verified Client" },
