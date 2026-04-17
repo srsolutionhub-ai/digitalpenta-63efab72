@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import MagneticCard from "@/components/ui/magnetic-card";
+import portfolioBanner from "@/assets/portfolio-banner-graphic.jpg";
 
 const categories = ["All", "Marketing", "PR", "Development", "AI", "Automation"];
 
@@ -72,7 +73,12 @@ export default function Portfolio() {
     <Layout>
       {/* ── Hero ── */}
       <section className="pt-32 pb-10 relative overflow-hidden">
-        <div className="absolute inset-0 mesh-gradient" />
+        <div className="absolute inset-0">
+          <img src={portfolioBanner} alt="" className="w-full h-full object-cover" loading="eager" width={1920} height={1080} style={{ opacity: 0.55 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/30" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 0%, transparent 30%, hsl(var(--background) / 0.65) 75%, hsl(var(--background)) 100%)" }} />
+        </div>
+        <div className="absolute inset-0 mesh-gradient opacity-40" />
         <div className="absolute top-[20%] left-[5%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
         <div className="container mx-auto px-4 relative z-10" ref={ref}>
           <motion.div
