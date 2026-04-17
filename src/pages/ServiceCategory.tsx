@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
+import serviceBanner from "@/assets/service-banner-graphic.jpg";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -247,7 +248,12 @@ export default function ServiceCategory() {
     <Layout>
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden" ref={heroRef}>
-        <div className="absolute inset-0 mesh-gradient" />
+        <div className="absolute inset-0">
+          <img src={serviceBanner} alt="" className="w-full h-full object-cover" loading="eager" width={1920} height={1080} style={{ opacity: 0.5 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/30" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 0%, transparent 30%, hsl(var(--background) / 0.65) 75%, hsl(var(--background)) 100%)" }} />
+        </div>
+        <div className="absolute inset-0 mesh-gradient opacity-40" />
         <div className="absolute top-[15%] right-[5%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
         {/* Category illustration */}
         <div className="absolute top-10 right-10 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] pointer-events-none">
