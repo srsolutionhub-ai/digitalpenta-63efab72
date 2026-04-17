@@ -9,10 +9,20 @@ export default function CookieConsent() {
 
   useEffect(() => {
     const consent = localStorage.getItem("dp-cookie-consent");
-    if (!consent) {
-      const timer = setTimeout(() => setShow(true), 2000);
-      return () => clearTimeout(timer);
-    }
+    if (consent) return;
+    const showTimer = setTimeout(() => setShow(true), 2000);
+    // Auto-dismiss after 8 seconds of being visible if no interaction
+    const autoHideTimer = setTimeout(() => {
+      const stillNoConsent = !localStorage.getItem("dp-cookie-consent");
+      if (stillNoConsent) {
+        localStorage.setItem("dp-cookie-consent", "auto-dismissed");
+        setShow(false);
+      }
+    }, 10000); // 2s delay + 8s visible
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(autoHideTimer);
+    };
   }, []);
 
   const handle = (choice: "accepted" | "rejected") => {

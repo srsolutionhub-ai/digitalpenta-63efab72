@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
+import aboutBanner from "@/assets/about-banner-graphic.jpg";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
@@ -94,7 +95,12 @@ export default function About() {
     <Layout>
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 mesh-gradient" />
+        <div className="absolute inset-0">
+          <img src={aboutBanner} alt="" className="w-full h-full object-cover" loading="eager" width={1920} height={1080} style={{ opacity: 0.55 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/30" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 0%, transparent 30%, hsl(var(--background) / 0.65) 75%, hsl(var(--background)) 100%)" }} />
+        </div>
+        <div className="absolute inset-0 mesh-gradient opacity-40" />
         <div className="absolute top-[20%] right-[5%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
         <div className="absolute bottom-[10%] left-[10%] w-[300px] h-[300px] rounded-full bg-accent/6 blur-[120px] animate-breathe-slow" />
 

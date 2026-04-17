@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import contactBanner from "@/assets/contact-banner-graphic.jpg";
 
 const offices = [
   { city: "Delhi, India (HQ)", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇮🇳" },
@@ -116,7 +117,12 @@ export default function Contact() {
   return (
     <Layout>
       <section className="pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 mesh-gradient" />
+        <div className="absolute inset-0">
+          <img src={contactBanner} alt="" className="w-full h-full object-cover" loading="eager" width={1920} height={1080} style={{ opacity: 0.55 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/30" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 0%, transparent 30%, hsl(var(--background) / 0.65) 75%, hsl(var(--background)) 100%)" }} />
+        </div>
+        <div className="absolute inset-0 mesh-gradient opacity-40" />
         <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
