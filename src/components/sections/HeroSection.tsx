@@ -25,10 +25,18 @@ export default function HeroSection() {
           fetchPriority="high"
           decoding="async"
           width={1920}
-          height={800}
-          style={{ opacity: 0.35 }}
+          height={1080}
+          style={{ opacity: 0.7 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+        {/* Cinematic radial vignette + gradient blends keep readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(var(--background) / 0.6) 75%, hsl(var(--background)) 100%)",
+          }}
+        />
       </div>
 
       {/* Dot grid overlay */}

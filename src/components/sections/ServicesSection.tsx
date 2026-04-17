@@ -62,14 +62,21 @@ export default function ServicesSection() {
         <img
           src={servicesBanner}
           alt="Analytics dashboard visualization"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           loading="lazy"
           decoding="async"
-          width={1200}
-          height={600}
-          style={{ opacity: 0.08 }}
+          width={1920}
+          height={1080}
+          style={{ opacity: 0.28 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 0%, hsl(var(--background) / 0.5) 70%, hsl(var(--background)) 100%)",
+          }}
+        />
       </div>
       <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.div

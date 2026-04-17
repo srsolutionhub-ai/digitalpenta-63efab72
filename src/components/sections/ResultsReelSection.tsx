@@ -1,5 +1,6 @@
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
+import resultsBanner from "@/assets/results-banner-graphic.jpg";
 
 const results = [
   { metric: "312%", label: "Organic Traffic Growth", client: "SaaS Startup, Pune", service: "SEO & Content Strategy", accent: "border-violet-500/60" },
@@ -17,8 +18,24 @@ export default function ResultsReelSection() {
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <section className="py-20 overflow-hidden" ref={ref}>
+    <section className="py-20 overflow-hidden relative" ref={ref}>
+      {/* Premium background graphic */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src={resultsBanner}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+          width={1920}
+          height={1080}
+          style={{ opacity: 0.22 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background" />
+      </div>
       <motion.div
+        className="relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}

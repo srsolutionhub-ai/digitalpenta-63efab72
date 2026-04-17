@@ -1,6 +1,7 @@
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { Search, FileText, Rocket, BarChart3, TrendingUp } from "lucide-react";
+import processBanner from "@/assets/process-banner-graphic.jpg";
 
 const steps = [
   { num: "01", title: "Free Audit", desc: "We analyze your current digital presence — website, SEO, social media & ads — to find hidden opportunities.", icon: Search },
@@ -15,8 +16,23 @@ export default function ProcessSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-28 md:py-36">
-      <div className="container mx-auto px-4" ref={ref}>
+    <section className="py-28 md:py-36 relative overflow-hidden">
+      {/* Premium background graphic */}
+      <div className="absolute inset-0 pointer-events-none">
+        <img
+          src={processBanner}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+          width={1920}
+          height={1080}
+          style={{ opacity: 0.2 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+      </div>
+      <div className="container mx-auto px-4 relative z-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
