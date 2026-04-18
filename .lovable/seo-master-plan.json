@@ -1,0 +1,1435 @@
+{
+  "meta": {
+    "brand": "Digital Penta",
+    "domain": "digitalpenta.com",
+    "version": "2.0",
+    "created": "2026-04-18",
+    "purpose": "Comprehensive LLM-readable SEO master plan — all Google ranking factors, keyword clusters, content strategy, technical SEO, and link building for Digital Penta to dominate SERP across India, UAE, and international markets.",
+    "goal": "Rank #1 organically for top-volume, high-intent digital marketing keywords in Delhi NCR, India-wide, Dubai/UAE, and Middle East markets. Beat competitors: Techmagnate, PageTraffic, Webchutney, iProspect, Moris Media."
+  },
+
+  "competitive_landscape": {
+    "primary_competitors_india": [
+      {
+        "name": "Techmagnate",
+        "domain": "techmagnate.com",
+        "strengths": ["Enterprise clients (Apollo, Airtel, OYO)", "19+ years experience", "Google Premier Partner", "300+ staff"],
+        "weaknesses": ["Expensive for SMBs", "Less agile", "No AI automation offering"],
+        "gap_opportunity": "Digital Penta beats them on AI+Automation integrated offerings and SMB/startup pricing"
+      },
+      {
+        "name": "PageTraffic",
+        "domain": "pagetraffic.in",
+        "strengths": ["22 years experience", "Enterprise SEO", "Structured data expertise"],
+        "weaknesses": ["Template-driven strategies", "No WhatsApp/automation services", "Limited MENA presence"],
+        "gap_opportunity": "Digital Penta wins on full-service integration (5 pillars) and Middle East dual-market positioning"
+      },
+      {
+        "name": "Moris Media",
+        "domain": "morismedia.in",
+        "strengths": ["4.7/5 rating", "220+ services", "Multi-language support", "Forbes recognition"],
+        "weaknesses": ["Premium pricing inaccessible for SMBs", "Content-heavy, results lighter", "No real AI chatbot/automation"],
+        "gap_opportunity": "Digital Penta positions on ROI transparency + live dashboard + proven metrics"
+      }
+    ],
+    "primary_competitors_uae": [
+      {
+        "name": "GMI (Global Media Insight)",
+        "domain": "globalmediainsight.com",
+        "strengths": ["26 years UAE", "Enterprise clients (Emirates NBD, Ministry of Health)", "AI-powered audits"],
+        "weaknesses": ["High retainer costs (AED 10K+/mo)", "Large agency = slow execution", "Less startup-focused"],
+        "gap_opportunity": "Digital Penta beats on speed, pricing, and India-UAE corridor expertise"
+      },
+      {
+        "name": "Leads Dubai",
+        "domain": "leadsdubai.com",
+        "strengths": ["14 years UAE SEO", "500+ UAE businesses ranked", "AED 2,500/mo entry price"],
+        "weaknesses": ["No development or AI services", "SEO-only focus", "No India operations"],
+        "gap_opportunity": "Digital Penta offers full-stack (SEO + Dev + AI + Automation) at competitive pricing"
+      }
+    ],
+    "our_unique_differentiators": [
+      "5-pillar integrated approach: Marketing + PR + Development + AI + Automation",
+      "India + Middle East dual-market expertise (unlike India-only or UAE-only agencies)",
+      "Live real-time client dashboard included in all retainers",
+      "AI chatbot + WhatsApp automation as core service (not add-on)",
+      "Results-based reporting with guaranteed transparency",
+      "Startup-to-enterprise flexible pricing (₹9,999/mo to ₹5L+/mo)",
+      "Average 340% lead increase for clients (provable case studies)",
+      "Response time under 47 minutes — fastest in category"
+    ]
+  },
+
+  "keyword_research": {
+    "methodology": "Clustered by intent (informational / navigational / commercial / transactional), market (India / UAE / global), and page type (homepage / service / location / blog). Priority = search_volume × commercial_intent × competition_gap.",
+
+    "tier_1_primary_keywords": {
+      "description": "Highest volume, highest commercial intent. Must rank for these to win market.",
+      "keywords": [
+        {
+          "keyword": "digital marketing agency in Delhi",
+          "monthly_searches_estimate": "8100",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/",
+          "current_rank": "not_tracked",
+          "priority": "critical"
+        },
+        {
+          "keyword": "best digital marketing agency in Delhi",
+          "monthly_searches_estimate": "5400",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "digital marketing company Delhi NCR",
+          "monthly_searches_estimate": "3600",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "SEO agency Delhi",
+          "monthly_searches_estimate": "4400",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/services/seo/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "SEO company in Delhi",
+          "monthly_searches_estimate": "3600",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/services/seo/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "digital marketing agency Mumbai",
+          "monthly_searches_estimate": "6600",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/locations/mumbai/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "digital marketing agency Dubai",
+          "monthly_searches_estimate": "5400",
+          "intent": "commercial",
+          "difficulty": "high",
+          "target_page": "/locations/dubai/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "digital marketing agency India",
+          "monthly_searches_estimate": "12100",
+          "intent": "commercial",
+          "difficulty": "very_high",
+          "target_page": "/",
+          "priority": "critical"
+        },
+        {
+          "keyword": "performance marketing agency India",
+          "monthly_searches_estimate": "2900",
+          "intent": "commercial",
+          "difficulty": "medium",
+          "target_page": "/services/digital-marketing/performance/",
+          "priority": "high"
+        },
+        {
+          "keyword": "Google Ads agency Delhi",
+          "monthly_searches_estimate": "2400",
+          "intent": "transactional",
+          "difficulty": "medium",
+          "target_page": "/services/digital-marketing/ppc/",
+          "priority": "high"
+        }
+      ]
+    },
+
+    "tier_2_service_keywords": {
+      "description": "Service-specific keywords. Each maps to a dedicated service page.",
+      "seo_cluster": [
+        "technical SEO services India",
+        "local SEO company Delhi",
+        "SEO agency Bangalore",
+        "SEO company Mumbai",
+        "SEO agency Noida",
+        "SEO agency Gurgaon",
+        "SEO services for real estate India",
+        "SEO for healthcare website India",
+        "ecommerce SEO agency India",
+        "SaaS SEO agency India",
+        "link building services India",
+        "on-page SEO services Delhi",
+        "off-page SEO company Delhi",
+        "Google ranking service India",
+        "best SEO company India 2026"
+      ],
+      "ppc_cluster": [
+        "Google Ads management India",
+        "PPC agency Delhi",
+        "Google Ads company Delhi",
+        "pay per click advertising India",
+        "Facebook Ads agency Delhi",
+        "Meta Ads management India",
+        "LinkedIn Ads agency India",
+        "performance marketing agency Delhi",
+        "ROAS optimization agency",
+        "Google Ads consultant Delhi"
+      ],
+      "social_media_cluster": [
+        "social media marketing agency Delhi",
+        "Instagram marketing agency India",
+        "social media management company India",
+        "Facebook marketing agency Delhi",
+        "LinkedIn marketing agency India",
+        "YouTube marketing agency India",
+        "influencer marketing agency India",
+        "social media advertising India"
+      ],
+      "content_cluster": [
+        "content marketing agency India",
+        "content writing services Delhi",
+        "blog writing service India",
+        "video marketing agency India",
+        "email marketing service India",
+        "WhatsApp marketing service India"
+      ],
+      "web_dev_cluster": [
+        "website design company Delhi",
+        "web development agency India",
+        "ecommerce website development India",
+        "Shopify development agency India",
+        "mobile app development company Delhi",
+        "React development company India",
+        "WordPress development company India",
+        "UI UX design agency India"
+      ],
+      "ai_automation_cluster": [
+        "AI chatbot development India",
+        "marketing automation agency India",
+        "CRM automation services India",
+        "WhatsApp business automation India",
+        "AI marketing solutions India",
+        "workflow automation company India",
+        "AI digital marketing agency India"
+      ],
+      "pr_cluster": [
+        "PR agency Delhi India",
+        "digital PR services India",
+        "online reputation management India",
+        "media relations agency India",
+        "press release distribution India",
+        "brand reputation management India"
+      ]
+    },
+
+    "tier_3_location_keywords": {
+      "description": "City-specific location pages. Each location needs a dedicated landing page with unique content.",
+      "india_cities": [
+        {
+          "city": "Delhi",
+          "primary_keyword": "digital marketing agency in Delhi",
+          "secondary_keywords": ["SEO agency Delhi", "PPC company Delhi", "web design Delhi", "social media agency Delhi"],
+          "target_page": "/",
+          "population_internet_users": "20M+"
+        },
+        {
+          "city": "Mumbai",
+          "primary_keyword": "digital marketing agency Mumbai",
+          "secondary_keywords": ["SEO company Mumbai", "performance marketing Mumbai", "D2C marketing agency Mumbai"],
+          "target_page": "/locations/mumbai/",
+          "population_internet_users": "22M+"
+        },
+        {
+          "city": "Bangalore",
+          "primary_keyword": "digital marketing agency Bangalore",
+          "secondary_keywords": ["SaaS marketing agency Bangalore", "SEO company Bangalore", "startup marketing agency Bangalore", "tech startup SEO Bangalore"],
+          "target_page": "/locations/bangalore/",
+          "population_internet_users": "12M+"
+        },
+        {
+          "city": "Noida",
+          "primary_keyword": "digital marketing agency Noida",
+          "secondary_keywords": ["SEO agency Noida", "IT company marketing Noida", "real estate marketing Noida"],
+          "target_page": "/locations/noida/",
+          "population_internet_users": "8M+"
+        },
+        {
+          "city": "Gurgaon",
+          "primary_keyword": "digital marketing agency Gurgaon",
+          "secondary_keywords": ["corporate SEO Gurgaon", "enterprise marketing agency Gurgaon", "LinkedIn marketing Gurgaon"],
+          "target_page": "/locations/gurgaon/",
+          "population_internet_users": "6M+"
+        },
+        {
+          "city": "Hyderabad",
+          "primary_keyword": "digital marketing agency Hyderabad",
+          "secondary_keywords": ["SEO company Hyderabad", "pharma digital marketing Hyderabad", "IT SEO Hyderabad"],
+          "target_page": "/locations/hyderabad/",
+          "population_internet_users": "10M+"
+        },
+        {
+          "city": "Pune",
+          "primary_keyword": "digital marketing agency Pune",
+          "secondary_keywords": ["SEO agency Pune", "startup marketing Pune", "ecommerce agency Pune"],
+          "target_page": "/locations/pune/",
+          "population_internet_users": "7M+"
+        },
+        {
+          "city": "Jaipur",
+          "primary_keyword": "digital marketing agency Jaipur",
+          "secondary_keywords": ["SEO company Jaipur", "jewellery ecommerce Jaipur", "tourism marketing Jaipur"],
+          "target_page": "/locations/jaipur/",
+          "population_internet_users": "4M+"
+        },
+        {
+          "city": "Lucknow",
+          "primary_keyword": "digital marketing agency Lucknow",
+          "secondary_keywords": ["SEO company Lucknow", "coaching marketing Lucknow", "education marketing UP"],
+          "target_page": "/locations/lucknow/",
+          "population_internet_users": "3M+"
+        }
+      ],
+      "middle_east_cities": [
+        {
+          "city": "Dubai",
+          "primary_keyword": "digital marketing agency Dubai",
+          "secondary_keywords": ["SEO company Dubai", "real estate marketing Dubai", "Arabic SEO agency Dubai", "social media marketing Dubai UAE"],
+          "target_page": "/locations/dubai/",
+          "arabic_keyword": "وكالة التسويق الرقمي دبي"
+        },
+        {
+          "city": "Abu Dhabi",
+          "primary_keyword": "digital marketing agency Abu Dhabi",
+          "secondary_keywords": ["SEO Abu Dhabi", "government digital marketing UAE", "enterprise marketing Abu Dhabi"],
+          "target_page": "/locations/abu-dhabi/",
+          "arabic_keyword": "وكالة تسويق رقمي أبوظبي"
+        },
+        {
+          "city": "Riyadh",
+          "primary_keyword": "digital marketing agency Riyadh",
+          "secondary_keywords": ["SEO company Saudi Arabia", "Vision 2030 digital marketing", "Arabic digital marketing KSA"],
+          "target_page": "/locations/riyadh/",
+          "arabic_keyword": "وكالة التسويق الرقمي الرياض"
+        },
+        {
+          "city": "Doha",
+          "primary_keyword": "digital marketing agency Doha Qatar",
+          "secondary_keywords": ["SEO company Qatar", "social media Qatar", "ecommerce marketing Qatar"],
+          "target_page": "/locations/doha/",
+          "arabic_keyword": "وكالة التسويق الرقمي الدوحة"
+        }
+      ]
+    },
+
+    "tier_4_industry_keywords": {
+      "description": "Industry-specific SEO targeting. Each maps to an /industries/[slug]/ page.",
+      "clusters": [
+        {
+          "industry": "Real Estate",
+          "primary": "digital marketing for real estate India",
+          "cluster": [
+            "real estate SEO company India",
+            "real estate marketing agency Delhi",
+            "property developer digital marketing",
+            "real estate lead generation India",
+            "housing project marketing agency",
+            "real estate Google Ads India",
+            "real estate website development India",
+            "proptech marketing agency"
+          ],
+          "target_page": "/industries/real-estate/"
+        },
+        {
+          "industry": "Healthcare",
+          "primary": "healthcare digital marketing agency India",
+          "cluster": [
+            "hospital SEO company India",
+            "clinic marketing agency Delhi",
+            "healthcare website development",
+            "medical SEO services India",
+            "doctor reputation management India",
+            "pharmaceutical digital marketing",
+            "healthtech marketing agency",
+            "HIPAA-compliant marketing India"
+          ],
+          "target_page": "/industries/healthcare/"
+        },
+        {
+          "industry": "E-commerce",
+          "primary": "ecommerce marketing agency India",
+          "cluster": [
+            "ecommerce SEO services India",
+            "Shopify marketing agency India",
+            "D2C brand marketing agency",
+            "product listing optimization India",
+            "Amazon marketing agency India",
+            "ecommerce performance marketing",
+            "conversion rate optimization India",
+            "ecommerce email marketing India"
+          ],
+          "target_page": "/industries/ecommerce/"
+        },
+        {
+          "industry": "Education",
+          "primary": "education marketing agency India",
+          "cluster": [
+            "edtech marketing agency India",
+            "coaching institute marketing Delhi",
+            "university digital marketing India",
+            "student enrollment marketing",
+            "online course marketing agency",
+            "education SEO company India"
+          ],
+          "target_page": "/industries/education/"
+        },
+        {
+          "industry": "SaaS",
+          "primary": "SaaS marketing agency India",
+          "cluster": [
+            "B2B SaaS SEO agency",
+            "SaaS content marketing India",
+            "product-led growth agency India",
+            "SaaS startup marketing agency",
+            "B2B lead generation agency India",
+            "SaaS LinkedIn marketing"
+          ],
+          "target_page": "/industries/saas/"
+        },
+        {
+          "industry": "Finance",
+          "primary": "fintech marketing agency India",
+          "cluster": [
+            "financial services SEO India",
+            "BFSI digital marketing agency",
+            "banking marketing company India",
+            "insurance digital marketing India",
+            "fintech app marketing India",
+            "wealth management marketing"
+          ],
+          "target_page": "/industries/finance/"
+        }
+      ]
+    },
+
+    "tier_5_long_tail_informational": {
+      "description": "Blog-targeted keywords. High intent, medium volume, low difficulty. Build topical authority.",
+      "blog_keyword_clusters": [
+        {
+          "topic": "SEO Guides",
+          "keywords": [
+            "how to rank on Google in India 2026",
+            "what is technical SEO and why it matters",
+            "how long does SEO take to work in India",
+            "local SEO guide for Indian businesses",
+            "Google algorithm updates 2026 India impact",
+            "how to do keyword research for Indian market",
+            "Core Web Vitals guide for Indian websites",
+            "best SEO tools for Indian businesses 2026"
+          ]
+        },
+        {
+          "topic": "Digital Marketing ROI",
+          "keywords": [
+            "how much does digital marketing cost in India",
+            "digital marketing ROI calculator India",
+            "PPC vs SEO which is better India",
+            "digital marketing budget for small business India",
+            "how to measure digital marketing results",
+            "performance marketing vs brand marketing India"
+          ]
+        },
+        {
+          "topic": "AI and Automation",
+          "keywords": [
+            "AI chatbot for business India",
+            "WhatsApp marketing automation India 2026",
+            "marketing automation tools India",
+            "AI in digital marketing India",
+            "CRM automation for small business India",
+            "how to automate social media India"
+          ]
+        },
+        {
+          "topic": "Industry-Specific Guides",
+          "keywords": [
+            "digital marketing for real estate developers India",
+            "SEO for hospitals and clinics India",
+            "how to market an ecommerce store India",
+            "social media strategy for restaurants India",
+            "B2B marketing strategies India",
+            "digital marketing for coaching institutes"
+          ]
+        },
+        {
+          "topic": "Dubai/MENA Marketing",
+          "keywords": [
+            "digital marketing strategy for Dubai business",
+            "Arabic SEO guide for UAE",
+            "social media marketing tips for Middle East",
+            "how to market your business in UAE 2026",
+            "best social media platforms UAE 2026",
+            "Ramadan marketing strategy UAE"
+          ]
+        }
+      ]
+    }
+  },
+
+  "on_page_seo": {
+    "title_tag_formulas": {
+      "homepage": "{Brand} | {Primary Keyword} | {Year} — Get Free Audit",
+      "example_homepage": "Digital Penta | Digital Marketing Agency in Delhi | 2026 — Get Free Audit",
+      "service_pages": "{Service Name} Agency in {City} | {Brand} | {Year}",
+      "example_service": "SEO Agency in Delhi | Digital Penta | 2026",
+      "location_pages": "Best Digital Marketing Agency in {City} | {Brand}",
+      "example_location": "Best Digital Marketing Agency in Dubai | Digital Penta",
+      "industry_pages": "Digital Marketing for {Industry} in India | {Brand}",
+      "blog_posts": "{Post Title} — {Brand} Blog",
+      "rules": [
+        "Max 60 characters (Google shows ~60 chars before truncation)",
+        "Include primary keyword in first 40 chars where possible",
+        "Every page must have a UNIQUE title tag — no duplicates",
+        "Include brand name at end separated by pipe |"
+      ]
+    },
+    "meta_description_formulas": {
+      "homepage": "{Primary benefit}. {Social proof}. {CTA}. {City/market signal}.",
+      "example_homepage": "India's top digital marketing agency — SEO, PPC, Social Media & AI automation. 500+ clients. ₹50Cr+ revenue generated. Get your free audit today.",
+      "service_pages": "Expert {service} services in {city}. {Key result/benefit}. {Social proof number}. Free consultation.",
+      "location_pages": "Top-rated digital marketing agency in {city}. {Local market knowledge signal}. {Result metric}. Free strategy call.",
+      "rules": [
+        "Max 155-160 characters",
+        "Include target keyword naturally",
+        "Include a clear call-to-action",
+        "Every page needs a UNIQUE meta description",
+        "Use numbers and specifics (500+ clients, 340% leads) for CTR improvement"
+      ]
+    },
+    "heading_structure": {
+      "h1_rules": [
+        "One H1 per page — never more",
+        "Contains primary keyword",
+        "Between 30-70 characters",
+        "Matches or closely relates to title tag"
+      ],
+      "h2_usage": "Main service/topic sections — include secondary keywords",
+      "h3_usage": "Sub-topics, FAQ questions, feature lists",
+      "h4_usage": "Minor sub-points only — do not over-use",
+      "example_homepage_headings": {
+        "h1": "India's Most Results-Driven Digital Marketing Agency",
+        "h2_1": "Full-Service Digital Marketing That Actually Delivers ROI",
+        "h2_2": "Our Core Services",
+        "h2_3": "Why 500+ Brands Choose Digital Penta",
+        "h2_4": "Industries We Dominate",
+        "h2_5": "Client Results That Speak",
+        "h2_6": "Frequently Asked Questions"
+      }
+    },
+    "url_structure": {
+      "principles": [
+        "All lowercase, hyphens not underscores",
+        "Short and descriptive — max 4 words in slug",
+        "Include target keyword in URL",
+        "No query strings or numbers in URLs",
+        "Consistent trailing slash policy (use trailing slash)"
+      ],
+      "examples": {
+        "homepage": "digitalpenta.com/",
+        "service": "digitalpenta.com/services/seo/",
+        "sub_service": "digitalpenta.com/services/seo/local-seo/",
+        "location": "digitalpenta.com/locations/delhi/",
+        "industry": "digitalpenta.com/industries/real-estate/",
+        "blog_post": "digitalpenta.com/blog/seo-guide-india-2026/",
+        "case_study": "digitalpenta.com/case-studies/real-estate-lead-generation/"
+      }
+    },
+    "content_requirements": {
+      "homepage": {
+        "min_word_count": 1800,
+        "must_include": [
+          "Primary keyword in first 100 words",
+          "Secondary keywords naturally distributed",
+          "Trust signals (client count, years, ratings, awards)",
+          "Social proof (testimonials, case study metrics)",
+          "FAQ section with schema markup",
+          "Clear CTAs above fold and multiple throughout page",
+          "Internal links to all main service category pages"
+        ]
+      },
+      "service_pages": {
+        "min_word_count": 2000,
+        "must_include": [
+          "H1 with primary service + city keyword",
+          "Clear service description (what it is, what we do)",
+          "Benefits section (6-8 specific benefits)",
+          "Our process (step-by-step)",
+          "Tools and technologies used",
+          "Who this service is for (industries/business types)",
+          "Pricing indication or starting price",
+          "FAQ section (6-8 questions) with FAQ schema",
+          "Social proof (relevant case study / result)",
+          "CTA: free audit / free consultation",
+          "Related services (internal links)",
+          "Breadcrumb navigation"
+        ]
+      },
+      "location_pages": {
+        "min_word_count": 1500,
+        "must_include": [
+          "H1 with location + agency keyword",
+          "Local market context (specific to that city)",
+          "Services available in that location",
+          "Industries served in that market",
+          "Local client testimonial or result",
+          "Address / contact for that location",
+          "Google Maps embed",
+          "Local SEO stats (city market opportunity)",
+          "FAQ about that specific market",
+          "LocalBusiness schema markup"
+        ]
+      },
+      "blog_posts": {
+        "min_word_count": 1500,
+        "recommended_word_count": 2500,
+        "must_include": [
+          "Target keyword in H1, first paragraph, and at least 2 H2s",
+          "Estimated reading time",
+          "Table of contents for posts over 1500 words",
+          "Author bio with expertise signals",
+          "Published date + last updated date",
+          "Internal links (3-5 to relevant service/location pages)",
+          "External links to authoritative sources (1-2)",
+          "Summary or key takeaways section",
+          "CTA related to the topic",
+          "Article schema markup",
+          "OG image sized 1200x630px"
+        ]
+      }
+    },
+    "image_seo": {
+      "rules": [
+        "All images MUST have descriptive alt text — no empty alt='', no alt='image'",
+        "Alt text should describe the image and include relevant keyword naturally",
+        "Image file names: descriptive-keyword-words.webp (never image001.jpg)",
+        "Use WebP format for all images (smaller, faster than JPEG/PNG)",
+        "Add width and height attributes to prevent CLS",
+        "Add loading='lazy' to all below-fold images",
+        "Add loading='eager' and fetchpriority='high' to hero/LCP image",
+        "Compress all images: hero max 200KB, body max 100KB, thumbnails max 50KB"
+      ],
+      "alt_text_examples": {
+        "team_photo": "Digital Penta team — digital marketing agency Delhi India",
+        "service_icon": "SEO services icon — search engine optimization",
+        "case_study_chart": "Client organic traffic growth chart showing 340% increase in 6 months",
+        "office_photo": "Digital Penta office in Katwaria Sarai, New Delhi"
+      }
+    },
+    "internal_linking_strategy": {
+      "principles": [
+        "Homepage links to all 5 service category pages",
+        "Each service category links to all sub-service pages",
+        "Each sub-service page links to 3 related sub-services",
+        "All service pages link to relevant location pages",
+        "All service pages link to relevant industry pages",
+        "Blog posts link to relevant service pages (contextual anchor text)",
+        "Location pages link to service pages AND other location pages (nearby cities)",
+        "Case studies link to the relevant service and industry pages"
+      ],
+      "anchor_text_rules": [
+        "Use descriptive anchor text — never 'click here' or 'learn more' alone",
+        "Include target keyword in anchor text where natural",
+        "Mix exact-match, partial-match, and branded anchors",
+        "Avoid over-optimized anchor patterns (Google spam signal)"
+      ],
+      "pillar_page_model": {
+        "description": "Topic cluster model: one Pillar Page per service category, multiple Cluster Pages (sub-services + blog posts) linking back",
+        "pillars": [
+          {
+            "pillar_page": "/services/digital-marketing/",
+            "cluster_pages": ["/services/digital-marketing/seo/", "/services/digital-marketing/ppc/", "/services/digital-marketing/social-media/", "/blog/seo-guide-india/", "/blog/google-ads-tips/"]
+          },
+          {
+            "pillar_page": "/services/development/",
+            "cluster_pages": ["/services/development/website/", "/services/development/mobile-app/", "/services/development/ecommerce/", "/blog/website-development-cost-india/"]
+          },
+          {
+            "pillar_page": "/services/ai-solutions/",
+            "cluster_pages": ["/services/ai-solutions/chatbot/", "/services/ai-solutions/predictive/", "/blog/ai-marketing-2026/"]
+          }
+        ]
+      }
+    }
+  },
+
+  "technical_seo": {
+    "core_web_vitals_targets": {
+      "LCP": {
+        "target": "< 2.5 seconds",
+        "current_status": "needs_audit",
+        "fixes": [
+          "Preload hero image with <link rel='preload' as='image'>",
+          "Use fetchpriority='high' on LCP image",
+          "Serve images from CDN (Vercel Edge / Cloudflare)",
+          "Convert all images to WebP format",
+          "Use next-gen image formats with fallback"
+        ]
+      },
+      "CLS": {
+        "target": "< 0.1",
+        "current_status": "needs_audit",
+        "fixes": [
+          "Add explicit width/height to ALL images and iframes",
+          "Reserve space for dynamic content (ads, embeds)",
+          "Use CSS aspect-ratio for responsive images",
+          "Avoid injecting content above existing content",
+          "Load fonts with font-display: swap"
+        ]
+      },
+      "INP": {
+        "target": "< 200ms",
+        "current_status": "needs_audit",
+        "fixes": [
+          "Break up long JavaScript tasks (>50ms)",
+          "Use React.memo() for expensive components",
+          "Debounce scroll and resize event handlers",
+          "Lazy-load non-critical JS components",
+          "Use Vite code-splitting (already in stack)"
+        ]
+      },
+      "TTFB": {
+        "target": "< 800ms",
+        "fixes": [
+          "Deploy on Vercel Edge Network (closest to user)",
+          "Enable Supabase connection pooling",
+          "Cache static pages where possible",
+          "Use CDN for all static assets"
+        ]
+      }
+    },
+    "site_architecture": {
+      "max_crawl_depth": 3,
+      "description": "Every important page must be reachable within 3 clicks from homepage",
+      "sitemap": {
+        "file": "sitemap.xml",
+        "auto_generation": "Generate from Supabase published pages + static routes",
+        "update_frequency": "Submit to GSC within 24 hours of new page publish",
+        "include": ["all service pages", "all location pages", "all industry pages", "all published blog posts", "case studies", "about", "contact"],
+        "exclude": ["admin pages", "dashboard pages", "thank-you pages", "404 page", "duplicate URL variants"]
+      },
+      "robots_txt": {
+        "file": "public/robots.txt",
+        "rules": {
+          "allow_all_bots": ["/"],
+          "disallow": ["/dashboard/", "/admin/", "/auth/", "/api/"],
+          "sitemap_declaration": "Sitemap: https://digitalpenta.com/sitemap.xml"
+        }
+      },
+      "canonical_tags": {
+        "rules": [
+          "Every page MUST have a canonical tag pointing to its preferred URL",
+          "Homepage canonical: https://digitalpenta.com/",
+          "Use absolute URLs in canonical tags (not relative)",
+          "Paginated pages: canonical to page 1 OR use rel=prev/next",
+          "Location pages with similar content: canonical to most authoritative variant"
+        ]
+      }
+    },
+    "schema_markup": {
+      "homepage": {
+        "types": ["Organization", "LocalBusiness", "FAQPage", "WebSite"],
+        "Organization": {
+          "name": "Digital Penta",
+          "url": "https://digitalpenta.com",
+          "logo": "https://digitalpenta.com/logo.png",
+          "description": "India's top digital marketing agency offering SEO, Google Ads, Social Media, Web Development, AI Solutions & Automation.",
+          "telephone": "+91-88601-00039",
+          "email": "support@digitalpenta.com",
+          "address": {
+            "streetAddress": "124 C Katwaria Sarai",
+            "addressLocality": "New Delhi",
+            "addressRegion": "Delhi",
+            "postalCode": "110016",
+            "addressCountry": "IN"
+          },
+          "sameAs": [
+            "https://www.linkedin.com/company/digitalpenta",
+            "https://www.instagram.com/digitalpenta",
+            "https://twitter.com/digitalpenta",
+            "https://www.youtube.com/@digitalpenta",
+            "https://facebook.com/digitalpenta"
+          ]
+        },
+        "LocalBusiness_extensions": {
+          "aggregateRating": {
+            "ratingValue": "4.9",
+            "reviewCount": "87"
+          },
+          "priceRange": "₹₹-₹₹₹₹",
+          "openingHoursSpecification": {
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+          }
+        }
+      },
+      "service_pages": {
+        "types": ["Service", "FAQPage", "BreadcrumbList"],
+        "Service_template": {
+          "name": "{Service Name}",
+          "description": "{Service description}",
+          "provider": {"@type": "Organization", "name": "Digital Penta"},
+          "areaServed": [{"@type": "Country", "name": "India"}, {"@type": "Country", "name": "United Arab Emirates"}],
+          "serviceType": "{service_category}"
+        }
+      },
+      "blog_posts": {
+        "types": ["Article", "BreadcrumbList", "FAQPage"],
+        "Article_template": {
+          "headline": "{Post Title}",
+          "description": "{Excerpt}",
+          "image": "{OG Image URL}",
+          "author": {"@type": "Person", "name": "{Author Name}"},
+          "publisher": {"@type": "Organization", "name": "Digital Penta", "logo": "https://digitalpenta.com/logo.png"},
+          "datePublished": "{ISO Date}",
+          "dateModified": "{ISO Date}"
+        }
+      },
+      "location_pages": {
+        "types": ["LocalBusiness", "BreadcrumbList", "FAQPage"],
+        "LocalBusiness_template": {
+          "name": "Digital Penta — {City}",
+          "telephone": "{city_phone}",
+          "address": {"@type": "PostalAddress", "addressLocality": "{City}", "addressCountry": "{country_code}"},
+          "geo": {"@type": "GeoCoordinates", "latitude": "{lat}", "longitude": "{lng}"},
+          "aggregateRating": {"ratingValue": "4.9", "reviewCount": "87"}
+        }
+      }
+    },
+    "mobile_first": {
+      "requirements": [
+        "Viewport meta tag present: <meta name='viewport' content='width=device-width, initial-scale=1.0'>",
+        "No horizontal scrolling on any screen width",
+        "Touch targets minimum 44x44px (buttons, links)",
+        "Font size minimum 16px for body text (prevents mobile zoom)",
+        "Test on: 375px (iPhone SE), 390px (iPhone 15), 768px (iPad), 1280px (desktop)",
+        "Mobile nav tested with screen reader"
+      ]
+    },
+    "page_speed_checklist": {
+      "javascript": [
+        "Code split by route — only load JS needed for current page",
+        "Defer non-critical scripts: <script defer>",
+        "Remove unused JS (tree-shaking in Vite — already configured)",
+        "No render-blocking scripts in <head>",
+        "Total JS bundle < 200KB gzipped"
+      ],
+      "css": [
+        "Critical CSS inlined in <head>",
+        "Non-critical CSS loaded asynchronously",
+        "Tailwind CSS purged in production build — no unused utilities",
+        "No unused CSS frameworks"
+      ],
+      "fonts": [
+        "Use font-display: swap to prevent invisible text during load",
+        "Preconnect to Google Fonts: <link rel='preconnect' href='https://fonts.googleapis.com'>",
+        "Subset fonts to Latin only for Latin-language pages",
+        "Consider self-hosting Inter and Plus Jakarta Sans"
+      ],
+      "caching": [
+        "Static assets (images, fonts, JS, CSS) cached with long Cache-Control headers",
+        "HTML pages: no-cache or short TTL (so content updates propagate)",
+        "Supabase queries cached at application level where appropriate"
+      ]
+    },
+    "https_security": {
+      "requirements": [
+        "SSL certificate active on digitalpenta.com",
+        "All HTTP URLs redirect 301 to HTTPS",
+        "HSTS header enabled",
+        "No mixed content warnings in browser console",
+        "Security headers: X-Frame-Options, X-Content-Type-Options, CSP"
+      ]
+    }
+  },
+
+  "content_strategy": {
+    "e_e_a_t_signals": {
+      "description": "Google's Experience, Expertise, Authoritativeness, and Trustworthiness framework. Critical for YMYL (Your Money Your Life) adjacent content like marketing services.",
+      "experience": [
+        "Case studies with real client names, metrics, and verifiable results",
+        "Process documentation showing our real methodology",
+        "Client video testimonials",
+        "Before/after screenshots from campaigns",
+        "Real team member photos and bios"
+      ],
+      "expertise": [
+        "Author bios with credentials and years of experience on all blog posts",
+        "Service pages written with clear technical depth",
+        "Industry certifications mentioned: Google Partner, Meta Partner, HubSpot Partner",
+        "Publish data-backed research and original statistics",
+        "Staff LinkedIn profiles linked from team page"
+      ],
+      "authoritativeness": [
+        "Earn media mentions on Clutch, DesignRush, GoodFirms, Bark.com",
+        "Get featured in 'Best agencies in Delhi' roundup articles",
+        "Publish on industry sites (guest posts on Moz, Search Engine Journal India)",
+        "Build links from .edu and .gov sites where relevant",
+        "Aim for Wikipedia mention or citation in marketing articles"
+      ],
+      "trustworthiness": [
+        "Clear privacy policy and terms of service",
+        "GST registration number visible in footer",
+        "Physical address verified on Google Business Profile",
+        "SSL + HTTPS on all pages",
+        "Respond to all reviews publicly within 24 hours",
+        "No fake reviews — only authentic client feedback",
+        "Clear pricing transparency (at least starting prices visible)"
+      ]
+    },
+    "content_calendar": {
+      "blog_publishing_frequency": "2 posts per week minimum",
+      "content_types": [
+        {
+          "type": "Ultimate Guide",
+          "frequency": "1 per month",
+          "word_count": 3000,
+          "example": "The Ultimate Guide to Digital Marketing in India 2026",
+          "purpose": "Pillar content — rank for broad head terms, earn backlinks"
+        },
+        {
+          "type": "How-To Post",
+          "frequency": "2 per month",
+          "word_count": 1800,
+          "example": "How to Run Google Ads for Real Estate in Delhi: Step-by-Step",
+          "purpose": "Long-tail keyword targeting, featured snippet opportunities"
+        },
+        {
+          "type": "Case Study",
+          "frequency": "1 per month",
+          "word_count": 2000,
+          "example": "How We Generated 340% More Leads for a Delhi Real Estate Developer",
+          "purpose": "E-E-A-T building, trust signals, prospect conversion"
+        },
+        {
+          "type": "Comparison Post",
+          "frequency": "2 per month",
+          "word_count": 2000,
+          "example": "SEO vs PPC: Which is Better for Indian Businesses in 2026?",
+          "purpose": "Commercial intent searchers, high conversion potential"
+        },
+        {
+          "type": "News/Trend Post",
+          "frequency": "1 per week",
+          "word_count": 800,
+          "example": "Google Algorithm Update March 2026: What Indian Businesses Need to Know",
+          "purpose": "Freshness signal, brand awareness, social sharing"
+        },
+        {
+          "type": "Tool/Resource Post",
+          "frequency": "1 per month",
+          "word_count": 2500,
+          "example": "10 Free SEO Tools Every Indian Business Owner Should Use in 2026",
+          "purpose": "Link bait, topical authority, long-tail traffic"
+        }
+      ],
+      "content_topics_next_12_months": [
+        "Digital Marketing Cost in India 2026: Complete Pricing Guide",
+        "How to Choose the Right Digital Marketing Agency in Delhi: 10 Questions to Ask",
+        "The Complete Guide to Local SEO for Delhi Businesses 2026",
+        "WhatsApp Marketing for Indian Ecommerce: Strategy + Templates",
+        "AI Chatbots for Business: Real ROI Data from 50+ Indian Companies",
+        "How to Run Google Ads in Dubai: UAE Market Guide 2026",
+        "Real Estate Digital Marketing: Case Study — 340% Lead Increase",
+        "Healthcare SEO India: YMYL Best Practices for Hospitals and Clinics",
+        "Instagram vs LinkedIn: Which Platform for B2B in India?",
+        "SaaS Marketing Playbook for Indian Startups",
+        "The Future of Digital Marketing in India: 2026 Trends Report",
+        "SEO for Ecommerce India: Shopify vs WooCommerce Comparison",
+        "Digital Marketing for Coaching Institutes: Proven Strategies",
+        "How Indian Brands Can Win in the UAE Market: Digital Strategy Guide",
+        "Content Marketing ROI: How We Generated 50K Monthly Visitors for a Client"
+      ]
+    },
+    "page_specific_content": {
+      "homepage": {
+        "unique_value_propositions": [
+          "Only agency in India offering all 5 pillars (Marketing + PR + Dev + AI + Automation) under one roof",
+          "Live real-time dashboard for every client — know your numbers daily, not monthly",
+          "Average 340% lead increase backed by verifiable case studies",
+          "Response time under 47 minutes — fastest in category",
+          "India + Middle East dual-market experts (most agencies cover only one market)"
+        ],
+        "trust_signals_required": [
+          "500+ clients served counter",
+          "₹50Cr+ revenue generated counter",
+          "4.9/5 Google rating badge",
+          "Google Partner logo",
+          "Meta Business Partner logo",
+          "Clutch verified badge",
+          "Client logo strip (recognizable brands)",
+          "Number of industries served: 7+",
+          "Years in business",
+          "Countries served: India, UAE, Saudi Arabia, Qatar, Bahrain, USA"
+        ]
+      },
+      "service_pages_content_outline": {
+        "seo_page_must_mention": [
+          "Technical SEO audits and fixes",
+          "Keyword research methodology",
+          "On-page optimization",
+          "Link building strategy",
+          "Core Web Vitals optimization",
+          "Local SEO for Delhi NCR",
+          "Monthly rank tracking and reporting",
+          "Google Search Console management",
+          "Content optimization",
+          "E-E-A-T compliance"
+        ],
+        "ppc_page_must_mention": [
+          "Google Search Ads",
+          "Google Display Network",
+          "Google Shopping campaigns",
+          "YouTube advertising",
+          "Meta (Facebook + Instagram) Ads",
+          "LinkedIn Ads for B2B",
+          "Bid strategy optimization",
+          "Conversion tracking setup",
+          "A/B creative testing",
+          "ROAS and CPA targets"
+        ]
+      }
+    }
+  },
+
+  "off_page_seo_link_building": {
+    "target_domain_rating": "DR 50+ within 12 months",
+    "current_baseline": "needs_audit",
+    "link_building_strategies": [
+      {
+        "strategy": "Directory Listings (Quick Wins)",
+        "priority": "immediate",
+        "platforms": [
+          {"name": "Clutch.co", "da": "70", "type": "review_profile", "action": "Create and optimize company profile"},
+          {"name": "GoodFirms.co", "da": "68", "type": "review_profile", "action": "Create profile with case studies"},
+          {"name": "DesignRush.com", "da": "65", "type": "review_profile", "action": "Submit agency listing"},
+          {"name": "Bark.com", "da": "60", "type": "directory", "action": "Professional profile + reviews"},
+          {"name": "Justdial.com", "da": "72", "type": "local_directory", "action": "Business listing with photos"},
+          {"name": "IndiaMart.com", "da": "75", "type": "b2b_directory", "action": "Service listing"},
+          {"name": "Sulekha.com", "da": "65", "type": "local_directory", "action": "Service provider listing"},
+          {"name": "Trustpilot.com", "da": "80", "type": "review_site", "action": "Business page + encourage client reviews"},
+          {"name": "Google Business Profile", "type": "local_seo", "action": "Fully optimize with photos, posts, services, Q&A"}
+        ]
+      },
+      {
+        "strategy": "Digital PR and Media Outreach",
+        "priority": "high",
+        "target_publications": [
+          "YourStory.com — Indian startup/business media (DA 70+)",
+          "Inc42.com — Indian tech and startup media (DA 65+)",
+          "Entrepreneur.com/in — Indian edition (DA 85+)",
+          "Times of India Tech — Major Indian newspaper tech section",
+          "Economic Times — Business news, guest columns",
+          "Business Standard — B2B focused",
+          "SearchEngineJournal.com — Global SEO/digital marketing (DA 80+)",
+          "HuffPost India — Lifestyle and business content",
+          "Khaleej Times — UAE major newspaper",
+          "Gulf News — UAE major newspaper",
+          "Arabian Business — MENA business media"
+        ],
+        "pitch_angles": [
+          "Data-backed research report: 'State of Digital Marketing in India 2026'",
+          "Expert commentary on Google algorithm updates affecting Indian businesses",
+          "Case study pitch: 'How AI chatbots reduced customer service costs by 70% for Indian brands'",
+          "Trend article: 'WhatsApp commerce is the future of Indian ecommerce'",
+          "Leadership interview: Digital Penta founder on AI in marketing"
+        ]
+      },
+      {
+        "strategy": "Guest Posting",
+        "priority": "high",
+        "target_sites": [
+          "Moz.com — SEO thought leadership",
+          "Search Engine Land — Digital marketing news",
+          "HubSpot Blog — Marketing tips",
+          "Neil Patel Blog — Digital marketing",
+          "Backlinko — SEO tactics",
+          "Digital Vidya — Indian digital marketing blog",
+          "iide.co — Indian digital marketing education",
+          "Marketing Minded — Indian marketing blog"
+        ],
+        "guest_post_topics": [
+          "How WhatsApp is Replacing Email Marketing in India",
+          "The India-UAE Digital Marketing Corridor: Opportunities for Brands",
+          "AI Chatbots vs. Human Support: ROI Data from 50 Indian SMBs",
+          "Why Hindi SEO is the Biggest Untapped Opportunity in India"
+        ]
+      },
+      {
+        "strategy": "Broken Link Building",
+        "priority": "medium",
+        "process": "Use Ahrefs/SEMrush to find broken links on high-DA Indian marketing/business sites. Create replacement content. Reach out to webmasters."
+      },
+      {
+        "strategy": "HARO / Source Bottle (Expert Commentary)",
+        "priority": "medium",
+        "process": "Sign up for HARO (Help A Reporter Out). Respond to queries about digital marketing, SEO, AI, India business. Earn mentions in major publications."
+      },
+      {
+        "strategy": "Skyscraper Technique",
+        "priority": "medium",
+        "process": "Find top-ranking content for target keywords. Create significantly better (more comprehensive, better designed, more current) content. Outreach to sites linking to the original."
+      },
+      {
+        "strategy": "Partnership Links",
+        "priority": "ongoing",
+        "partners": [
+          "Google Partner page listing",
+          "Meta Business Partner directory",
+          "HubSpot Solutions Partner directory",
+          "Shopify Partner listing",
+          "AWS Partner Network",
+          "Razorpay Partner program"
+        ]
+      }
+    ],
+    "link_velocity": {
+      "month_1_3": "5-10 new referring domains per month (foundation)",
+      "month_4_6": "10-20 new referring domains per month (acceleration)",
+      "month_7_12": "20-40 new referring domains per month (scale)",
+      "warning": "Do NOT use PBNs, link farms, or bought links — Google penalty risk is extremely high"
+    },
+    "anchor_text_profile_target": {
+      "branded": "40% — 'Digital Penta', 'DigitalPenta'",
+      "partial_match": "25% — 'digital marketing agency', 'Delhi SEO company'",
+      "exact_match": "10% — use sparingly to avoid over-optimization",
+      "generic": "15% — 'click here', 'this article', 'learn more'",
+      "naked_url": "10% — digitalpenta.com, https://digitalpenta.com/"
+    }
+  },
+
+  "local_seo": {
+    "google_business_profile": {
+      "name": "Digital Penta",
+      "category_primary": "Internet Marketing Service",
+      "categories_secondary": ["Marketing Agency", "Web Design Company", "Software Company", "Advertising Agency"],
+      "address": "124 C Katwaria Sarai, New Delhi, Delhi 110016",
+      "phone": "+91-88601-00039",
+      "website": "https://digitalpenta.com",
+      "optimization_checklist": [
+        "Add 10+ high-quality photos of office, team, and work",
+        "Add all services with descriptions and prices",
+        "Post weekly Google Business Profile posts (news, offers, events)",
+        "Respond to ALL reviews within 24 hours",
+        "Add Q&A section — seed with 10 common questions + answers",
+        "Enable messaging",
+        "Add products/services catalogue",
+        "Verify location on Google Maps",
+        "Track Google Business Profile insights monthly"
+      ]
+    },
+    "local_citations": {
+      "nap_consistency": "Name, Address, Phone MUST be identical across ALL listings — exact same format",
+      "nap_standard": {
+        "name": "Digital Penta",
+        "address": "124 C Katwaria Sarai, New Delhi, Delhi 110016, India",
+        "phone": "+91-88601-00039"
+      },
+      "priority_citation_sites": [
+        "Google Business Profile",
+        "Justdial.com",
+        "IndiaMart.com",
+        "TradeIndia.com",
+        "Sulekha.com",
+        "Yelp India",
+        "Foursquare",
+        "Hotfrog.in",
+        "Getit.in",
+        "AskLaila.com",
+        "123khoj.com",
+        "Yellow Pages India"
+      ]
+    },
+    "review_strategy": {
+      "target_reviews": {
+        "Google": "100+ reviews at 4.9+ average",
+        "Clutch": "25+ verified reviews",
+        "Trustpilot": "50+ reviews",
+        "GoodFirms": "20+ reviews"
+      },
+      "review_acquisition_process": [
+        "Send review request email 2 weeks after project completion",
+        "Include direct review link (no friction)",
+        "Follow up once via WhatsApp if no review after 5 days",
+        "Never incentivize reviews — Google/Clutch policy violation",
+        "Respond to every review (positive and negative) publicly"
+      ]
+    }
+  },
+
+  "international_seo": {
+    "hreflang_implementation": {
+      "description": "Signal to Google which language/region version to show to which users",
+      "implementation": "Add to <head> section of all pages with region variants",
+      "tags": [
+        "<link rel='alternate' hreflang='en-in' href='https://digitalpenta.com/'>",
+        "<link rel='alternate' hreflang='en-ae' href='https://digitalpenta.com/locations/dubai/'>",
+        "<link rel='alternate' hreflang='ar' href='https://digitalpenta.com/ar/'>",
+        "<link rel='alternate' hreflang='x-default' href='https://digitalpenta.com/'>"
+      ],
+      "note": "Implement Arabic version of key pages once DA > 30"
+    },
+    "geo_targeting": {
+      "india": {
+        "target_in_google_search_console": "India",
+        "local_content_signals": "Address in Delhi, India phone numbers, INR pricing, Indian client references"
+      },
+      "uae": {
+        "strategy": "Dedicated location pages for Dubai, Abu Dhabi",
+        "local_content_signals": "AED pricing, UAE client testimonials, UAE phone number, local landmarks mentioned",
+        "consider": "Register UAE business entity for stronger local signals"
+      }
+    }
+  },
+
+  "analytics_and_tracking": {
+    "google_analytics_4": {
+      "key_events_to_track": [
+        {"event": "generate_lead", "trigger": "Form submission on contact/proposal pages"},
+        {"event": "phone_click", "trigger": "Click on phone number"},
+        {"event": "whatsapp_click", "trigger": "Click on WhatsApp button"},
+        {"event": "cta_click", "trigger": "Click on any CTA button", "parameters": {"cta_text": "{button_text}", "page_location": "{page_path}"}},
+        {"event": "tool_usage", "trigger": "Use of SEO audit or ROI calculator tool"},
+        {"event": "scroll_depth", "trigger": "User scrolls 25%, 50%, 75%, 100% of page"},
+        {"event": "blog_read_complete", "trigger": "User scrolls 80%+ of blog post"},
+        {"event": "video_play", "trigger": "Play on video testimonial or demo"},
+        {"event": "dashboard_preview_view", "trigger": "User sees dashboard section in viewport"}
+      ],
+      "conversion_goals": [
+        "Contact form submission",
+        "Proposal form submission",
+        "SEO audit tool submission",
+        "Phone click",
+        "WhatsApp click",
+        "Strategy call booking"
+      ]
+    },
+    "google_search_console": {
+      "tasks": [
+        "Verify ownership via DNS TXT record",
+        "Submit sitemap.xml",
+        "Monitor Core Web Vitals report weekly",
+        "Check coverage report for indexing errors monthly",
+        "Monitor search performance (queries, impressions, CTR) weekly",
+        "Check manual actions and security issues monthly",
+        "Monitor mobile usability report monthly"
+      ]
+    },
+    "rank_tracking": {
+      "tool": "SEMrush or Ahrefs (both available)",
+      "keywords_to_track_from_day_1": [
+        "digital marketing agency in Delhi",
+        "SEO agency Delhi",
+        "digital marketing agency Mumbai",
+        "digital marketing agency India",
+        "digital marketing agency Dubai",
+        "Google Ads agency India",
+        "performance marketing agency Delhi",
+        "social media marketing agency India",
+        "AI chatbot development India",
+        "web development agency Delhi"
+      ],
+      "reporting_frequency": "Weekly rank checks, monthly comprehensive reports"
+    },
+    "kpis_to_report_monthly": [
+      "Organic traffic (GA4 — sessions from organic search)",
+      "Organic impressions and CTR (Google Search Console)",
+      "Number of keywords ranking on page 1 (rank tracker)",
+      "Domain Rating / Domain Authority (Ahrefs / Moz)",
+      "Number of referring domains (Ahrefs)",
+      "Number of organic leads (GA4 — generate_lead events from organic source)",
+      "Cost per organic lead",
+      "Top 10 performing pages by organic traffic",
+      "Top 10 keywords driving traffic",
+      "Core Web Vitals scores (GSC)"
+    ]
+  },
+
+  "page_by_page_seo_specifications": {
+    "pages": [
+      {
+        "page_path": "/",
+        "page_name": "Homepage",
+        "title_tag": "Digital Penta | Digital Marketing Agency in Delhi | 2026 — Get Free Audit",
+        "meta_description": "India's top digital marketing agency in Delhi. SEO, PPC, Social Media & AI automation. 500+ clients. ₹50Cr+ revenue generated for clients. Get your free audit today.",
+        "h1": "India's Most Results-Driven Digital Marketing Agency",
+        "primary_keyword": "digital marketing agency in Delhi",
+        "secondary_keywords": ["digital marketing company India", "best digital marketing agency India", "SEO and marketing agency Delhi"],
+        "schema_types": ["Organization", "LocalBusiness", "FAQPage", "WebSite"],
+        "word_count_target": 2000,
+        "internal_links_required": ["All 5 service categories", "3+ location pages", "2+ industry pages", "Blog preview", "Portfolio/case studies"],
+        "cta_above_fold": "Get Free Strategy Audit",
+        "cta_secondary": "See Our Results"
+      },
+      {
+        "page_path": "/services/digital-marketing/",
+        "page_name": "Digital Marketing Services",
+        "title_tag": "Digital Marketing Services in India | Delhi Agency | Digital Penta",
+        "meta_description": "Full-service digital marketing in India — SEO, PPC, Social Media, Content & Email Marketing. Proven 3X ROI for 500+ brands. Free strategy consultation.",
+        "h1": "Digital Marketing Services That Deliver Measurable Growth",
+        "primary_keyword": "digital marketing services India",
+        "schema_types": ["Service", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 2000
+      },
+      {
+        "page_path": "/services/digital-marketing/seo/",
+        "page_name": "SEO Services",
+        "title_tag": "SEO Agency in Delhi | Best SEO Services India 2026 | Digital Penta",
+        "meta_description": "Expert SEO services in Delhi. Average 300% organic traffic increase in 6 months. Technical SEO, content, link building & local SEO. Free SEO audit available.",
+        "h1": "SEO Agency in Delhi — Rank #1 on Google, Own Your Market",
+        "primary_keyword": "SEO agency Delhi",
+        "secondary_keywords": ["SEO services India", "best SEO company Delhi", "technical SEO India"],
+        "schema_types": ["Service", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 2500,
+        "featured_snippet_targets": ["What does an SEO agency do in India?", "How much does SEO cost in Delhi?", "How long does SEO take to show results in India?"]
+      },
+      {
+        "page_path": "/services/digital-marketing/ppc/",
+        "page_name": "PPC Management",
+        "title_tag": "PPC Agency India | Google Ads Management Delhi | Digital Penta",
+        "meta_description": "ROAS-focused PPC management in India. Google Ads, Meta Ads & LinkedIn campaigns. Average 8X ROAS. Google Certified specialists. Free PPC audit.",
+        "h1": "PPC Management Agency — Every Click Earns Its Place",
+        "primary_keyword": "PPC agency India",
+        "secondary_keywords": ["Google Ads management India", "Google Ads agency Delhi", "pay per click advertising India"],
+        "schema_types": ["Service", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 2000
+      },
+      {
+        "page_path": "/locations/delhi/",
+        "page_name": "Delhi Location",
+        "title_tag": "Digital Marketing Agency in Delhi | Digital Penta | Katwaria Sarai",
+        "meta_description": "Delhi's most trusted digital marketing agency. HQ in Katwaria Sarai, New Delhi. SEO, PPC & AI solutions for 500+ Delhi NCR businesses. Free audit.",
+        "h1": "Delhi's #1 Digital Marketing Agency — Results From Day One",
+        "primary_keyword": "digital marketing agency in Delhi",
+        "schema_types": ["LocalBusiness", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 1800
+      },
+      {
+        "page_path": "/locations/dubai/",
+        "page_name": "Dubai Location",
+        "title_tag": "Digital Marketing Agency in Dubai | UAE SEO & Ads | Digital Penta",
+        "meta_description": "Award-winning digital marketing agency serving Dubai & UAE. Arabic + English campaigns, SEO, Google Ads & social media. Indian agency, global quality, 40% lower cost.",
+        "h1": "Dubai's Premium Digital Marketing Partner — ROI-Focused Growth",
+        "primary_keyword": "digital marketing agency Dubai",
+        "secondary_keywords": ["SEO company Dubai", "Google Ads agency UAE", "social media marketing Dubai", "Arabic SEO agency"],
+        "schema_types": ["LocalBusiness", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 1800
+      },
+      {
+        "page_path": "/industries/real-estate/",
+        "page_name": "Real Estate Industry",
+        "title_tag": "Digital Marketing for Real Estate in India | Digital Penta",
+        "meta_description": "Real estate digital marketing agency — SEO, Google Ads & lead generation for property developers. Average 340% lead increase. Free real estate marketing audit.",
+        "h1": "Real Estate Digital Marketing — Fill Your Sales Funnel With Qualified Leads",
+        "primary_keyword": "digital marketing for real estate India",
+        "schema_types": ["Service", "FAQPage", "BreadcrumbList"],
+        "word_count_target": 2000
+      },
+      {
+        "page_path": "/blog/",
+        "page_name": "Blog Hub",
+        "title_tag": "Digital Marketing Blog | SEO Tips & Growth Strategies | Digital Penta",
+        "meta_description": "Expert digital marketing insights, SEO guides, and growth strategies from India's top marketing agency. Updated weekly for Indian and UAE markets.",
+        "h1": "Digital Marketing Insights — Actionable Strategies for Growth",
+        "primary_keyword": "digital marketing blog India",
+        "schema_types": ["Blog", "BreadcrumbList"],
+        "word_count_target": 500
+      }
+    ]
+  },
+
+  "quick_wins_action_plan": {
+    "week_1_immediate": [
+      "Claim and fully optimize Google Business Profile (photos, services, hours, description with keywords)",
+      "Submit sitemap.xml to Google Search Console",
+      "Set up GA4 with all conversion events",
+      "Add all missing meta descriptions (audit shows many pages missing them)",
+      "Fix any broken internal links",
+      "Verify SSL and all HTTP→HTTPS redirects work",
+      "Add LocalBusiness schema to homepage",
+      "Add Organization schema to homepage",
+      "Add FAQPage schema to homepage FAQ section",
+      "Submit to Clutch.co and GoodFirms immediately (free backlinks)"
+    ],
+    "month_1": [
+      "Complete technical SEO audit — fix all errors in Google Search Console",
+      "Achieve PageSpeed Insights mobile score 85+ on homepage",
+      "Create or optimize all location pages (Delhi, Mumbai, Bangalore, Dubai minimum)",
+      "Launch blog with first 4 posts (2000+ words each, targeting informational keywords)",
+      "Get 5+ reviews on Google (reach out to existing clients)",
+      "Claim 20+ business directory listings (NAP consistency critical)",
+      "Implement all schema markup across all key pages",
+      "Set up rank tracking for top 50 keywords"
+    ],
+    "month_2_3": [
+      "Publish 2 blog posts per week consistently",
+      "Reach out to 10 industry sites for guest posting",
+      "Submit press releases for any newsworthy company updates",
+      "Implement FAQ schema on all service pages",
+      "Optimize all image alt text across the site",
+      "Build first 20 high-quality backlinks",
+      "Create 3 city-specific location pages",
+      "Run first link reclamation campaign (find brand mentions without links)"
+    ],
+    "month_4_6": [
+      "Target featured snippets for 10+ how-to and FAQ keywords",
+      "Build topical authority with complete content clusters",
+      "Launch Arabic SEO strategy for Dubai/UAE pages",
+      "Achieve 50+ Google reviews",
+      "Earn first mention in major Indian marketing publication",
+      "Reach 30 referring domains",
+      "Launch free SEO audit tool to capture email leads",
+      "Start monthly industry report/research publication"
+    ]
+  },
+
+  "competitor_content_gap_analysis": {
+    "content_gaps_vs_techmagnate": [
+      "WhatsApp marketing guide for Indian businesses (Techmagnate doesn't cover this)",
+      "AI chatbot ROI calculator (unique tool opportunity)",
+      "India-UAE business corridor digital strategy (no competitor covers this)",
+      "Startup marketing guide (Techmagnate focuses on enterprise)"
+    ],
+    "content_gaps_vs_pagetraffic": [
+      "Automation + marketing combined guides",
+      "Middle East market guides in English AND Arabic",
+      "Video content on YouTube (PageTraffic has limited video presence)",
+      "Industry-specific case studies with numbers (more specific than competitors)"
+    ],
+    "content_gaps_vs_dubai_agencies": [
+      "India vs UAE marketing comparison for brands expanding markets",
+      "Cost comparison: Indian agency vs Dubai agency (positioning for price-conscious UAE clients)",
+      "Hindi + English bilingual content marketing guides"
+    ]
+  },
+
+  "content_text_samples": {
+    "homepage_hero_text": {
+      "h1": "India's Most Results-Driven Digital Marketing Agency",
+      "subheadline": "SEO, Google Ads, Social Media & AI Automation — all under one roof. Trusted by 500+ businesses across India, Dubai, and the Middle East.",
+      "cta_primary": "Get Your Free Growth Audit",
+      "cta_secondary": "See Client Results",
+      "trust_strip": "★★★★★ 4.9 Google Rating | 500+ Clients | ₹50Cr+ Revenue Generated | Google Partner | Delhi-Based, Globally Trusted"
+    },
+    "homepage_about_blurb": "Digital Penta was built on a single insight: fragmented agencies deliver fragmented results. When your SEO team doesn't talk to your ads team, and your ads team ignores your content strategy, growth stalls. We built something different. Five integrated disciplines — Marketing, PR, Development, AI, and Automation — working as one engine. The result? Compounding growth that individual agencies simply cannot match.",
+    "seo_service_intro": "Your competitors are ranking where your customers are searching. Every day you're not on page one of Google is a day of leads and revenue going to someone else. Our SEO team combines technical precision, content authority, and strategic link building to move your business from invisible to indispensable in your market — whether that's Delhi, Mumbai, Dubai, or across India.",
+    "homepage_stats_context": "These numbers aren't estimates or projections. They're the real results of 500+ campaigns run for businesses across India and the Middle East. ₹50 crore in revenue generated for clients, an average 340% increase in qualified leads, and a 95% client retention rate that proves our model works.",
+    "location_delhi_intro": "Delhi is India's most competitive digital market. With 20 million+ internet users in the NCR region and thousands of businesses fighting for the same search terms, ranking on Google's first page isn't just nice to have — it's survival. Our Delhi headquarters puts us at the center of this market with deep knowledge of what Delhi businesses, buyers, and search behaviors actually look like.",
+    "location_dubai_intro": "Dubai's digital landscape moves faster than most markets in the world. With over 9 million UAE residents and one of the highest per-capita social media usage rates globally, the opportunity for brands is enormous — but so is the competition. What makes Digital Penta different in Dubai? We're not just another agency trying to crack the UAE market. We understand both the Indian and Middle Eastern business cultures, giving our clients a unique edge when they operate across both markets."
+  }
+}
