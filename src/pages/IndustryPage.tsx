@@ -6,6 +6,9 @@ import { getIndustryData } from "@/data/industryData";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
+import SEOHead, {
+  breadcrumbSchema, serviceSchema,
+} from "@/components/seo/SEOHead";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -28,27 +31,34 @@ export default function IndustryPage() {
     );
   }
 
+  const canonical = `https://digitalpenta.com/industries/${industry}`;
+  const title = `Digital Marketing for ${data.title} in India | Digital Penta`;
+
   return (
     <Layout>
-      {/* Industry Article JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Service",
-          "name": `${data.title} Digital Marketing`,
-          "description": data.description,
-          "provider": {
-            "@type": "Organization",
-            "name": "Digital Penta",
-            "url": "https://digitalpenta.com"
-          },
-          "areaServed": [
-            { "@type": "Country", "name": "India" },
-            { "@type": "Country", "name": "United Arab Emirates" }
-          ],
-          "url": `https://digitalpenta.com/industries/${industry}`
-        }) }}
+      <SEOHead
+        title={title}
+        description={data.metaDescription}
+        canonical={canonical}
+        hreflangs={[
+          { hreflang: "x-default", href: canonical },
+          { hreflang: "en", href: canonical },
+          { hreflang: "en-IN", href: canonical },
+          { hreflang: "en-AE", href: canonical },
+        ]}
+        schemas={[
+          serviceSchema({
+            name: `${data.title} Digital Marketing`,
+            description: data.description,
+            url: canonical,
+            serviceType: `${data.title} Marketing`,
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Industries", url: "https://digitalpenta.com/#industries" },
+            { name: data.title, url: canonical },
+          ]),
+        ]}
       />
       <div className="pt-24 pb-0">
         <div className="container mx-auto px-4">

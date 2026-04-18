@@ -5,17 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getSubServiceData } from "@/data/subServiceData";
 import { motion } from "motion/react";
-import { useEffect } from "react";
+import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/components/seo/SEOHead";
 
 export default function SubServicePage() {
   const { category, subService } = useParams<{ category: string; subService: string }>();
   const data = getSubServiceData(category || "", subService || "");
-
-  useEffect(() => {
-    if (data) {
-      document.title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
-    }
-  }, [data]);
 
   if (!data) {
     return (
@@ -30,28 +24,39 @@ export default function SubServicePage() {
     );
   }
 
+  const canonical = `https://digitalpenta.com/services/${category}/${subService}`;
+  const title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
+  const description = data.heroDescription.length > 155
+    ? `${data.heroDescription.slice(0, 152).trim()}...`
+    : data.heroDescription;
+  const categoryLabel = (category ?? "").replace(/-/g, " ");
+
   return (
     <Layout>
-      {/* Service JSON-LD Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Service",
-          "name": data.title,
-          "description": data.heroDescription,
-          "provider": {
-            "@type": "Organization",
-            "name": "Digital Penta",
-            "url": "https://digitalpenta.com"
-          },
-          "areaServed": [
-            { "@type": "Country", "name": "India" },
-            { "@type": "Country", "name": "United Arab Emirates" },
-            { "@type": "Country", "name": "Saudi Arabia" }
-          ],
-          "url": `https://digitalpenta.com/services/${category}/${subService}`
-        }) }}
+      <SEOHead
+        title={title}
+        description={description}
+        canonical={canonical}
+        hreflangs={[
+          { hreflang: "x-default", href: canonical },
+          { hreflang: "en", href: canonical },
+          { hreflang: "en-IN", href: canonical },
+          { hreflang: "en-AE", href: canonical },
+        ]}
+        schemas={[
+          serviceSchema({
+            name: data.title,
+            description: data.heroDescription,
+            url: canonical,
+            serviceType: data.title,
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: categoryLabel, url: `https://digitalpenta.com/services/${category}` },
+            { name: data.title, url: canonical },
+          ]),
+          ...(data.faqs?.length ? [faqPageSchema(data.faqs)] : []),
+        ]}
       />
       {/* Breadcrumb */}
       <div className="pt-24 pb-0">
