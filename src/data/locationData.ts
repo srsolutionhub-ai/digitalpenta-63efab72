@@ -7,6 +7,9 @@ export interface LocationData {
   description: string;
   metaTitle: string;
   metaDescription: string;
+  /** Optional Arabic alternates for MENA SEO — surfaced as title:ar / description:ar meta + hreflang ar-XX */
+  metaTitleAr?: string;
+  metaDescriptionAr?: string;
   phone: string;
   email: string;
   address: string;
