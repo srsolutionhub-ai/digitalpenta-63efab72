@@ -7,6 +7,7 @@ import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import serviceBanner from "@/assets/service-banner-graphic.jpg";
+import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/components/seo/SEOHead";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -225,12 +226,6 @@ export default function ServiceCategory() {
   const processRef = useRef<HTMLDivElement>(null);
   const processInView = useInView(processRef, { once: true });
 
-  useEffect(() => {
-    if (data) {
-      document.title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
-    }
-  }, [data]);
-
   if (!data) {
     return (
       <Layout>
@@ -244,8 +239,39 @@ export default function ServiceCategory() {
     );
   }
 
+  const canonical = `https://digitalpenta.com/services/${category}`;
+  const title = `${data.title} Services in India | Delhi Agency | Digital Penta`;
+  const description = data.description.length > 155
+    ? `${data.description.slice(0, 152).trim()}...`
+    : data.description;
+
   return (
     <Layout>
+      <SEOHead
+        title={title}
+        description={description}
+        canonical={canonical}
+        hreflangs={[
+          { hreflang: "x-default", href: canonical },
+          { hreflang: "en", href: canonical },
+          { hreflang: "en-IN", href: canonical },
+          { hreflang: "en-AE", href: canonical },
+        ]}
+        schemas={[
+          serviceSchema({
+            name: data.title,
+            description: data.description,
+            url: canonical,
+            serviceType: data.title,
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Services", url: "https://digitalpenta.com/#services" },
+            { name: data.title, url: canonical },
+          ]),
+          ...(data.faqs?.length ? [faqPageSchema(data.faqs)] : []),
+        ]}
+      />
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden" ref={heroRef}>
         <div className="absolute inset-0">
