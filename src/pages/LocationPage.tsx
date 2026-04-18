@@ -7,50 +7,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { getLocationData } from "@/data/locationData";
 import { motion, useInView } from "motion/react";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
+import SEOHead, {
+  breadcrumbSchema, faqPageSchema, localBusinessSchema,
+  type HreflangAlternate,
+} from "@/components/seo/SEOHead";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-// JSON-LD schema builder
-function LocationSchema({ data }: { data: NonNullable<ReturnType<typeof getLocationData>> }) {
-  const countryCode = data.country === "India" ? "IN" : data.country === "UAE" ? "AE" :
-    data.country === "Saudi Arabia" ? "SA" : data.country === "Qatar" ? "QA" : "BH";
-
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": `Digital Penta — ${data.city}`,
-    "description": data.description,
-    "url": `https://digitalpenta.com/locations/${data.slug}`,
-    "telephone": data.phone,
-    "email": data.email,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": data.schema.streetAddress,
-      "addressLocality": data.city,
-      "postalCode": data.schema.postalCode,
-      "addressCountry": countryCode,
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": data.schema.latitude,
-      "longitude": data.schema.longitude,
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "87",
-    },
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
+const COUNTRY_CODE: Record<string, string> = {
+  India: "IN", UAE: "AE", "Saudi Arabia": "SA", Qatar: "QA", Bahrain: "BH",
+};
+const ARABIC_HREFLANG: Record<string, string> = {
+  UAE: "ar-AE", "Saudi Arabia": "ar-SA", Qatar: "ar-QA", Bahrain: "ar-BH",
+};
 
 export default function LocationPage() {
   const { location } = useParams<{ location: string }>();
@@ -59,14 +30,6 @@ export default function LocationPage() {
   const isInView = useInView(heroRef, { once: true, margin: "-80px" });
   const statsRef = useRef<HTMLDivElement>(null);
   const statsInView = useInView(statsRef, { once: true });
-
-  useEffect(() => {
-    if (data) {
-      document.title = data.metaTitle;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) metaDesc.setAttribute("content", data.metaDescription);
-    }
-  }, [data]);
 
   if (!data) {
     return (
@@ -82,10 +45,54 @@ export default function LocationPage() {
   }
 
   const isMiddleEast = data.region === "middle-east";
+  const canonical = `https://digitalpenta.com/locations/${data.slug}`;
+  const countryCode = COUNTRY_CODE[data.country] ?? "IN";
+
+  /* hreflang alternates */
+  const hreflangs: HreflangAlternate[] = [
+    { hreflang: "x-default", href: canonical },
+    { hreflang: "en", href: canonical },
+  ];
+  if (data.region === "india") {
+    hreflangs.push({ hreflang: "en-IN", href: canonical });
+  } else {
+    hreflangs.push({ hreflang: `en-${countryCode}`, href: canonical });
+    const ar = ARABIC_HREFLANG[data.country];
+    if (ar) hreflangs.push({ hreflang: ar, href: canonical });
+  }
+
+  const schemas: Record<string, unknown>[] = [
+    localBusinessSchema({
+      city: data.city,
+      countryCode,
+      url: canonical,
+      phone: data.phone,
+      email: data.email,
+      streetAddress: data.schema.streetAddress,
+      postalCode: data.schema.postalCode,
+      latitude: data.schema.latitude,
+      longitude: data.schema.longitude,
+      description: data.description,
+    }),
+    breadcrumbSchema([
+      { name: "Home", url: "https://digitalpenta.com/" },
+      { name: "Locations", url: "https://digitalpenta.com/#locations" },
+      { name: data.city, url: canonical },
+    ]),
+  ];
+  if (data.faqs.length) schemas.push(faqPageSchema(data.faqs));
 
   return (
     <Layout>
-      <LocationSchema data={data} />
+      <SEOHead
+        title={data.metaTitle}
+        description={data.metaDescription}
+        canonical={canonical}
+        hreflangs={hreflangs}
+        schemas={schemas}
+        arabicTitle={data.metaTitleAr}
+        arabicDescription={data.metaDescriptionAr}
+      />
 
       {/* Breadcrumb */}
       <div className="pt-24 pb-0">
