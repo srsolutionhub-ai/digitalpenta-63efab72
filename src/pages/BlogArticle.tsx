@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion, useScroll } from "motion/react";
 import { useRef, useMemo, useState } from "react";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 interface ArticleData {
   title: string;
@@ -260,28 +261,41 @@ export default function BlogArticle() {
 
   return (
     <Layout>
-      {/* Article JSON-LD Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": displayArticle.title,
-          "description": displayArticle.excerpt,
-          "author": {
-            "@type": "Person",
-            "name": displayArticle.author
+      <SEOHead
+        title={`${displayArticle.title} — Digital Penta Blog`.slice(0, 60)}
+        description={displayArticle.excerpt.slice(0, 160)}
+        canonical={`https://digitalpenta.com/blog/${slug}`}
+        ogType="article"
+        hreflangs={[
+          { hreflang: "en", href: `https://digitalpenta.com/blog/${slug}` },
+          { hreflang: "en-IN", href: `https://digitalpenta.com/blog/${slug}` },
+          { hreflang: "x-default", href: `https://digitalpenta.com/blog/${slug}` },
+        ]}
+        schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: displayArticle.title,
+            description: displayArticle.excerpt,
+            author: { "@type": "Person", name: displayArticle.author },
+            publisher: {
+              "@type": "Organization",
+              name: "Digital Penta",
+              url: "https://digitalpenta.com",
+              logo: { "@type": "ImageObject", url: "https://digitalpenta.com/logo.png" },
+            },
+            datePublished: displayArticle.date,
+            dateModified: displayArticle.date,
+            mainEntityOfPage: `https://digitalpenta.com/blog/${slug}`,
+            url: `https://digitalpenta.com/blog/${slug}`,
+            articleSection: displayArticle.category,
           },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Digital Penta",
-            "url": "https://digitalpenta.com"
-          },
-          "datePublished": displayArticle.date,
-          "dateModified": displayArticle.date,
-          "mainEntityOfPage": `https://digitalpenta.com/blog/${slug}`,
-          "url": `https://digitalpenta.com/blog/${slug}`
-        }) }}
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Blog", url: "https://digitalpenta.com/blog" },
+            { name: displayArticle.title, url: `https://digitalpenta.com/blog/${slug}` },
+          ]),
+        ]}
       />
       {/* Reading progress bar */}
       <motion.div

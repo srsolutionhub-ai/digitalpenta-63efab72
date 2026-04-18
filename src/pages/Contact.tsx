@@ -7,6 +7,7 @@ import { motion, useInView } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import contactBanner from "@/assets/contact-banner-graphic.jpg";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 const offices = [
   { city: "Delhi, India (HQ)", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇮🇳" },
@@ -116,6 +117,22 @@ export default function Contact() {
 
   return (
     <Layout>
+      <SEOHead
+        title="Contact Digital Penta | Delhi Digital Marketing Agency"
+        description="Talk to Digital Penta — Delhi HQ, Dubai & Riyadh offices. Free 30-min strategy call, custom growth plan, launch in 7 days. Call +91-88601-00039."
+        canonical="https://digitalpenta.com/contact"
+        hreflangs={[
+          { hreflang: "en", href: "https://digitalpenta.com/contact" },
+          { hreflang: "en-IN", href: "https://digitalpenta.com/contact" },
+          { hreflang: "x-default", href: "https://digitalpenta.com/contact" },
+        ]}
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Contact", url: "https://digitalpenta.com/contact" },
+          ]),
+        ]}
+      />
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0">
           <img src={contactBanner} alt="" className="w-full h-full object-cover" loading="eager" width={1920} height={1080} style={{ opacity: 0.55 }} />

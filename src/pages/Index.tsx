@@ -15,6 +15,7 @@ import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 import UrgencyStrip from "@/components/ui/urgency-strip";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 /* Trust Strip */
 function TrustStrip() {
@@ -44,6 +45,19 @@ function TrustStrip() {
 const Index = () => {
   return (
     <Layout>
+      <SEOHead
+        title="Digital Penta | Digital Marketing Agency in Delhi | Free Audit"
+        description="Delhi's top digital marketing agency — SEO, Google Ads, social, AI automation. 500+ brands, 4.9★ rating. Get a free growth audit today."
+        canonical="https://digitalpenta.com/"
+        hreflangs={[
+          { hreflang: "en", href: "https://digitalpenta.com/" },
+          { hreflang: "en-IN", href: "https://digitalpenta.com/" },
+          { hreflang: "x-default", href: "https://digitalpenta.com/" },
+        ]}
+        schemas={[
+          breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.com/" }]),
+        ]}
+      />
       <HeroSection />
       <UrgencyStrip />
       <TrustStrip />
