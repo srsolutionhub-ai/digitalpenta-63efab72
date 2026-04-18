@@ -49,6 +49,22 @@ export default function Blog() {
 
   return (
     <Layout>
+      <SEOHead
+        title="Digital Marketing Blog | Insights & Trends — Digital Penta"
+        description="Expert insights on SEO, AI marketing, automation, and growth strategy from Digital Penta — Delhi's top digital marketing agency."
+        canonical="https://digitalpenta.com/blog"
+        hreflangs={[
+          { hreflang: "en", href: "https://digitalpenta.com/blog" },
+          { hreflang: "en-IN", href: "https://digitalpenta.com/blog" },
+          { hreflang: "x-default", href: "https://digitalpenta.com/blog" },
+        ]}
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Blog", url: "https://digitalpenta.com/blog" },
+          ]),
+        ]}
+      />
       {/* ── Hero ── */}
       <section className="pt-32 pb-10 relative overflow-hidden">
         <div className="absolute inset-0 mesh-gradient" />

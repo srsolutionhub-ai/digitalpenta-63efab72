@@ -72,6 +72,22 @@ export default function Portfolio() {
 
   return (
     <Layout>
+      <SEOHead
+        title="Portfolio & Case Studies | Digital Penta — Delhi Agency"
+        description="Real client results from Digital Penta — 340% lead growth, 8.2x ROAS, 50K+ users. Case studies across SEO, PPC, AI & development."
+        canonical="https://digitalpenta.com/portfolio"
+        hreflangs={[
+          { hreflang: "en", href: "https://digitalpenta.com/portfolio" },
+          { hreflang: "en-IN", href: "https://digitalpenta.com/portfolio" },
+          { hreflang: "x-default", href: "https://digitalpenta.com/portfolio" },
+        ]}
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Portfolio", url: "https://digitalpenta.com/portfolio" },
+          ]),
+        ]}
+      />
       {/* ── Hero ── */}
       <section className="pt-32 pb-10 relative overflow-hidden">
         <div className="absolute inset-0">

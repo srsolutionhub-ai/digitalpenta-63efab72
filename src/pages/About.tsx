@@ -94,6 +94,22 @@ export default function About() {
 
   return (
     <Layout>
+      <SEOHead
+        title="About Digital Penta | Award-Winning Marketing Agency in Delhi"
+        description="Meet Digital Penta — Delhi-based digital marketing agency serving 500+ brands across India, UAE, KSA. Five disciplines, one ROI-obsessed team."
+        canonical="https://digitalpenta.com/about"
+        hreflangs={[
+          { hreflang: "en", href: "https://digitalpenta.com/about" },
+          { hreflang: "en-IN", href: "https://digitalpenta.com/about" },
+          { hreflang: "x-default", href: "https://digitalpenta.com/about" },
+        ]}
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "About", url: "https://digitalpenta.com/about" },
+          ]),
+        ]}
+      />
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="absolute inset-0">
