@@ -4,6 +4,7 @@ import { Clock, ArrowUpRight, User, Search, TrendingUp } from "lucide-react";
 import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Input } from "@/components/ui/input";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 const categories = ["All", "Marketing", "SEO", "AI", "Automation", "Development", "PR"];
 

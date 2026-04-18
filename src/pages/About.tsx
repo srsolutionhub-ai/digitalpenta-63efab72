@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import aboutBanner from "@/assets/about-banner-graphic.jpg";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {

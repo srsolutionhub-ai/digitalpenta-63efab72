@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import portfolioBanner from "@/assets/portfolio-banner-graphic.jpg";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 const categories = ["All", "Marketing", "PR", "Development", "AI", "Automation"];
 

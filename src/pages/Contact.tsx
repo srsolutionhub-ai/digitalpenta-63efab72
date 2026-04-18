@@ -7,6 +7,7 @@ import { motion, useInView } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import contactBanner from "@/assets/contact-banner-graphic.jpg";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 const offices = [
   { city: "Delhi, India (HQ)", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇮🇳" },
