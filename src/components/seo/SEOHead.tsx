@@ -230,3 +230,93 @@ export function localBusinessSchema(data: {
     priceRange: "₹₹-₹₹₹₹",
   };
 }
+
+/* ────────────── Phase 7: rich-snippet schema helpers ────────────── */
+
+const SOCIAL_PROFILES = [
+  "https://www.linkedin.com/company/digitalpenta",
+  "https://www.instagram.com/digitalpenta",
+  "https://twitter.com/digitalpenta",
+  "https://www.youtube.com/@digitalpenta",
+  "https://facebook.com/digitalpenta",
+];
+
+/**
+ * Author Person schema for blog articles. Provides E-E-A-T signals to Google
+ * by linking author name + role + publisher relationship.
+ */
+export function personSchema(opts: {
+  name: string;
+  jobTitle?: string;
+  url?: string;
+  sameAs?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: opts.name,
+    jobTitle: opts.jobTitle,
+    url: opts.url ?? "https://digitalpenta.com/about",
+    worksFor: {
+      "@type": "Organization",
+      name: "Digital Penta",
+      url: "https://digitalpenta.com",
+    },
+    sameAs: opts.sameAs,
+  };
+}
+
+/**
+ * Reusable Organization block with sameAs social profiles + aggregateRating.
+ * Use on inner pages (About, Contact, Portfolio) to reinforce brand entity.
+ */
+export function organizationSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://digitalpenta.com/#organization",
+    name: "Digital Penta",
+    url: "https://digitalpenta.com",
+    logo: "https://digitalpenta.com/logo.png",
+    description:
+      "Digital Penta is India's integrated digital marketing agency offering SEO, Google Ads, social media, web development, AI solutions and automation across India and the Middle East.",
+    foundingDate: "2019",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+91-88601-00039",
+      email: "support@digitalpenta.com",
+      contactType: "sales",
+      areaServed: ["IN", "AE", "SA", "QA", "BH"],
+      availableLanguage: ["English", "Hindi", "Arabic"],
+    },
+    sameAs: SOCIAL_PROFILES,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "87",
+      bestRating: "5",
+      worstRating: "1",
+    },
+  };
+}
+
+/**
+ * Aggregate review schema standalone — useful for service / location pages
+ * where you want to surface the rating without re-declaring the org block.
+ */
+export function aggregateRatingSchema(opts: {
+  itemName: string;
+  itemUrl: string;
+  ratingValue?: string;
+  reviewCount?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AggregateRating",
+    itemReviewed: { "@type": "Service", name: opts.itemName, url: opts.itemUrl },
+    ratingValue: opts.ratingValue ?? "4.9",
+    reviewCount: opts.reviewCount ?? "87",
+    bestRating: "5",
+    worstRating: "1",
+  };
+}
