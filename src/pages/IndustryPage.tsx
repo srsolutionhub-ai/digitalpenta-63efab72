@@ -9,6 +9,8 @@ import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
   breadcrumbSchema, serviceSchema,
 } from "@/components/seo/SEOHead";
+import RelatedLinks from "@/components/seo/RelatedLinks";
+import { getRelatedIndustries } from "@/data/internalLinks";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -184,6 +186,22 @@ export default function IndustryPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Related industries — internal linking matrix */}
+      {getRelatedIndustries(industry || "").length > 0 && (
+        <RelatedLinks
+          kicker="ADJACENT VERTICALS"
+          heading="Related Industries We Serve"
+          intro="Many of our clients operate across multiple verticals. Explore neighbouring industry playbooks."
+          columns="2"
+          items={getRelatedIndustries(industry || "").map(i => ({
+            href: `/industries/${i.slug}`,
+            title: i.title,
+            desc: i.blurb,
+            eyebrow: "Industry",
+          }))}
+        />
+      )}
 
       <section className="py-20 bg-card/20 relative overflow-hidden">
         <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
