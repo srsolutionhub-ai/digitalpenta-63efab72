@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import portfolioBanner from "@/assets/portfolio-banner-graphic.jpg";
-import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/SEOHead";
 
 const categories = ["All", "Marketing", "PR", "Development", "AI", "Automation"];
 
@@ -82,6 +82,7 @@ export default function Portfolio() {
           { hreflang: "x-default", href: "https://digitalpenta.com/portfolio" },
         ]}
         schemas={[
+          organizationSchema(),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "Portfolio", url: "https://digitalpenta.com/portfolio" },

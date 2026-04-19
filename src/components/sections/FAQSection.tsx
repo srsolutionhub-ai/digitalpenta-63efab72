@@ -33,7 +33,7 @@ export default function FAQSection() {
         >
           <span className="type-label text-primary font-mono">FAQ</span>
           <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
-            Got Questions? <span className="text-primary">We've Got Answers.</span>
+            Frequently Asked <span className="text-primary">Questions</span>
           </h2>
         </motion.div>
 

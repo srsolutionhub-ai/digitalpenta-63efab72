@@ -50,7 +50,7 @@ export default function WhyUsSection() {
         >
           <span className="type-label text-primary font-mono">Why Digital Penta</span>
           <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
-            Why Choose <span className="text-primary">Digital Penta?</span>
+            Why 500+ Brands Trust <span className="text-primary">Digital Penta</span>
           </h2>
           <p className="type-body max-w-md mx-auto">
             We don't just execute — we architect growth systems that compound over time.

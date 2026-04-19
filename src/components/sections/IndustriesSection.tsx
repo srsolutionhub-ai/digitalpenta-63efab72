@@ -28,7 +28,7 @@ export default function IndustriesSection() {
         >
           <span className="type-label text-primary font-mono">Industries</span>
           <h2 className="font-display type-h2 text-foreground mt-3 mb-3">
-            Expertise Across <span className="text-primary">Sectors</span>
+            Industries We <span className="text-primary">Serve</span>
           </h2>
           <p className="type-body max-w-md mx-auto">
             Deep industry knowledge that translates into higher conversions and faster growth.

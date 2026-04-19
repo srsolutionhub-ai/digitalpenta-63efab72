@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion, useScroll } from "motion/react";
 import { useRef, useMemo, useState } from "react";
-import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, personSchema } from "@/components/seo/SEOHead";
 
 interface ArticleData {
   title: string;
@@ -277,7 +277,12 @@ export default function BlogArticle() {
             "@type": "Article",
             headline: displayArticle.title,
             description: displayArticle.excerpt,
-            author: { "@type": "Person", name: displayArticle.author },
+            author: {
+              "@type": "Person",
+              name: displayArticle.author,
+              jobTitle: displayArticle.authorRole,
+              url: "https://digitalpenta.com/about",
+            },
             publisher: {
               "@type": "Organization",
               name: "Digital Penta",
@@ -289,7 +294,12 @@ export default function BlogArticle() {
             mainEntityOfPage: `https://digitalpenta.com/blog/${slug}`,
             url: `https://digitalpenta.com/blog/${slug}`,
             articleSection: displayArticle.category,
+            inLanguage: "en",
           },
+          personSchema({
+            name: displayArticle.author,
+            jobTitle: `${displayArticle.authorRole} — Digital Penta`,
+          }),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "Blog", url: "https://digitalpenta.com/blog" },
