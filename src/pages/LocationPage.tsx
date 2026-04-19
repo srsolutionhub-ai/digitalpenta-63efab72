@@ -13,6 +13,8 @@ import SEOHead, {
   breadcrumbSchema, faqPageSchema, localBusinessSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
+import RelatedLinks from "@/components/seo/RelatedLinks";
+import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -453,6 +455,35 @@ export default function LocationPage() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Featured services — internal linking matrix */}
+      <RelatedLinks
+        kicker="OUR CORE SERVICES"
+        heading={`Popular Services in ${data.city}`}
+        intro={`The marketing & technology services ${data.city} brands hire us for most often.`}
+        items={getLocationFeaturedServices().map(s => ({
+          href: `/services/${s.category}/${s.slug}`,
+          title: s.title,
+          desc: s.desc,
+          eyebrow: s.category.replace(/-/g, " "),
+        }))}
+      />
+
+      {/* Nearby locations — internal linking matrix */}
+      {getNearbyLocations(data.slug).length > 0 && (
+        <RelatedLinks
+          kicker="NEARBY MARKETS"
+          heading={`Other Cities We Serve Near ${data.city}`}
+          intro="Expand your reach across the region with hyper-local strategies built for each market."
+          tinted
+          items={getNearbyLocations(data.slug).map(c => ({
+            href: `/locations/${c.slug}`,
+            title: `Digital Marketing in ${c.city}`,
+            desc: c.blurb,
+            eyebrow: c.country,
+          }))}
+        />
       )}
 
       {/* CTA */}

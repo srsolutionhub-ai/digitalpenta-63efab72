@@ -6,6 +6,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { getSubServiceData } from "@/data/subServiceData";
 import { motion } from "motion/react";
 import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/components/seo/SEOHead";
+import RelatedLinks from "@/components/seo/RelatedLinks";
+import { getRelatedSubServices } from "@/data/internalLinks";
 
 export default function SubServicePage() {
   const { category, subService } = useParams<{ category: string; subService: string }>();
@@ -222,6 +224,20 @@ export default function SubServicePage() {
           </Accordion>
         </div>
       </section>
+
+      {/* Related services — internal linking matrix */}
+      <RelatedLinks
+        kicker="EXPLORE MORE"
+        heading="Related Services"
+        intro={`Pair ${data.title.toLowerCase()} with these services for compounding ROI.`}
+        tinted
+        items={getRelatedSubServices(category || "", subService || "").map(s => ({
+          href: `/services/${s.category}/${s.slug}`,
+          title: s.title,
+          desc: s.desc,
+          eyebrow: s.category.replace(/-/g, " "),
+        }))}
+      />
 
       {/* CTA */}
       <section className="py-20 relative overflow-hidden">
