@@ -87,7 +87,7 @@ export default function ServicesSection() {
         >
           <span className="type-label text-primary font-mono">Our Services</span>
           <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
-            Everything You Need to <span className="text-primary">5X Your Growth.</span>
+            Our Core <span className="text-primary">Services</span>
           </h2>
           <p className="type-body max-w-lg">
             Six integrated services working together — creating compounding impact that fragmented agencies simply can't match.

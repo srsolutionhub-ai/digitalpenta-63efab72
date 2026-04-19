@@ -48,7 +48,7 @@ export default function CaseStudiesSection() {
           <div>
             <span className="type-label text-primary font-mono">Case Studies</span>
             <h2 className="font-display type-h2 text-foreground mt-3">
-              Results That <span className="text-primary">Speak.</span>
+              Real Client <span className="text-primary">Results</span>
             </h2>
           </div>
           <Link to="/portfolio" className="hidden md:flex items-center gap-1.5 text-sm text-primary hover:text-foreground transition-colors font-display font-semibold">
