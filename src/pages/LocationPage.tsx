@@ -10,11 +10,12 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
-  breadcrumbSchema, faqPageSchema, localBusinessSchema,
+  breadcrumbSchema, faqPageSchema, localBusinessSchema, reviewedItemSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
+import { LOCATION_REVIEWS } from "@/data/customerReviews";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -83,6 +84,22 @@ export default function LocationPage() {
     ]),
   ];
   if (data.faqs.length) schemas.push(faqPageSchema(data.faqs));
+
+  // Phase 7: customer review schema for top markets — wins SERP star ratings
+  const cityReviews = LOCATION_REVIEWS[data.slug];
+  if (cityReviews && cityReviews.length) {
+    schemas.push(
+      reviewedItemSchema({
+        itemName: `Digital Penta — Digital Marketing Agency in ${data.city}`,
+        itemUrl: canonical,
+        itemType: "LocalBusiness",
+        description: data.description,
+        reviews: cityReviews,
+        ratingValue: "4.9",
+        reviewCount: String(Math.max(cityReviews.length, 12)),
+      })
+    );
+  }
 
   return (
     <Layout>

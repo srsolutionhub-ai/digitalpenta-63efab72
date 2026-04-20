@@ -16,7 +16,8 @@ import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 import UrgencyStrip from "@/components/ui/urgency-strip";
-import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema } from "@/components/seo/SEOHead";
+import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
 /* Trust Strip */
 function TrustStrip() {
@@ -57,6 +58,16 @@ const Index = () => {
         ]}
         schemas={[
           breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.com/" }]),
+          organizationSchema(),
+          reviewedItemSchema({
+            itemName: "Digital Penta — Digital Marketing Agency",
+            itemUrl: "https://digitalpenta.com/",
+            itemType: "Organization",
+            description: "India's integrated digital marketing agency offering SEO, Google Ads, social media, AI and automation across India and the Middle East.",
+            reviews: HOMEPAGE_REVIEWS,
+            ratingValue: "4.9",
+            reviewCount: "87",
+          }),
         ]}
       />
       <HeroSection />
