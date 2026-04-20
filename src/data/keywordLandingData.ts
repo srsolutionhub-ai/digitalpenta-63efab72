@@ -388,6 +388,189 @@ const keywordLandingPages: KeywordLandingData[] = [
     relatedServiceHref: "/services/digital-marketing/performance",
     cta: "Get Your Free Performance Audit",
   },
+  {
+    slug: "shopify-development-agency-india",
+    primaryKeyword: "Shopify development agency India",
+    metaTitle: "Shopify Development Agency India | Plus Partners | Digital Penta",
+    metaDescription:
+      "India's certified Shopify Plus development agency. Theme builds, headless commerce, app dev, migrations & CRO. 80+ stores launched. Free consult.",
+    h1: "Shopify Development Agency in India — Build, Migrate, Scale",
+    heroSubhead:
+      "Certified Shopify Plus partners building high-converting D2C stores for Indian and global brands. Theme development, headless commerce, custom apps, migrations and CRO — all in-house.",
+    bullets: [
+      { title: "Custom Shopify Theme Builds", desc: "Pixel-perfect, conversion-optimised themes built on Liquid + Hydrogen — not bloated templates." },
+      { title: "Headless & Hydrogen Storefronts", desc: "Next.js / Hydrogen storefronts for brands that need maximum speed, SEO and editorial control." },
+      { title: "Custom Apps & Integrations", desc: "Shopify apps, ERP integrations (SAP, Oracle), 3PL connectors, payment gateways and ONDC ready." },
+      { title: "Replatform Migrations", desc: "WooCommerce, Magento and custom-stack migrations to Shopify — zero downtime, zero SEO loss." },
+    ],
+    proofPoints: [
+      { value: "80+", label: "Shopify stores launched" },
+      { value: "Plus", label: "Certified partner" },
+      { value: "98", label: "Avg PageSpeed score" },
+      { value: "4.9★", label: "Google rating" },
+    ],
+    whyUs: [
+      "Shopify Plus certified — direct partner channel access and roadmap visibility",
+      "In-house design + dev + SEO — not a stitched-together vendor network",
+      "ONDC and India-payments specialists (Razorpay, Cashfree, PhonePe, RuPay)",
+      "Post-launch growth retainer optional — performance, SEO and CRO under one roof",
+    ],
+    faqs: [
+      { q: "How much does a Shopify store cost in India?", a: "Custom Shopify theme builds start at ₹2.5L for D2C launches and go up to ₹25L+ for Shopify Plus enterprise builds with custom apps and headless storefronts." },
+      { q: "Can you migrate us from WooCommerce or Magento?", a: "Yes — replatform migrations are a core service. We preserve URLs, SEO equity and customer data with zero-downtime cutovers." },
+      { q: "Do you build Shopify apps?", a: "Yes — we build private and public Shopify apps using Remix, Polaris and the Admin API. Most apps ship in 6-10 weeks." },
+    ],
+    serviceCategory: "Shopify Development",
+    relatedServiceHref: "/services/development/ecommerce",
+    cta: "Get Your Free Shopify Quote",
+  },
+  {
+    slug: "google-ads-agency-mumbai",
+    primaryKeyword: "Google Ads agency Mumbai",
+    city: "Mumbai",
+    metaTitle: "Google Ads Agency Mumbai | Premier Partner | Digital Penta",
+    metaDescription:
+      "Mumbai's certified Google Ads agency. Search, Shopping, YouTube & Performance Max. 7.5x avg ROAS. ₹12Cr+ ad spend managed. Free strategy call.",
+    h1: "Google Ads Agency in Mumbai That Scales Spend Profitably",
+    heroSubhead:
+      "Certified Google Ads specialists running Search, Shopping, YouTube and Performance Max for Mumbai BFSI, D2C and e-commerce brands. ₹12Cr+ ad spend managed annually. 7.5x avg ROAS.",
+    bullets: [
+      { title: "Account Audit + Restructure", desc: "Tight ad groups, conversion-grade tracking, negative keyword hygiene — most accounts hit 30% CPA reduction in 60 days." },
+      { title: "Smart Bidding + Manual Hybrid", desc: "AI bidding paired with human strategy for the Indian buyer journey — the highest-ROAS combination today." },
+      { title: "Landing Page Builds Included", desc: "In-house LP builds lift Quality Score and CVR — paid + organic compounding together." },
+      { title: "Weekly Optimisation Sprints", desc: "Bid adjustments, ad copy A/Bs, audience refreshes — every week, with documented changelog." },
+    ],
+    proofPoints: [
+      { value: "7.5x", label: "Avg client ROAS" },
+      { value: "₹12Cr+", label: "Ad spend managed/year" },
+      { value: "150+", label: "Active campaigns" },
+      { value: "44%", label: "Avg CPA reduction" },
+    ],
+    whyUs: [
+      "Google Premier Partner — top 3% agency tier with strategist access",
+      "Mumbai-based account leads — face-to-face strategy reviews when you need them",
+      "Performance-based pricing options for qualifying e-commerce brands",
+      "Live ROAS dashboard — never wait for a monthly deck again",
+    ],
+    faqs: [
+      { q: "What is the minimum Google Ads budget in Mumbai?", a: "Minimum effective spend is ₹50,000/month for meaningful learning data. Most Mumbai SMBs run ₹1L-₹5L/month, enterprise accounts ₹10L+/month." },
+      { q: "Do you charge a percentage of ad spend?", a: "Two models: flat retainer (₹40K-₹2L/month) or 12-15% of ad spend for accounts above ₹3L/month. We recommend whichever costs you less." },
+      { q: "Can you take over an existing account?", a: "Yes — we run a 14-day audit + restructure on existing accounts. Most see 30-50% CPA reduction within 60 days of takeover." },
+    ],
+    serviceCategory: "PPC Management",
+    relatedServiceHref: "/services/digital-marketing/ppc",
+    cta: "Get Your Free Mumbai Ads Audit",
+  },
+  {
+    slug: "seo-agency-dubai",
+    primaryKeyword: "SEO agency Dubai",
+    city: "Dubai",
+    metaTitle: "SEO Agency Dubai | Bilingual SEO Experts | Digital Penta",
+    metaDescription:
+      "Dubai's bilingual (English + Arabic) SEO agency. Technical SEO, Arabic content, GCC link building. 5x organic growth for Dubai brands. Free audit.",
+    h1: "SEO Agency in Dubai That Wins Google in English & Arabic",
+    heroSubhead:
+      "We help Dubai real estate, hospitality, e-commerce and luxury brands rank #1 on Google in both English and Arabic — through bilingual content engines, technical SEO and GCC-grade digital PR.",
+    bullets: [
+      { title: "Bilingual SEO Strategy", desc: "Parallel English + Arabic content stacks with proper hreflang, RTL UX and Arabic keyword research." },
+      { title: "Dubai-Specific Technical SEO", desc: "Schema, Core Web Vitals and crawl architecture engineered for the Dubai SERP — including local entity signals." },
+      { title: "GCC Backlink Acquisition", desc: "Outreach to Khaleej Times, Gulf News, The National, Arabian Business and other regional publications." },
+      { title: "Local Pack & Maps Optimisation", desc: "Google Business Profile, citations and Arabic-language reviews to win the Dubai map pack." },
+    ],
+    proofPoints: [
+      { value: "5x", label: "Avg organic growth" },
+      { value: "30+", label: "Dubai/UAE clients" },
+      { value: "AR+EN", label: "Bilingual capability" },
+      { value: "4.9★", label: "Google rating" },
+    ],
+    whyUs: [
+      "Native Arabic-speaking SEO + content team based in the GCC",
+      "Specialists in Dubai's hottest verticals: real estate, luxury retail, hospitality and finance",
+      "Proven hreflang + RTL implementations for bilingual sites",
+      "Transparent pricing in AED — no hidden FX markups",
+    ],
+    faqs: [
+      { q: "How much does SEO cost in Dubai?", a: "Dubai SEO retainers typically range from AED 4,000 to AED 25,000+/month based on competition and bilingual scope. Our packages start at AED 4,500/month." },
+      { q: "Do you write content in Arabic?", a: "Yes — native Arabic writers with deep Khaleeji and MSA fluency. We also handle English-to-Arabic transcreation that sounds native, not translated." },
+      { q: "How long until SEO results in Dubai?", a: "Most clients see ranking movement within 60-90 days. Competitive Dubai verticals (real estate, hospitality) typically take 6-9 months to page 1." },
+    ],
+    serviceCategory: "SEO",
+    relatedServiceHref: "/services/digital-marketing/seo",
+    cta: "Get Your Free Dubai SEO Audit",
+  },
+  {
+    slug: "digital-marketing-agency-riyadh",
+    primaryKeyword: "digital marketing agency Riyadh",
+    city: "Riyadh",
+    metaTitle: "Digital Marketing Agency Riyadh | Vision 2030 Ready | Digital Penta",
+    metaDescription:
+      "Riyadh's full-service digital marketing agency. Arabic-first SEO, Google Ads, social, web & AI for KSA brands. Vision 2030-aligned. Free consult.",
+    h1: "Digital Marketing Agency in Riyadh — Built for KSA's Vision 2030 Economy",
+    heroSubhead:
+      "Full-service digital marketing for Saudi enterprises and challenger brands. Arabic-first SEO, Google + Snapchat + TikTok ads, web development and AI — all calibrated to KSA cultural and regulatory realities.",
+    bullets: [
+      { title: "Arabic-First Content Engine", desc: "Native Saudi-Arabic content tuned to local dialect, search behaviour and cultural nuance — not translated." },
+      { title: "KSA-Native Paid Social", desc: "Snapchat, TikTok, Instagram and X campaigns tuned to Saudi audience preferences and content norms." },
+      { title: "Vision 2030-Aligned Strategy", desc: "Sector expertise across NEOM-adjacent industries: tourism, entertainment, fintech, logistics and giga-projects." },
+      { title: "Local Compliance Built In", desc: "GAZT, ZATCA, CITC and PDPL-aware execution — content, data and creative reviewed for KSA regulatory fit." },
+    ],
+    proofPoints: [
+      { value: "20+", label: "KSA brands served" },
+      { value: "AR+EN", label: "Bilingual delivery" },
+      { value: "5x", label: "Avg ROAS for KSA accounts" },
+      { value: "4.9★", label: "Google rating" },
+    ],
+    whyUs: [
+      "Native Saudi Arabic creative + content team",
+      "Riyadh-based account leads — local presence for in-person reviews",
+      "Strong relationships with KSA publishers, influencers and platform reps",
+      "Bilingual reporting in AR + EN — easy buy-in across stakeholders",
+    ],
+    faqs: [
+      { q: "How much does digital marketing cost in Riyadh?", a: "Riyadh retainers typically range from SAR 8,000 to SAR 80,000+/month based on scope. Our packages start at SAR 9,000/month for SMBs." },
+      { q: "Do you handle Snapchat and TikTok ads?", a: "Yes — Snapchat and TikTok are core platforms in KSA. We run full-funnel paid social with native Saudi creative production." },
+      { q: "Are you compliant with KSA data regulations?", a: "Yes — we're aware of PDPL, CITC and Vision 2030 data localisation guidelines. We work with KSA-hosted infrastructure when required." },
+    ],
+    serviceCategory: "Digital Marketing",
+    relatedServiceHref: "/services/digital-marketing",
+    cta: "Get Your Riyadh Marketing Plan",
+  },
+  {
+    slug: "b2b-saas-marketing-agency-india",
+    primaryKeyword: "B2B SaaS marketing agency India",
+    metaTitle: "B2B SaaS Marketing Agency India | PLG, ABM, Content | Digital Penta",
+    metaDescription:
+      "India's specialist B2B SaaS marketing agency. PLG, ABM, content, SEO & paid for SaaS startups and Series A-D. 60+ SaaS clients. Free audit.",
+    h1: "B2B SaaS Marketing Agency in India — PLG, ABM and Content That Compound",
+    heroSubhead:
+      "Specialist B2B SaaS marketing for Indian and India-out SaaS brands at every stage — pre-PMF, Series A through D. PLG, ABM, SEO, content, demand gen and lifecycle — all under one accountable team.",
+    bullets: [
+      { title: "PLG SEO + Content", desc: "Bottom-of-funnel SEO playbooks: alternatives, comparison, integration, use-case and feature pages that convert trials." },
+      { title: "ABM at Mid-Market & Enterprise", desc: "Account list building, multi-channel sequences (email + LinkedIn + paid + direct mail) and pipeline reporting." },
+      { title: "Demand Gen + Paid Acquisition", desc: "LinkedIn, Google, paid newsletter and capterra-class review-site campaigns measured against pipeline, not MQLs." },
+      { title: "Lifecycle + Activation", desc: "Onboarding emails, in-app nudges and PQL scoring — turning trials into paid, paid into expansion." },
+    ],
+    proofPoints: [
+      { value: "60+", label: "SaaS brands scaled" },
+      { value: "5x", label: "Avg pipeline lift in 9 months" },
+      { value: "Series A-D", label: "Stage coverage" },
+      { value: "4.9★", label: "Google rating" },
+    ],
+    whyUs: [
+      "SaaS-only DNA — we don't dilute focus across e-commerce or local SMBs",
+      "In-house writers with category fluency: dev-tools, finops, martech, security, AI infra and vertical SaaS",
+      "Pipeline + revenue reporting tied to HubSpot, Salesforce and product analytics — not vanity MQLs",
+      "Founder-led accounts for early-stage SaaS; pod-led delivery for Series B+",
+    ],
+    faqs: [
+      { q: "How much does a B2B SaaS marketing agency cost in India?", a: "SaaS retainers typically range from ₹75,000 to ₹6,00,000+/month based on stage and motion (PLG vs sales-led). Our packages start at ₹75,000/month for seed-stage SaaS." },
+      { q: "Do you do ABM?", a: "Yes — full ABM motion: account list build, intent data, multi-channel sequencing, SDR enablement and pipeline reporting. Best fit for Series B+ with $25K+ ACV." },
+      { q: "Can you work with our product and growth team?", a: "Yes — we plug into your existing growth stack (Mixpanel, Amplitude, Segment, HubSpot, Salesforce) and align to your activation, retention and expansion metrics." },
+    ],
+    serviceCategory: "B2B SaaS Marketing",
+    relatedServiceHref: "/services/digital-marketing/seo",
+    cta: "Get Your SaaS Growth Plan",
+  },
 ];
 
 export function getKeywordLanding(slug: string): KeywordLandingData | undefined {
