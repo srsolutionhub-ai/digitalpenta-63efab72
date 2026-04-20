@@ -66,7 +66,7 @@ export default function MatrixPage() {
   ];
 
   const nearby = getNearbyLocations(cty.slug, 3);
-  const featured = getLocationFeaturedServices(cty.slug, 5);
+  const featured = getLocationFeaturedServices();
 
   return (
     <Layout>
@@ -202,10 +202,10 @@ export default function MatrixPage() {
         <RelatedLinks
           kicker="Nearby markets"
           heading={`${svc.name} in Other Cities Near ${cty.city}`}
-          links={nearby.map(n => ({
-            title: `${svc.name} Agency in ${n.title.replace(/^Digital Marketing Agency in /, "")}`,
-            href: `/${svc.slug}/${n.href.replace("/locations/", "")}`,
-            description: `${svc.name} services tailored to ${n.title.replace(/^Digital Marketing Agency in /, "")}.`,
+          items={nearby.map(n => ({
+            title: `${svc.name} Agency in ${n.city}`,
+            href: `/${svc.slug}/${n.slug}`,
+            desc: n.blurb,
           }))}
           tinted
         />
@@ -215,11 +215,14 @@ export default function MatrixPage() {
         <RelatedLinks
           kicker="Other services"
           heading={`Other Marketing Services We Offer in ${cty.city}`}
-          links={featured.filter(f => !f.href.includes(svc.slug)).slice(0, 4).map(f => ({
-            title: f.title,
-            href: f.href,
-            description: f.description,
-          }))}
+          items={featured
+            .filter(f => f.slug !== svc.slug)
+            .slice(0, 4)
+            .map(f => ({
+              title: f.title,
+              href: `/services/${f.category}/${f.slug}`,
+              desc: f.desc,
+            }))}
         />
       )}
 
