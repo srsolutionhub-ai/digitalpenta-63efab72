@@ -301,6 +301,67 @@ export function organizationSchema() {
 }
 
 /**
+ * Individual customer review schema. Pair with aggregateRatingSchema or embed
+ * inside a Product/Service block to win star ratings in SERPs.
+ *
+ * Google requires reviews to be tied to a real product/service entity and
+ * include name, ratingValue, reviewBody, datePublished, and author.
+ */
+export interface CustomerReview {
+  author: string;
+  rating: number;          // 1-5
+  body: string;
+  datePublished: string;   // ISO 8601 e.g. "2025-09-12"
+  location?: string;
+}
+
+export function reviewedItemSchema(opts: {
+  itemName: string;
+  itemUrl: string;
+  itemType?: "Service" | "Product" | "LocalBusiness" | "Organization";
+  description?: string;
+  reviews: CustomerReview[];
+  ratingValue?: string;
+  reviewCount?: string;
+}) {
+  const itemType = opts.itemType ?? "Service";
+  const block: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": itemType,
+    name: opts.itemName,
+    url: opts.itemUrl,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: opts.ratingValue ?? "4.9",
+      reviewCount: opts.reviewCount ?? String(opts.reviews.length),
+      bestRating: "5",
+      worstRating: "1",
+    },
+    review: opts.reviews.map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.author },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: String(r.rating),
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: r.body,
+      datePublished: r.datePublished,
+    })),
+  };
+  if (itemType === "Service") {
+    block.provider = {
+      "@type": "Organization",
+      name: "Digital Penta",
+      url: "https://digitalpenta.com",
+    };
+  }
+  if (opts.description) block.description = opts.description;
+  return block;
+}
+
+/**
  * Aggregate review schema standalone — useful for service / location pages
  * where you want to surface the rating without re-declaring the org block.
  */
