@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight, Phone } from "lucide-react";
+import { Menu, X, ChevronDown, Megaphone, Newspaper, Code2, Brain, Zap, ArrowRight, Phone, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
@@ -223,6 +223,15 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
+            <Link
+              to={location.pathname.startsWith("/ar") ? "/" : "/ar"}
+              hrefLang={location.pathname.startsWith("/ar") ? "en" : "ar"}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono"
+              aria-label="Switch language"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              {location.pathname.startsWith("/ar") ? "EN" : "ع"}
+            </Link>
             <a href="tel:+918860100039" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono">
               <Phone className="w-3.5 h-3.5" />
               +91-88601-00039

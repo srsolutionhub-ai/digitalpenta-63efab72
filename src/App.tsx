@@ -24,6 +24,8 @@ const IndustryPage = lazy(() => import("./pages/IndustryPage"));
 const LocationPage = lazy(() => import("./pages/LocationPage"));
 const LocationPageAr = lazy(() => import("./pages/LocationPageAr"));
 const KeywordLandingPage = lazy(() => import("./pages/KeywordLandingPage"));
+const MatrixPage = lazy(() => import("./pages/MatrixPage"));
+const HomeAr = lazy(() => import("./pages/HomeAr"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -80,8 +82,14 @@ function AnimatedRoutes() {
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/industries/:industry" element={<IndustryPage />} />
             <Route path="/locations/:location" element={<LocationPage />} />
+            <Route path="/ar" element={<HomeAr />} />
             <Route path="/ar/locations/:location" element={<LocationPageAr />} />
             <Route path="/lp/:keyword" element={<KeywordLandingPage />} />
+            <Route path="/seo/:city" element={<MatrixPage />} />
+            <Route path="/ppc/:city" element={<MatrixPage />} />
+            <Route path="/social-media/:city" element={<MatrixPage />} />
+            <Route path="/web-development/:city" element={<MatrixPage />} />
+            <Route path="/ai-solutions/:city" element={<MatrixPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
 
