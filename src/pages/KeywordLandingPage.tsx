@@ -193,6 +193,21 @@ export default function KeywordLandingPage() {
         </div>
       </section>
 
+      {/* Contextual internal-link graph — drives SEO authority across LP / matrix / hubs */}
+      {(() => {
+        const related = getRelatedForLanding(data, 6);
+        if (!related.length) return null;
+        return (
+          <RelatedLinks
+            kicker="Explore more"
+            heading={`More ${data.serviceCategory} Resources & Related Markets`}
+            intro="Hand-picked landing pages, city-specific service pages and deep-dive service hubs that complement what you're reading."
+            items={related.map(r => ({ title: r.title, href: r.url, desc: r.desc }))}
+            tinted
+          />
+        );
+      })()}
+
       {/* CTA */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
@@ -206,6 +221,8 @@ export default function KeywordLandingPage() {
           <Link to="/get-proposal">
             <Button
               size="lg"
+              data-cta
+              data-audit-cta
               className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
             >
               {data.cta} <ArrowRight className="ml-2 w-4 h-4" />
