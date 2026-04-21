@@ -9,7 +9,9 @@ import {
 import SEOHead, {
   breadcrumbSchema, faqPageSchema, serviceSchema, organizationSchema,
 } from "@/components/seo/SEOHead";
+import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getKeywordLanding } from "@/data/keywordLandingData";
+import { getRelatedForLanding } from "@/lib/internalLinkGraph";
 
 /**
  * Tier-2/3 keyword landing pages (Phase 6 of SEO master plan).
