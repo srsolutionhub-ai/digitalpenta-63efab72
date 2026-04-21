@@ -232,9 +232,9 @@ export default function Navbar() {
               <Globe className="w-3.5 h-3.5" />
               {location.pathname.startsWith("/ar") ? "EN" : "ع"}
             </Link>
-            <a href="tel:+918860100039" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono">
+            <a href="tel:+918860100039" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono" dir="ltr">
               <Phone className="w-3.5 h-3.5" />
-              +91-88601-00039
+              <span dir="ltr" style={{ unicodeBidi: "isolate" }}>+91-88601-00039</span>
             </a>
             <div className="w-px h-5 bg-border/50" />
             <Link to="/contact">
