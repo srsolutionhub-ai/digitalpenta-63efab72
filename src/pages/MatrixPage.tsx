@@ -22,8 +22,13 @@ import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internal
  * with city-specific copy, pricing, FAQs and internal-link blocks.
  */
 export default function MatrixPage() {
-  const { service, city } = useParams<{ service: string; city: string }>();
-  const page = getMatrixPage(service ?? "", city ?? "");
+  const params = useParams<{ city: string }>();
+  // The :service segment is fixed in the route path (e.g. /seo/:city), so we
+  // derive it from the URL pathname to keep one MatrixPage component for all 5
+  // service routes without forcing every route to declare an extra param.
+  const pathServiceSlug =
+    typeof window !== "undefined" ? window.location.pathname.split("/")[1] ?? "" : "";
+  const page = getMatrixPage(pathServiceSlug, params.city ?? "");
 
   if (!page) {
     return (
