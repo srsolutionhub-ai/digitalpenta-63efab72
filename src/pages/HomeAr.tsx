@@ -37,9 +37,23 @@ export default function HomeAr() {
     };
   }, []);
 
-  // Inject Arabic webfonts once.
+  // Inject Arabic webfonts once with preconnect to avoid FOUT showing
+  // disconnected Latin-fallback glyphs while Cairo loads.
   useEffect(() => {
     if (document.querySelector('link[data-arabic-fonts]')) return;
+    const pre1 = document.createElement("link");
+    pre1.rel = "preconnect";
+    pre1.href = "https://fonts.googleapis.com";
+    pre1.setAttribute("data-arabic-fonts", "true");
+    document.head.appendChild(pre1);
+
+    const pre2 = document.createElement("link");
+    pre2.rel = "preconnect";
+    pre2.href = "https://fonts.gstatic.com";
+    pre2.crossOrigin = "anonymous";
+    pre2.setAttribute("data-arabic-fonts", "true");
+    document.head.appendChild(pre2);
+
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href =
@@ -85,10 +99,20 @@ export default function HomeAr() {
         schemas={schemas}
       />
 
+      {/* Scoped Arabic font override — beats the global `h1..h6 { font-family: Plus Jakarta Sans }`
+          rule in index.css that otherwise renders Arabic glyphs disconnected. */}
+      <style>{`
+        [data-ar-page], [data-ar-page] h1, [data-ar-page] h2, [data-ar-page] h3,
+        [data-ar-page] h4, [data-ar-page] h5, [data-ar-page] h6,
+        [data-ar-page] p, [data-ar-page] span, [data-ar-page] a, [data-ar-page] button {
+          font-family: 'Cairo', 'Tajawal', system-ui, sans-serif !important;
+        }
+      `}</style>
+
       <div
+        data-ar-page
         dir="rtl"
         lang="ar"
-        style={{ fontFamily: "Cairo, Tajawal, sans-serif" }}
         className="text-right"
       >
         {/* Top bar with EN switch */}
