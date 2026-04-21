@@ -133,7 +133,10 @@ export default function HomeAr() {
               <span className="text-xs text-primary uppercase tracking-widest mb-4 inline-block">
                 {HOMEPAGE_AR.hero.eyebrow}
               </span>
-              <h1 className="font-extrabold text-4xl md:text-6xl text-foreground mb-6 leading-tight">
+              <h1
+                className="font-extrabold text-4xl md:text-6xl text-foreground mb-6 leading-tight"
+                style={{ fontFamily: "Cairo, Tajawal, sans-serif" }}
+              >
                 {HOMEPAGE_AR.hero.h1}
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl">
