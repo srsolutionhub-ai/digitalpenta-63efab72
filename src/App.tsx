@@ -3,13 +3,14 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
 import CustomCursor from "@/components/ui/custom-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { initAnalytics, trackPageView } from "@/lib/analytics";
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -64,6 +65,11 @@ function PageLoader() {
 
 function AnimatedRoutes() {
   const location = useLocation();
+
+  // SPA route-change page_view event — keeps GA4 in sync per locale.
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait">
@@ -139,6 +145,10 @@ function AnimatedRoutes() {
 
 function AppShell() {
   useSmoothScroll();
+  // Auto-attach GA4-compatible click / submit / scroll trackers once.
+  useEffect(() => {
+    initAnalytics();
+  }, []);
   return (
     <>
       <CustomCursor />
