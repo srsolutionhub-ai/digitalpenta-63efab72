@@ -99,10 +99,20 @@ export default function HomeAr() {
         schemas={schemas}
       />
 
+      {/* Scoped Arabic font override — beats the global `h1..h6 { font-family: Plus Jakarta Sans }`
+          rule in index.css that otherwise renders Arabic glyphs disconnected. */}
+      <style>{`
+        [data-ar-page], [data-ar-page] h1, [data-ar-page] h2, [data-ar-page] h3,
+        [data-ar-page] h4, [data-ar-page] h5, [data-ar-page] h6,
+        [data-ar-page] p, [data-ar-page] span, [data-ar-page] a, [data-ar-page] button {
+          font-family: 'Cairo', 'Tajawal', system-ui, sans-serif !important;
+        }
+      `}</style>
+
       <div
+        data-ar-page
         dir="rtl"
         lang="ar"
-        style={{ fontFamily: "Cairo, Tajawal, sans-serif" }}
         className="text-right"
       >
         {/* Top bar with EN switch */}
@@ -133,10 +143,7 @@ export default function HomeAr() {
               <span className="text-xs text-primary uppercase tracking-widest mb-4 inline-block">
                 {HOMEPAGE_AR.hero.eyebrow}
               </span>
-              <h1
-                className="font-extrabold text-4xl md:text-6xl text-foreground mb-6 leading-tight"
-                style={{ fontFamily: "Cairo, Tajawal, sans-serif" }}
-              >
+              <h1 className="font-extrabold text-4xl md:text-6xl text-foreground mb-6 leading-tight">
                 {HOMEPAGE_AR.hero.h1}
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl">
