@@ -111,22 +111,12 @@ export default function SeoAuditTool() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Free SEO Audit Tool — Lighthouse + AI Recommendations | Digital Penta</title>
-        <meta
-          name="description"
-          content="Run a free, instant SEO and performance audit on any URL. Powered by Google Lighthouse + AI. Get a branded PDF with prioritized fix recommendations."
-        />
-        <link rel="canonical" href="https://digitalpenta.com/tools/seo-audit" />
-        <meta property="og:title" content="Free SEO Audit Tool | Digital Penta" />
-        <meta
-          property="og:description"
-          content="Instant Lighthouse + AI-powered SEO audit. Free PDF report with actionable fixes."
-        />
-        <meta property="og:url" content="https://digitalpenta.com/tools/seo-audit" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <SEOHead
+        title="Free SEO Audit Tool — Lighthouse + AI | Digital Penta"
+        description="Run a free, instant SEO and performance audit on any URL. Lighthouse + AI recommendations. Get a branded PDF report."
+        canonical="https://digitalpenta.com/tools/seo-audit"
+        ogType="website"
+      />
 
       <section className="relative overflow-hidden bg-gradient-to-b from-background via-background to-card/50 px-4 pb-16 pt-28 sm:pt-32">
         <div className="container mx-auto max-w-5xl">
