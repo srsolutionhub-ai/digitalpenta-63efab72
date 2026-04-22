@@ -101,6 +101,7 @@ function AnimatedRoutes() {
             <Route path="/ai-solutions/:city" element={<MatrixPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/tools/seo-audit" element={<SeoAuditTool />} />
 
             {/* Auth routes */}
             <Route path="/auth/login" element={<Login />} />
@@ -122,6 +123,8 @@ function AnimatedRoutes() {
               <Route path="billing" element={<Billing />} />
               <Route path="blog" element={<BlogManager />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="audits" element={<AdminAudits />} />
+              <Route path="audits/:id" element={<AuditDetail />} />
             </Route>
 
             {/* Client dashboard */}

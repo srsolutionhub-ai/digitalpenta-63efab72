@@ -3,13 +3,14 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard, Users, FileText, Receipt, PenLine, Settings, LogOut,
-  ChevronLeft, ChevronRight, UserCircle, Bell
+  ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard/admin" },
   { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
+  { label: "SEO Audits", icon: FileSearch, path: "/dashboard/admin/audits" },
   { label: "Billing", icon: Receipt, path: "/dashboard/admin/billing" },
   { label: "Blog", icon: PenLine, path: "/dashboard/admin/blog" },
   { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
