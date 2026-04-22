@@ -1,1 +1,13 @@
 project_id = "ygoxxqkcxunuowtuwdxr"
+
+[functions.run-seo-audit]
+verify_jwt = false
+
+[functions.analyze-audit-ai]
+verify_jwt = false
+
+[functions.generate-audit-pdf]
+verify_jwt = false
+
+[functions.send-notification]
+verify_jwt = false
