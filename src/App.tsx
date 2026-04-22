@@ -30,6 +30,7 @@ const HomeAr = lazy(() => import("./pages/HomeAr"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const SeoAuditTool = lazy(() => import("./pages/SeoAuditTool"));
 
 // Auth pages
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -44,6 +45,8 @@ const Leads = lazy(() => import("./pages/dashboard/admin/Leads"));
 const Billing = lazy(() => import("./pages/dashboard/admin/Billing"));
 const BlogManager = lazy(() => import("./pages/dashboard/admin/BlogManager"));
 const SettingsPage = lazy(() => import("./pages/dashboard/admin/SettingsPage"));
+const AdminAudits = lazy(() => import("./pages/dashboard/admin/Audits"));
+const AuditDetail = lazy(() => import("./pages/dashboard/admin/AuditDetail"));
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
