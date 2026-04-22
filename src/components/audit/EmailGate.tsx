@@ -28,7 +28,7 @@ export function EmailGate({ onSubmit, loading }: EmailGateProps) {
       setError(parsed.error.errors[0].message);
       return;
     }
-    await onSubmit(parsed.data);
+    await onSubmit({ name: parsed.data.name!, email: parsed.data.email! });
   };
 
   return (
