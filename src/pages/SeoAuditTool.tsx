@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import SEOHead from "@/components/seo/SEOHead";
 import { motion } from "motion/react";
 import { Search, Loader2, Sparkles, ArrowRight, ShieldCheck, Zap, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
