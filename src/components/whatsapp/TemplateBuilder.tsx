@@ -76,14 +76,14 @@ export function TemplateBuilder({
     mutationFn: async () => {
       // Meta requires lowercase, snake_case names
       const safeName = form.name.toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 60);
-      const payload = {
+      const payload: any = {
         name: safeName,
         category: form.category,
         language: form.language,
         header_text: form.header_text || null,
         body_text: form.body_text,
         footer_text: form.footer_text || null,
-        buttons: form.buttons.length ? form.buttons : null,
+        buttons: form.buttons.length ? (form.buttons as any) : null,
         meta_status: form.meta_status,
       };
       if (template?.id) {

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect, useRef } from "react";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { EmptyState } from "@/components/dashboard/EmptyState";
@@ -7,8 +7,10 @@ import { StatusPill } from "@/components/dashboard/StatusPill";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Send, Search, Plus, Settings as SettingsIcon, BookTemplate, Users as UsersIcon } from "lucide-react";
+import { MessageCircle, Send, Search, Plus, Settings as SettingsIcon, BookTemplate, Users as UsersIcon, Edit3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TemplateBuilder } from "@/components/whatsapp/TemplateBuilder";
+import { toast } from "sonner";
 
 const STATUS_VARIANT: Record<string, any> = {
   open: "info",
