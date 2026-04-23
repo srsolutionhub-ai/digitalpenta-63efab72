@@ -47,11 +47,19 @@ const BlogManager = lazy(() => import("./pages/dashboard/admin/BlogManager"));
 const SettingsPage = lazy(() => import("./pages/dashboard/admin/SettingsPage"));
 const AdminAudits = lazy(() => import("./pages/dashboard/admin/Audits"));
 const AuditDetail = lazy(() => import("./pages/dashboard/admin/AuditDetail"));
+const WhatsAppHub = lazy(() => import("./pages/dashboard/admin/WhatsAppHub"));
+const WhatsAppSetup = lazy(() => import("./pages/dashboard/admin/WhatsAppSetup"));
+const CrmPipeline = lazy(() => import("./pages/dashboard/admin/CrmPipeline"));
+const Quotations = lazy(() => import("./pages/dashboard/admin/Quotations"));
+const Invoices = lazy(() => import("./pages/dashboard/admin/Invoices"));
+const Projects = lazy(() => import("./pages/dashboard/admin/Projects"));
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
 const ClientInvoices = lazy(() => import("./pages/dashboard/client/ClientInvoices"));
 const ClientSupport = lazy(() => import("./pages/dashboard/client/ClientSupport"));
+const ClientFiles = lazy(() => import("./pages/dashboard/client/ClientFiles"));
+const ClientKnowledge = lazy(() => import("./pages/dashboard/client/ClientKnowledge"));
 
 const queryClient = new QueryClient();
 
@@ -125,6 +133,12 @@ function AnimatedRoutes() {
               <Route path="settings" element={<SettingsPage />} />
               <Route path="audits" element={<AdminAudits />} />
               <Route path="audits/:id" element={<AuditDetail />} />
+              <Route path="whatsapp" element={<WhatsAppHub />} />
+              <Route path="whatsapp/setup" element={<WhatsAppSetup />} />
+              <Route path="crm" element={<CrmPipeline />} />
+              <Route path="quotations" element={<Quotations />} />
+              <Route path="invoices" element={<Invoices />} />
+              <Route path="projects" element={<Projects />} />
             </Route>
 
             {/* Client dashboard */}
@@ -139,6 +153,8 @@ function AnimatedRoutes() {
               <Route index element={<ClientHome />} />
               <Route path="invoices" element={<ClientInvoices />} />
               <Route path="support" element={<ClientSupport />} />
+              <Route path="files" element={<ClientFiles />} />
+              <Route path="knowledge" element={<ClientKnowledge />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

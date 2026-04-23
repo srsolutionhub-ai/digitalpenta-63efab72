@@ -474,6 +474,50 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_files: {
+        Row: {
+          account_id: string | null
+          category: string | null
+          created_at: string | null
+          file_url: string
+          id: string
+          mime_type: string | null
+          name: string
+          size_bytes: number | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          file_url: string
+          id?: string
+          mime_type?: string | null
+          name: string
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          category?: string | null
+          created_at?: string | null
+          file_url?: string
+          id?: string
+          mime_type?: string | null
+          name?: string
+          size_bytes?: number | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_files_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_logs: {
         Row: {
           ai_response: string
@@ -1018,6 +1062,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      kb_articles: {
+        Row: {
+          body: string
+          category: string | null
+          created_at: string | null
+          id: string
+          is_published: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          body: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          body?: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          is_published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       leads: {
         Row: {
@@ -1980,6 +2057,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      whatsapp_settings: {
+        Row: {
+          access_token_secret_name: string | null
+          business_account_id: string | null
+          created_at: string | null
+          display_phone_number: string | null
+          id: string
+          last_verified_at: string | null
+          phone_number_id: string | null
+          status: string | null
+          updated_at: string | null
+          webhook_verify_token: string | null
+        }
+        Insert: {
+          access_token_secret_name?: string | null
+          business_account_id?: string | null
+          created_at?: string | null
+          display_phone_number?: string | null
+          id?: string
+          last_verified_at?: string | null
+          phone_number_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          webhook_verify_token?: string | null
+        }
+        Update: {
+          access_token_secret_name?: string | null
+          business_account_id?: string | null
+          created_at?: string | null
+          display_phone_number?: string | null
+          id?: string
+          last_verified_at?: string | null
+          phone_number_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          webhook_verify_token?: string | null
+        }
+        Relationships: []
       }
       whatsapp_templates: {
         Row: {
