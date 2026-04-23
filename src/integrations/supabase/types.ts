@@ -2164,6 +2164,16 @@ export type Database = {
         }
         Relationships: []
       }
+      team_workload_weekly: {
+        Row: {
+          billable_hours: number | null
+          tasks_worked: number | null
+          total_hours: number | null
+          user_id: string | null
+          week_start: string | null
+        }
+        Relationships: []
+      }
       visitor_analytics: {
         Row: {
           avg_lead_score: number | null
@@ -2243,8 +2253,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      project_billing_summary: {
+        Args: { p_account_id?: string }
+        Returns: {
+          account_id: string
+          billable_hours: number
+          budget: number
+          estimated_hours: number
+          logged_hours: number
+          project_id: string
+          project_name: string
+        }[]
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      task_logged_hours: { Args: { p_task_id: string }; Returns: number }
     }
     Enums: {
       app_role:

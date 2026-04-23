@@ -1,0 +1,1 @@
+ALTER VIEW public.team_workload_weekly SET (security_invoker = on);
