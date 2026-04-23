@@ -20,8 +20,13 @@ const STATUS_VARIANT: Record<string, any> = {
 };
 
 export default function WhatsAppHub() {
+  const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const [editingTemplate, setEditingTemplate] = useState<any | null>(null);
+  const [showBuilder, setShowBuilder] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: settings } = useQuery({
     queryKey: ["whatsapp-settings"],
@@ -57,7 +62,6 @@ export default function WhatsAppHub() {
       return data ?? [];
     },
     enabled: !!activeId,
-    refetchInterval: 5000,
   });
 
   const { data: templates = [] } = useQuery({
@@ -66,6 +70,44 @@ export default function WhatsAppHub() {
       const { data } = await supabase.from("whatsapp_templates").select("*").order("created_at", { ascending: false });
       return data ?? [];
     },
+  });
+
+  // Realtime: refresh conversation list & active thread when new rows arrive.
+  useEffect(() => {
+    const ch = supabase
+      .channel("wa-hub")
+      .on("postgres_changes", { event: "*", schema: "public", table: "whatsapp_conversations" }, () => {
+        qc.invalidateQueries({ queryKey: ["wa-conversations"] });
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "whatsapp_messages_v2" }, (payload: any) => {
+        if (payload.new?.conversation_id === activeId) {
+          qc.invalidateQueries({ queryKey: ["wa-messages", activeId] });
+        }
+        qc.invalidateQueries({ queryKey: ["wa-conversations"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [qc, activeId]);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages]);
+
+  const sendMessage = useMutation({
+    mutationFn: async () => {
+      if (!activeId || !draft.trim()) return;
+      const { error } = await supabase.functions.invoke("whatsapp-send", {
+        body: { conversation_id: activeId, body: draft.trim() },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setDraft("");
+      qc.invalidateQueries({ queryKey: ["wa-messages", activeId] });
+      qc.invalidateQueries({ queryKey: ["wa-conversations"] });
+    },
+    onError: (e: any) => toast.error(e.message || "Send failed"),
   });
 
   const isConfigured = settings?.status === "verified";
