@@ -1,5 +1,5 @@
 // Time tracking & weekly workload report. Engineers log minutes per task,
-// admins see team-wide hours by week.
+// admins see team-wide hours by week, edit/delete entries, and approve/reject submissions.
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,24 +8,37 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { ExportMenu } from "@/components/dashboard/ExportMenu";
+import { StatusPill } from "@/components/dashboard/StatusPill";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Plus, BarChart3 } from "lucide-react";
+import { Clock, Plus, BarChart3, Pencil, Trash2, CheckCircle2, XCircle, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const COLORS = ["hsl(256,90%,62%)", "hsl(162,100%,44%)", "hsl(18,100%,60%)", "hsl(45,100%,50%)", "hsl(210,100%,50%)"];
 
+const APPROVAL_STATUS: Record<string, any> = {
+  pending: "warning",
+  approved: "success",
+  rejected: "danger",
+};
+
+const emptyForm = () => ({ id: "", task_id: "", duration_minutes: 30, notes: "", billable: true, entry_date: new Date().toISOString().slice(0, 10) });
+
 export default function TimeTracking() {
-  const { user } = useAuth();
+  const { user, role } = useAuth() as any;
   const qc = useQueryClient();
-  const [showLog, setShowLog] = useState(false);
-  const [form, setForm] = useState<any>({ task_id: "", duration_minutes: 30, notes: "", billable: true, entry_date: new Date().toISOString().slice(0, 10) });
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState<any>(emptyForm());
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  const isApprover = role === "super_admin" || role === "account_manager" || role === "finance";
 
   const { data: tasks = [] } = useQuery({
     queryKey: ["my-tasks"],
@@ -40,7 +53,7 @@ export default function TimeTracking() {
     queryFn: async () => {
       const { data } = await supabase
         .from("time_entries")
-        .select("id, task_id, user_id, duration_minutes, billable, entry_date, notes, created_at, tasks(title, project_id, projects(name))")
+        .select("id, task_id, user_id, duration_minutes, billable, entry_date, notes, created_at, approval_status, approved_by, approved_at, tasks(title, project_id, projects(name))")
         .order("entry_date", { ascending: false })
         .limit(500);
       return data ?? [];
@@ -67,30 +80,85 @@ export default function TimeTracking() {
     },
   });
 
-  const log = useMutation({
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ["time-entries"] });
+    qc.invalidateQueries({ queryKey: ["team-workload"] });
+    qc.invalidateQueries({ queryKey: ["project-billing"] });
+  };
+
+  const save = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not signed in");
       if (!form.task_id) throw new Error("Pick a task");
-      const { error } = await supabase.from("time_entries").insert({
+      const payload = {
         task_id: form.task_id,
-        user_id: user.id,
         duration_minutes: Number(form.duration_minutes),
         billable: form.billable,
         notes: form.notes || null,
         entry_date: form.entry_date,
-      });
-      if (error) throw error;
+      };
+      if (form.id) {
+        // Edits reset approval to pending so changes get re-reviewed.
+        const { error } = await supabase.from("time_entries").update({ ...payload, approval_status: "pending", approved_by: null, approved_at: null }).eq("id", form.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("time_entries").insert({ ...payload, user_id: user.id });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["time-entries"] });
-      qc.invalidateQueries({ queryKey: ["team-workload"] });
-      qc.invalidateQueries({ queryKey: ["project-billing"] });
-      toast.success("Time logged");
-      setShowLog(false);
-      setForm({ task_id: "", duration_minutes: 30, notes: "", billable: true, entry_date: new Date().toISOString().slice(0, 10) });
+      refresh();
+      toast.success(form.id ? "Entry updated" : "Time logged");
+      setShowForm(false);
+      setForm(emptyForm());
     },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("time_entries").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      refresh();
+      toast.success("Entry deleted");
+      setConfirmDelete(null);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const setApproval = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "approved" | "rejected" }) => {
+      const { error } = await supabase
+        .from("time_entries")
+        .update({ approval_status: status, approved_by: user?.id, approved_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, vars) => {
+      refresh();
+      toast.success(`Entry ${vars.status}`);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const openEdit = (e: any) => {
+    setForm({
+      id: e.id,
+      task_id: e.task_id,
+      duration_minutes: e.duration_minutes,
+      notes: e.notes ?? "",
+      billable: e.billable,
+      entry_date: e.entry_date,
+    });
+    setShowForm(true);
+  };
+
+  const openCreate = () => {
+    setForm(emptyForm());
+    setShowForm(true);
+  };
 
   // Aggregate workload by week for chart
   const weeklyTotals = workload.reduce((acc: Record<string, number>, w: any) => {
@@ -112,6 +180,8 @@ export default function TimeTracking() {
     })
     .reduce((s: number, w: any) => s + Number(w.total_hours || 0), 0);
 
+  const pendingCount = entries.filter((e: any) => e.approval_status === "pending").length;
+
   const billingExportRows = (projectBilling as any[]).map((p) => ({
     project: p.project_name,
     estimated_hours: Number(p.estimated_hours).toFixed(1),
@@ -125,7 +195,7 @@ export default function TimeTracking() {
     <div className="space-y-6">
       <PageHeader
         title="Time & Workload"
-        description="Log billable hours, monitor team capacity, and review project burn rate."
+        description="Log billable hours, monitor team capacity, approve submissions, and review project burn rate."
         breadcrumbs={[{ label: "Admin", href: "/dashboard/admin" }, { label: "Time" }]}
         actions={
           <div className="flex gap-2">
@@ -135,7 +205,7 @@ export default function TimeTracking() {
               rows={billingExportRows}
               subtitle={`${billingExportRows.length} active projects`}
             />
-            <Button size="sm" onClick={() => setShowLog(true)}>
+            <Button size="sm" onClick={openCreate}>
               <Plus className="w-3.5 h-3.5 mr-1.5" /> Log time
             </Button>
           </div>
@@ -144,21 +214,22 @@ export default function TimeTracking() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat label="This week" value={`${totalThisWeek.toFixed(1)}h`} />
+        <Stat label="Pending approval" value={String(pendingCount)} accent={pendingCount > 0 ? "warn" : undefined} />
         <Stat label="Active projects" value={String((projectBilling as any[]).length)} />
         <Stat label="Logged entries" value={String(entries.length)} />
-        <Stat label="Tracked weeks" value={String(Object.keys(weeklyTotals).length)} />
       </div>
 
       <Tabs defaultValue="entries">
         <TabsList>
-          <TabsTrigger value="entries"><Clock className="w-3.5 h-3.5 mr-1.5" /> My entries</TabsTrigger>
+          <TabsTrigger value="entries"><Clock className="w-3.5 h-3.5 mr-1.5" /> Entries</TabsTrigger>
+          {isApprover && <TabsTrigger value="approvals"><ShieldCheck className="w-3.5 h-3.5 mr-1.5" /> Approvals {pendingCount > 0 && <span className="ml-1.5 rounded-full bg-amber-500/20 px-1.5 text-[10px] text-amber-400">{pendingCount}</span>}</TabsTrigger>}
           <TabsTrigger value="workload"><BarChart3 className="w-3.5 h-3.5 mr-1.5" /> Team workload</TabsTrigger>
           <TabsTrigger value="billing">Project billing</TabsTrigger>
         </TabsList>
 
         <TabsContent value="entries" className="mt-4">
           {entries.length === 0 ? (
-            <EmptyState icon={Clock} title="No entries yet" description="Track your first hour to feed reports." action={<Button size="sm" onClick={() => setShowLog(true)}><Plus className="w-3.5 h-3.5 mr-1.5" /> Log time</Button>} />
+            <EmptyState icon={Clock} title="No entries yet" description="Track your first hour to feed reports." action={<Button size="sm" onClick={openCreate}><Plus className="w-3.5 h-3.5 mr-1.5" /> Log time</Button>} />
           ) : (
             <DataTable
               rowKey={(r: any) => r.id}
@@ -169,11 +240,69 @@ export default function TimeTracking() {
                 { key: "project", header: "Project", render: (r: any) => r.tasks?.projects?.name || "—" },
                 { key: "duration", header: "Hours", render: (r: any) => `${(r.duration_minutes / 60).toFixed(2)}h` },
                 { key: "billable", header: "Billable", render: (r: any) => r.billable ? "✓" : "—" },
+                { key: "approval_status", header: "Approval", render: (r: any) => <StatusPill variant={APPROVAL_STATUS[r.approval_status] || "default"}>{r.approval_status}</StatusPill> },
                 { key: "notes", header: "Notes", render: (r: any) => <span className="text-xs text-muted-foreground line-clamp-1">{r.notes || "—"}</span> },
+                {
+                  key: "actions",
+                  header: "",
+                  render: (r: any) => {
+                    const mine = r.user_id === user?.id;
+                    const editable = mine && r.approval_status !== "approved";
+                    return (
+                      <div className="flex gap-1">
+                        {editable && (
+                          <Button size="sm" variant="ghost" onClick={() => openEdit(r)} title="Edit">
+                            <Pencil className="w-3 h-3" />
+                          </Button>
+                        )}
+                        {(mine || isApprover) && (
+                          <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(r.id)} title="Delete" className="text-rose-400 hover:text-rose-300">
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  },
+                },
               ]}
             />
           )}
         </TabsContent>
+
+        {isApprover && (
+          <TabsContent value="approvals" className="mt-4">
+            {pendingCount === 0 ? (
+              <EmptyState icon={ShieldCheck} title="Nothing pending" description="All time entries have been reviewed." />
+            ) : (
+              <DataTable
+                rowKey={(r: any) => r.id}
+                rows={entries.filter((e: any) => e.approval_status === "pending")}
+                columns={[
+                  { key: "entry_date", header: "Date" },
+                  { key: "user_id", header: "User", render: (r: any) => <span className="font-mono text-[11px]">{String(r.user_id).slice(0, 8)}…</span> },
+                  { key: "task", header: "Task", render: (r: any) => r.tasks?.title || "—" },
+                  { key: "duration", header: "Hours", render: (r: any) => `${(r.duration_minutes / 60).toFixed(2)}h` },
+                  { key: "billable", header: "Billable", render: (r: any) => r.billable ? "✓" : "—" },
+                  { key: "notes", header: "Notes", render: (r: any) => <span className="text-xs text-muted-foreground line-clamp-2">{r.notes || "—"}</span> },
+                  {
+                    key: "actions",
+                    header: "",
+                    render: (r: any) => (
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="ghost" className="text-emerald-400 hover:text-emerald-300" onClick={() => setApproval.mutate({ id: r.id, status: "approved" })}>
+                          <CheckCircle2 className="w-3 h-3 mr-1" /> Approve
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-rose-400 hover:text-rose-300" onClick={() => setApproval.mutate({ id: r.id, status: "rejected" })}>
+                          <XCircle className="w-3 h-3 mr-1" /> Reject
+                        </Button>
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+            )}
+          </TabsContent>
+        )}
 
         <TabsContent value="workload" className="mt-4 space-y-4">
           <div className="card-surface rounded-xl p-5">
@@ -234,9 +363,9 @@ export default function TimeTracking() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={showLog} onOpenChange={setShowLog}>
+      <Dialog open={showForm} onOpenChange={(v) => { setShowForm(v); if (!v) setForm(emptyForm()); }}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle className="font-display">Log time</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="font-display">{form.id ? "Edit time entry" : "Log time"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div>
               <Label className="text-xs">Task</Label>
@@ -265,19 +394,39 @@ export default function TimeTracking() {
               <Label className="text-xs">Notes</Label>
               <Textarea rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
             </div>
-            <Button className="w-full" onClick={() => log.mutate()} disabled={log.isPending || !form.task_id}>Log entry</Button>
+            {form.id && (
+              <p className="rounded-md bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-[11px] text-amber-400">
+                Editing resets approval to pending.
+              </p>
+            )}
+            <Button className="w-full" onClick={() => save.mutate()} disabled={save.isPending || !form.task_id}>
+              {form.id ? "Save changes" : "Log entry"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!confirmDelete} onOpenChange={(v) => { if (!v) setConfirmDelete(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this time entry?</AlertDialogTitle>
+            <AlertDialogDescription>This cannot be undone. The hours will be removed from all reports and project totals.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmDelete && del.mutate(confirmDelete)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, accent }: { label: string; value: string; accent?: "warn" }) {
   return (
     <div className="card-surface rounded-xl p-4">
       <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="font-display font-bold text-2xl text-foreground mt-1">{value}</p>
+      <p className={`font-display font-bold text-2xl mt-1 ${accent === "warn" ? "text-amber-400" : "text-foreground"}`}>{value}</p>
     </div>
   );
 }
