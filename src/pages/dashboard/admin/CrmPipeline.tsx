@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ExportMenu } from "@/components/dashboard/ExportMenu";
 import { Plus, Search, Building2, Phone, Mail } from "lucide-react";
 import { toast } from "sonner";
 
@@ -86,7 +87,27 @@ export default function CrmPipeline() {
         title="Sales Pipeline"
         description="Drag deals between stages. Live revenue forecasting at a glance."
         breadcrumbs={[{ label: "Admin", href: "/dashboard/admin" }, { label: "Pipeline" }]}
-        actions={<Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-3.5 h-3.5 mr-1.5" /> New Deal</Button>}
+        actions={
+          <div className="flex items-center gap-2">
+            <ExportMenu
+              filename={`pipeline-forecast-${new Date().toISOString().slice(0, 10)}`}
+              title="Sales Pipeline Forecast"
+              subtitle={`Open ₹${(open / 100000).toFixed(1)}L · Won ₹${(won / 100000).toFixed(1)}L`}
+              rows={deals.map((d) => {
+                const stage = stages.find((s) => s.id === d.stage_id);
+                return {
+                  Title: d.title,
+                  Stage: stage?.name ?? "—",
+                  Service: d.service_interest ?? "",
+                  Value: Number(d.value),
+                  Currency: d.currency,
+                  Status: stage?.is_won ? "Won" : stage?.is_lost ? "Lost" : "Open",
+                };
+              })}
+            />
+            <Button size="sm" onClick={() => setShowCreate(true)}><Plus className="w-3.5 h-3.5 mr-1.5" /> New Deal</Button>
+          </div>
+        }
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
