@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Briefcase, Plus, Trash2, Send } from "lucide-react";
+import { Briefcase, Plus, Trash2, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface LineItem { description: string; quantity: number; unit_price: number; }
@@ -65,7 +65,13 @@ export default function Quotations() {
       const { error } = await supabase.from("quotations").update({ status }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["quotations"] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ["quotations"] });
+      qc.invalidateQueries({ queryKey: ["invoices"] });
+      if (vars.status === "accepted") toast.success("Quote accepted — draft invoice auto-created");
+      else if (vars.status === "sent") toast.success("Quote marked as sent");
+    },
+    onError: (e: any) => toast.error(e.message),
   });
 
   const addItem = () => setForm({ ...form, items: [...form.items, { description: "", quantity: 1, unit_price: 0 }] });
@@ -107,7 +113,22 @@ export default function Quotations() {
               header: "",
               render: (r: any) => (
                 <div className="flex gap-1">
-                  {r.status === "draft" && <Button size="sm" variant="ghost" onClick={() => updateStatus.mutate({ id: r.id, status: "sent" })}><Send className="w-3 h-3" /></Button>}
+                  {r.status === "draft" && (
+                    <Button size="sm" variant="ghost" onClick={() => updateStatus.mutate({ id: r.id, status: "sent" })} title="Mark as sent">
+                      <Send className="w-3 h-3" />
+                    </Button>
+                  )}
+                  {(r.status === "sent" || r.status === "draft") && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-emerald-400 hover:text-emerald-300"
+                      onClick={() => updateStatus.mutate({ id: r.id, status: "accepted" })}
+                      title="Accept (auto-creates draft invoice)"
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" /> Accept
+                    </Button>
+                  )}
                 </div>
               ),
             },

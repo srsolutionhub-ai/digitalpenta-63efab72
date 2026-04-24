@@ -53,6 +53,7 @@ const CrmPipeline = lazy(() => import("./pages/dashboard/admin/CrmPipeline"));
 const Quotations = lazy(() => import("./pages/dashboard/admin/Quotations"));
 const Invoices = lazy(() => import("./pages/dashboard/admin/Invoices"));
 const Projects = lazy(() => import("./pages/dashboard/admin/Projects"));
+const TimeTracking = lazy(() => import("./pages/dashboard/admin/TimeTracking"));
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
@@ -139,6 +140,7 @@ function AnimatedRoutes() {
               <Route path="quotations" element={<Quotations />} />
               <Route path="invoices" element={<Invoices />} />
               <Route path="projects" element={<Projects />} />
+              <Route path="time" element={<TimeTracking />} />
             </Route>
 
             {/* Client dashboard */}
