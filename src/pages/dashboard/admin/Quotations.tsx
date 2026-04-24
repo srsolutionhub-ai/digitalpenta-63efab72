@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Briefcase, Plus, Trash2, Send, CheckCircle2 } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { QuotationActivityLog } from "@/components/dashboard/QuotationActivityLog";
+import { Briefcase, Plus, Trash2, Send, CheckCircle2, History } from "lucide-react";
 import { toast } from "sonner";
 
 interface LineItem { description: string; quantity: number; unit_price: number; }
@@ -20,6 +22,7 @@ const STATUS: Record<string, any> = { draft: "default", sent: "info", accepted: 
 export default function Quotations() {
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
+  const [activityFor, setActivityFor] = useState<{ id: string; quote_number: string; client_name: string } | null>(null);
   const [form, setForm] = useState<any>({ client_name: "", client_email: "", validity_date: "", tax_rate: 18, currency: "INR", notes: "", items: [{ description: "", quantity: 1, unit_price: 0 }] });
 
   const { data: quotes = [], isLoading } = useQuery({
@@ -68,6 +71,7 @@ export default function Quotations() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: ["quotations"] });
       qc.invalidateQueries({ queryKey: ["invoices"] });
+      qc.invalidateQueries({ queryKey: ["quotation-activity"] });
       if (vars.status === "accepted") toast.success("Quote accepted — draft invoice auto-created");
       else if (vars.status === "sent") toast.success("Quote marked as sent");
     },
@@ -113,6 +117,9 @@ export default function Quotations() {
               header: "",
               render: (r: any) => (
                 <div className="flex gap-1">
+                  <Button size="sm" variant="ghost" onClick={() => setActivityFor({ id: r.id, quote_number: r.quote_number, client_name: r.client_name })} title="View activity log">
+                    <History className="w-3 h-3" />
+                  </Button>
                   {r.status === "draft" && (
                     <Button size="sm" variant="ghost" onClick={() => updateStatus.mutate({ id: r.id, status: "sent" })} title="Mark as sent">
                       <Send className="w-3 h-3" />
@@ -169,6 +176,18 @@ export default function Quotations() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Sheet open={!!activityFor} onOpenChange={(v) => { if (!v) setActivityFor(null); }}>
+        <SheetContent className="w-full sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle className="font-display">Activity · {activityFor?.quote_number}</SheetTitle>
+            <p className="text-xs text-muted-foreground">{activityFor?.client_name}</p>
+          </SheetHeader>
+          <div className="mt-6">
+            {activityFor && <QuotationActivityLog quotationId={activityFor.id} />}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
