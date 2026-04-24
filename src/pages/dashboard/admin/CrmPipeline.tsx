@@ -93,6 +93,11 @@ export default function CrmPipeline() {
               filename={`pipeline-forecast-${new Date().toISOString().slice(0, 10)}`}
               title="Sales Pipeline Forecast"
               subtitle={`Open ₹${(open / 100000).toFixed(1)}L · Won ₹${(won / 100000).toFixed(1)}L`}
+              filters={{
+                statusField: "Status",
+                statusOptions: ["Open", "Won", "Lost"],
+                clientField: "Title",
+              }}
               rows={deals.map((d) => {
                 const stage = stages.find((s) => s.id === d.stage_id);
                 return {

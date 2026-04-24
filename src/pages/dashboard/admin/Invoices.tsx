@@ -45,6 +45,12 @@ export default function Invoices() {
             filename={`invoices-${new Date().toISOString().slice(0, 10)}`}
             title="Invoices Report"
             subtitle={`Collected ₹${(totals.paid / 100000).toFixed(1)}L · Pending ₹${(totals.pending / 100000).toFixed(1)}L`}
+            filters={{
+              dateField: "Created",
+              statusField: "Status",
+              statusOptions: ["draft", "sent", "paid", "overdue", "cancelled"],
+              clientField: "Client",
+            }}
             rows={invoices.map((i: any) => ({
               "Invoice #": i.invoice_number,
               Client: i.client_name,
@@ -53,7 +59,7 @@ export default function Invoices() {
               Total: Number(i.total),
               Status: i.status,
               "Due Date": i.due_date ?? "",
-              "Created": new Date(i.created_at).toLocaleDateString(),
+              "Created": new Date(i.created_at).toISOString().slice(0, 10),
             }))}
           />
         }

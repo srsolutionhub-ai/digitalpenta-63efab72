@@ -276,6 +276,7 @@ export type Database = {
           overall_score: number | null
           pdf_url: string | null
           performance_score: number | null
+          recommendation_statuses: Json
           seo_score: number | null
           source: string | null
           status: string | null
@@ -296,6 +297,7 @@ export type Database = {
           overall_score?: number | null
           pdf_url?: string | null
           performance_score?: number | null
+          recommendation_statuses?: Json
           seo_score?: number | null
           source?: string | null
           status?: string | null
@@ -316,6 +318,7 @@ export type Database = {
           overall_score?: number | null
           pdf_url?: string | null
           performance_score?: number | null
+          recommendation_statuses?: Json
           seo_score?: number | null
           source?: string | null
           status?: string | null
@@ -1625,6 +1628,9 @@ export type Database = {
       }
       time_entries: {
         Row: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           billable: boolean | null
           created_at: string | null
           duration_minutes: number
@@ -1635,6 +1641,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           billable?: boolean | null
           created_at?: string | null
           duration_minutes?: number
@@ -1645,6 +1654,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           billable?: boolean | null
           created_at?: string | null
           duration_minutes?: number
