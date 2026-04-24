@@ -5,6 +5,7 @@ import { DataTable } from "@/components/dashboard/DataTable";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { StatusPill } from "@/components/dashboard/StatusPill";
 import { Button } from "@/components/ui/button";
+import { ExportMenu } from "@/components/dashboard/ExportMenu";
 import { Receipt, Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -39,6 +40,23 @@ export default function Invoices() {
         title="Invoices"
         description="Auto-numbered INV-YYYY-NNN. Track collections in real time."
         breadcrumbs={[{ label: "Admin", href: "/dashboard/admin" }, { label: "Invoices" }]}
+        actions={
+          <ExportMenu
+            filename={`invoices-${new Date().toISOString().slice(0, 10)}`}
+            title="Invoices Report"
+            subtitle={`Collected ₹${(totals.paid / 100000).toFixed(1)}L · Pending ₹${(totals.pending / 100000).toFixed(1)}L`}
+            rows={invoices.map((i: any) => ({
+              "Invoice #": i.invoice_number,
+              Client: i.client_name,
+              Email: i.client_email,
+              Currency: i.currency,
+              Total: Number(i.total),
+              Status: i.status,
+              "Due Date": i.due_date ?? "",
+              "Created": new Date(i.created_at).toLocaleDateString(),
+            }))}
+          />
+        }
       />
 
       <div className="grid grid-cols-2 gap-3 max-w-md">
