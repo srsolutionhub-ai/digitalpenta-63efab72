@@ -3,12 +3,14 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { AuditScoreRing } from "@/components/audit/AuditScoreRing";
-import { AuditIssueCard, type AuditRecommendation } from "@/components/audit/AuditIssueCard";
+import { AuditIssueCard, type AuditRecommendation, type RecommendationStatus } from "@/components/audit/AuditIssueCard";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AuditDetail() {
   const { id } = useParams<{ id: string }>();
   const [audit, setAudit] = useState<any>(null);
+  const [statuses, setStatuses] = useState<Record<string, RecommendationStatus>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,14 +18,37 @@ export default function AuditDetail() {
     (async () => {
       const { data } = await supabase.from("audits").select("*").eq("id", id).single();
       setAudit(data);
+      setStatuses(((data as any)?.recommendation_statuses ?? {}) as Record<string, RecommendationStatus>);
       setLoading(false);
     })();
   }, [id]);
+
+  // Persist status changes immediately so the team can collaborate live.
+  const updateStatus = async (recIndex: number, next: RecommendationStatus) => {
+    const key = String(recIndex);
+    const optimistic = { ...statuses, [key]: next };
+    setStatuses(optimistic);
+    const { error } = await supabase.from("audits").update({ recommendation_statuses: optimistic }).eq("id", id!);
+    if (error) {
+      toast.error("Could not save status");
+      setStatuses(statuses);
+    } else {
+      toast.success(`Marked as ${next.replace("_", " ")}`);
+    }
+  };
 
   if (loading) return <div className="text-sm text-muted-foreground">Loading…</div>;
   if (!audit) return <div className="text-sm text-muted-foreground">Audit not found.</div>;
 
   const recs: AuditRecommendation[] = audit.ai_recommendations ?? [];
+  const counts = recs.reduce(
+    (acc, _r, i) => {
+      const s = (statuses[String(i)] ?? "open") as RecommendationStatus;
+      acc[s] = (acc[s] ?? 0) + 1;
+      return acc;
+    },
+    { open: 0, planned: 0, in_progress: 0, done: 0 } as Record<RecommendationStatus, number>
+  );
 
   return (
     <div className="space-y-6">
@@ -56,9 +81,24 @@ export default function AuditDetail() {
       )}
 
       <div>
-        <h3 className="mb-3 font-display text-lg font-semibold text-foreground">AI Recommendations ({recs.length})</h3>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="font-display text-lg font-semibold text-foreground">AI Recommendations ({recs.length})</h3>
+          <div className="flex flex-wrap gap-1.5 text-[11px]">
+            <span className="rounded-full border border-border/40 px-2 py-0.5 text-muted-foreground">{counts.open} open</span>
+            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-primary">{counts.planned} planned</span>
+            <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-amber-400">{counts.in_progress} in progress</span>
+            <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-emerald-400">{counts.done} done</span>
+          </div>
+        </div>
         <div className="space-y-3">
-          {recs.map((r, i) => <AuditIssueCard key={i} rec={r} />)}
+          {recs.map((r, i) => (
+            <AuditIssueCard
+              key={i}
+              rec={r}
+              status={(statuses[String(i)] ?? "open") as RecommendationStatus}
+              onStatusChange={(s) => updateStatus(i, s)}
+            />
+          ))}
         </div>
       </div>
     </div>
