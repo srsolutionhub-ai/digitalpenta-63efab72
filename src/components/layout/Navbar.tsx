@@ -222,7 +222,8 @@ export default function Navbar() {
                 {location.pathname === l.href && (
                   <motion.div
                     layoutId="nav-indicator"
-                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
+                    style={{ background: "linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%))", boxShadow: "0 0 12px hsl(256 90% 62% / 0.7)" }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
