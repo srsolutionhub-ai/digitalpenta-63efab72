@@ -74,23 +74,44 @@ export default function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="rounded-3xl overflow-hidden relative p-10 md:p-16 text-center"
-          style={{ background: "linear-gradient(135deg, hsl(256, 90%, 60%) 0%, hsl(162, 100%, 42%) 100%)" }}
+          style={{
+            background:
+              "linear-gradient(135deg, hsl(256 90% 22%) 0%, hsl(322 90% 22%) 50%, hsl(192 95% 22%) 100%)",
+            boxShadow: "0 40px 100px -20px hsl(256 90% 30% / 0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
+          }}
         >
-          <div className="absolute inset-0 opacity-20" style={{
+          {/* Animated conic glow */}
+          <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-30 pointer-events-none"
+            style={{
+              background: "conic-gradient(from 0deg, transparent 0deg, hsl(256 100% 70% / 0.6) 60deg, transparent 120deg, hsl(192 100% 65% / 0.5) 200deg, transparent 260deg)",
+              animation: "conic-spin 20s linear infinite",
+            }}
+          />
+          <div className="absolute inset-0 opacity-15 pointer-events-none" style={{
             backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
             backgroundSize: "30px 30px",
           }} />
-          <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-white/10 blur-[100px] animate-breathe" />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full bg-white/10 blur-[80px] animate-breathe" style={{ animationDelay: "2s" }} />
+          <div className="absolute top-0 left-1/4 w-72 h-72 rounded-full blur-[120px] pointer-events-none"
+            style={{ background: "hsl(322 100% 70% / 0.3)" }} />
+          <div className="absolute bottom-0 right-1/4 w-56 h-56 rounded-full blur-[100px] pointer-events-none"
+            style={{ background: "hsl(192 100% 65% / 0.3)" }} />
+
           <div className="relative z-10">
-            <h2 className="font-display font-extrabold text-3xl md:text-5xl text-white mb-4">
+            <span className="neon-chip mb-6" style={{ background: "rgba(255,255,255,0.10)", borderColor: "rgba(255,255,255,0.25)", color: "white" }}>
+              Free Strategy Call
+            </span>
+            <h2 className="font-display font-extrabold text-3xl md:text-5xl text-white mt-5 mb-4 leading-[1.1]"
+              style={{ filter: "drop-shadow(0 4px 24px hsl(256 100% 50% / 0.5))" }}
+            >
               Ready to 5X Your Business? Let's Talk.
             </h2>
-            <p className="text-white/80 max-w-lg mx-auto mb-8 text-base">
+            <p className="text-white/85 max-w-lg mx-auto mb-8 text-base">
               Book a FREE 30-minute strategy call with our growth experts. No commitment. No fluff. Just a plan.
             </p>
             <Link to="/contact">
-              <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/90 shadow-xl hover:shadow-2xl transition-shadow">
+              <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
+                style={{ boxShadow: "0 20px 60px -10px rgba(0,0,0,0.5), 0 0 40px -8px hsl(256 100% 70% / 0.7)" }}
+              >
                 📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
