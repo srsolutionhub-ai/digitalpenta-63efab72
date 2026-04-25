@@ -159,7 +159,7 @@ export default function Navbar() {
                     transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-[800px]"
                   >
-                    <div className="bg-background/95 backdrop-blur-3xl rounded-2xl border border-border/20 shadow-2xl shadow-primary/5 overflow-hidden">
+                    <div className="bg-background/95 backdrop-blur-3xl rounded-2xl border border-white/[0.08] shadow-[0_30px_80px_-20px_hsl(256_90%_30%/0.5)] overflow-hidden">
                       <div className="grid grid-cols-6 gap-0">
                         <div className="col-span-4 grid grid-cols-3 gap-0 p-6">
                           {services.map((cat) => (
@@ -168,7 +168,7 @@ export default function Navbar() {
                                 to={cat.href}
                                 className="flex items-center gap-2 font-display font-semibold text-sm text-foreground hover:text-primary transition-colors mb-2 group"
                               >
-                                <span className="p-1 rounded-md bg-muted/50 group-hover:bg-primary/10 transition-colors">
+                                <span className="p-1.5 rounded-lg bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.06] group-hover:border-primary/30 group-hover:shadow-[0_0_16px_-4px_hsl(256_90%_62%/0.6)] transition-all">
                                   <cat.icon className={`w-3.5 h-3.5 ${cat.color}`} />
                                 </span>
                                 {cat.title}
@@ -185,16 +185,20 @@ export default function Navbar() {
                             </div>
                           ))}
                         </div>
-                        <div className="col-span-2 bg-gradient-to-b from-primary/5 to-accent/5 border-l border-border/10 p-6 flex flex-col justify-between">
-                          <div>
+                        <div className="col-span-2 relative border-l border-white/[0.06] p-6 flex flex-col justify-between overflow-hidden">
+                          <div className="absolute inset-0 pointer-events-none"
+                            style={{ background: "radial-gradient(120% 100% at 100% 0%, hsl(256 90% 62% / 0.18), transparent 60%), radial-gradient(80% 100% at 0% 100%, hsl(192 95% 56% / 0.12), transparent 60%)" }} />
+                          <div className="relative">
                             <p className="text-xs font-mono text-primary uppercase tracking-widest mb-2">Get Started</p>
                             <h3 className="font-display font-bold text-lg text-foreground mb-2">Need a custom strategy?</h3>
                             <p className="text-xs text-muted-foreground leading-relaxed">
                               Our experts craft tailored solutions across all five pillars — no cookie-cutter approaches.
                             </p>
                           </div>
-                          <Link to="/get-proposal" className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-display font-semibold hover:text-foreground transition-colors group">
-                            Get Free Proposal <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                          <Link to="/get-proposal" className="relative inline-flex items-center gap-2 mt-4 text-sm font-display font-semibold neon-link bg-clip-text text-transparent"
+                            style={{ backgroundImage: "linear-gradient(90deg, hsl(256 100% 80%), hsl(192 100% 75%))" }}
+                          >
+                            Get Free Proposal <ArrowRight className="w-3.5 h-3.5 text-primary" />
                           </Link>
                         </div>
                       </div>
