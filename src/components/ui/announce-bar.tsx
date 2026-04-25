@@ -9,11 +9,21 @@ export default function AnnounceBar() {
   const track = items.join("  •  ") + "  •  ";
 
   return (
-    <div className="bg-primary/10 border-b border-primary/10 overflow-hidden relative">
+    <div
+      className="border-b border-white/[0.06] overflow-hidden relative"
+      style={{
+        background:
+          "linear-gradient(90deg, hsl(256 90% 62% / 0.10) 0%, hsl(322 90% 62% / 0.08) 50%, hsl(192 95% 56% / 0.10) 100%)",
+      }}
+    >
       <div className="marquee-mask">
         <div className="flex whitespace-nowrap animate-marquee">
-          <span className="text-[11px] font-mono text-primary/80 tracking-wider py-1.5 px-2">{track}</span>
-          <span className="text-[11px] font-mono text-primary/80 tracking-wider py-1.5 px-2">{track}</span>
+          <span className="text-[11px] font-mono tracking-[0.18em] py-1.5 px-2 bg-clip-text text-transparent"
+            style={{ backgroundImage: "linear-gradient(90deg, hsl(256 100% 80%), hsl(192 100% 75%), hsl(322 100% 80%), hsl(256 100% 80%))" }}
+          >{track}</span>
+          <span className="text-[11px] font-mono tracking-[0.18em] py-1.5 px-2 bg-clip-text text-transparent"
+            style={{ backgroundImage: "linear-gradient(90deg, hsl(256 100% 80%), hsl(192 100% 75%), hsl(322 100% 80%), hsl(256 100% 80%))" }}
+          >{track}</span>
         </div>
       </div>
     </div>

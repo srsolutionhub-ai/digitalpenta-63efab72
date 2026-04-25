@@ -22,12 +22,12 @@ export default function HomeIntroSection() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-3xl mx-auto text-center"
         >
-          <span className="inline-flex items-center gap-2 type-label text-primary font-mono">
+          <span className="neon-chip">
             <Sparkles className="w-3.5 h-3.5" /> India · UAE · KSA · Qatar · Bahrain
           </span>
-          <h2 className="font-display type-h2 text-foreground mt-4 mb-5">
+          <h2 className="font-display type-h2 text-foreground mt-5 mb-5">
             Full-Service Digital Marketing in{" "}
-            <span className="text-primary">Delhi &amp; India</span>
+            <span className="text-gradient-hero">Delhi &amp; India</span>
           </h2>
           <p className="type-body max-w-2xl mx-auto">
             From SEO and Google Ads to AI automation and full-stack web development,
@@ -36,21 +36,23 @@ export default function HomeIntroSection() {
             ROI — measured in revenue, not vanity metrics.
           </p>
 
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
-              { v: "500+", l: "Brands Scaled" },
-              { v: "₹120Cr+", l: "Revenue Driven" },
-              { v: "4.9★", l: "Google Rating" },
-              { v: "47 min", l: "Avg. Response" },
+              { v: "500+", l: "Brands Scaled", glow: "hsl(256 90% 62%)" },
+              { v: "₹120Cr+", l: "Revenue Driven", glow: "hsl(192 95% 56%)" },
+              { v: "4.9★", l: "Google Rating", glow: "hsl(48 100% 60%)" },
+              { v: "47 min", l: "Avg. Response", glow: "hsl(322 90% 62%)" },
             ].map((s) => (
               <div
                 key={s.l}
-                className="rounded-2xl card-surface p-5 text-center hover-lift"
+                className="glass-card-pro p-5 text-center group"
               >
-                <p className="font-display font-extrabold text-2xl text-primary">
+                <p className="font-display font-extrabold text-2xl"
+                  style={{ color: s.glow, filter: `drop-shadow(0 0 14px ${s.glow}80)` }}
+                >
                   {s.v}
                 </p>
-                <p className="type-label text-muted-foreground mt-1 font-mono">
+                <p className="type-label text-muted-foreground mt-1.5 font-mono">
                   {s.l}
                 </p>
               </div>

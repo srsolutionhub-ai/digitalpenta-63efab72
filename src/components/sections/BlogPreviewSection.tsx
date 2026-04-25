@@ -27,13 +27,15 @@ export default function BlogPreviewSection() {
           className="flex items-end justify-between mb-20"
         >
           <div>
-            <span className="type-label text-primary font-mono">Insights</span>
-            <h2 className="font-display type-h2 text-foreground mt-3">
-              Latest From Our <span className="text-primary">Blog</span>
+            <span className="neon-chip">Insights</span>
+            <h2 className="font-display type-h2 text-foreground mt-5">
+              Latest From Our <span className="text-gradient-hero">Blog</span>
             </h2>
           </div>
-          <Link to="/blog" className="hidden md:flex items-center gap-1.5 text-sm text-primary hover:text-foreground transition-colors font-display font-semibold">
-            All articles <ArrowUpRight className="w-4 h-4" />
+          <Link to="/blog" className="hidden md:flex items-center gap-1.5 text-sm font-display font-semibold neon-link bg-clip-text text-transparent"
+            style={{ backgroundImage: "linear-gradient(90deg, hsl(256 100% 80%), hsl(192 100% 75%))" }}
+          >
+            All articles <ArrowUpRight className="w-4 h-4 text-primary" />
           </Link>
         </motion.div>
 
@@ -47,35 +49,43 @@ export default function BlogPreviewSection() {
             >
               <Link
                 to={`/blog/${post.slug}`}
-                className="group rounded-2xl card-surface overflow-hidden flex flex-col hover-lift h-full"
+                className="group glass-card-pro overflow-hidden flex flex-col h-full"
               >
-                <div className="h-32 relative overflow-hidden">
+                <div className="h-36 relative overflow-hidden">
                   <img
                     src={post.image}
                     alt={post.title}
                     loading="lazy"
                     width={800}
                     height={512}
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700"
+                    className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[hsl(240,20%,5%)] via-[hsl(240,20%,5%)/0.4] to-transparent" />
+                  <div className="absolute inset-0"
+                    style={{ background: "linear-gradient(180deg, transparent 0%, hsl(256 90% 30% / 0.25) 60%, hsl(var(--background)) 100%)" }}
+                  />
                 </div>
 
-                <div className="p-7 flex flex-col flex-1">
+                <div className="p-7 flex flex-col flex-1 relative">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="type-label text-primary font-mono px-2.5 py-1 rounded-full card-surface">{post.category}</span>
+                    <span className="type-label font-mono px-2.5 py-1 rounded-full"
+                      style={{
+                        background: "linear-gradient(135deg, hsl(256 90% 62% / 0.18), hsl(192 95% 56% / 0.12))",
+                        border: "1px solid hsl(256 90% 62% / 0.3)",
+                        color: "hsl(192 100% 80%)",
+                      }}
+                    >{post.category}</span>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Clock className="w-3 h-3" />
                       {post.readTime}
                     </div>
                   </div>
-                  <h3 className="font-display font-bold text-lg text-foreground mb-3 group-hover:text-primary transition-colors leading-snug">
+                  <h3 className="font-display font-bold text-lg text-foreground mb-3 group-hover:text-gradient transition-colors leading-snug">
                     {post.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed flex-1">{post.excerpt}</p>
-                  <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
+                  <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between">
                     <span className="text-xs text-muted-foreground font-mono">{post.date}</span>
-                    <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
               </Link>

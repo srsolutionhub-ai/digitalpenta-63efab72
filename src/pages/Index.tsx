@@ -19,23 +19,29 @@ import UrgencyStrip from "@/components/ui/urgency-strip";
 import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
-/* Trust Strip */
+/* Trust Strip — Premium neon */
 function TrustStrip() {
   const items = [
-    "★★★★★ 4.9 Google Rating",
-    "100+ Clients Served",
-    "₹10Cr+ Revenue Generated",
-    "Google Partner",
-    "Delhi Based, Globally Trusted",
+    { label: "★★★★★ 4.9 Google Rating", accent: "hsl(48 100% 65%)" },
+    { label: "100+ Clients Served", accent: "hsl(256 90% 75%)" },
+    { label: "₹10Cr+ Revenue Generated", accent: "hsl(162 100% 50%)" },
+    { label: "Google Partner", accent: "hsl(192 95% 70%)" },
+    { label: "Delhi Based, Globally Trusted", accent: "hsl(322 90% 75%)" },
   ];
   return (
-    <div className="border-y border-border py-3 overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+    <div className="relative border-y border-white/[0.05] py-3.5 overflow-hidden bg-background/40 backdrop-blur-sm">
+      <div className="absolute inset-0 pointer-events-none opacity-50"
+        style={{ background: "radial-gradient(80% 100% at 50% 50%, hsl(256 90% 30% / 0.15), transparent 70%)" }} />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5">
           {items.map((item, i) => (
-            <span key={i} className="type-label text-muted-foreground whitespace-nowrap font-mono">
-              {item}
-              {i < items.length - 1 && <span className="ml-6 text-border">|</span>}
+            <span key={i} className="type-label whitespace-nowrap font-mono flex items-center gap-2.5">
+              <span
+                className="inline-block w-1 h-1 rounded-full"
+                style={{ background: item.accent, boxShadow: `0 0 8px ${item.accent}` }}
+              />
+              <span className="text-foreground/70">{item.label}</span>
+              {i < items.length - 1 && <span className="ml-5 text-white/10">|</span>}
             </span>
           ))}
         </div>

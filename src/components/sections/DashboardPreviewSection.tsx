@@ -46,9 +46,9 @@ export default function DashboardPreviewSection() {
           transition={{ duration: 0.7 }}
           className="text-center max-w-2xl mx-auto mb-20"
         >
-          <span className="type-label text-primary font-mono">Live Dashboard</span>
-          <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
-            Your Growth, <span className="text-primary">Visualized.</span>
+          <span className="neon-chip">Live Dashboard</span>
+          <h2 className="font-display type-h2 text-foreground mt-5 mb-4">
+            Your Growth, <span className="text-gradient-hero">Visualized.</span>
           </h2>
           <p className="type-body">Real-time analytics dashboard every client gets access to.</p>
         </motion.div>
@@ -57,10 +57,12 @@ export default function DashboardPreviewSection() {
           initial={{ opacity: 0, y: 40, scale: 0.97 }}
           animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-5xl mx-auto rounded-2xl card-surface p-6 md:p-8 relative overflow-hidden"
+          className="max-w-5xl mx-auto glass-card-pro p-6 md:p-8 relative"
         >
-          <div className="absolute top-0 left-0 right-0 h-px bg-primary/30" />
-          <div className="flex items-center gap-2 mb-6">
+          <div className="absolute top-0 left-6 right-6 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, hsl(256 90% 62%), hsl(192 95% 56%), transparent)" }}
+          />
+          <div className="flex items-center gap-2 mb-6 relative z-10">
             <div className="w-3 h-3 rounded-full bg-destructive/60" />
             <div className="w-3 h-3 rounded-full bg-amber-500/60" />
             <div className="w-3 h-3 rounded-full bg-emerald-500/60" />
@@ -92,19 +94,20 @@ export default function DashboardPreviewSection() {
             })}
           </div>
 
-          <div className="rounded-xl card-surface p-5">
+          <div className="rounded-xl card-surface p-5 relative z-10">
             <div className="flex items-center justify-between mb-4">
               <span className="type-label text-muted-foreground font-mono">Monthly Performance</span>
               <div className="flex gap-3">
-                <span className="flex items-center gap-1.5 type-label text-muted-foreground"><span className="w-2 h-2 rounded-full bg-primary" /> Leads</span>
-                <span className="flex items-center gap-1.5 type-label text-muted-foreground"><span className="w-2 h-2 rounded-full bg-accent" /> Revenue</span>
+                <span className="flex items-center gap-1.5 type-label text-muted-foreground"><span className="w-2 h-2 rounded-full bg-primary" style={{ boxShadow: "0 0 6px hsl(256 90% 62%)" }} /> Leads</span>
+                <span className="flex items-center gap-1.5 type-label text-muted-foreground"><span className="w-2 h-2 rounded-full bg-accent" style={{ boxShadow: "0 0 6px hsl(162 100% 44%)" }} /> Revenue</span>
               </div>
             </div>
             <div className="flex items-end gap-2 h-32">
               {chartBars.map((h, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <motion.div
-                    className="w-full rounded-t bg-primary/40"
+                    className="w-full rounded-t"
+                    style={{ background: "linear-gradient(180deg, hsl(192 95% 56%), hsl(256 90% 62%))", boxShadow: "0 -4px 16px -2px hsl(256 90% 62% / 0.4)" }}
                     initial={{ height: 0 }}
                     animate={isInView ? { height: `${h}%` } : {}}
                     transition={{ duration: 0.8, delay: 0.5 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}

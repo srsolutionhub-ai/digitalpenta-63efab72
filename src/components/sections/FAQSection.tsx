@@ -31,9 +31,9 @@ export default function FAQSection() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-20"
         >
-          <span className="type-label text-primary font-mono">FAQ</span>
-          <h2 className="font-display type-h2 text-foreground mt-3 mb-4">
-            Frequently Asked <span className="text-primary">Questions</span>
+          <span className="neon-chip">FAQ</span>
+          <h2 className="font-display type-h2 text-foreground mt-5 mb-4">
+            Frequently Asked <span className="text-gradient-hero">Questions</span>
           </h2>
         </motion.div>
 
@@ -47,17 +47,23 @@ export default function FAQSection() {
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="rounded-xl card-surface px-6 data-[state=open]:ring-1 data-[state=open]:ring-primary/20 transition-all duration-300 group"
+                className="glass-card-pro px-6 transition-all duration-300 group border-0"
               >
                 <AccordionTrigger className="text-sm font-display font-semibold text-foreground hover:no-underline py-5 text-left gap-4">
                   <div className="flex items-center gap-4">
-                    <span className="type-label text-muted-foreground group-data-[state=open]:text-primary transition-colors shrink-0 w-6 font-mono">
+                    <span className="type-label font-mono shrink-0 w-7 h-7 rounded-md flex items-center justify-center transition-all group-data-[state=open]:scale-110"
+                      style={{
+                        background: "linear-gradient(135deg, hsl(256 90% 62% / 0.18), hsl(192 95% 56% / 0.10))",
+                        border: "1px solid hsl(256 90% 62% / 0.3)",
+                        color: "hsl(192 100% 80%)",
+                      }}
+                    >
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {faq.q}
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5 pl-10">
+                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5 pl-11">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

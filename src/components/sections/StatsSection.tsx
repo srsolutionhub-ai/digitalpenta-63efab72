@@ -54,10 +54,7 @@ export default function StatsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card type-label text-accent font-mono mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-            By the Numbers
-          </span>
+          <span className="neon-chip mb-4">By the Numbers</span>
           <h2 className="font-display font-extrabold tracking-tight text-foreground"
             style={{ fontSize: "clamp(1.75rem, 3.5vw, 3rem)", lineHeight: 1.1 }}
           >
