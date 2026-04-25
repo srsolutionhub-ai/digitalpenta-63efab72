@@ -243,6 +243,161 @@
   }
 
 
+  /* ============ PREMIUM HOMEPAGE UTILITIES ============ */
+
+  /* Section divider — neon gradient hairline */
+  .neon-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(256 90% 62% / 0.6), hsl(192 95% 56% / 0.6), hsl(322 90% 62% / 0.6), transparent);
+  }
+
+  /* Eyebrow chip — neon outlined pill */
+  .neon-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    background: linear-gradient(135deg, hsl(256 90% 62% / 0.12), hsl(192 95% 56% / 0.10));
+    border: 1px solid hsl(256 90% 62% / 0.28);
+    color: hsl(192 100% 75%);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 24px -8px hsl(256 90% 62% / 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .neon-chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: hsl(162 100% 50%);
+    box-shadow: 0 0 12px hsl(162 100% 50% / 0.9);
+    animation: chip-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes chip-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  /* Premium dual-layer glass card with hover gradient ring */
+  .glass-card-pro {
+    position: relative;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%),
+      radial-gradient(120% 80% at 0% 0%, hsl(256 90% 62% / 0.08), transparent 60%);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1), border-color 400ms ease, box-shadow 400ms ease;
+  }
+  .glass-card-pro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(256 90% 62% / 0.55), transparent 35%, hsl(192 95% 56% / 0.45) 75%, hsl(322 90% 62% / 0.4));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+  .glass-card-pro::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: radial-gradient(60% 60% at 50% 0%, hsl(256 90% 62% / 0.18), transparent 70%);
+    opacity: 0;
+    transition: opacity 500ms ease;
+    pointer-events: none;
+  }
+  .glass-card-pro:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 30px 80px -30px hsl(256 90% 35% / 0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .glass-card-pro:hover::before { opacity: 1; }
+  .glass-card-pro:hover::after { opacity: 1; }
+
+  /* Featured glow card — always-on neon ring */
+  .glass-card-featured {
+    position: relative;
+    background:
+      linear-gradient(135deg, hsl(256 90% 62% / 0.08), hsl(322 90% 62% / 0.05) 50%, hsl(192 95% 56% / 0.07));
+    border: 1px solid hsl(256 90% 62% / 0.3);
+    border-radius: 20px;
+    box-shadow: 0 30px 80px -30px hsl(256 90% 50% / 0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .glass-card-featured::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent 0deg, hsl(256 90% 62% / 0.18) 60deg, transparent 120deg, hsl(192 95% 56% / 0.15) 200deg, transparent 260deg);
+    animation: conic-spin 12s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes conic-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Section ambient glow background */
+  .section-ambient {
+    position: relative;
+  }
+  .section-ambient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 15% 10%, hsl(256 90% 30% / 0.18), transparent 60%),
+      radial-gradient(50% 50% at 85% 90%, hsl(192 95% 35% / 0.14), transparent 60%);
+    z-index: 0;
+  }
+  .section-ambient > * { position: relative; z-index: 1; }
+
+  /* Neon link underline */
+  .neon-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .neon-link::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -3px;
+    height: 1px;
+    background: linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .neon-link:hover::after { transform: scaleX(1); }
+
+  /* Number badge — gradient circle */
+  .neon-num {
+    background: linear-gradient(135deg, hsl(256 90% 62%), hsl(322 90% 62%) 50%, hsl(192 95% 56%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px hsl(256 90% 62% / 0.4));
+  }
+
   /* Marquee fade edges */
   .marquee-mask {
     -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
