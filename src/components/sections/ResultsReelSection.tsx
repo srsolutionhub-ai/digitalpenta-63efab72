@@ -3,14 +3,14 @@ import { useRef, useState } from "react";
 import resultsBanner from "@/assets/results-banner-graphic.jpg";
 
 const results = [
-  { metric: "312%", label: "Organic Traffic Growth", client: "SaaS Startup, Pune", service: "SEO & Content Strategy", accent: "border-violet-500/60" },
-  { metric: "4.2X", label: "ROAS on Google Ads", client: "E-commerce, Delhi", service: "PPC Management", accent: "border-cyan-500/60" },
-  { metric: "2,000+", label: "Instagram Followers / Month", client: "Beauty Brand, Jaipur", service: "Social Media Marketing", accent: "border-pink-500/60" },
-  { metric: "₹1.2Cr", label: "Revenue Generated in Q1", client: "Real Estate, Mumbai", service: "Performance Marketing", accent: "border-emerald-500/60" },
-  { metric: "70%", label: "Reduction in Support Tickets", client: "D2C Brand, Bangalore", service: "AI Chatbot", accent: "border-amber-500/60" },
-  { metric: "45%", label: "Lower Cost Per Lead", client: "Fintech Startup, Hyderabad", service: "Google Ads + SEO", accent: "border-blue-500/60" },
-  { metric: "98%", label: "Client Retention Rate", client: "Across All Verticals", service: "Full-Service Retainer", accent: "border-violet-500/60" },
-  { metric: "3X", label: "Email Open Rate Improvement", client: "EdTech, Chennai", service: "Email Marketing Automation", accent: "border-orange-500/60" },
+  { metric: "312%", label: "Organic Traffic Growth", client: "SaaS Startup, Pune", service: "SEO & Content Strategy", glow: "hsl(256 90% 62%)" },
+  { metric: "4.2X", label: "ROAS on Google Ads", client: "E-commerce, Delhi", service: "PPC Management", glow: "hsl(192 95% 56%)" },
+  { metric: "2,000+", label: "Instagram Followers / Month", client: "Beauty Brand, Jaipur", service: "Social Media Marketing", glow: "hsl(322 90% 62%)" },
+  { metric: "₹1.2Cr", label: "Revenue Generated in Q1", client: "Real Estate, Mumbai", service: "Performance Marketing", glow: "hsl(162 100% 44%)" },
+  { metric: "70%", label: "Reduction in Support Tickets", client: "D2C Brand, Bangalore", service: "AI Chatbot", glow: "hsl(38 100% 60%)" },
+  { metric: "45%", label: "Lower Cost Per Lead", client: "Fintech Startup, Hyderabad", service: "Google Ads + SEO", glow: "hsl(192 95% 56%)" },
+  { metric: "98%", label: "Client Retention Rate", client: "Across All Verticals", service: "Full-Service Retainer", glow: "hsl(256 90% 62%)" },
+  { metric: "3X", label: "Email Open Rate Improvement", client: "EdTech, Chennai", service: "Email Marketing Automation", glow: "hsl(18 100% 60%)" },
 ];
 
 export default function ResultsReelSection() {
@@ -40,9 +40,9 @@ export default function ResultsReelSection() {
         transition={{ duration: 0.6 }}
         className="text-center mb-10 relative z-10"
       >
-        <span className="type-label text-primary font-mono">Proven Results</span>
-        <h2 className="font-display type-h2 text-foreground mt-2">
-          Real Numbers. <span className="text-primary">Real Growth.</span>
+        <span className="neon-chip">Proven Results</span>
+        <h2 className="font-display type-h2 text-foreground mt-4">
+          Real Numbers. <span className="text-gradient-hero">Real Growth.</span>
         </h2>
       </motion.div>
 
@@ -62,21 +62,40 @@ function ResultCard({ r }: { r: typeof results[0] }) {
 
   return (
     <div
-      className={`flex-shrink-0 w-[280px] rounded-2xl card-surface p-6 hover-lift border-l-2 ${r.accent} relative`}
+      className="flex-shrink-0 w-[280px] glass-card-pro p-6 relative"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ animationPlayState: hovered ? "paused" : "running" }}
     >
-      <span className="text-3xl font-mono font-extrabold text-primary">
+      <div className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r"
+        style={{ background: `linear-gradient(180deg, ${r.glow}, ${r.glow}40)`, boxShadow: `0 0 12px ${r.glow}80` }}
+      />
+      <span className="text-3xl font-display font-extrabold"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${r.glow}, hsl(0 0% 95%))`,
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          filter: `drop-shadow(0 0 14px ${r.glow}60)`,
+        }}
+      >
         {r.metric}
       </span>
-      <p className="text-sm font-display font-semibold text-foreground/80 mt-2">{r.label}</p>
+      <p className="text-sm font-display font-semibold text-foreground/85 mt-2">{r.label}</p>
       <p className="type-label text-muted-foreground font-mono mt-1">{r.client}</p>
 
       {hovered && (
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-mono whitespace-nowrap z-10 shadow-lg">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-mono whitespace-nowrap z-10"
+          style={{
+            background: `linear-gradient(135deg, ${r.glow}, hsl(240 20% 8%))`,
+            color: "white",
+            boxShadow: `0 8px 24px -4px ${r.glow}60`,
+          }}
+        >
           {r.service}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rotate-45 bg-foreground" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rotate-45"
+            style={{ background: r.glow }}
+          />
         </div>
       )}
     </div>
