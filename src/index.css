@@ -54,9 +54,19 @@
 
     /* Simplified tokens */
     --glow-violet: 256 90% 62%;
-    --glow-cyan: 162 100% 44%;
+    --glow-cyan: 192 95% 56%;
+    --glow-pink: 322 90% 62%;
     --warning-orange: 18 100% 60%;
     --success-green: 152 100% 39%;
+
+    /* Premium gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(256 90% 62%) 0%, hsl(322 90% 62%) 50%, hsl(192 95% 56%) 100%);
+    --gradient-violet-cyan: linear-gradient(135deg, hsl(256 90% 62%), hsl(192 95% 56%));
+    --gradient-pink-violet: linear-gradient(135deg, hsl(322 90% 62%), hsl(256 90% 62%));
+    --gradient-text: linear-gradient(135deg, hsl(256 100% 75%) 0%, hsl(192 100% 70%) 100%);
+    --shadow-glow-violet: 0 0 80px -10px hsl(256 90% 62% / 0.5);
+    --shadow-glow-cyan: 0 0 80px -10px hsl(192 95% 56% / 0.4);
+    --shadow-elegant: 0 20px 60px -20px hsl(256 90% 30% / 0.4);
   }
 }
 
@@ -145,14 +155,93 @@
     box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.4);
   }
 
-  /* Text gradient — single clean purple, NO cyan/teal */
+  /* Premium animated text gradient */
   .text-gradient {
-    color: hsl(256 90% 62%);
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
   }
 
   .text-gradient-hero {
-    color: hsl(256 90% 62%);
+    background: linear-gradient(135deg, hsl(256 100% 80%) 0%, hsl(322 100% 75%) 35%, hsl(192 100% 70%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 10s ease infinite;
+    filter: drop-shadow(0 0 30px hsl(256 90% 62% / 0.3));
   }
+
+  /* Glassmorphism premium card */
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(256 90% 62% / 0.3), transparent 40%, hsl(192 95% 56% / 0.3));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+  .glass-card:hover::before { opacity: 1; }
+
+  /* Gradient border button glow */
+  .btn-glow {
+    position: relative;
+    background: var(--gradient-primary);
+    background-size: 200% 200%;
+    animation: gradient-shift 6s ease infinite;
+    box-shadow: var(--shadow-glow-violet);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+  .btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 100px -5px hsl(256 90% 62% / 0.7);
+  }
+
+  /* Floating animation for orbs */
+  .float-orb {
+    animation: float-y 8s ease-in-out infinite;
+  }
+
+  /* Neon gradient mesh background */
+  .mesh-bg {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 30%, hsl(256 90% 30% / 0.4), transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 20%, hsl(192 95% 40% / 0.3), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 80%, hsl(322 90% 40% / 0.25), transparent 60%);
+  }
+
+  /* Grain texture overlay */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
 
   /* Marquee fade edges */
   .marquee-mask {
@@ -175,6 +264,27 @@
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(3deg); }
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); filter: blur(40px); opacity: 0.5; }
+  50% { transform: scale(1.15); filter: blur(60px); opacity: 0.8; }
+}
+
+@keyframes mesh-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 30px) scale(0.95); }
 }
 
 @keyframes marquee {

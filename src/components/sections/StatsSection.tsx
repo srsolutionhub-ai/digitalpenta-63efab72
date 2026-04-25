@@ -29,7 +29,7 @@ function AnimatedNumber({ value, prefix = "", suffix = "", inView }: { value: nu
   }, [value, inView]);
 
   return (
-    <span className="font-mono font-extrabold text-4xl md:text-5xl lg:text-6xl text-foreground tracking-tight">
+    <span className="font-display font-extrabold text-5xl md:text-6xl lg:text-7xl tracking-tighter text-gradient-hero">
       {prefix}{count}{suffix}
     </span>
   );
@@ -40,25 +40,42 @@ export default function StatsSection() {
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section id="results" ref={ref} className="py-28 md:py-36">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-0">
+    <section id="results" ref={ref} className="py-28 md:py-36 relative overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full"
+          style={{ background: "radial-gradient(ellipse, hsl(192 95% 56% / 0.12), transparent 60%)" }}
+        />
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card type-label text-accent font-mono mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            By the Numbers
+          </span>
+          <h2 className="font-display font-extrabold tracking-tight text-foreground"
+            style={{ fontSize: "clamp(1.75rem, 3.5vw, 3rem)", lineHeight: 1.1 }}
+          >
+            Real results. <span className="text-gradient">Real impact.</span>
+          </h2>
+        </motion.div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 24 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center lg:px-8 relative"
+              className="text-center glass-card p-8 hover-lift"
             >
-              <div>
-                <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={isInView} />
-                <p className="text-sm font-display font-semibold text-foreground/80 mt-3">{stat.label}</p>
-                <p className="text-xs text-muted-foreground font-mono mt-1">{stat.sub}</p>
-              </div>
-              {i < stats.length - 1 && (
-                <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-px h-20 bg-border" />
-              )}
+              <AnimatedNumber value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={isInView} />
+              <p className="text-sm font-display font-semibold text-foreground mt-4">{stat.label}</p>
+              <p className="text-xs text-muted-foreground font-mono mt-1.5">{stat.sub}</p>
             </motion.div>
           ))}
         </div>
