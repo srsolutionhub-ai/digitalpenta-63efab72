@@ -120,17 +120,21 @@ export default function Navbar() {
           hidden && !mobileOpen ? "-translate-y-full" : "translate-y-0"
         } ${
           scrolled
-            ? "bg-background/70 backdrop-blur-3xl shadow-2xl shadow-background/40 border-b border-border/10"
+            ? "bg-background/60 backdrop-blur-3xl shadow-2xl shadow-primary/10 border-b border-white/[0.06]"
             : "bg-transparent"
         }`}
       >
         <div className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`}>
-          <div className="h-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="h-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
         </div>
 
         <div className="container mx-auto flex items-center justify-between h-16 md:h-20 px-4">
-          <Link to="/" className="flex items-center gap-2 group">
-            <img src={logo} alt="Digital Penta logo" width={36} height={36} decoding="async" className="w-9 h-9 object-contain" />
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md"
+                style={{ background: "radial-gradient(circle, hsl(256 90% 62% / 0.7), transparent 70%)" }} />
+              <img src={logo} alt="Digital Penta logo" width={36} height={36} decoding="async" className="relative w-9 h-9 object-contain" />
+            </div>
             <span className="font-display font-bold text-lg tracking-tight text-foreground">
               Digital<span className="text-gradient">Penta</span>
             </span>
