@@ -229,7 +229,7 @@ async function runOnPageChecks(url: string) {
   ]);
 
   // Security headers
-  const h = fetched.headers;
+  const h = (fetched.headers ?? {}) as Record<string, string>;
   const securityHeaders = {
     https: u.protocol === "https:",
     hsts: !!h["strict-transport-security"],
