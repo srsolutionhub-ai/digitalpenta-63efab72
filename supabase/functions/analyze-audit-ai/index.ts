@@ -50,7 +50,7 @@ const RECOMMENDATION_TOOL = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    const { audit_id, url, scores, opportunities } = await req.json();
+    const { audit_id, url, scores, opportunities, on_page } = await req.json();
     if (!audit_id || !url) {
       return new Response(JSON.stringify({ error: "audit_id and url required" }), {
         status: 400,
@@ -58,7 +58,11 @@ serve(async (req) => {
       });
     }
 
-    const systemPrompt = `You are a senior SEO and Web Performance consultant at Digital Penta, a top-tier digital marketing agency. You produce actionable, prioritized recommendations for clients. Be concrete, technical, and reference industry best practices. Avoid generic advice.`;
+    const systemPrompt = `You are a senior SEO and Web Performance consultant at Digital Penta, a top-tier digital marketing agency. You produce actionable, prioritized recommendations for clients. Be concrete, technical, and reference industry best practices. Avoid generic advice. When on-page issues are present (missing meta description, multiple H1s, missing alt text, no robots/sitemap, missing security headers), surface them as concrete fixes.`;
+
+    const onPageSummary = on_page
+      ? `\nOn-page audit:\n- Title: ${on_page?.meta?.title ?? "missing"} (${on_page?.meta?.title_length ?? 0} chars)\n- Meta description: ${on_page?.meta?.meta_description ? `${on_page.meta.meta_description_length} chars` : "MISSING"}\n- Canonical: ${on_page?.meta?.canonical ?? "missing"}\n- Viewport: ${on_page?.meta?.viewport ?? "missing"}\n- Lang attr: ${on_page?.meta?.lang ?? "missing"}\n- H1 count: ${on_page?.headings?.h1_count ?? 0}\n- Images without alt: ${on_page?.content?.images_without_alt ?? 0}/${on_page?.content?.images_total ?? 0}\n- Word count: ${on_page?.content?.word_count ?? 0}\n- Internal links: ${on_page?.content?.internal_links ?? 0}, external: ${on_page?.content?.external_links ?? 0}\n- Structured data blocks: ${on_page?.content?.structured_data_blocks ?? 0}\n- robots.txt: ${on_page?.technical?.robots_txt ? "present" : "MISSING"}\n- sitemap.xml: ${on_page?.technical?.sitemap_xml ? "present" : "MISSING"}\n- HTTPS: ${on_page?.technical?.https}\n- HSTS: ${on_page?.technical?.hsts}, X-Frame-Options: ${on_page?.technical?.x_frame_options}, CSP: ${on_page?.technical?.content_security_policy}\n- OG tags: title=${!!on_page?.social?.og_title}, image=${!!on_page?.social?.og_image}\n`
+      : "";
 
     const userPrompt = `Website: ${url}
 
@@ -67,7 +71,8 @@ Lighthouse scores (0-100):
 - SEO: ${scores?.seo ?? "n/a"}
 - Accessibility: ${scores?.accessibility ?? "n/a"}
 - Best Practices: ${scores?.best_practices ?? "n/a"}
-
+- LCP: ${scores?.lcp_ms ?? "n/a"}ms, CLS: ${scores?.cls ?? "n/a"}, TBT: ${scores?.tbt_ms ?? "n/a"}ms, INP: ${scores?.inp_ms ?? "n/a"}ms
+${onPageSummary}
 Failing audits / opportunities (top issues):
 ${(opportunities ?? [])
   .map((o: any) => `- [${Math.round((o.score ?? 0) * 100)}] ${o.title}${o.displayValue ? ` (${o.displayValue})` : ""}`)

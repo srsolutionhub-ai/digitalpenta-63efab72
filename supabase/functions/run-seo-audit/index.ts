@@ -11,7 +11,9 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const PAGESPEED_API_KEY = Deno.env.get("PAGESPEED_API_KEY") ?? "";
 
-// Simple in-memory rate limit (per cold start)
+// ─────────────────────────────────────────────
+// Rate limiting (per cold start, per IP)
+// ─────────────────────────────────────────────
 const buckets = new Map<string, { count: number; reset: number }>();
 function rateLimit(ip: string, max = 5, windowMs = 60_000): boolean {
   const now = Date.now();
@@ -27,7 +29,7 @@ function rateLimit(ip: string, max = 5, windowMs = 60_000): boolean {
 
 function normalizeUrl(input: string): string | null {
   try {
-    const u = new URL(input.startsWith("http") ? input : `https://${input}`);
+    const u = new URL(input.trim().startsWith("http") ? input.trim() : `https://${input.trim()}`);
     if (!["http:", "https:"].includes(u.protocol)) return null;
     return u.toString();
   } catch {
@@ -35,23 +37,44 @@ function normalizeUrl(input: string): string | null {
   }
 }
 
-async function runLighthouse(url: string, strategy: "mobile" | "desktop") {
-  const params = new URLSearchParams({
-    url,
-    strategy,
-    category: "performance",
-  });
-  // Add more categories
-  ["seo", "accessibility", "best-practices"].forEach((c) => params.append("category", c));
+// ─────────────────────────────────────────────
+// Google PageSpeed Insights (Lighthouse) with retry
+// ─────────────────────────────────────────────
+async function runLighthouse(
+  url: string,
+  strategy: "mobile" | "desktop",
+  attempt = 1,
+): Promise<any> {
+  const params = new URLSearchParams({ url, strategy });
+  ["performance", "seo", "accessibility", "best-practices"].forEach((c) =>
+    params.append("category", c),
+  );
   if (PAGESPEED_API_KEY) params.set("key", PAGESPEED_API_KEY);
 
   const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params.toString()}`;
-  const r = await fetch(endpoint);
-  if (!r.ok) {
-    const txt = await r.text();
-    throw new Error(`PageSpeed API ${r.status}: ${txt.slice(0, 200)}`);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 75_000);
+  try {
+    const r = await fetch(endpoint, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!r.ok) {
+      const txt = await r.text();
+      // Retry once on 429/5xx
+      if ((r.status === 429 || r.status >= 500) && attempt < 2) {
+        await new Promise((res) => setTimeout(res, 2000));
+        return runLighthouse(url, strategy, attempt + 1);
+      }
+      throw new Error(`PageSpeed API ${r.status}: ${txt.slice(0, 200)}`);
+    }
+    return await r.json();
+  } catch (e) {
+    clearTimeout(timeout);
+    if (attempt < 2) {
+      await new Promise((res) => setTimeout(res, 1500));
+      return runLighthouse(url, strategy, attempt + 1);
+    }
+    throw e;
   }
-  return r.json();
 }
 
 function pickScores(json: any) {
@@ -65,12 +88,217 @@ function pickScores(json: any) {
     best_practices: pct(cats["best-practices"]?.score),
     fcp_ms: Math.round(audits["first-contentful-paint"]?.numericValue ?? 0),
     lcp_ms: Math.round(audits["largest-contentful-paint"]?.numericValue ?? 0),
-    cls: audits["cumulative-layout-shift"]?.numericValue ?? 0,
+    cls: Number(audits["cumulative-layout-shift"]?.numericValue ?? 0),
     tbt_ms: Math.round(audits["total-blocking-time"]?.numericValue ?? 0),
     speed_index: Math.round(audits["speed-index"]?.numericValue ?? 0),
+    inp_ms: Math.round(audits["interaction-to-next-paint"]?.numericValue ?? 0),
+    ttfb_ms: Math.round(audits["server-response-time"]?.numericValue ?? 0),
   };
 }
 
+// ─────────────────────────────────────────────
+// On-page SEO checks (direct fetch + parse)
+// ─────────────────────────────────────────────
+async function fetchHtml(url: string) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15_000);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (compatible; DigitalPentaAuditBot/1.0; +https://digitalpenta.com/audit)",
+        Accept: "text/html,application/xhtml+xml",
+      },
+    });
+    clearTimeout(timeout);
+    const html = await res.text();
+    return {
+      ok: res.ok,
+      status: res.status,
+      finalUrl: res.url,
+      headers: Object.fromEntries(res.headers.entries()),
+      html: html.slice(0, 500_000), // cap 500KB
+      size_kb: Math.round(html.length / 1024),
+    };
+  } catch (e) {
+    clearTimeout(timeout);
+    return { ok: false, status: 0, finalUrl: url, headers: {}, html: "", size_kb: 0, error: String(e) };
+  }
+}
+
+function getMatch(html: string, regex: RegExp): string | null {
+  const m = html.match(regex);
+  return m ? m[1].trim() : null;
+}
+function getAll(html: string, regex: RegExp): string[] {
+  const out: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = regex.exec(html)) !== null) out.push(m[1].trim());
+  return out;
+}
+
+async function urlExists(url: string): Promise<boolean> {
+  try {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), 8_000);
+    const r = await fetch(url, { signal: c.signal, method: "GET", redirect: "follow" });
+    clearTimeout(t);
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function runOnPageChecks(url: string) {
+  const fetched = await fetchHtml(url);
+  if (!fetched.ok || !fetched.html) {
+    return {
+      reachable: false,
+      status_code: fetched.status,
+      error: (fetched as any).error ?? `HTTP ${fetched.status}`,
+    };
+  }
+
+  const html = fetched.html;
+  const u = new URL(url);
+  const origin = `${u.protocol}//${u.host}`;
+
+  // Title
+  const title = getMatch(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
+  // Meta description
+  const metaDesc = getMatch(
+    html,
+    /<meta[^>]+name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i,
+  ) ?? getMatch(
+    html,
+    /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i,
+  );
+  // Canonical
+  const canonical = getMatch(html, /<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i);
+  // Viewport
+  const viewport = getMatch(html, /<meta[^>]+name=["']viewport["'][^>]+content=["']([^"']+)["']/i);
+  // Charset
+  const charset = getMatch(html, /<meta[^>]+charset=["']?([^"'\s>]+)["']?/i);
+  // Lang
+  const lang = getMatch(html, /<html[^>]+lang=["']([^"']+)["']/i);
+  // OG tags
+  const ogTitle = getMatch(html, /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i);
+  const ogDesc = getMatch(html, /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']*)["']/i);
+  const ogImage = getMatch(html, /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']*)["']/i);
+  const twitterCard = getMatch(html, /<meta[^>]+name=["']twitter:card["'][^>]+content=["']([^"']*)["']/i);
+  // Favicon
+  const favicon = getMatch(html, /<link[^>]+rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']+)["']/i);
+  // H1 / H2
+  const h1s = getAll(html, /<h1[^>]*>([\s\S]*?)<\/h1>/gi).map((s) => s.replace(/<[^>]+>/g, "").trim()).filter(Boolean);
+  const h2s = getAll(html, /<h2[^>]*>([\s\S]*?)<\/h2>/gi).map((s) => s.replace(/<[^>]+>/g, "").trim()).filter(Boolean);
+  // Images / alts
+  const imgTags = html.match(/<img[^>]+>/gi) ?? [];
+  const imagesWithoutAlt = imgTags.filter((t) => !/\salt\s*=/i.test(t)).length;
+  // Links
+  const linkTags = html.match(/<a\s[^>]*href=["']([^"']+)["'][^>]*>/gi) ?? [];
+  let internalLinks = 0;
+  let externalLinks = 0;
+  let nofollowLinks = 0;
+  linkTags.forEach((tag) => {
+    const href = (tag.match(/href=["']([^"']+)["']/i) ?? [, ""])[1];
+    if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+    try {
+      const linkUrl = new URL(href, origin);
+      if (linkUrl.host === u.host) internalLinks++;
+      else externalLinks++;
+    } catch { /* ignore */ }
+    if (/rel=["'][^"']*nofollow/i.test(tag)) nofollowLinks++;
+  });
+  // Structured data
+  const jsonLd = getAll(html, /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
+  const wordCount = html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean).length;
+
+  // Robots & sitemap
+  const [robotsExists, sitemapExists] = await Promise.all([
+    urlExists(`${origin}/robots.txt`),
+    urlExists(`${origin}/sitemap.xml`),
+  ]);
+
+  // Security headers
+  const h = (fetched.headers ?? {}) as Record<string, string>;
+  const securityHeaders = {
+    https: u.protocol === "https:",
+    hsts: !!h["strict-transport-security"],
+    x_frame_options: !!h["x-frame-options"],
+    x_content_type_options: !!h["x-content-type-options"],
+    content_security_policy: !!h["content-security-policy"],
+    referrer_policy: !!h["referrer-policy"],
+    permissions_policy: !!h["permissions-policy"],
+  };
+
+  return {
+    reachable: true,
+    status_code: fetched.status,
+    final_url: fetched.finalUrl,
+    page_size_kb: fetched.size_kb,
+    meta: {
+      title,
+      title_length: title?.length ?? 0,
+      meta_description: metaDesc,
+      meta_description_length: metaDesc?.length ?? 0,
+      canonical,
+      viewport,
+      charset,
+      lang,
+      favicon: !!favicon,
+    },
+    social: {
+      og_title: ogTitle,
+      og_description: ogDesc,
+      og_image: ogImage,
+      twitter_card: twitterCard,
+    },
+    headings: {
+      h1_count: h1s.length,
+      h1_samples: h1s.slice(0, 3),
+      h2_count: h2s.length,
+    },
+    content: {
+      word_count: wordCount,
+      images_total: imgTags.length,
+      images_without_alt: imagesWithoutAlt,
+      internal_links: internalLinks,
+      external_links: externalLinks,
+      nofollow_links: nofollowLinks,
+      structured_data_blocks: jsonLd.length,
+    },
+    technical: {
+      robots_txt: robotsExists,
+      sitemap_xml: sitemapExists,
+      ...securityHeaders,
+    },
+  };
+}
+
+// ─────────────────────────────────────────────
+// Lead score helper (mirrors DB calculate_lead_score logic, simplified)
+// ─────────────────────────────────────────────
+function quickLeadScore(payload: { email: string; company?: string; phone?: string; overall?: number }): number {
+  let score = 25; // baseline for using audit tool
+  if (payload.email && !/@(gmail|yahoo|hotmail|outlook)\./i.test(payload.email)) score += 20;
+  if (payload.company && payload.company.length > 1) score += 15;
+  if (payload.phone && payload.phone.length >= 8) score += 10;
+  if (typeof payload.overall === "number" && payload.overall < 60) score += 20; // worse score = hotter lead
+  return Math.min(score, 100);
+}
+
+// ─────────────────────────────────────────────
+// Main handler
+// ─────────────────────────────────────────────
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -85,18 +313,19 @@ serve(async (req) => {
       });
     }
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const url = normalizeUrl(String(body?.url ?? ""));
     if (!url) {
-      return new Response(JSON.stringify({ error: "Invalid URL" }), {
+      return new Response(JSON.stringify({ error: "Please enter a valid URL." }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
+    const lead = body?.lead ?? null;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Create audit row
+    // ── Create audit row ──────────────────────
     const { data: audit, error: auditErr } = await supabase
       .from("audits")
       .insert({
@@ -104,66 +333,54 @@ serve(async (req) => {
         status: "running",
         ip_address: ip === "unknown" ? null : ip,
         user_agent: req.headers.get("user-agent"),
+        visitor_name: lead?.name ?? null,
+        visitor_email: lead?.email ?? null,
+        visitor_phone: lead?.phone ?? null,
+        visitor_company: lead?.company ?? null,
+        visitor_website: url,
       })
       .select()
       .single();
     if (auditErr) throw auditErr;
 
-    // Fetch mobile + desktop in parallel
-    const [mobileJson, desktopJson] = await Promise.all([
+    // ── Run Lighthouse + on-page in parallel ──
+    const [mobileJson, desktopJson, onPage] = await Promise.all([
       runLighthouse(url, "mobile").catch((e) => ({ __error: String(e) })),
       runLighthouse(url, "desktop").catch((e) => ({ __error: String(e) })),
+      runOnPageChecks(url).catch((e) => ({ reachable: false, error: String(e) })),
     ]);
 
     const mobile = (mobileJson as any).__error ? null : pickScores(mobileJson);
     const desktop = (desktopJson as any).__error ? null : pickScores(desktopJson);
 
     if (!mobile && !desktop) {
-      await supabase.from("audits").update({ status: "failed" }).eq("id", audit.id);
+      await supabase.from("audits").update({ status: "failed", on_page_checks: onPage }).eq("id", audit.id);
       return new Response(
-        JSON.stringify({ error: "Lighthouse fetch failed for both devices", details: mobileJson }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          error:
+            "We could not reach Google Lighthouse for this site. The URL may be blocking bots or unreachable. Please verify it loads in a browser and try again.",
+          on_page: onPage,
+        }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
     // Persist runs
-    const runs = [];
-    if (mobile)
-      runs.push({
-        audit_id: audit.id,
-        device: "mobile",
-        performance_score: mobile.performance,
-        seo_score: mobile.seo,
-        accessibility_score: mobile.accessibility,
-        best_practices_score: mobile.best_practices,
-        fcp_ms: mobile.fcp_ms,
-        lcp_ms: mobile.lcp_ms,
-        cls: mobile.cls,
-        tbt_ms: mobile.tbt_ms,
-        speed_index: mobile.speed_index,
-      });
-    if (desktop)
-      runs.push({
-        audit_id: audit.id,
-        device: "desktop",
-        performance_score: desktop.performance,
-        seo_score: desktop.seo,
-        accessibility_score: desktop.accessibility,
-        best_practices_score: desktop.best_practices,
-        fcp_ms: desktop.fcp_ms,
-        lcp_ms: desktop.lcp_ms,
-        cls: desktop.cls,
-        tbt_ms: desktop.tbt_ms,
-        speed_index: desktop.speed_index,
-      });
+    const runs: any[] = [];
+    if (mobile) runs.push({ audit_id: audit.id, device: "mobile", ...mobile });
+    if (desktop) runs.push({ audit_id: audit.id, device: "desktop", ...desktop });
     if (runs.length) await supabase.from("audit_lighthouse_runs").insert(runs);
 
     const primary = mobile ?? desktop!;
     const overall = Math.round(
-      ((primary.performance ?? 0) + (primary.seo ?? 0) + (primary.accessibility ?? 0) + (primary.best_practices ?? 0)) / 4
+      ((primary.performance ?? 0) +
+        (primary.seo ?? 0) +
+        (primary.accessibility ?? 0) +
+        (primary.best_practices ?? 0)) /
+        4,
     );
 
-    // Pull a compact set of failing/opportunity audits for AI input
+    // Opportunities for AI
     const lhAudits = (mobileJson as any)?.lighthouseResult?.audits ?? {};
     const opportunities = Object.entries(lhAudits)
       .filter(([, a]: any) => a?.score !== null && a?.score < 0.9 && a?.title)
@@ -176,6 +393,56 @@ serve(async (req) => {
         displayValue: a.displayValue,
       }));
 
+    // ── Save lead in CRM if user provided details ─
+    let leadId: string | null = null;
+    if (lead?.email && lead?.name) {
+      try {
+        const score = quickLeadScore({
+          email: lead.email,
+          company: lead.company,
+          phone: lead.phone,
+          overall,
+        });
+        const { data: leadRow } = await supabase
+          .from("leads")
+          .insert({
+            name: lead.name,
+            email: lead.email,
+            phone: lead.phone ?? null,
+            company: lead.company ?? null,
+            website: url,
+            service: "SEO Audit",
+            source: "seo_audit_tool",
+            lead_score: score,
+            status: "new",
+            notes: `Ran free SEO audit. Overall: ${overall}/100. Performance: ${primary.performance}, SEO: ${primary.seo}.`,
+            utm_source: lead.utm_source ?? null,
+            utm_medium: lead.utm_medium ?? null,
+            utm_campaign: lead.utm_campaign ?? null,
+            meta_data: {
+              audit_id: audit.id,
+              audit_url: url,
+              overall,
+              scores: primary,
+              on_page_summary: {
+                title: (onPage as any)?.meta?.title ?? null,
+                h1_count: (onPage as any)?.headings?.h1_count ?? 0,
+                images_without_alt: (onPage as any)?.content?.images_without_alt ?? 0,
+                robots_txt: (onPage as any)?.technical?.robots_txt ?? false,
+                sitemap_xml: (onPage as any)?.technical?.sitemap_xml ?? false,
+                https: (onPage as any)?.technical?.https ?? false,
+              },
+            },
+          })
+          .select("id")
+          .single();
+        leadId = leadRow?.id ?? null;
+      } catch (e) {
+        console.error("lead insert error", e);
+      }
+    }
+
+    // ── Update audit ──────────────────────────
     await supabase
       .from("audits")
       .update({
@@ -185,6 +452,8 @@ serve(async (req) => {
         seo_score: primary.seo,
         accessibility_score: primary.accessibility,
         best_practices_score: primary.best_practices,
+        on_page_checks: onPage,
+        lead_id: leadId,
       })
       .eq("id", audit.id);
 
@@ -196,12 +465,15 @@ serve(async (req) => {
         mobile,
         desktop,
         opportunities,
+        on_page: onPage,
+        lead_id: leadId,
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
     console.error("run-seo-audit error", e);
-    return new Response(JSON.stringify({ error: String(e instanceof Error ? e.message : e) }), {
+    const message = e instanceof Error ? e.message : String(e);
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
