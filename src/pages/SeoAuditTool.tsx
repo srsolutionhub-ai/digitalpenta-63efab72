@@ -115,7 +115,6 @@ export default function SeoAuditTool() {
       trackEvent("audit_started", {
         category: "seo_tool",
         label: url,
-        custom_properties: { has_lead: true },
       });
 
       const { data, error } = await supabase.functions.invoke("run-seo-audit", {
