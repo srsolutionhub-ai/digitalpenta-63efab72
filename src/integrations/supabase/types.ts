@@ -273,6 +273,8 @@ export type Database = {
           created_at: string | null
           id: string
           ip_address: unknown
+          lead_id: string | null
+          on_page_checks: Json | null
           overall_score: number | null
           pdf_url: string | null
           performance_score: number | null
@@ -283,8 +285,11 @@ export type Database = {
           updated_at: string | null
           url: string
           user_agent: string | null
+          visitor_company: string | null
           visitor_email: string | null
           visitor_name: string | null
+          visitor_phone: string | null
+          visitor_website: string | null
         }
         Insert: {
           accessibility_score?: number | null
@@ -294,6 +299,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: unknown
+          lead_id?: string | null
+          on_page_checks?: Json | null
           overall_score?: number | null
           pdf_url?: string | null
           performance_score?: number | null
@@ -304,8 +311,11 @@ export type Database = {
           updated_at?: string | null
           url: string
           user_agent?: string | null
+          visitor_company?: string | null
           visitor_email?: string | null
           visitor_name?: string | null
+          visitor_phone?: string | null
+          visitor_website?: string | null
         }
         Update: {
           accessibility_score?: number | null
@@ -315,6 +325,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: unknown
+          lead_id?: string | null
+          on_page_checks?: Json | null
           overall_score?: number | null
           pdf_url?: string | null
           performance_score?: number | null
@@ -325,8 +337,11 @@ export type Database = {
           updated_at?: string | null
           url?: string
           user_agent?: string | null
+          visitor_company?: string | null
           visitor_email?: string | null
           visitor_name?: string | null
+          visitor_phone?: string | null
+          visitor_website?: string | null
         }
         Relationships: []
       }
@@ -1112,6 +1127,7 @@ export type Database = {
           estimated_value: number | null
           id: string
           lead_score: number
+          meta_data: Json | null
           name: string | null
           notes: string | null
           phone: string | null
@@ -1137,6 +1153,7 @@ export type Database = {
           estimated_value?: number | null
           id?: string
           lead_score?: number
+          meta_data?: Json | null
           name?: string | null
           notes?: string | null
           phone?: string | null
@@ -1162,6 +1179,7 @@ export type Database = {
           estimated_value?: number | null
           id?: string
           lead_score?: number
+          meta_data?: Json | null
           name?: string | null
           notes?: string | null
           phone?: string | null
