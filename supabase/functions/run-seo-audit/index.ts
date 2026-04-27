@@ -380,6 +380,15 @@ serve(async (req) => {
         4,
     );
 
+    // ── Verification: cross-check Lighthouse + crawl + on-page before badging ──
+    const verification = buildVerification({
+      mobile,
+      desktop,
+      onPage: onPage as any,
+      mobileRaw: mobileJson,
+      desktopRaw: desktopJson,
+    });
+
     // Opportunities for AI
     const lhAudits = (mobileJson as any)?.lighthouseResult?.audits ?? {};
     const opportunities = Object.entries(lhAudits)
