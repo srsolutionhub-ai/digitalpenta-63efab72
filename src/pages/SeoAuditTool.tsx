@@ -23,9 +23,11 @@ import { AuditIssueCard, type AuditRecommendation } from "@/components/audit/Aud
 import { AuditLeadForm, type AuditLeadData } from "@/components/audit/AuditLeadForm";
 import { OnPageChecks } from "@/components/audit/OnPageChecks";
 import { CoreWebVitals } from "@/components/audit/CoreWebVitals";
+import { VerificationBadges, type VerificationData } from "@/components/audit/VerificationBadges";
 import { EmailGate } from "@/components/audit/EmailGate";
 import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 interface AuditResult {
   audit_id: string;
