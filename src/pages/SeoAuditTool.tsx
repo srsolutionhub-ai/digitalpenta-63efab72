@@ -198,6 +198,8 @@ export default function SeoAuditTool() {
     setResult(null);
     setRecs([]);
     setPdfUrl(null);
+    setErrorMsg(null);
+    setRetryCount(0);
   };
 
   const primary = result?.mobile ?? result?.desktop ?? {};
