@@ -38,6 +38,73 @@ function normalizeUrl(input: string): string | null {
 }
 
 // ─────────────────────────────────────────────
+// Server-side lead validation
+// Returns field-level errors so the form can render them inline.
+// ─────────────────────────────────────────────
+const PHONE_RE = /^[+]?[\d\s\-().]{8,20}$/;
+const COMPANY_RE = /^[a-zA-Z0-9 .,&'\-]{2,100}$/;
+const DISPOSABLE_DOMAINS = /@(mailinator|guerrillamail|10minutemail|tempmail|trashmail|yopmail)\./i;
+
+interface LeadInput {
+  name?: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  consent?: boolean;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}
+
+function validateLead(lead: LeadInput | null): { ok: true; lead: LeadInput } | { ok: false; field_errors: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (!lead || typeof lead !== "object") {
+    return { ok: false, field_errors: { _form: "Missing lead details." } };
+  }
+
+  const name = String(lead.name ?? "").trim();
+  if (name.length < 2) errors.name = "Please enter your full name.";
+  if (name.length > 100) errors.name = "Name is too long.";
+
+  const email = String(lead.email ?? "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    errors.email = "Enter a valid email address.";
+  } else if (DISPOSABLE_DOMAINS.test(email)) {
+    errors.email = "Please use a real work email — disposable inboxes aren't accepted.";
+  } else if (email.length > 255) {
+    errors.email = "Email is too long.";
+  }
+
+  const phone = String(lead.phone ?? "").trim();
+  if (!phone) errors.phone = "Phone number is required so we can share your report.";
+  else if (!PHONE_RE.test(phone)) errors.phone = "Use 8–20 digits, optional +, spaces or dashes.";
+
+  const company = String(lead.company ?? "").trim();
+  if (company && !COMPANY_RE.test(company)) {
+    errors.company = "Use letters, numbers and . , & ' - (2–100 chars).";
+  }
+
+  if (lead.consent !== true) {
+    errors.consent = "Please accept the privacy notice to continue.";
+  }
+
+  if (Object.keys(errors).length > 0) return { ok: false, field_errors: errors };
+  return {
+    ok: true,
+    lead: {
+      name,
+      email,
+      phone,
+      company: company || undefined,
+      consent: true,
+      utm_source: lead.utm_source,
+      utm_medium: lead.utm_medium,
+      utm_campaign: lead.utm_campaign,
+    },
+  };
+}
+
+// ─────────────────────────────────────────────
 // Google PageSpeed Insights (Lighthouse) with retry
 // ─────────────────────────────────────────────
 async function runLighthouse(
