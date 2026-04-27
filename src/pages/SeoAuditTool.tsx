@@ -531,12 +531,15 @@ export default function SeoAuditTool() {
                       <RefreshCw className="mr-2 h-4 w-4" />
                       Retry audit{retryCount > 0 ? ` · attempt ${retryCount + 1}` : ""}
                     </Button>
-                    <Button variant="outline" size="lg" className="h-11" onClick={reset}>
+                    <Button variant="outline" size="lg" className="h-11" onClick={goEditLead}>
+                      Edit details
+                    </Button>
+                    <Button variant="ghost" size="lg" className="h-11" onClick={reset}>
                       Try a different URL
                     </Button>
                   </div>
                   <p className="mt-4 text-[11px] text-muted-foreground">
-                    Your details are saved — we won't ask for them again on retry.
+                    Your URL and details are preserved — we won't ask for them again on retry.
                   </p>
                 </div>
               </motion.div>
