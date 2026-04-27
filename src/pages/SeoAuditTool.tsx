@@ -432,7 +432,52 @@ export default function SeoAuditTool() {
               </motion.div>
             )}
 
-            {/* ─── STEP 4: RESULTS ─── */}
+            {/* ─── ERROR STATE ─── */}
+            {step === "error" && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mx-auto mt-12 max-w-xl"
+              >
+                <div className="overflow-hidden rounded-3xl border border-rose-500/30 bg-gradient-to-br from-rose-500/10 via-card to-card p-8 text-center backdrop-blur-xl">
+                  <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full border border-rose-500/40 bg-rose-500/15">
+                    <AlertTriangle className="h-7 w-7 text-rose-400" />
+                  </div>
+                  <h3 className="mt-4 font-display text-xl font-bold text-foreground">
+                    We couldn't complete the audit
+                  </h3>
+                  <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                    {errorMsg ??
+                      "The site may be temporarily unreachable or blocking automated checks. This sometimes happens with strict firewalls or sites behind Cloudflare bot protection."}
+                  </p>
+                  {retryCount >= 2 && (
+                    <p className="mx-auto mt-3 max-w-md text-[12px] text-amber-300">
+                      Still failing? Try a different page on the site (e.g. the homepage) or contact us
+                      and we'll run the audit manually.
+                    </p>
+                  )}
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <Button
+                      onClick={handleRetry}
+                      size="lg"
+                      className="h-11"
+                      disabled={!pendingLead}
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Retry audit{retryCount > 0 ? ` · attempt ${retryCount + 1}` : ""}
+                    </Button>
+                    <Button variant="outline" size="lg" className="h-11" onClick={reset}>
+                      Try a different URL
+                    </Button>
+                  </div>
+                  <p className="mt-4 text-[11px] text-muted-foreground">
+                    Your details are saved — we won't ask for them again on retry.
+                  </p>
+                </div>
+              </motion.div>
+            )}
             {step === "result" && result && (
               <motion.div
                 key="result"
