@@ -115,6 +115,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack, serverErrors, in
       email: email.trim(),
       phone: phone.trim(),
       company: company.trim() || undefined,
+      consent: true,
     });
   };
 
