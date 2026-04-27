@@ -41,6 +41,7 @@ export interface AuditLeadData {
   email: string;
   phone: string;
   company?: string;
+  consent: boolean;
 }
 
 interface Props {
