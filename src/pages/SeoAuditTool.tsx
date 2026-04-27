@@ -72,6 +72,8 @@ function normalizeUrl(input: string): string | null {
   }
 }
 
+type FieldErrors = Partial<Record<"name" | "email" | "phone" | "company" | "consent", string>>;
+
 export default function SeoAuditTool() {
   const [step, setStep] = useState<Step>("url");
   const [url, setUrl] = useState("");
@@ -82,8 +84,11 @@ export default function SeoAuditTool() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+  const [pdfRetrying, setPdfRetrying] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [leadServerErrors, setLeadServerErrors] = useState<FieldErrors | null>(null);
 
   // Animated progress ticker while running
   useEffect(() => {
@@ -110,6 +115,7 @@ export default function SeoAuditTool() {
 
   // ── Step 2: Lead submit → run audit ──
   const handleLeadSubmit = async (lead: AuditLeadData) => {
+    setLeadServerErrors(null);
     setPendingLead(lead);
     await runAudit(lead);
   };
@@ -118,6 +124,7 @@ export default function SeoAuditTool() {
     setStep("running");
     setRecs([]);
     setPdfUrl(null);
+    setPdfError(null);
     setResult(null);
     setErrorMsg(null);
 
@@ -130,6 +137,14 @@ export default function SeoAuditTool() {
       const { data, error } = await supabase.functions.invoke("run-seo-audit", {
         body: { url, lead: { ...lead, ...getUtm() } },
       });
+
+      // Field-level validation errors → bounce back to lead step with messages
+      if (data?.field_errors) {
+        setLeadServerErrors(data.field_errors as FieldErrors);
+        setStep("lead");
+        toast.error(data.error || "Please correct the highlighted fields.");
+        return;
+      }
       if (error || !data || data.error) {
         throw new Error(data?.error || error?.message || "Audit failed");
       }
@@ -171,23 +186,42 @@ export default function SeoAuditTool() {
     else setStep("lead");
   };
 
-  // ── PDF download ──
-  const handlePdfDownload = async ({ name, email }: { name: string; email: string }) => {
+  // From the persistent banner: jump back to the lead form pre-filled,
+  // so user can adjust details before re-running.
+  const goEditLead = () => {
+    setErrorMsg(null);
+    setStep("lead");
+  };
+
+  // ── PDF download (with retry + auto re-download) ──
+  const handlePdfDownload = async (
+    args: { name: string; email: string },
+    opts: { isRetry?: boolean } = {},
+  ) => {
     if (!result) return;
-    setPdfLoading(true);
+    setPdfError(null);
+    if (opts.isRetry) setPdfRetrying(true);
+    else setPdfLoading(true);
     try {
-      trackEvent("audit_pdf_requested", { category: "seo_tool", label: email });
+      trackEvent(opts.isRetry ? "audit_pdf_retry" : "audit_pdf_requested", {
+        category: "seo_tool",
+        label: args.email,
+      });
       const { data, error } = await supabase.functions.invoke("generate-audit-pdf", {
-        body: { audit_id: result.audit_id, name, email },
+        body: { audit_id: result.audit_id, name: args.name, email: args.email },
       });
       if (error || data?.error) throw new Error(data?.error || error?.message || "PDF failed");
       setPdfUrl(data.pdf_url);
-      toast.success("Report ready!");
+      toast.success(opts.isRetry ? "Report regenerated — opening now." : "Report ready!");
+      // Auto-(re)download
       window.open(data.pdf_url, "_blank");
     } catch (err: any) {
-      toast.error(err.message || "Could not generate PDF.");
+      const msg = err?.message || "Could not generate PDF.";
+      setPdfError(msg);
+      toast.error(msg);
     } finally {
       setPdfLoading(false);
+      setPdfRetrying(false);
     }
   };
 
@@ -198,8 +232,10 @@ export default function SeoAuditTool() {
     setResult(null);
     setRecs([]);
     setPdfUrl(null);
+    setPdfError(null);
     setErrorMsg(null);
     setRetryCount(0);
+    setLeadServerErrors(null);
   };
 
   const primary = result?.mobile ?? result?.desktop ?? {};
@@ -350,7 +386,34 @@ export default function SeoAuditTool() {
                 exit={{ opacity: 0, y: -10 }}
                 className="mx-auto mt-10 max-w-2xl"
               >
-                <AuditLeadForm url={url} onSubmit={handleLeadSubmit} onBack={reset} />
+                {errorMsg && (
+                  <div className="mb-4 flex items-start gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-[13px] text-amber-100 shadow-lg shadow-amber-500/10">
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                    <div className="flex-1">
+                      <p className="font-medium text-amber-100">
+                        Last audit attempt failed — your URL and details are preserved.
+                      </p>
+                      <p className="mt-1 text-amber-100/80">{errorMsg}</p>
+                    </div>
+                    {pendingLead && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => runAudit(pendingLead)}
+                        className="shrink-0"
+                      >
+                        <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Retry now
+                      </Button>
+                    )}
+                  </div>
+                )}
+                <AuditLeadForm
+                  url={url}
+                  onSubmit={handleLeadSubmit}
+                  onBack={reset}
+                  serverErrors={leadServerErrors}
+                  initialValues={pendingLead ?? undefined}
+                />
               </motion.div>
             )}
 
@@ -468,12 +531,15 @@ export default function SeoAuditTool() {
                       <RefreshCw className="mr-2 h-4 w-4" />
                       Retry audit{retryCount > 0 ? ` · attempt ${retryCount + 1}` : ""}
                     </Button>
-                    <Button variant="outline" size="lg" className="h-11" onClick={reset}>
+                    <Button variant="outline" size="lg" className="h-11" onClick={goEditLead}>
+                      Edit details
+                    </Button>
+                    <Button variant="ghost" size="lg" className="h-11" onClick={reset}>
                       Try a different URL
                     </Button>
                   </div>
                   <p className="mt-4 text-[11px] text-muted-foreground">
-                    Your details are saved — we won't ask for them again on retry.
+                    Your URL and details are preserved — we won't ask for them again on retry.
                   </p>
                 </div>
               </motion.div>
@@ -573,7 +639,7 @@ export default function SeoAuditTool() {
                 </div>
 
                 {/* PDF download */}
-                {recs.length > 0 && !pdfUrl && pendingLead && (
+                {recs.length > 0 && !pdfUrl && !pdfError && pendingLead && (
                   <EmailGate
                     onSubmit={async () =>
                       handlePdfDownload({ name: pendingLead.name, email: pendingLead.email })
@@ -582,10 +648,54 @@ export default function SeoAuditTool() {
                   />
                 )}
 
+                {pdfError && pendingLead && (
+                  <div className="rounded-3xl border border-rose-500/30 bg-rose-500/10 p-6 text-center">
+                    <div className="mx-auto mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-rose-500/40 bg-rose-500/15">
+                      <AlertTriangle className="h-5 w-5 text-rose-300" />
+                    </div>
+                    <p className="font-display text-base font-semibold text-foreground">
+                      PDF generation failed
+                    </p>
+                    <p className="mx-auto mt-1 max-w-md text-[12.5px] text-muted-foreground">
+                      {pdfError} — your audit data is intact. We'll regenerate the PDF and re-download it automatically once it's ready.
+                    </p>
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handlePdfDownload(
+                            { name: pendingLead.name, email: pendingLead.email },
+                            { isRetry: true },
+                          )
+                        }
+                        disabled={pdfRetrying}
+                      >
+                        {pdfRetrying ? (
+                          <>
+                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                            Regenerating…
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+                            Retry PDF generation
+                          </>
+                        )}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setPdfError(null)}>
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {pdfUrl && (
                   <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
                     <p className="font-display text-lg font-semibold text-foreground">
                       Your PDF is ready
+                    </p>
+                    <p className="mt-1 text-[12px] text-muted-foreground">
+                      It opened in a new tab automatically. Click below if it didn't.
                     </p>
                     <a
                       href={pdfUrl}
@@ -595,6 +705,23 @@ export default function SeoAuditTool() {
                     >
                       Download report <ArrowRight className="h-4 w-4" />
                     </a>
+                    {pendingLead && (
+                      <div className="mt-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handlePdfDownload(
+                              { name: pendingLead.name, email: pendingLead.email },
+                              { isRetry: true },
+                            )
+                          }
+                          disabled={pdfRetrying}
+                          className="text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                        >
+                          {pdfRetrying ? "Regenerating…" : "Regenerate PDF"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>

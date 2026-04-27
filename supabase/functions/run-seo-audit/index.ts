@@ -38,6 +38,73 @@ function normalizeUrl(input: string): string | null {
 }
 
 // ─────────────────────────────────────────────
+// Server-side lead validation
+// Returns field-level errors so the form can render them inline.
+// ─────────────────────────────────────────────
+const PHONE_RE = /^[+]?[\d\s\-().]{8,20}$/;
+const COMPANY_RE = /^[a-zA-Z0-9 .,&'\-]{2,100}$/;
+const DISPOSABLE_DOMAINS = /@(mailinator|guerrillamail|10minutemail|tempmail|trashmail|yopmail)\./i;
+
+interface LeadInput {
+  name?: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  consent?: boolean;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}
+
+function validateLead(lead: LeadInput | null): { ok: true; lead: LeadInput } | { ok: false; field_errors: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (!lead || typeof lead !== "object") {
+    return { ok: false, field_errors: { _form: "Missing lead details." } };
+  }
+
+  const name = String(lead.name ?? "").trim();
+  if (name.length < 2) errors.name = "Please enter your full name.";
+  if (name.length > 100) errors.name = "Name is too long.";
+
+  const email = String(lead.email ?? "").trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    errors.email = "Enter a valid email address.";
+  } else if (DISPOSABLE_DOMAINS.test(email)) {
+    errors.email = "Please use a real work email — disposable inboxes aren't accepted.";
+  } else if (email.length > 255) {
+    errors.email = "Email is too long.";
+  }
+
+  const phone = String(lead.phone ?? "").trim();
+  if (!phone) errors.phone = "Phone number is required so we can share your report.";
+  else if (!PHONE_RE.test(phone)) errors.phone = "Use 8–20 digits, optional +, spaces or dashes.";
+
+  const company = String(lead.company ?? "").trim();
+  if (company && !COMPANY_RE.test(company)) {
+    errors.company = "Use letters, numbers and . , & ' - (2–100 chars).";
+  }
+
+  if (lead.consent !== true) {
+    errors.consent = "Please accept the privacy notice to continue.";
+  }
+
+  if (Object.keys(errors).length > 0) return { ok: false, field_errors: errors };
+  return {
+    ok: true,
+    lead: {
+      name,
+      email,
+      phone,
+      company: company || undefined,
+      consent: true,
+      utm_source: lead.utm_source,
+      utm_medium: lead.utm_medium,
+      utm_campaign: lead.utm_campaign,
+    },
+  };
+}
+
+// ─────────────────────────────────────────────
 // Google PageSpeed Insights (Lighthouse) with retry
 // ─────────────────────────────────────────────
 async function runLighthouse(
@@ -300,13 +367,41 @@ function quickLeadScore(payload: { email: string; company?: string; phone?: stri
 // Verification — cross-check sources before showing pass/fail
 // ─────────────────────────────────────────────
 type Verdict = "pass" | "warn" | "fail" | "unknown";
+interface CheckEvidence {
+  lighthouse?: {
+    audit_id: string;
+    title?: string;
+    description?: string;
+    score?: number | null;
+    display_value?: string | null;
+    numeric_value?: number | null;
+  } | null;
+  crawl?: Record<string, unknown> | null;
+  on_page_snippet?: string | null;
+  thresholds?: string | null;
+  notes?: string | null;
+}
 interface CheckVerdict {
   id: string;
   label: string;
   verdict: Verdict;
   detail?: string;
-  sources: string[]; // which evidence we used
+  sources: string[];
   agreement: "agree" | "partial" | "single" | "conflict";
+  evidence?: CheckEvidence;
+}
+
+function lhEvidence(raw: any, auditId: string): CheckEvidence["lighthouse"] {
+  const a = raw?.lighthouseResult?.audits?.[auditId];
+  if (!a) return null;
+  return {
+    audit_id: auditId,
+    title: a.title,
+    description: a.description,
+    score: a.score ?? null,
+    display_value: a.displayValue ?? null,
+    numeric_value: a.numericValue ?? null,
+  };
 }
 
 function buildVerification(input: {
@@ -326,7 +421,7 @@ function buildVerification(input: {
 
   const agreement = (sources: number) => (sources >= 2 ? "agree" : sources === 1 ? "single" : "conflict");
 
-  // HTTPS — confirm via crawl URL + Lighthouse audit if present
+  // HTTPS
   const crawlHttps = onPage?.technical?.https === true;
   const lhHttps = input.mobileRaw?.lighthouseResult?.audits?.["is-on-https"]?.score;
   const httpsSources: string[] = [];
@@ -344,6 +439,11 @@ function buildVerification(input: {
     sources: httpsSources,
     agreement: agreement(httpsSources.length),
     detail: crawlHttps ? "Site served over HTTPS" : "Not served over HTTPS",
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "is-on-https"),
+      crawl: { final_url: onPage?.final_url, https: crawlHttps, status_code: onPage?.status_code },
+      thresholds: "Pass when both crawl URL is HTTPS and Lighthouse 'is-on-https' = 1.",
+    },
   });
 
   // Viewport (mobile)
@@ -357,9 +457,21 @@ function buildVerification(input: {
   else if (crawlVp && (lhVp === undefined || lhVp === 1)) vpVerdict = "pass";
   else if (!crawlVp && lhVp === 0) vpVerdict = "fail";
   else vpVerdict = "warn";
-  checks.push({ id: "viewport", label: "Mobile viewport", verdict: vpVerdict, sources: vpSources, agreement: agreement(vpSources.length) });
+  checks.push({
+    id: "viewport",
+    label: "Mobile viewport",
+    verdict: vpVerdict,
+    sources: vpSources,
+    agreement: agreement(vpSources.length),
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "viewport"),
+      crawl: { viewport_meta: onPage?.meta?.viewport ?? null },
+      on_page_snippet: onPage?.meta?.viewport ? `<meta name="viewport" content="${onPage.meta.viewport}">` : null,
+      thresholds: "Pass when a viewport meta exists and Lighthouse 'viewport' audit = 1.",
+    },
+  });
 
-  // Title tag
+  // Title
   const titleLen = onPage?.meta?.title_length ?? 0;
   const lhTitle = input.mobileRaw?.lighthouseResult?.audits?.["document-title"]?.score;
   const titleSources: string[] = [];
@@ -370,7 +482,20 @@ function buildVerification(input: {
   else if (titleLen >= 30 && titleLen <= 65 && lhTitle !== 0) titleVerdict = "pass";
   else if (!titleLen) titleVerdict = "fail";
   else titleVerdict = "warn";
-  checks.push({ id: "title", label: "Title tag", verdict: titleVerdict, sources: titleSources, agreement: agreement(titleSources.length), detail: titleLen ? `${titleLen} chars` : "Missing" });
+  checks.push({
+    id: "title",
+    label: "Title tag",
+    verdict: titleVerdict,
+    sources: titleSources,
+    agreement: agreement(titleSources.length),
+    detail: titleLen ? `${titleLen} chars` : "Missing",
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "document-title"),
+      crawl: { title: onPage?.meta?.title ?? null, title_length: titleLen },
+      on_page_snippet: onPage?.meta?.title ? `<title>${onPage.meta.title}</title>` : null,
+      thresholds: "Pass: 30–65 chars and Lighthouse 'document-title' ≠ 0.",
+    },
+  });
 
   // Meta description
   const descLen = onPage?.meta?.meta_description_length ?? 0;
@@ -383,10 +508,26 @@ function buildVerification(input: {
   else if (descLen >= 70 && descLen <= 160 && lhDesc !== 0) descVerdict = "pass";
   else if (!descLen) descVerdict = "fail";
   else descVerdict = "warn";
-  checks.push({ id: "meta_description", label: "Meta description", verdict: descVerdict, sources: descSources, agreement: agreement(descSources.length), detail: descLen ? `${descLen} chars` : "Missing" });
+  checks.push({
+    id: "meta_description",
+    label: "Meta description",
+    verdict: descVerdict,
+    sources: descSources,
+    agreement: agreement(descSources.length),
+    detail: descLen ? `${descLen} chars` : "Missing",
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "meta-description"),
+      crawl: { meta_description: onPage?.meta?.meta_description ?? null, length: descLen },
+      on_page_snippet: onPage?.meta?.meta_description
+        ? `<meta name="description" content="${onPage.meta.meta_description}">`
+        : null,
+      thresholds: "Pass: 70–160 chars and Lighthouse 'meta-description' ≠ 0.",
+    },
+  });
 
   // H1
   const h1c = onPage?.headings?.h1_count ?? 0;
+  const h1Samples = onPage?.headings?.h1_samples ?? [];
   const h1Sources: string[] = onPage?.reachable ? ["crawl"] : [];
   checks.push({
     id: "h1",
@@ -395,6 +536,11 @@ function buildVerification(input: {
     sources: h1Sources,
     agreement: agreement(h1Sources.length),
     detail: `${h1c} found`,
+    evidence: {
+      crawl: { h1_count: h1c, samples: h1Samples },
+      on_page_snippet: h1Samples.length ? h1Samples.map((h: string) => `<h1>${h}</h1>`).join("\n") : null,
+      thresholds: "Pass: exactly 1 H1. Warn: >1. Fail: none.",
+    },
   });
 
   // Canonical
@@ -409,10 +555,18 @@ function buildVerification(input: {
     verdict: !canonSources.length ? "unknown" : canon && lhCanon !== 0 ? "pass" : canon ? "warn" : "fail",
     sources: canonSources,
     agreement: agreement(canonSources.length),
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "canonical"),
+      crawl: { canonical: onPage?.meta?.canonical ?? null },
+      on_page_snippet: onPage?.meta?.canonical
+        ? `<link rel="canonical" href="${onPage.meta.canonical}">`
+        : null,
+    },
   });
 
   // Image alts
   const noAlt = onPage?.content?.images_without_alt ?? 0;
+  const totalImg = onPage?.content?.images_total ?? 0;
   const lhAlt = input.mobileRaw?.lighthouseResult?.audits?.["image-alt"]?.score;
   const altSources: string[] = [];
   if (onPage?.reachable) altSources.push("crawl");
@@ -424,25 +578,40 @@ function buildVerification(input: {
     sources: altSources,
     agreement: agreement(altSources.length),
     detail: `${noAlt} missing`,
+    evidence: {
+      lighthouse: lhEvidence(input.mobileRaw, "image-alt"),
+      crawl: { images_total: totalImg, images_without_alt: noAlt },
+      thresholds: "Pass: 0 missing. Warn: ≤3. Fail: >3.",
+    },
   });
 
-  // robots.txt + sitemap
+  // robots.txt
   checks.push({
     id: "robots",
     label: "robots.txt",
     verdict: onPage?.technical?.robots_txt ? "pass" : onPage?.reachable ? "warn" : "unknown",
     sources: onPage?.reachable ? ["crawl"] : [],
     agreement: "single",
+    evidence: {
+      crawl: { robots_txt_found: !!onPage?.technical?.robots_txt },
+      notes: "Probed /robots.txt at the site origin with a GET request.",
+    },
   });
+
+  // sitemap
   checks.push({
     id: "sitemap",
     label: "sitemap.xml",
     verdict: onPage?.technical?.sitemap_xml ? "pass" : onPage?.reachable ? "warn" : "unknown",
     sources: onPage?.reachable ? ["crawl"] : [],
     agreement: "single",
+    evidence: {
+      crawl: { sitemap_xml_found: !!onPage?.technical?.sitemap_xml },
+      notes: "Probed /sitemap.xml at the site origin with a GET request.",
+    },
   });
 
-  // Performance — only badge if Lighthouse + crawl both reachable
+  // Performance
   const perf = mobile?.performance ?? desktop?.performance;
   const perfSources: string[] = [];
   if (mobile) perfSources.push("lighthouse_mobile");
@@ -454,6 +623,14 @@ function buildVerification(input: {
     sources: perfSources,
     agreement: agreement(perfSources.length),
     detail: typeof perf === "number" ? `${perf}/100` : undefined,
+    evidence: {
+      lighthouse: {
+        audit_id: "categories.performance",
+        score: typeof perf === "number" ? perf / 100 : null,
+        display_value: `Mobile: ${mobile?.performance ?? "n/a"} · Desktop: ${desktop?.performance ?? "n/a"}`,
+      },
+      thresholds: "Pass: ≥90. Warn: 50–89. Fail: <50.",
+    },
   });
 
   const total = checks.length;
@@ -494,7 +671,18 @@ serve(async (req) => {
       });
     }
 
-    const lead = body?.lead ?? null;
+    // ── Server-side lead validation ──
+    const validation = validateLead(body?.lead ?? null);
+    if (!validation.ok) {
+      return new Response(
+        JSON.stringify({
+          error: "Please correct the highlighted fields and try again.",
+          field_errors: validation.field_errors,
+        }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const lead = validation.lead;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // ── Create audit row ──────────────────────
@@ -505,10 +693,10 @@ serve(async (req) => {
         status: "running",
         ip_address: ip === "unknown" ? null : ip,
         user_agent: req.headers.get("user-agent"),
-        visitor_name: lead?.name ?? null,
-        visitor_email: lead?.email ?? null,
-        visitor_phone: lead?.phone ?? null,
-        visitor_company: lead?.company ?? null,
+        visitor_name: lead.name ?? null,
+        visitor_email: lead.email ?? null,
+        visitor_phone: lead.phone ?? null,
+        visitor_company: lead.company ?? null,
         visitor_website: url,
       })
       .select()

@@ -41,6 +41,7 @@ export interface AuditLeadData {
   email: string;
   phone: string;
   company?: string;
+  consent: boolean;
 }
 
 interface Props {
@@ -48,15 +49,17 @@ interface Props {
   onSubmit: (data: AuditLeadData) => Promise<void> | void;
   loading?: boolean;
   onBack?: () => void;
+  serverErrors?: Partial<Record<Field, string>> | null;
+  initialValues?: Partial<AuditLeadData>;
 }
 
 type Field = "name" | "email" | "phone" | "company" | "consent";
 
-export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [company, setCompany] = useState("");
+export function AuditLeadForm({ url, onSubmit, loading, onBack, serverErrors, initialValues }: Props) {
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [email, setEmail] = useState(initialValues?.email ?? "");
+  const [phone, setPhone] = useState(initialValues?.phone ?? "");
+  const [company, setCompany] = useState(initialValues?.company ?? "");
   const [consent, setConsent] = useState(false);
   const [touched, setTouched] = useState<Record<Field, boolean>>({
     name: false,
@@ -67,7 +70,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
   });
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  // Live validation results (per field) — show only after touched or submit attempt
+  // Live client-side validation
   const validation = useMemo(() => {
     const result = schema.safeParse({ name, email, phone, company, consent });
     const errs: Partial<Record<Field, string>> = {};
@@ -80,10 +83,26 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
     return errs;
   }, [name, email, phone, company, consent]);
 
-  const showError = (f: Field) => (touched[f] || submitAttempted) && validation[f];
+  // Merged: server errors take precedence (only shown if field hasn't been edited since)
+  const [dismissedServer, setDismissedServer] = useState<Set<Field>>(new Set());
+  const effectiveError = (f: Field): string | undefined => {
+    if (serverErrors?.[f] && !dismissedServer.has(f)) return serverErrors[f];
+    return validation[f];
+  };
+  const dismissServer = (f: Field) => {
+    if (!serverErrors?.[f]) return;
+    setDismissedServer((s) => {
+      if (s.has(f)) return s;
+      const next = new Set(s);
+      next.add(f);
+      return next;
+    });
+  };
+
+  const showError = (f: Field) => (touched[f] || submitAttempted) && effectiveError(f);
   const fieldOk = (f: Field, value: string | boolean) => {
     const filled = typeof value === "boolean" ? value : !!String(value).trim();
-    return filled && !validation[f];
+    return filled && !effectiveError(f);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,6 +115,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
       email: email.trim(),
       phone: phone.trim(),
       company: company.trim() || undefined,
+      consent: true,
     });
   };
 
@@ -128,6 +148,24 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
           PDF with AI-prioritized fixes and a free 30-min strategy call invite.
         </p>
 
+        {serverErrors && Object.keys(serverErrors).length > 0 && (
+          <div className="mt-5 rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-[12px] text-rose-200">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <div>
+                <strong className="font-semibold">Please fix the highlighted fields:</strong>
+                <ul className="mt-1 list-disc pl-4 text-rose-100/90">
+                  {Object.entries(serverErrors).map(([k, v]) => (
+                    <li key={k}>
+                      <span className="capitalize">{k}</span>: {v}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} noValidate className="mt-6 grid gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Name */}
@@ -136,7 +174,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
               <Input
                 id="lead-name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => { setName(e.target.value); dismissServer("name"); }}
                 onBlur={() => setTouched((t) => ({ ...t, name: true }))}
                 placeholder="Jane Doe"
                 disabled={loading}
@@ -155,7 +193,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
                 id="lead-email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); dismissServer("email"); }}
                 onBlur={() => setTouched((t) => ({ ...t, email: true }))}
                 placeholder="jane@company.com"
                 disabled={loading}
@@ -175,7 +213,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
                 type="tel"
                 inputMode="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => { setPhone(e.target.value); dismissServer("phone"); }}
                 onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
                 placeholder="+91 98765 43210"
                 disabled={loading}
@@ -199,7 +237,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
               <Input
                 id="lead-company"
                 value={company}
-                onChange={(e) => setCompany(e.target.value)}
+                onChange={(e) => { setCompany(e.target.value); dismissServer("company"); }}
                 onBlur={() => setTouched((t) => ({ ...t, company: true }))}
                 placeholder="Acme Inc."
                 disabled={loading}
@@ -221,6 +259,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
                 onCheckedChange={(v) => {
                   setConsent(v === true);
                   setTouched((t) => ({ ...t, consent: true }));
+                  dismissServer("consent");
                 }}
                 disabled={loading}
                 aria-invalid={!!showError("consent")}
@@ -237,7 +276,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
             </label>
             {showError("consent") && (
               <p className="mt-2 flex items-center gap-1 text-[11px] text-rose-400">
-                <AlertCircle className="h-3 w-3" /> {validation.consent}
+                <AlertCircle className="h-3 w-3" /> {effectiveError("consent")}
               </p>
             )}
           </div>
