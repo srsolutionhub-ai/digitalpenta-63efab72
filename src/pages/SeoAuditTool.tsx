@@ -639,7 +639,7 @@ export default function SeoAuditTool() {
                 </div>
 
                 {/* PDF download */}
-                {recs.length > 0 && !pdfUrl && pendingLead && (
+                {recs.length > 0 && !pdfUrl && !pdfError && pendingLead && (
                   <EmailGate
                     onSubmit={async () =>
                       handlePdfDownload({ name: pendingLead.name, email: pendingLead.email })
@@ -648,10 +648,54 @@ export default function SeoAuditTool() {
                   />
                 )}
 
+                {pdfError && pendingLead && (
+                  <div className="rounded-3xl border border-rose-500/30 bg-rose-500/10 p-6 text-center">
+                    <div className="mx-auto mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-rose-500/40 bg-rose-500/15">
+                      <AlertTriangle className="h-5 w-5 text-rose-300" />
+                    </div>
+                    <p className="font-display text-base font-semibold text-foreground">
+                      PDF generation failed
+                    </p>
+                    <p className="mx-auto mt-1 max-w-md text-[12.5px] text-muted-foreground">
+                      {pdfError} — your audit data is intact. We'll regenerate the PDF and re-download it automatically once it's ready.
+                    </p>
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handlePdfDownload(
+                            { name: pendingLead.name, email: pendingLead.email },
+                            { isRetry: true },
+                          )
+                        }
+                        disabled={pdfRetrying}
+                      >
+                        {pdfRetrying ? (
+                          <>
+                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                            Regenerating…
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+                            Retry PDF generation
+                          </>
+                        )}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setPdfError(null)}>
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {pdfUrl && (
                   <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
                     <p className="font-display text-lg font-semibold text-foreground">
                       Your PDF is ready
+                    </p>
+                    <p className="mt-1 text-[12px] text-muted-foreground">
+                      It opened in a new tab automatically. Click below if it didn't.
                     </p>
                     <a
                       href={pdfUrl}
@@ -661,6 +705,23 @@ export default function SeoAuditTool() {
                     >
                       Download report <ArrowRight className="h-4 w-4" />
                     </a>
+                    {pendingLead && (
+                      <div className="mt-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handlePdfDownload(
+                              { name: pendingLead.name, email: pendingLead.email },
+                              { isRetry: true },
+                            )
+                          }
+                          disabled={pdfRetrying}
+                          className="text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                        >
+                          {pdfRetrying ? "Regenerating…" : "Regenerate PDF"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>
