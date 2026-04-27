@@ -37,10 +37,11 @@ interface AuditResult {
   desktop: any;
   opportunities: any[];
   on_page: any;
+  verification?: VerificationData | null;
   lead_id?: string | null;
 }
 
-type Step = "url" | "lead" | "running" | "result";
+type Step = "url" | "lead" | "running" | "result" | "error";
 
 const PROGRESS_STEPS = [
   { label: "Reaching your website…", icon: Globe },
