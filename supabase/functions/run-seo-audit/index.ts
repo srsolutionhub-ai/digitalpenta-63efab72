@@ -297,6 +297,178 @@ function quickLeadScore(payload: { email: string; company?: string; phone?: stri
 }
 
 // ─────────────────────────────────────────────
+// Verification — cross-check sources before showing pass/fail
+// ─────────────────────────────────────────────
+type Verdict = "pass" | "warn" | "fail" | "unknown";
+interface CheckVerdict {
+  id: string;
+  label: string;
+  verdict: Verdict;
+  detail?: string;
+  sources: string[]; // which evidence we used
+  agreement: "agree" | "partial" | "single" | "conflict";
+}
+
+function buildVerification(input: {
+  mobile: any;
+  desktop: any;
+  onPage: any;
+  mobileRaw: any;
+  desktopRaw: any;
+}): { checks: CheckVerdict[]; reachability: { lighthouse_mobile: boolean; lighthouse_desktop: boolean; crawl: boolean }; trust_score: number } {
+  const { mobile, desktop, onPage } = input;
+  const checks: CheckVerdict[] = [];
+  const reach = {
+    lighthouse_mobile: !!mobile,
+    lighthouse_desktop: !!desktop,
+    crawl: !!onPage?.reachable,
+  };
+
+  const agreement = (sources: number) => (sources >= 2 ? "agree" : sources === 1 ? "single" : "conflict");
+
+  // HTTPS — confirm via crawl URL + Lighthouse audit if present
+  const crawlHttps = onPage?.technical?.https === true;
+  const lhHttps = input.mobileRaw?.lighthouseResult?.audits?.["is-on-https"]?.score;
+  const httpsSources: string[] = [];
+  if (onPage?.reachable) httpsSources.push("crawl");
+  if (typeof lhHttps === "number") httpsSources.push("lighthouse");
+  let httpsVerdict: Verdict = "unknown";
+  if (httpsSources.length === 0) httpsVerdict = "unknown";
+  else if (crawlHttps && (lhHttps === undefined || lhHttps === 1)) httpsVerdict = "pass";
+  else if (!crawlHttps && lhHttps === 0) httpsVerdict = "fail";
+  else httpsVerdict = "warn";
+  checks.push({
+    id: "https",
+    label: "HTTPS / TLS",
+    verdict: httpsVerdict,
+    sources: httpsSources,
+    agreement: agreement(httpsSources.length),
+    detail: crawlHttps ? "Site served over HTTPS" : "Not served over HTTPS",
+  });
+
+  // Viewport (mobile)
+  const crawlVp = !!onPage?.meta?.viewport;
+  const lhVp = input.mobileRaw?.lighthouseResult?.audits?.viewport?.score;
+  const vpSources: string[] = [];
+  if (onPage?.reachable) vpSources.push("crawl");
+  if (typeof lhVp === "number") vpSources.push("lighthouse");
+  let vpVerdict: Verdict = "unknown";
+  if (!vpSources.length) vpVerdict = "unknown";
+  else if (crawlVp && (lhVp === undefined || lhVp === 1)) vpVerdict = "pass";
+  else if (!crawlVp && lhVp === 0) vpVerdict = "fail";
+  else vpVerdict = "warn";
+  checks.push({ id: "viewport", label: "Mobile viewport", verdict: vpVerdict, sources: vpSources, agreement: agreement(vpSources.length) });
+
+  // Title tag
+  const titleLen = onPage?.meta?.title_length ?? 0;
+  const lhTitle = input.mobileRaw?.lighthouseResult?.audits?.["document-title"]?.score;
+  const titleSources: string[] = [];
+  if (onPage?.reachable) titleSources.push("crawl");
+  if (typeof lhTitle === "number") titleSources.push("lighthouse");
+  let titleVerdict: Verdict = "unknown";
+  if (!titleSources.length) titleVerdict = "unknown";
+  else if (titleLen >= 30 && titleLen <= 65 && lhTitle !== 0) titleVerdict = "pass";
+  else if (!titleLen) titleVerdict = "fail";
+  else titleVerdict = "warn";
+  checks.push({ id: "title", label: "Title tag", verdict: titleVerdict, sources: titleSources, agreement: agreement(titleSources.length), detail: titleLen ? `${titleLen} chars` : "Missing" });
+
+  // Meta description
+  const descLen = onPage?.meta?.meta_description_length ?? 0;
+  const lhDesc = input.mobileRaw?.lighthouseResult?.audits?.["meta-description"]?.score;
+  const descSources: string[] = [];
+  if (onPage?.reachable) descSources.push("crawl");
+  if (typeof lhDesc === "number") descSources.push("lighthouse");
+  let descVerdict: Verdict = "unknown";
+  if (!descSources.length) descVerdict = "unknown";
+  else if (descLen >= 70 && descLen <= 160 && lhDesc !== 0) descVerdict = "pass";
+  else if (!descLen) descVerdict = "fail";
+  else descVerdict = "warn";
+  checks.push({ id: "meta_description", label: "Meta description", verdict: descVerdict, sources: descSources, agreement: agreement(descSources.length), detail: descLen ? `${descLen} chars` : "Missing" });
+
+  // H1
+  const h1c = onPage?.headings?.h1_count ?? 0;
+  const h1Sources: string[] = onPage?.reachable ? ["crawl"] : [];
+  checks.push({
+    id: "h1",
+    label: "Single H1",
+    verdict: h1c === 1 ? "pass" : h1c > 1 ? "warn" : h1c === 0 ? "fail" : "unknown",
+    sources: h1Sources,
+    agreement: agreement(h1Sources.length),
+    detail: `${h1c} found`,
+  });
+
+  // Canonical
+  const canon = !!onPage?.meta?.canonical;
+  const lhCanon = input.mobileRaw?.lighthouseResult?.audits?.["canonical"]?.score;
+  const canonSources: string[] = [];
+  if (onPage?.reachable) canonSources.push("crawl");
+  if (typeof lhCanon === "number") canonSources.push("lighthouse");
+  checks.push({
+    id: "canonical",
+    label: "Canonical URL",
+    verdict: !canonSources.length ? "unknown" : canon && lhCanon !== 0 ? "pass" : canon ? "warn" : "fail",
+    sources: canonSources,
+    agreement: agreement(canonSources.length),
+  });
+
+  // Image alts
+  const noAlt = onPage?.content?.images_without_alt ?? 0;
+  const lhAlt = input.mobileRaw?.lighthouseResult?.audits?.["image-alt"]?.score;
+  const altSources: string[] = [];
+  if (onPage?.reachable) altSources.push("crawl");
+  if (typeof lhAlt === "number") altSources.push("lighthouse");
+  checks.push({
+    id: "image_alt",
+    label: "Image alt attributes",
+    verdict: !altSources.length ? "unknown" : noAlt === 0 && lhAlt !== 0 ? "pass" : noAlt <= 3 ? "warn" : "fail",
+    sources: altSources,
+    agreement: agreement(altSources.length),
+    detail: `${noAlt} missing`,
+  });
+
+  // robots.txt + sitemap
+  checks.push({
+    id: "robots",
+    label: "robots.txt",
+    verdict: onPage?.technical?.robots_txt ? "pass" : onPage?.reachable ? "warn" : "unknown",
+    sources: onPage?.reachable ? ["crawl"] : [],
+    agreement: "single",
+  });
+  checks.push({
+    id: "sitemap",
+    label: "sitemap.xml",
+    verdict: onPage?.technical?.sitemap_xml ? "pass" : onPage?.reachable ? "warn" : "unknown",
+    sources: onPage?.reachable ? ["crawl"] : [],
+    agreement: "single",
+  });
+
+  // Performance — only badge if Lighthouse + crawl both reachable
+  const perf = mobile?.performance ?? desktop?.performance;
+  const perfSources: string[] = [];
+  if (mobile) perfSources.push("lighthouse_mobile");
+  if (desktop) perfSources.push("lighthouse_desktop");
+  checks.push({
+    id: "performance",
+    label: "Performance score",
+    verdict: typeof perf !== "number" ? "unknown" : perf >= 90 ? "pass" : perf >= 50 ? "warn" : "fail",
+    sources: perfSources,
+    agreement: agreement(perfSources.length),
+    detail: typeof perf === "number" ? `${perf}/100` : undefined,
+  });
+
+  const total = checks.length;
+  const trustScore = total === 0
+    ? 0
+    : Math.round(
+        (checks.filter((c) => c.agreement === "agree").length * 100 +
+          checks.filter((c) => c.agreement === "single").length * 60) /
+          total,
+      );
+
+  return { checks, reachability: reach, trust_score: trustScore };
+}
+
+// ─────────────────────────────────────────────
 // Main handler
 // ─────────────────────────────────────────────
 serve(async (req) => {
@@ -380,6 +552,15 @@ serve(async (req) => {
         4,
     );
 
+    // ── Verification: cross-check Lighthouse + crawl + on-page before badging ──
+    const verification = buildVerification({
+      mobile,
+      desktop,
+      onPage: onPage as any,
+      mobileRaw: mobileJson,
+      desktopRaw: desktopJson,
+    });
+
     // Opportunities for AI
     const lhAudits = (mobileJson as any)?.lighthouseResult?.audits ?? {};
     const opportunities = Object.entries(lhAudits)
@@ -442,7 +623,8 @@ serve(async (req) => {
       }
     }
 
-    // ── Update audit ──────────────────────────
+    // ── Update audit (store verification inside on_page_checks JSONB) ──
+    const onPageWithVerification = { ...(onPage as any), verification };
     await supabase
       .from("audits")
       .update({
@@ -452,7 +634,7 @@ serve(async (req) => {
         seo_score: primary.seo,
         accessibility_score: primary.accessibility,
         best_practices_score: primary.best_practices,
-        on_page_checks: onPage,
+        on_page_checks: onPageWithVerification,
         lead_id: leadId,
       })
       .eq("id", audit.id);
@@ -466,6 +648,7 @@ serve(async (req) => {
         desktop,
         opportunities,
         on_page: onPage,
+        verification,
         lead_id: leadId,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },

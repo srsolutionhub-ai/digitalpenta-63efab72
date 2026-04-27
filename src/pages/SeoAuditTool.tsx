@@ -23,9 +23,11 @@ import { AuditIssueCard, type AuditRecommendation } from "@/components/audit/Aud
 import { AuditLeadForm, type AuditLeadData } from "@/components/audit/AuditLeadForm";
 import { OnPageChecks } from "@/components/audit/OnPageChecks";
 import { CoreWebVitals } from "@/components/audit/CoreWebVitals";
+import { VerificationBadges, type VerificationData } from "@/components/audit/VerificationBadges";
 import { EmailGate } from "@/components/audit/EmailGate";
 import { trackEvent } from "@/lib/analytics";
 import { toast } from "sonner";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 interface AuditResult {
   audit_id: string;
@@ -35,10 +37,11 @@ interface AuditResult {
   desktop: any;
   opportunities: any[];
   on_page: any;
+  verification?: VerificationData | null;
   lead_id?: string | null;
 }
 
-type Step = "url" | "lead" | "running" | "result";
+type Step = "url" | "lead" | "running" | "result" | "error";
 
 const PROGRESS_STEPS = [
   { label: "Reaching your website…", icon: Globe },
@@ -79,6 +82,8 @@ export default function SeoAuditTool() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Animated progress ticker while running
   useEffect(() => {
@@ -106,10 +111,15 @@ export default function SeoAuditTool() {
   // ── Step 2: Lead submit → run audit ──
   const handleLeadSubmit = async (lead: AuditLeadData) => {
     setPendingLead(lead);
+    await runAudit(lead);
+  };
+
+  const runAudit = async (lead: AuditLeadData) => {
     setStep("running");
     setRecs([]);
     setPdfUrl(null);
     setResult(null);
+    setErrorMsg(null);
 
     try {
       trackEvent("audit_started", {
@@ -126,6 +136,7 @@ export default function SeoAuditTool() {
 
       setResult(data as AuditResult);
       setStep("result");
+      setRetryCount(0);
       trackEvent("audit_completed", { category: "seo_tool", label: url, value: data.overall });
 
       // Kick off AI analysis
@@ -145,11 +156,19 @@ export default function SeoAuditTool() {
         toast.error("AI recommendations unavailable. Lighthouse results are still shown.");
       }
     } catch (err: any) {
-      toast.error(err.message || "Audit failed. Try a different URL.");
-      setStep("lead");
+      const msg = err?.message || "Audit failed. The site may be blocking automated checks.";
+      setErrorMsg(msg);
+      setStep("error");
+      trackEvent("audit_failed", { category: "seo_tool", label: url });
     } finally {
       setRecsLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setRetryCount((c) => c + 1);
+    if (pendingLead) runAudit(pendingLead);
+    else setStep("lead");
   };
 
   // ── PDF download ──
@@ -179,6 +198,8 @@ export default function SeoAuditTool() {
     setResult(null);
     setRecs([]);
     setPdfUrl(null);
+    setErrorMsg(null);
+    setRetryCount(0);
   };
 
   const primary = result?.mobile ?? result?.desktop ?? {};
@@ -411,7 +432,52 @@ export default function SeoAuditTool() {
               </motion.div>
             )}
 
-            {/* ─── STEP 4: RESULTS ─── */}
+            {/* ─── ERROR STATE ─── */}
+            {step === "error" && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mx-auto mt-12 max-w-xl"
+              >
+                <div className="overflow-hidden rounded-3xl border border-rose-500/30 bg-gradient-to-br from-rose-500/10 via-card to-card p-8 text-center backdrop-blur-xl">
+                  <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full border border-rose-500/40 bg-rose-500/15">
+                    <AlertTriangle className="h-7 w-7 text-rose-400" />
+                  </div>
+                  <h3 className="mt-4 font-display text-xl font-bold text-foreground">
+                    We couldn't complete the audit
+                  </h3>
+                  <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                    {errorMsg ??
+                      "The site may be temporarily unreachable or blocking automated checks. This sometimes happens with strict firewalls or sites behind Cloudflare bot protection."}
+                  </p>
+                  {retryCount >= 2 && (
+                    <p className="mx-auto mt-3 max-w-md text-[12px] text-amber-300">
+                      Still failing? Try a different page on the site (e.g. the homepage) or contact us
+                      and we'll run the audit manually.
+                    </p>
+                  )}
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <Button
+                      onClick={handleRetry}
+                      size="lg"
+                      className="h-11"
+                      disabled={!pendingLead}
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Retry audit{retryCount > 0 ? ` · attempt ${retryCount + 1}` : ""}
+                    </Button>
+                    <Button variant="outline" size="lg" className="h-11" onClick={reset}>
+                      Try a different URL
+                    </Button>
+                  </div>
+                  <p className="mt-4 text-[11px] text-muted-foreground">
+                    Your details are saved — we won't ask for them again on retry.
+                  </p>
+                </div>
+              </motion.div>
+            )}
             {step === "result" && result && (
               <motion.div
                 key="result"
@@ -457,7 +523,17 @@ export default function SeoAuditTool() {
                   <CoreWebVitals mobile={result.mobile} desktop={result.desktop} />
                 </div>
 
-                {/* On-page checks */}
+                {/* Verification cross-checks */}
+                {result.verification && (
+                  <div>
+                    <h3 className="mb-4 font-display text-xl font-semibold text-foreground">
+                      Verified results
+                    </h3>
+                    <VerificationBadges data={result.verification} />
+                  </div>
+                )}
+
+
                 {result.on_page && (
                   <div>
                     <h3 className="mb-4 font-display text-xl font-semibold text-foreground">
