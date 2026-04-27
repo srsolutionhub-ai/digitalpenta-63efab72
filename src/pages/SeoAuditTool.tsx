@@ -386,7 +386,34 @@ export default function SeoAuditTool() {
                 exit={{ opacity: 0, y: -10 }}
                 className="mx-auto mt-10 max-w-2xl"
               >
-                <AuditLeadForm url={url} onSubmit={handleLeadSubmit} onBack={reset} />
+                {errorMsg && (
+                  <div className="mb-4 flex items-start gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-[13px] text-amber-100 shadow-lg shadow-amber-500/10">
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                    <div className="flex-1">
+                      <p className="font-medium text-amber-100">
+                        Last audit attempt failed — your URL and details are preserved.
+                      </p>
+                      <p className="mt-1 text-amber-100/80">{errorMsg}</p>
+                    </div>
+                    {pendingLead && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => runAudit(pendingLead)}
+                        className="shrink-0"
+                      >
+                        <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Retry now
+                      </Button>
+                    )}
+                  </div>
+                )}
+                <AuditLeadForm
+                  url={url}
+                  onSubmit={handleLeadSubmit}
+                  onBack={reset}
+                  serverErrors={leadServerErrors}
+                  initialValues={pendingLead ?? undefined}
+                />
               </motion.div>
             )}
 
