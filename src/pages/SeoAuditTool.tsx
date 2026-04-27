@@ -523,7 +523,17 @@ export default function SeoAuditTool() {
                   <CoreWebVitals mobile={result.mobile} desktop={result.desktop} />
                 </div>
 
-                {/* On-page checks */}
+                {/* Verification cross-checks */}
+                {result.verification && (
+                  <div>
+                    <h3 className="mb-4 font-display text-xl font-semibold text-foreground">
+                      Verified results
+                    </h3>
+                    <VerificationBadges data={result.verification} />
+                  </div>
+                )}
+
+
                 {result.on_page && (
                   <div>
                     <h3 className="mb-4 font-display text-xl font-semibold text-foreground">
