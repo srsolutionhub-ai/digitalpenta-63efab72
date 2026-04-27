@@ -48,15 +48,17 @@ interface Props {
   onSubmit: (data: AuditLeadData) => Promise<void> | void;
   loading?: boolean;
   onBack?: () => void;
+  serverErrors?: Partial<Record<Field, string>> | null;
+  initialValues?: Partial<AuditLeadData>;
 }
 
 type Field = "name" | "email" | "phone" | "company" | "consent";
 
-export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [company, setCompany] = useState("");
+export function AuditLeadForm({ url, onSubmit, loading, onBack, serverErrors, initialValues }: Props) {
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [email, setEmail] = useState(initialValues?.email ?? "");
+  const [phone, setPhone] = useState(initialValues?.phone ?? "");
+  const [company, setCompany] = useState(initialValues?.company ?? "");
   const [consent, setConsent] = useState(false);
   const [touched, setTouched] = useState<Record<Field, boolean>>({
     name: false,
@@ -67,7 +69,7 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
   });
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  // Live validation results (per field) — show only after touched or submit attempt
+  // Live client-side validation
   const validation = useMemo(() => {
     const result = schema.safeParse({ name, email, phone, company, consent });
     const errs: Partial<Record<Field, string>> = {};
@@ -80,10 +82,26 @@ export function AuditLeadForm({ url, onSubmit, loading, onBack }: Props) {
     return errs;
   }, [name, email, phone, company, consent]);
 
-  const showError = (f: Field) => (touched[f] || submitAttempted) && validation[f];
+  // Merged: server errors take precedence (only shown if field hasn't been edited since)
+  const [dismissedServer, setDismissedServer] = useState<Set<Field>>(new Set());
+  const effectiveError = (f: Field): string | undefined => {
+    if (serverErrors?.[f] && !dismissedServer.has(f)) return serverErrors[f];
+    return validation[f];
+  };
+  const dismissServer = (f: Field) => {
+    if (!serverErrors?.[f]) return;
+    setDismissedServer((s) => {
+      if (s.has(f)) return s;
+      const next = new Set(s);
+      next.add(f);
+      return next;
+    });
+  };
+
+  const showError = (f: Field) => (touched[f] || submitAttempted) && effectiveError(f);
   const fieldOk = (f: Field, value: string | boolean) => {
     const filled = typeof value === "boolean" ? value : !!String(value).trim();
-    return filled && !validation[f];
+    return filled && !effectiveError(f);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
