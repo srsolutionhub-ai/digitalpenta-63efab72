@@ -623,7 +623,8 @@ serve(async (req) => {
       }
     }
 
-    // ── Update audit ──────────────────────────
+    // ── Update audit (store verification inside on_page_checks JSONB) ──
+    const onPageWithVerification = { ...(onPage as any), verification };
     await supabase
       .from("audits")
       .update({
@@ -633,7 +634,7 @@ serve(async (req) => {
         seo_score: primary.seo,
         accessibility_score: primary.accessibility,
         best_practices_score: primary.best_practices,
-        on_page_checks: onPage,
+        on_page_checks: onPageWithVerification,
         lead_id: leadId,
       })
       .eq("id", audit.id);
@@ -647,6 +648,7 @@ serve(async (req) => {
         desktop,
         opportunities,
         on_page: onPage,
+        verification,
         lead_id: leadId,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
