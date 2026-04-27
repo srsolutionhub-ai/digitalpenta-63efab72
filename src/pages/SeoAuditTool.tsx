@@ -72,6 +72,8 @@ function normalizeUrl(input: string): string | null {
   }
 }
 
+type FieldErrors = Partial<Record<"name" | "email" | "phone" | "company" | "consent", string>>;
+
 export default function SeoAuditTool() {
   const [step, setStep] = useState<Step>("url");
   const [url, setUrl] = useState("");
@@ -82,8 +84,11 @@ export default function SeoAuditTool() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+  const [pdfRetrying, setPdfRetrying] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [leadServerErrors, setLeadServerErrors] = useState<FieldErrors | null>(null);
 
   // Animated progress ticker while running
   useEffect(() => {
@@ -110,6 +115,7 @@ export default function SeoAuditTool() {
 
   // ── Step 2: Lead submit → run audit ──
   const handleLeadSubmit = async (lead: AuditLeadData) => {
+    setLeadServerErrors(null);
     setPendingLead(lead);
     await runAudit(lead);
   };
@@ -118,6 +124,7 @@ export default function SeoAuditTool() {
     setStep("running");
     setRecs([]);
     setPdfUrl(null);
+    setPdfError(null);
     setResult(null);
     setErrorMsg(null);
 
@@ -130,6 +137,14 @@ export default function SeoAuditTool() {
       const { data, error } = await supabase.functions.invoke("run-seo-audit", {
         body: { url, lead: { ...lead, ...getUtm() } },
       });
+
+      // Field-level validation errors → bounce back to lead step with messages
+      if (data?.field_errors) {
+        setLeadServerErrors(data.field_errors as FieldErrors);
+        setStep("lead");
+        toast.error(data.error || "Please correct the highlighted fields.");
+        return;
+      }
       if (error || !data || data.error) {
         throw new Error(data?.error || error?.message || "Audit failed");
       }
@@ -171,23 +186,42 @@ export default function SeoAuditTool() {
     else setStep("lead");
   };
 
-  // ── PDF download ──
-  const handlePdfDownload = async ({ name, email }: { name: string; email: string }) => {
+  // From the persistent banner: jump back to the lead form pre-filled,
+  // so user can adjust details before re-running.
+  const goEditLead = () => {
+    setErrorMsg(null);
+    setStep("lead");
+  };
+
+  // ── PDF download (with retry + auto re-download) ──
+  const handlePdfDownload = async (
+    args: { name: string; email: string },
+    opts: { isRetry?: boolean } = {},
+  ) => {
     if (!result) return;
-    setPdfLoading(true);
+    setPdfError(null);
+    if (opts.isRetry) setPdfRetrying(true);
+    else setPdfLoading(true);
     try {
-      trackEvent("audit_pdf_requested", { category: "seo_tool", label: email });
+      trackEvent(opts.isRetry ? "audit_pdf_retry" : "audit_pdf_requested", {
+        category: "seo_tool",
+        label: args.email,
+      });
       const { data, error } = await supabase.functions.invoke("generate-audit-pdf", {
-        body: { audit_id: result.audit_id, name, email },
+        body: { audit_id: result.audit_id, name: args.name, email: args.email },
       });
       if (error || data?.error) throw new Error(data?.error || error?.message || "PDF failed");
       setPdfUrl(data.pdf_url);
-      toast.success("Report ready!");
+      toast.success(opts.isRetry ? "Report regenerated — opening now." : "Report ready!");
+      // Auto-(re)download
       window.open(data.pdf_url, "_blank");
     } catch (err: any) {
-      toast.error(err.message || "Could not generate PDF.");
+      const msg = err?.message || "Could not generate PDF.";
+      setPdfError(msg);
+      toast.error(msg);
     } finally {
       setPdfLoading(false);
+      setPdfRetrying(false);
     }
   };
 
@@ -198,8 +232,10 @@ export default function SeoAuditTool() {
     setResult(null);
     setRecs([]);
     setPdfUrl(null);
+    setPdfError(null);
     setErrorMsg(null);
     setRetryCount(0);
+    setLeadServerErrors(null);
   };
 
   const primary = result?.mobile ?? result?.desktop ?? {};
