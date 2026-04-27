@@ -671,7 +671,18 @@ serve(async (req) => {
       });
     }
 
-    const lead = body?.lead ?? null;
+    // ── Server-side lead validation ──
+    const validation = validateLead(body?.lead ?? null);
+    if (!validation.ok) {
+      return new Response(
+        JSON.stringify({
+          error: "Please correct the highlighted fields and try again.",
+          field_errors: validation.field_errors,
+        }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const lead = validation.lead;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // ── Create audit row ──────────────────────
@@ -682,10 +693,10 @@ serve(async (req) => {
         status: "running",
         ip_address: ip === "unknown" ? null : ip,
         user_agent: req.headers.get("user-agent"),
-        visitor_name: lead?.name ?? null,
-        visitor_email: lead?.email ?? null,
-        visitor_phone: lead?.phone ?? null,
-        visitor_company: lead?.company ?? null,
+        visitor_name: lead.name ?? null,
+        visitor_email: lead.email ?? null,
+        visitor_phone: lead.phone ?? null,
+        visitor_company: lead.company ?? null,
         visitor_website: url,
       })
       .select()
