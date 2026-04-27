@@ -82,6 +82,8 @@ export default function SeoAuditTool() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Animated progress ticker while running
   useEffect(() => {
@@ -109,10 +111,15 @@ export default function SeoAuditTool() {
   // ── Step 2: Lead submit → run audit ──
   const handleLeadSubmit = async (lead: AuditLeadData) => {
     setPendingLead(lead);
+    await runAudit(lead);
+  };
+
+  const runAudit = async (lead: AuditLeadData) => {
     setStep("running");
     setRecs([]);
     setPdfUrl(null);
     setResult(null);
+    setErrorMsg(null);
 
     try {
       trackEvent("audit_started", {
@@ -129,6 +136,7 @@ export default function SeoAuditTool() {
 
       setResult(data as AuditResult);
       setStep("result");
+      setRetryCount(0);
       trackEvent("audit_completed", { category: "seo_tool", label: url, value: data.overall });
 
       // Kick off AI analysis
@@ -148,11 +156,19 @@ export default function SeoAuditTool() {
         toast.error("AI recommendations unavailable. Lighthouse results are still shown.");
       }
     } catch (err: any) {
-      toast.error(err.message || "Audit failed. Try a different URL.");
-      setStep("lead");
+      const msg = err?.message || "Audit failed. The site may be blocking automated checks.";
+      setErrorMsg(msg);
+      setStep("error");
+      trackEvent("audit_failed", { category: "seo_tool", label: url });
     } finally {
       setRecsLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setRetryCount((c) => c + 1);
+    if (pendingLead) runAudit(pendingLead);
+    else setStep("lead");
   };
 
   // ── PDF download ──
