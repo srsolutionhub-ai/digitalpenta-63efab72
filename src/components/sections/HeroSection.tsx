@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import heroMesh from "@/assets/hero-mesh-gradient.jpg";
 import heroOrb from "@/assets/hero-orb.png";
+import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 
 const clientLogos = ["Zomato", "Lenskart", "PharmEasy", "Vedantu", "CarDekho"];
 
@@ -143,7 +144,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 24 }}
             animate={loaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2"
           >
             <Link to="/contact">
               <Button
@@ -165,12 +166,15 @@ export default function HeroSection() {
             </Link>
           </motion.div>
 
+          {/* Live KPI scoreboard */}
+          <HeroKpiTicker />
+
           {/* Social proof row */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={loaded ? { opacity: 1 } : {}}
-            transition={{ duration: 1, delay: 0.7 }}
-            className="flex flex-col items-center gap-5"
+            transition={{ duration: 1, delay: 0.95 }}
+            className="mt-12 flex flex-col items-center gap-5"
           >
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className="flex">
