@@ -15,11 +15,13 @@ import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
 import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
 import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
+import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
+import SignatureCtaSection from "@/components/sections/SignatureCtaSection";
 import UrgencyStrip from "@/components/ui/urgency-strip";
 import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
-/* Trust Strip — Premium neon */
+/* Compact KPI strip — sits between the hero and the press section */
 function TrustStrip() {
   const items = [
     { label: "★★★★★ 4.9 Google Rating", accent: "hsl(48 100% 65%)" },
@@ -79,6 +81,7 @@ const Index = () => {
       <HeroSection />
       <UrgencyStrip />
       <TrustStrip />
+      <PressAwardsStrip />
       <HomeIntroSection />
       <PartnersSection />
       <WebsiteAuditSection />
@@ -94,6 +97,7 @@ const Index = () => {
       <FAQSection />
       <IndustriesSection />
       <BlogPreviewSection />
+      <SignatureCtaSection />
     </Layout>
   );
 };
