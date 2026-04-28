@@ -12,12 +12,32 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // ── AuthN: require valid JWT ───────────────────────────────
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const supa = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+    const { data: userData, error: userErr } = await supa.auth.getUser(token);
+    const user = userData?.user;
+    if (userErr || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // ── AuthZ: require admin / account_manager role ────────────
+    const { data: roles } = await supa.from("user_roles").select("role").eq("user_id", user.id);
+    const allowed = (roles ?? []).some((r: any) => ["super_admin", "account_manager"].includes(r.role));
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const { conversation_id, body } = await req.json();
     if (!conversation_id || !body) {
       return new Response(JSON.stringify({ error: "conversation_id and body required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
-    const supa = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
     const { data: settings } = await supa.from("whatsapp_settings").select("*").maybeSingle();
     if (!settings || settings.status !== "verified") {
