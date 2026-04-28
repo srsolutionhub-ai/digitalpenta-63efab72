@@ -17,8 +17,9 @@ import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import SignatureCtaSection from "@/components/sections/SignatureCtaSection";
+import SeoLinkHub from "@/components/sections/SeoLinkHub";
 import UrgencyStrip from "@/components/ui/urgency-strip";
-import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
 /* Compact KPI strip — sits between the hero and the press section */
@@ -67,6 +68,29 @@ const Index = () => {
         schemas={[
           breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.com/" }]),
           organizationSchema(),
+          serviceSchema({
+            name: "Digital Marketing Services",
+            description:
+              "Full-stack digital marketing — SEO, Google Ads, social, content, performance and AI automation — for brands across India and the Middle East.",
+            url: "https://digitalpenta.com/services/digital-marketing",
+            serviceType: "Digital Marketing Agency",
+          }),
+          // ItemList of top services — boosts homepage sitelink eligibility
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Digital Penta — Core Services",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "SEO Services", url: "https://digitalpenta.com/services/digital-marketing/seo" },
+              { "@type": "ListItem", position: 2, name: "Google Ads / PPC", url: "https://digitalpenta.com/services/digital-marketing/ppc" },
+              { "@type": "ListItem", position: 3, name: "Social Media Marketing", url: "https://digitalpenta.com/services/digital-marketing/social-media" },
+              { "@type": "ListItem", position: 4, name: "Content Marketing", url: "https://digitalpenta.com/services/digital-marketing/content" },
+              { "@type": "ListItem", position: 5, name: "Web Development", url: "https://digitalpenta.com/services/development/website" },
+              { "@type": "ListItem", position: 6, name: "AI Chatbot Development", url: "https://digitalpenta.com/services/ai-solutions/chatbot" },
+              { "@type": "ListItem", position: 7, name: "Marketing Automation", url: "https://digitalpenta.com/services/automation/marketing" },
+              { "@type": "ListItem", position: 8, name: "Public Relations", url: "https://digitalpenta.com/services/public-relations" },
+            ],
+          },
           reviewedItemSchema({
             itemName: "Digital Penta — Digital Marketing Agency",
             itemUrl: "https://digitalpenta.com/",
@@ -97,6 +121,7 @@ const Index = () => {
       <FAQSection />
       <IndustriesSection />
       <BlogPreviewSection />
+      <SeoLinkHub />
       <SignatureCtaSection />
     </Layout>
   );
