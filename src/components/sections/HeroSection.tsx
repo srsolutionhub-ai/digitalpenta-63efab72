@@ -144,7 +144,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 24 }}
             animate={loaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2"
           >
             <Link to="/contact">
               <Button
