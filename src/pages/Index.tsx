@@ -17,8 +17,9 @@ import ResultsReelSection from "@/components/sections/ResultsReelSection";
 import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import SignatureCtaSection from "@/components/sections/SignatureCtaSection";
+import SeoLinkHub from "@/components/sections/SeoLinkHub";
 import UrgencyStrip from "@/components/ui/urgency-strip";
-import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
 /* Compact KPI strip — sits between the hero and the press section */
