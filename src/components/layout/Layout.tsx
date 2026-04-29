@@ -8,6 +8,7 @@ import ExitIntentPopup from "@/components/ui/exit-intent-popup";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 import CookieConsent from "@/components/ui/cookie-consent";
 import SmartCTA from "@/components/ui/smart-cta";
+import AiStrategistChat from "@/components/ai/AiStrategistChat";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -22,6 +23,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <LeadCaptureBar />
       <CookieConsent />
       <SmartCTA />
+      <AiStrategistChat />
     </div>
   );
 }
