@@ -18,6 +18,7 @@ import DashboardPreviewSection from "@/components/sections/DashboardPreviewSecti
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import SignatureCtaSection from "@/components/sections/SignatureCtaSection";
 import SeoLinkHub from "@/components/sections/SeoLinkHub";
+import RoiCalculatorSection from "@/components/sections/RoiCalculatorSection";
 import UrgencyStrip from "@/components/ui/urgency-strip";
 import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
@@ -118,6 +119,7 @@ const Index = () => {
       <DashboardPreviewSection />
       <TestimonialsSection />
       <PricingSection />
+      <RoiCalculatorSection />
       <FAQSection />
       <IndustriesSection />
       <BlogPreviewSection />
