@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import heroMesh from "@/assets/hero-mesh-gradient.jpg";
 import heroOrb from "@/assets/hero-orb.png";
 import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
+import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
 
 const clientLogos = ["Zomato", "Lenskart", "PharmEasy", "Vedantu", "CarDekho"];
 
@@ -15,6 +16,8 @@ export default function HeroSection() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const hero = useHeroPersonalization();
+  const personalized = hero.variant !== "default";
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 80);
@@ -100,43 +103,52 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-[920px] mx-auto text-center">
-          {/* Award badge */}
+          {/* Award / personalized badge */}
           <motion.div
+            key={`badge-${hero.variant}`}
             initial={{ opacity: 0, y: 16 }}
             animate={loaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-card mb-10 group cursor-default"
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  personalized ? "bg-primary" : "bg-accent"
+                }`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  personalized ? "bg-primary" : "bg-accent"
+                }`}
+              />
             </span>
-            <span className="type-label text-foreground/80">
-              India's #1 AI-Powered Growth Studio · 2025
-            </span>
+            <span className="type-label text-foreground/80">{hero.badge}</span>
             <Sparkles className="w-3 h-3 text-primary group-hover:rotate-12 transition-transform" />
           </motion.div>
 
           {/* H1 — oversized display */}
           <motion.h1
+            key={`h1-${hero.variant}`}
             initial={{ opacity: 0, y: 40 }}
             animate={loaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="font-display font-extrabold tracking-tighter leading-[0.95] mb-8"
             style={{ fontSize: "clamp(2.75rem, 7.5vw, 6.5rem)" }}
           >
-            <span className="block text-foreground">Marketing that</span>
-            <span className="block text-gradient-hero">moves needles.</span>
+            <span className="block text-foreground">{hero.h1Top}</span>
+            <span className="block text-gradient-hero">{hero.h1Bottom}</span>
           </motion.h1>
 
           {/* Sub-headline */}
           <motion.p
+            key={`sub-${hero.variant}`}
             initial={{ opacity: 0, y: 24 }}
             animate={loaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            We blend <span className="text-foreground font-semibold">SEO, performance ads, social, and AI automation</span> to grow brands 10× faster — across India and the Middle East.
+            {hero.sub}
           </motion.p>
 
           {/* CTAs */}
@@ -146,22 +158,22 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2"
           >
-            <Link to="/contact">
+            <Link to={hero.ctaPrimary.to}>
               <Button
                 size="lg"
                 className="btn-glow rounded-full px-9 h-[56px] font-display font-bold text-base gap-2.5 group border-0 text-white hover:text-white"
               >
-                Get Free Strategy Audit
+                {hero.ctaPrimary.label}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/portfolio">
+            <Link to={hero.ctaSecondary.to}>
               <Button
                 size="lg"
                 variant="outline"
                 className="rounded-full px-8 h-[56px] font-display font-semibold text-base bg-white/5 border-white/15 backdrop-blur-md hover:bg-white/10 hover:border-white/25"
               >
-                View Case Studies
+                {hero.ctaSecondary.label}
               </Button>
             </Link>
           </motion.div>
