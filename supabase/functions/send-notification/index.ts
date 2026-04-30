@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 interface EmailPayload {
-  type: "new_lead" | "invoice_created";
+  type: "new_lead" | "invoice_created" | "abandoned_draft";
   data: Record<string, unknown>;
 }
 
