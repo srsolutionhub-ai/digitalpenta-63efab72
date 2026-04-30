@@ -53,12 +53,63 @@ const goalOptions = [
 ];
 
 export default function GetProposal() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [step, setStep] = useState(0);
-  const [data, setData] = useState({
+  const [data, setData] = useState<ProposalData>({
     name: "", email: "", phone: "", company: "", website: "",
     services: [] as string[], goals: [] as string[],
-    budget: "₹5L - ₹15L", timeline: "1-3 months", message: "",
+    budget: "₹5L - ₹15L / $5K - $15K", timeline: "1-3 months", message: "",
   });
+
+  const [roiContext, setRoiContext] = useState<null | {
+    channel: string; budget: number; projectedRevenue: number; projectedLeads: number;
+  }>(null);
+
+  const [draftPrompt, setDraftPrompt] = useState<DraftPayload | null>(null);
+  const initializedRef = useRef(false);
+
+  // On mount: read ROI calc params, then check for saved draft
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const channel = searchParams.get("channel") || "";
+    const budgetParam = Number(searchParams.get("budget") || 0);
+    const projRev = Number(searchParams.get("projected_revenue") || 0);
+    const projLeads = Number(searchParams.get("projected_leads") || 0);
+
+    if (channel || budgetParam || projRev) {
+      const recommended = channelServiceMap[channel];
+      const services = recommended ? [recommended] : [];
+      const goals = projRev ? ["Increase Leads", "Boost Revenue"] : [];
+      const message = projRev
+        ? `From ROI Calculator → channel: ${channel}, monthly budget: ₹${budgetParam.toLocaleString("en-IN")}, projected revenue/mo: ₹${Math.round(projRev).toLocaleString("en-IN")}, extra leads/mo: ${Math.round(projLeads)}.`
+        : "";
+      setData({
+        name: "", email: "", phone: "", company: "", website: "",
+        services, goals,
+        budget: pickBudget(budgetParam),
+        timeline: "1-3 months",
+        message,
+      });
+      setRoiContext({ channel, budget: budgetParam, projectedRevenue: projRev, projectedLeads: projLeads });
+      setSearchParams({}, { replace: true });
+    }
+
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as DraftPayload;
+        const fresh = Date.now() - parsed.savedAt < DRAFT_TTL_MS;
+        const hasContent =
+          parsed.data &&
+          (parsed.data.name || parsed.data.email || parsed.data.services?.length || parsed.data.goals?.length);
+        if (fresh && hasContent) setDraftPrompt(parsed);
+        else if (!fresh) localStorage.removeItem(DRAFT_KEY);
+      }
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleItem = (key: "services" | "goals", item: string) => {
     setData(prev => ({
@@ -70,10 +121,41 @@ export default function GetProposal() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Auto-save draft
+  useEffect(() => {
+    if (submitted) return;
+    const hasAny =
+      data.name || data.email || data.phone || data.company || data.website ||
+      data.services.length || data.goals.length || data.message;
+    if (!hasAny) return;
+    const t = setTimeout(() => {
+      try {
+        const payload: DraftPayload = { data, step, savedAt: Date.now() };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+      } catch { /* quota */ }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [data, step, submitted]);
+
+  const restoreDraft = () => {
+    if (!draftPrompt) return;
+    setData(draftPrompt.data);
+    setStep(Math.min(draftPrompt.step, steps.length - 1));
+    setDraftPrompt(null);
+    toast.success("Draft restored — pick up where you left off.");
+  };
+
+  const dismissDraft = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftPrompt(null);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Save to contacts first
+      const roiNote = roiContext
+        ? ` [ROI: channel=${roiContext.channel}, budget=₹${roiContext.budget.toLocaleString("en-IN")}/mo, projRev=₹${Math.round(roiContext.projectedRevenue).toLocaleString("en-IN")}/mo, projLeads=${Math.round(roiContext.projectedLeads)}/mo]`
+        : "";
       const { data: contact, error: contactErr } = await supabase.from("contacts").insert({
         name: data.name.trim(),
         email: data.email.trim(),
@@ -81,19 +163,20 @@ export default function GetProposal() {
         company: data.company.trim() || null,
         service: data.services.join(", ") || "Multiple Services",
         budget_range: data.budget,
-        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}`.trim(),
-        source: "Website Proposal Form",
+        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}${roiNote}`.trim(),
+        source: roiContext ? "ROI Calculator → Proposal" : "Website Proposal Form",
       }).select("id").single();
 
       if (contactErr) throw contactErr;
 
-      // Save to leads
       await supabase.from("leads").insert({
         contact_id: contact?.id || null,
         service: data.services.join(", ") || "Multiple Services",
         budget: data.budget,
         timeline: data.timeline,
       });
+
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
 
       setSubmitted(true);
       toast.success("Proposal request submitted!");
