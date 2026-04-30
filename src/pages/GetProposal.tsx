@@ -422,7 +422,7 @@ export default function GetProposal() {
                         </div>
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Email *</label>
-                          <Input type="email" inputMode="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="john@company.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
+                          <Input type="email" inputMode="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} onBlur={e => scheduleRecoveryEmail(e.target.value)} placeholder="john@company.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
