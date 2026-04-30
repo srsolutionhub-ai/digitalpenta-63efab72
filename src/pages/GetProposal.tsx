@@ -1,13 +1,56 @@
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles, RotateCcw, X, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const steps = ["About You", "Services", "Goals", "Budget", "Review"];
+
+const DRAFT_KEY = "dp_proposal_draft_v1";
+const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+type DraftPayload = {
+  data: ProposalData;
+  step: number;
+  savedAt: number;
+};
+
+type ProposalData = {
+  name: string; email: string; phone: string; company: string; website: string;
+  services: string[]; goals: string[];
+  budget: string; timeline: string; message: string;
+};
+
+// Map ROI channel → recommended service preselect
+const channelServiceMap: Record<string, string> = {
+  seo: "SEO & Organic Growth",
+  google: "PPC & Paid Ads",
+  meta: "Social Media Marketing",
+};
+
+// Map projected revenue → suggested budget bucket (monthly)
+function pickBudget(monthlyBudget: number): string {
+  if (!monthlyBudget) return "₹5L - ₹15L / $5K - $15K";
+  if (monthlyBudget < 500000) return "Under ₹5L / $5K";
+  if (monthlyBudget < 1500000) return "₹5L - ₹15L / $5K - $15K";
+  if (monthlyBudget < 5000000) return "₹15L - ₹50L / $15K - $50K";
+  return "₹50L+ / $50K+";
+}
+
+function timeAgo(ts: number): string {
+  const diff = Math.max(0, Date.now() - ts);
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
 
 const serviceOptions = [
   "SEO & Organic Growth", "PPC & Paid Ads", "Social Media Marketing", "Content Marketing",
@@ -21,12 +64,63 @@ const goalOptions = [
 ];
 
 export default function GetProposal() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [step, setStep] = useState(0);
-  const [data, setData] = useState({
+  const [data, setData] = useState<ProposalData>({
     name: "", email: "", phone: "", company: "", website: "",
     services: [] as string[], goals: [] as string[],
-    budget: "₹5L - ₹15L", timeline: "1-3 months", message: "",
+    budget: "₹5L - ₹15L / $5K - $15K", timeline: "1-3 months", message: "",
   });
+
+  const [roiContext, setRoiContext] = useState<null | {
+    channel: string; budget: number; projectedRevenue: number; projectedLeads: number;
+  }>(null);
+
+  const [draftPrompt, setDraftPrompt] = useState<DraftPayload | null>(null);
+  const initializedRef = useRef(false);
+
+  // On mount: read ROI calc params, then check for saved draft
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const channel = searchParams.get("channel") || "";
+    const budgetParam = Number(searchParams.get("budget") || 0);
+    const projRev = Number(searchParams.get("projected_revenue") || 0);
+    const projLeads = Number(searchParams.get("projected_leads") || 0);
+
+    if (channel || budgetParam || projRev) {
+      const recommended = channelServiceMap[channel];
+      const services = recommended ? [recommended] : [];
+      const goals = projRev ? ["Increase Leads", "Boost Revenue"] : [];
+      const message = projRev
+        ? `From ROI Calculator → channel: ${channel}, monthly budget: ₹${budgetParam.toLocaleString("en-IN")}, projected revenue/mo: ₹${Math.round(projRev).toLocaleString("en-IN")}, extra leads/mo: ${Math.round(projLeads)}.`
+        : "";
+      setData({
+        name: "", email: "", phone: "", company: "", website: "",
+        services, goals,
+        budget: pickBudget(budgetParam),
+        timeline: "1-3 months",
+        message,
+      });
+      setRoiContext({ channel, budget: budgetParam, projectedRevenue: projRev, projectedLeads: projLeads });
+      setSearchParams({}, { replace: true });
+    }
+
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as DraftPayload;
+        const fresh = Date.now() - parsed.savedAt < DRAFT_TTL_MS;
+        const hasContent =
+          parsed.data &&
+          (parsed.data.name || parsed.data.email || parsed.data.services?.length || parsed.data.goals?.length);
+        if (fresh && hasContent) setDraftPrompt(parsed);
+        else if (!fresh) localStorage.removeItem(DRAFT_KEY);
+      }
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleItem = (key: "services" | "goals", item: string) => {
     setData(prev => ({
@@ -38,10 +132,41 @@ export default function GetProposal() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Auto-save draft
+  useEffect(() => {
+    if (submitted) return;
+    const hasAny =
+      data.name || data.email || data.phone || data.company || data.website ||
+      data.services.length || data.goals.length || data.message;
+    if (!hasAny) return;
+    const t = setTimeout(() => {
+      try {
+        const payload: DraftPayload = { data, step, savedAt: Date.now() };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+      } catch { /* quota */ }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [data, step, submitted]);
+
+  const restoreDraft = () => {
+    if (!draftPrompt) return;
+    setData(draftPrompt.data);
+    setStep(Math.min(draftPrompt.step, steps.length - 1));
+    setDraftPrompt(null);
+    toast.success("Draft restored — pick up where you left off.");
+  };
+
+  const dismissDraft = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftPrompt(null);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Save to contacts first
+      const roiNote = roiContext
+        ? ` [ROI: channel=${roiContext.channel}, budget=₹${roiContext.budget.toLocaleString("en-IN")}/mo, projRev=₹${Math.round(roiContext.projectedRevenue).toLocaleString("en-IN")}/mo, projLeads=${Math.round(roiContext.projectedLeads)}/mo]`
+        : "";
       const { data: contact, error: contactErr } = await supabase.from("contacts").insert({
         name: data.name.trim(),
         email: data.email.trim(),
@@ -49,19 +174,20 @@ export default function GetProposal() {
         company: data.company.trim() || null,
         service: data.services.join(", ") || "Multiple Services",
         budget_range: data.budget,
-        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}`.trim(),
-        source: "Website Proposal Form",
+        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}${roiNote}`.trim(),
+        source: roiContext ? "ROI Calculator → Proposal" : "Website Proposal Form",
       }).select("id").single();
 
       if (contactErr) throw contactErr;
 
-      // Save to leads
       await supabase.from("leads").insert({
         contact_id: contact?.id || null,
         service: data.services.join(", ") || "Multiple Services",
         budget: data.budget,
         timeline: data.timeline,
       });
+
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
 
       setSubmitted(true);
       toast.success("Proposal request submitted!");
@@ -131,6 +257,69 @@ export default function GetProposal() {
               </h1>
               <p className="text-sm text-muted-foreground">Takes less than 3 minutes. No obligation.</p>
             </div>
+
+            {/* ROI context badge */}
+            {roiContext && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20">
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-semibold text-foreground">
+                      ROI projection saved — we'll build your plan around it.
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Channel: <span className="font-medium text-foreground capitalize">{roiContext.channel || "—"}</span>
+                      {" · "}Budget: <span className="font-medium text-foreground">₹{roiContext.budget.toLocaleString("en-IN")}/mo</span>
+                      {" · "}Projected: <span className="font-medium text-emerald-300">₹{Math.round(roiContext.projectedRevenue).toLocaleString("en-IN")}/mo</span>
+                      {" · "}Leads: <span className="font-medium text-foreground">+{Math.round(roiContext.projectedLeads)}/mo</span>
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Restore-draft prompt */}
+            {draftPrompt && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 rounded-xl border border-primary/30 bg-primary/10 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/20">
+                    <RotateCcw className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 text-sm">
+                    <p className="font-semibold text-foreground">We saved your draft.</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Pick up where you left off — last saved {timeAgo(draftPrompt.savedAt)}.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button size="sm" onClick={restoreDraft} className="h-8 rounded-full px-4 text-xs">
+                        Restore my draft
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={dismissDraft} className="h-8 rounded-full px-3 text-xs">
+                        Start fresh
+                      </Button>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={dismissDraft}
+                    aria-label="Dismiss"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             <div className="mb-10">
               <div className="flex items-center justify-between mb-3">
