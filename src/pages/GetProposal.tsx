@@ -12,6 +12,9 @@ const steps = ["About You", "Services", "Goals", "Budget", "Review"];
 
 const DRAFT_KEY = "dp_proposal_draft_v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+const RECOVERY_SENT_KEY = "dp_proposal_recovery_sent_v1";
+const RECOVERY_DELAY_MS = 90 * 1000; // 90s after email blur
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type DraftPayload = {
   data: ProposalData;
