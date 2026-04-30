@@ -247,6 +247,69 @@ export default function GetProposal() {
               <p className="text-sm text-muted-foreground">Takes less than 3 minutes. No obligation.</p>
             </div>
 
+            {/* ROI context badge */}
+            {roiContext && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20">
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-semibold text-foreground">
+                      ROI projection saved — we'll build your plan around it.
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Channel: <span className="font-medium text-foreground capitalize">{roiContext.channel || "—"}</span>
+                      {" · "}Budget: <span className="font-medium text-foreground">₹{roiContext.budget.toLocaleString("en-IN")}/mo</span>
+                      {" · "}Projected: <span className="font-medium text-emerald-300">₹{Math.round(roiContext.projectedRevenue).toLocaleString("en-IN")}/mo</span>
+                      {" · "}Leads: <span className="font-medium text-foreground">+{Math.round(roiContext.projectedLeads)}/mo</span>
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Restore-draft prompt */}
+            {draftPrompt && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 rounded-xl border border-primary/30 bg-primary/10 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/20">
+                    <RotateCcw className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 text-sm">
+                    <p className="font-semibold text-foreground">We saved your draft.</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Pick up where you left off — last saved {timeAgo(draftPrompt.savedAt)}.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button size="sm" onClick={restoreDraft} className="h-8 rounded-full px-4 text-xs">
+                        Restore my draft
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={dismissDraft} className="h-8 rounded-full px-3 text-xs">
+                        Start fresh
+                      </Button>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={dismissDraft}
+                    aria-label="Dismiss"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
             <div className="mb-10">
               <div className="flex items-center justify-between mb-3">
                 {steps.map((s, i) => (
