@@ -12,6 +12,9 @@ const steps = ["About You", "Services", "Goals", "Budget", "Review"];
 
 const DRAFT_KEY = "dp_proposal_draft_v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+const RECOVERY_SENT_KEY = "dp_proposal_recovery_sent_v1";
+const RECOVERY_DELAY_MS = 90 * 1000; // 90s after email blur
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type DraftPayload = {
   data: ProposalData;
@@ -148,6 +151,54 @@ export default function GetProposal() {
     return () => clearTimeout(t);
   }, [data, step, submitted]);
 
+  // Abandoned-form recovery: schedule "your draft is waiting" email after blur
+  const recoveryTimerRef = useRef<number | null>(null);
+
+  const cancelRecoveryTimer = () => {
+    if (recoveryTimerRef.current !== null) {
+      clearTimeout(recoveryTimerRef.current);
+      recoveryTimerRef.current = null;
+    }
+  };
+
+  const scheduleRecoveryEmail = (email: string) => {
+    const clean = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(clean)) return;
+
+    // Don't double-send to same address
+    try {
+      const sentRaw = localStorage.getItem(RECOVERY_SENT_KEY);
+      const sent: string[] = sentRaw ? JSON.parse(sentRaw) : [];
+      if (sent.includes(clean)) return;
+    } catch { /* noop */ }
+
+    cancelRecoveryTimer();
+    recoveryTimerRef.current = window.setTimeout(async () => {
+      // Skip if user submitted in the meantime
+      if (submitted) return;
+      try {
+        await supabase.functions.invoke("send-notification", {
+          body: {
+            type: "abandoned_draft",
+            data: {
+              email: clean,
+              name: data.name?.trim() || undefined,
+              resumeUrl: `${window.location.origin}/get-proposal`,
+              source: roiContext ? "ROI Calculator → Proposal" : "Proposal Form",
+            },
+          },
+        });
+        const sentRaw = localStorage.getItem(RECOVERY_SENT_KEY);
+        const sent: string[] = sentRaw ? JSON.parse(sentRaw) : [];
+        sent.push(clean);
+        localStorage.setItem(RECOVERY_SENT_KEY, JSON.stringify(sent.slice(-20)));
+      } catch { /* silently ignore */ }
+    }, RECOVERY_DELAY_MS);
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => () => cancelRecoveryTimer(), []);
+
   const restoreDraft = () => {
     if (!draftPrompt) return;
     setData(draftPrompt.data);
@@ -162,6 +213,7 @@ export default function GetProposal() {
   };
 
   const handleSubmit = async () => {
+    cancelRecoveryTimer();
     setLoading(true);
     try {
       const roiNote = roiContext
@@ -370,7 +422,7 @@ export default function GetProposal() {
                         </div>
                         <div>
                           <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Email *</label>
-                          <Input type="email" inputMode="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} placeholder="john@company.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
+                          <Input type="email" inputMode="email" value={data.email} onChange={e => setData({...data, email: e.target.value})} onFocus={e => e.target.scrollIntoView({ behavior: "smooth", block: "center" })} onBlur={e => scheduleRecoveryEmail(e.target.value)} placeholder="john@company.com" className="bg-secondary/50 border-border/50 min-h-[52px]" />
                         </div>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
