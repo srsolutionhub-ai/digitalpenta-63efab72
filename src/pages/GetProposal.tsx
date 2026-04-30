@@ -41,6 +41,17 @@ function pickBudget(monthlyBudget: number): string {
   return "₹50L+ / $50K+";
 }
 
+function timeAgo(ts: number): string {
+  const diff = Math.max(0, Date.now() - ts);
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
+
 const serviceOptions = [
   "SEO & Organic Growth", "PPC & Paid Ads", "Social Media Marketing", "Content Marketing",
   "PR & Media Relations", "Website Development", "Mobile App Development", "E-commerce",
