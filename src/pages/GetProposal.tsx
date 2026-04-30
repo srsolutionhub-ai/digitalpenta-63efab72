@@ -1,13 +1,45 @@
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles, RotateCcw, X, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const steps = ["About You", "Services", "Goals", "Budget", "Review"];
+
+const DRAFT_KEY = "dp_proposal_draft_v1";
+const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+type DraftPayload = {
+  data: ProposalData;
+  step: number;
+  savedAt: number;
+};
+
+type ProposalData = {
+  name: string; email: string; phone: string; company: string; website: string;
+  services: string[]; goals: string[];
+  budget: string; timeline: string; message: string;
+};
+
+// Map ROI channel → recommended service preselect
+const channelServiceMap: Record<string, string> = {
+  seo: "SEO & Organic Growth",
+  google: "PPC & Paid Ads",
+  meta: "Social Media Marketing",
+};
+
+// Map projected revenue → suggested budget bucket (monthly)
+function pickBudget(monthlyBudget: number): string {
+  if (!monthlyBudget) return "₹5L - ₹15L / $5K - $15K";
+  if (monthlyBudget < 500000) return "Under ₹5L / $5K";
+  if (monthlyBudget < 1500000) return "₹5L - ₹15L / $5K - $15K";
+  if (monthlyBudget < 5000000) return "₹15L - ₹50L / $15K - $50K";
+  return "₹50L+ / $50K+";
+}
 
 const serviceOptions = [
   "SEO & Organic Growth", "PPC & Paid Ads", "Social Media Marketing", "Content Marketing",
