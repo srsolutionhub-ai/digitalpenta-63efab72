@@ -26,8 +26,11 @@ Deno.serve(async (req) => {
 
     let subject = "";
     let html = "";
-    const to = "support@digitalpenta.com";
+    let to: string | string[] = "support@digitalpenta.com";
+    const internalTo = "support@digitalpenta.com";
     const from = "Digital Penta <notifications@digitalpenta.com>";
+    let bcc: string | undefined;
+    let replyTo: string | undefined;
 
     if (payload.type === "new_lead") {
       const d = payload.data;
@@ -87,6 +90,52 @@ Deno.serve(async (req) => {
           </div>
         </div>
       `;
+    } else if (payload.type === "abandoned_draft") {
+      const d = payload.data as {
+        email?: string; name?: string; resumeUrl?: string; source?: string;
+      };
+      const recipient = (d.email || "").trim();
+      // Basic email guard
+      if (!recipient || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+        return new Response(
+          JSON.stringify({ error: "Invalid recipient email" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      to = recipient;
+      bcc = internalTo;
+      replyTo = "support@digitalpenta.com";
+      const greet = d.name ? `Hi ${d.name},` : "Hi there,";
+      const resumeUrl = d.resumeUrl || "https://digitalpenta.com/get-proposal";
+      subject = "Your Digital Penta proposal draft is waiting 👋";
+      html = `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #6C3BF5, #4F1CD4); padding: 28px 32px;">
+            <h1 style="margin: 0; font-size: 22px; font-weight: 700;">Your draft is saved</h1>
+            <p style="margin: 6px 0 0; opacity: .85; font-size: 13px;">Pick up right where you left off.</p>
+          </div>
+          <div style="padding: 28px 32px;">
+            <p style="margin: 0 0 14px; font-size: 15px;">${greet}</p>
+            <p style="margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: #D1D5DB;">
+              We noticed you started a custom proposal request on Digital Penta. Your answers are
+              safely saved — finish in under 2 minutes and our strategy team will send back a tailored
+              growth plan within 48 hours.
+            </p>
+            <div style="margin: 22px 0; text-align: center;">
+              <a href="${resumeUrl}" style="display: inline-block; background: #6C3BF5; color: white; padding: 14px 30px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                Resume my proposal →
+              </a>
+            </div>
+            <p style="margin: 16px 0 0; font-size: 12px; color: #9CA3AF; line-height: 1.5;">
+              Prefer to chat? Reply to this email or WhatsApp us at +91-88601-00039.
+              If this wasn't you, just ignore this message.
+            </p>
+          </div>
+          <div style="padding: 14px 32px; background: rgba(255,255,255,0.03); text-align: center; font-size: 11px; color: #6B7280;">
+            Digital Penta · Delhi, India · digitalpenta.com
+          </div>
+        </div>
+      `;
     } else {
       return new Response(
         JSON.stringify({ error: "Invalid notification type" }),
@@ -94,13 +143,22 @@ Deno.serve(async (req) => {
       );
     }
 
+    const body: Record<string, unknown> = {
+      from,
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      html,
+    };
+    if (bcc) body.bcc = [bcc];
+    if (replyTo) body.reply_to = replyTo;
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
-      body: JSON.stringify({ from, to: [to], subject, html }),
+      body: JSON.stringify(body),
     });
 
     const result = await res.json();
