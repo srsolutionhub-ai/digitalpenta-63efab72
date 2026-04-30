@@ -213,6 +213,7 @@ export default function GetProposal() {
   };
 
   const handleSubmit = async () => {
+    cancelRecoveryTimer();
     setLoading(true);
     try {
       const roiNote = roiContext
