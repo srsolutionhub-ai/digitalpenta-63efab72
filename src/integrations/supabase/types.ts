@@ -1570,6 +1570,60 @@ export type Database = {
         }
         Relationships: []
       }
+      strategy_call_bookings: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          preferred_date: string
+          preferred_slot: string
+          source: string | null
+          status: string
+          timezone: string
+          topic: string | null
+          updated_at: string
+          utm: Json | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          preferred_date: string
+          preferred_slot: string
+          source?: string | null
+          status?: string
+          timezone?: string
+          topic?: string | null
+          updated_at?: string
+          utm?: Json | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          preferred_date?: string
+          preferred_slot?: string
+          source?: string | null
+          status?: string
+          timezone?: string
+          topic?: string | null
+          updated_at?: string
+          utm?: Json | null
+        }
+        Relationships: []
+      }
       support_messages: {
         Row: {
           client_id: string
