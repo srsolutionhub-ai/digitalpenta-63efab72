@@ -1,27 +1,39 @@
+import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/sections/HeroSection";
 import HomeIntroSection from "@/components/sections/HomeIntroSection";
-import PartnersSection from "@/components/sections/PartnersSection";
-import StatsSection from "@/components/sections/StatsSection";
-import ServicesSection from "@/components/sections/ServicesSection";
-import WhyUsSection from "@/components/sections/WhyUsSection";
-import ProcessSection from "@/components/sections/ProcessSection";
-import CaseStudiesSection from "@/components/sections/CaseStudiesSection";
-import IndustriesSection from "@/components/sections/IndustriesSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
-import PricingSection from "@/components/sections/PricingSection";
-import FAQSection from "@/components/sections/FAQSection";
-import BlogPreviewSection from "@/components/sections/BlogPreviewSection";
-import WebsiteAuditSection from "@/components/sections/WebsiteAuditSection";
-import ResultsReelSection from "@/components/sections/ResultsReelSection";
-import DashboardPreviewSection from "@/components/sections/DashboardPreviewSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
-import SignatureCtaSection from "@/components/sections/SignatureCtaSection";
-import SeoLinkHub from "@/components/sections/SeoLinkHub";
-import RoiCalculatorSection from "@/components/sections/RoiCalculatorSection";
 import UrgencyStrip from "@/components/ui/urgency-strip";
 import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
+
+/* Below-the-fold: code-split to keep initial JS small and improve LCP/TBT */
+const PartnersSection = lazy(() => import("@/components/sections/PartnersSection"));
+const StatsSection = lazy(() => import("@/components/sections/StatsSection"));
+const ServicesSection = lazy(() => import("@/components/sections/ServicesSection"));
+const WhyUsSection = lazy(() => import("@/components/sections/WhyUsSection"));
+const ProcessSection = lazy(() => import("@/components/sections/ProcessSection"));
+const CaseStudiesSection = lazy(() => import("@/components/sections/CaseStudiesSection"));
+const IndustriesSection = lazy(() => import("@/components/sections/IndustriesSection"));
+const TestimonialsSection = lazy(() => import("@/components/sections/TestimonialsSection"));
+const PricingSection = lazy(() => import("@/components/sections/PricingSection"));
+const FAQSection = lazy(() => import("@/components/sections/FAQSection"));
+const BlogPreviewSection = lazy(() => import("@/components/sections/BlogPreviewSection"));
+const WebsiteAuditSection = lazy(() => import("@/components/sections/WebsiteAuditSection"));
+const ResultsReelSection = lazy(() => import("@/components/sections/ResultsReelSection"));
+const DashboardPreviewSection = lazy(() => import("@/components/sections/DashboardPreviewSection"));
+const SignatureCtaSection = lazy(() => import("@/components/sections/SignatureCtaSection"));
+const SeoLinkHub = lazy(() => import("@/components/sections/SeoLinkHub"));
+const RoiCalculatorSection = lazy(() => import("@/components/sections/RoiCalculatorSection"));
+
+/** Skeleton placeholder that reserves vertical space to minimize CLS during chunk load. */
+function SectionFallback({ minH = "min-h-[420px]" }: { minH?: string }) {
+  return (
+    <div className={`${minH} flex items-center justify-center`} aria-hidden>
+      <div className="h-2 w-32 rounded-full bg-white/[0.06] animate-pulse" />
+    </div>
+  );
+}
 
 /* Compact KPI strip — sits between the hero and the press section */
 function TrustStrip() {
@@ -76,7 +88,6 @@ const Index = () => {
             url: "https://digitalpenta.com/services/digital-marketing",
             serviceType: "Digital Marketing Agency",
           }),
-          // ItemList of top services — boosts homepage sitelink eligibility
           {
             "@context": "https://schema.org",
             "@type": "ItemList",
@@ -103,28 +114,65 @@ const Index = () => {
           }),
         ]}
       />
+      {/* Above-the-fold — eager */}
       <HeroSection />
       <UrgencyStrip />
       <TrustStrip />
       <PressAwardsStrip />
       <HomeIntroSection />
-      <PartnersSection />
-      <WebsiteAuditSection />
-      <StatsSection />
-      <ServicesSection />
-      <ProcessSection />
-      <WhyUsSection />
-      <CaseStudiesSection />
-      <ResultsReelSection />
-      <DashboardPreviewSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <RoiCalculatorSection />
-      <FAQSection />
-      <IndustriesSection />
-      <BlogPreviewSection />
-      <SeoLinkHub />
-      <SignatureCtaSection />
+
+      {/* Below-the-fold — lazy chunks */}
+      <Suspense fallback={<SectionFallback minH="min-h-[160px]" />}>
+        <PartnersSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <WebsiteAuditSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
+        <StatsSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ServicesSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ProcessSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <WhyUsSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
+        <CaseStudiesSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <ResultsReelSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <DashboardPreviewSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <TestimonialsSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <PricingSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
+        <RoiCalculatorSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <FAQSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
+        <IndustriesSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <BlogPreviewSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[200px]" />}>
+        <SeoLinkHub />
+      </Suspense>
+      <Suspense fallback={<SectionFallback />}>
+        <SignatureCtaSection />
+      </Suspense>
     </Layout>
   );
 };

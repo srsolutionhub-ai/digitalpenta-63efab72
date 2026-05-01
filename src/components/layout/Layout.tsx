@@ -1,15 +1,17 @@
-import { ReactNode } from "react";
+import { ReactNode, lazy, Suspense } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollProgressBar from "@/components/ui/scroll-progress-bar";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
 import MobileStickyBar from "@/components/ui/mobile-sticky-bar";
-import ExitIntentPopup from "@/components/ui/exit-intent-popup";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 import CookieConsent from "@/components/ui/cookie-consent";
-import SmartCTA from "@/components/ui/smart-cta";
-import AiStrategistChat from "@/components/ai/AiStrategistChat";
-import LiveActivityFeed from "@/components/ui/live-activity-feed";
+
+/* Deferred: appear after delays / user interaction — keep out of initial JS bundle */
+const ExitIntentPopup = lazy(() => import("@/components/ui/exit-intent-popup"));
+const SmartCTA = lazy(() => import("@/components/ui/smart-cta"));
+const AiStrategistChat = lazy(() => import("@/components/ai/AiStrategistChat"));
+const LiveActivityFeed = lazy(() => import("@/components/ui/live-activity-feed"));
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -20,12 +22,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Footer />
       <WhatsAppFloat />
       <MobileStickyBar />
-      <ExitIntentPopup />
       <LeadCaptureBar />
       <CookieConsent />
-      <SmartCTA />
-      <AiStrategistChat />
-      <LiveActivityFeed />
+      <Suspense fallback={null}>
+        <ExitIntentPopup />
+        <SmartCTA />
+        <AiStrategistChat />
+        <LiveActivityFeed />
+      </Suspense>
     </div>
   );
 }
