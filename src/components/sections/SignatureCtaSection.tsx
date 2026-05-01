@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import {
@@ -11,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BookingCalendar from "@/components/booking/BookingCalendar";
 
 /**
  * SignatureCtaSection
@@ -198,48 +198,55 @@ export default function SignatureCtaSection() {
               </p>
               <div className="relative z-10 grid grid-cols-2 gap-2.5">
                 {slots.map((slot) => (
-                  <button
+                  <BookingCalendar
                     key={`${slot.day}-${slot.date}`}
-                    disabled={slot.taken}
-                    className={`group relative flex flex-col items-start rounded-xl border px-3.5 py-3 text-left transition-all duration-300 ${
-                      slot.taken
-                        ? "cursor-not-allowed border-white/[0.04] bg-white/[0.015] opacity-50"
-                        : "border-white/10 bg-white/[0.03] hover:border-[hsl(256_90%_62%/0.5)] hover:bg-[hsl(256_90%_62%/0.08)]"
-                    }`}
-                  >
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/50">
-                        {slot.day}
-                      </span>
-                      <span className="font-display text-lg font-bold text-foreground">
-                        {slot.date}
-                      </span>
-                    </div>
-                    <span className="mt-0.5 text-xs text-foreground/70">
-                      {slot.time}
-                    </span>
-                    {slot.taken && (
-                      <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
-                        Booked
-                      </span>
-                    )}
-                  </button>
+                    source="homepage-signature-cta"
+                    trigger={
+                      <button
+                        disabled={slot.taken}
+                        className={`group relative flex flex-col items-start rounded-xl border px-3.5 py-3 text-left transition-all duration-300 ${
+                          slot.taken
+                            ? "cursor-not-allowed border-white/[0.04] bg-white/[0.015] opacity-50"
+                            : "border-white/10 bg-white/[0.03] hover:border-[hsl(256_90%_62%/0.5)] hover:bg-[hsl(256_90%_62%/0.08)]"
+                        }`}
+                      >
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/50">
+                            {slot.day}
+                          </span>
+                          <span className="font-display text-lg font-bold text-foreground">
+                            {slot.date}
+                          </span>
+                        </div>
+                        <span className="mt-0.5 text-xs text-foreground/70">
+                          {slot.time}
+                        </span>
+                        {slot.taken && (
+                          <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-foreground/35">
+                            Booked
+                          </span>
+                        )}
+                      </button>
+                    }
+                  />
                 ))}
               </div>
 
               {/* CTA */}
-              <Link
-                to="/contact"
-                className="relative z-10 mt-6 block"
-              >
-                <Button
-                  size="lg"
-                  className="btn-glow group h-[56px] w-full rounded-2xl border-0 px-6 font-display text-base font-bold text-white hover:text-white"
-                >
-                  Reserve my slot
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
+              <div className="relative z-10 mt-6">
+                <BookingCalendar
+                  source="homepage-signature-cta-primary"
+                  trigger={
+                    <Button
+                      size="lg"
+                      className="btn-glow group h-[56px] w-full rounded-2xl border-0 px-6 font-display text-base font-bold text-white hover:text-white"
+                    >
+                      Reserve my slot
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  }
+                />
+              </div>
 
               <p className="relative z-10 mt-4 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40">
                 · Encrypted · GDPR/DPDP compliant ·
