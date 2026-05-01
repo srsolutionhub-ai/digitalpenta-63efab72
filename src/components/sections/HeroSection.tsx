@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import heroMesh from "@/assets/hero-mesh-gradient.jpg";
+import heroMeshWebp from "@/assets/hero-mesh-gradient.webp";
+import heroMeshAvif from "@/assets/hero-mesh-gradient.avif";
 import heroOrb from "@/assets/hero-orb.png";
+import heroOrbWebp from "@/assets/hero-orb.webp";
+import heroOrbAvif from "@/assets/hero-orb.avif";
 import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
 
@@ -31,18 +35,22 @@ export default function HeroSection() {
     >
       {/* Layer 1: Mesh gradient image base */}
       <motion.div className="absolute inset-0" style={{ y, opacity }}>
-        <img
-          src={heroMesh}
-          alt=""
-          aria-hidden
-          className="w-full h-full object-cover"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          width={1920}
-          height={1080}
-          style={{ opacity: 0.55 }}
-        />
+        <picture>
+          <source srcSet={heroMeshAvif} type="image/avif" />
+          <source srcSet={heroMeshWebp} type="image/webp" />
+          <img
+            src={heroMesh}
+            alt=""
+            aria-hidden
+            className="w-full h-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            width={1920}
+            height={1080}
+            style={{ opacity: 0.55 }}
+          />
+        </picture>
         {/* Background gradient mesh (CSS) */}
         <div className="absolute inset-0 mesh-bg" />
         {/* Vignette */}
@@ -81,13 +89,19 @@ export default function HeroSection() {
         transition={{ duration: 1.4, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="absolute right-[-80px] top-1/2 -translate-y-1/2 w-[480px] h-[480px] hidden xl:block pointer-events-none"
       >
-        <img
-          src={heroOrb}
-          alt=""
-          aria-hidden
-          className="w-full h-full object-contain float-orb"
-          style={{ filter: "drop-shadow(0 0 60px hsl(256 90% 62% / 0.5))" }}
-        />
+        <picture>
+          <source srcSet={heroOrbAvif} type="image/avif" />
+          <source srcSet={heroOrbWebp} type="image/webp" />
+          <img
+            src={heroOrb}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-contain float-orb"
+            style={{ filter: "drop-shadow(0 0 60px hsl(256 90% 62% / 0.5))" }}
+          />
+        </picture>
       </motion.div>
 
       {/* Layer 4: Subtle dot grid */}
