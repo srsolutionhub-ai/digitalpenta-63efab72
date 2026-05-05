@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
+import BookingCalendar from "@/components/booking/BookingCalendar";
 import logo from "@/assets/digital-penta-logo.png";
 
 const services = [
@@ -346,11 +347,14 @@ export default function Navbar() {
               <span dir="ltr" style={{ unicodeBidi: "isolate" }}>+91-88601-00039</span>
             </a>
             <div className="w-px h-5 bg-border/50" aria-hidden />
-            <Link to="/contact">
-              <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
-                Book Free Call
-              </Button>
-            </Link>
+            <BookingCalendar
+              source="navbar"
+              trigger={
+                <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
+                  Book Free Call
+                </Button>
+              }
+            />
             <Link to="/get-proposal">
               <Button size="sm" className="rounded-full font-display font-bold text-xs px-5 h-8">
                 Get Proposal →
