@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
+import BookingCalendar from "@/components/booking/BookingCalendar";
 
 const footerSections = [
   {
@@ -108,13 +109,16 @@ export default function Footer() {
             <p className="text-white/85 max-w-lg mx-auto mb-8 text-base">
               Book a FREE 30-minute strategy call with our growth experts. No commitment. No fluff. Just a plan.
             </p>
-            <Link to="/contact">
-              <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
-                style={{ boxShadow: "0 20px 60px -10px rgba(0,0,0,0.5), 0 0 40px -8px hsl(256 100% 70% / 0.7)" }}
-              >
-                📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
+            <BookingCalendar
+              source="footer-cta"
+              trigger={
+                <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
+                  style={{ boxShadow: "0 20px 60px -10px rgba(0,0,0,0.5), 0 0 40px -8px hsl(256 100% 70% / 0.7)" }}
+                >
+                  📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />
+                </Button>
+              }
+            />
             <div className="flex items-center justify-center gap-6 mt-6 text-white/70 text-xs font-mono">
               <span>✓ No credit card</span>
               <span>✓ Cancel anytime</span>
