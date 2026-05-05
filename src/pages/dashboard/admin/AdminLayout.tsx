@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
-  MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock,
+  MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -22,6 +22,7 @@ const navGroups = [
     items: [
       { label: "Pipeline", icon: Kanban, path: "/dashboard/admin/crm" },
       { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
+      { label: "Bookings", icon: CalendarDays, path: "/dashboard/admin/bookings" },
       { label: "Quotations", icon: Briefcase, path: "/dashboard/admin/quotations" },
       { label: "Invoices", icon: Receipt, path: "/dashboard/admin/invoices" },
     ],
