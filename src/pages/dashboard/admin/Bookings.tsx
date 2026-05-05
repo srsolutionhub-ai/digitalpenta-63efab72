@@ -48,7 +48,7 @@ export default function Bookings() {
   });
 
   const updateBooking = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: { status?: string; notes?: string | null } }) => {
       const { error } = await supabase.from("strategy_call_bookings").update(updates).eq("id", id);
       if (error) throw error;
     },
