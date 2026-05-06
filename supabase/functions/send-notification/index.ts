@@ -7,8 +7,43 @@ const corsHeaders = {
 };
 
 interface EmailPayload {
-  type: "new_lead" | "invoice_created" | "abandoned_draft";
+  type: "new_lead" | "invoice_created" | "abandoned_draft" | "booking_confirmed";
   data: Record<string, unknown>;
+}
+
+/* ----------------------------- ICS helpers ------------------------------ */
+function pad(n: number) { return n < 10 ? `0${n}` : `${n}`; }
+function toIcsUtc(d: Date) {
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+}
+/** Build a minimal RFC-5545 VEVENT for a 30-min strategy call. */
+function buildIcs(opts: { summary: string; description: string; startUtc: Date; durationMin: number; organizer: string; attendee: string; uid: string; location?: string; }) {
+  const end = new Date(opts.startUtc.getTime() + opts.durationMin * 60_000);
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Digital Penta//Strategy Call//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:REQUEST",
+    "BEGIN:VEVENT",
+    `UID:${opts.uid}`,
+    `DTSTAMP:${toIcsUtc(new Date())}`,
+    `DTSTART:${toIcsUtc(opts.startUtc)}`,
+    `DTEND:${toIcsUtc(end)}`,
+    `SUMMARY:${opts.summary.replace(/[\n,;]/g, " ")}`,
+    `DESCRIPTION:${opts.description.replace(/\n/g, "\\n")}`,
+    `ORGANIZER;CN=Digital Penta:mailto:${opts.organizer}`,
+    `ATTENDEE;CN=${opts.attendee};RSVP=TRUE:mailto:${opts.attendee}`,
+    opts.location ? `LOCATION:${opts.location}` : "LOCATION:Google Meet (link to follow)",
+    "STATUS:CONFIRMED",
+    "SEQUENCE:0",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n");
+}
+function b64(s: string) {
+  return btoa(unescape(encodeURIComponent(s)));
 }
 
 Deno.serve(async (req) => {
