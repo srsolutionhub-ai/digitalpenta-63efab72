@@ -25,6 +25,7 @@ const DashboardPreviewSection = lazy(() => import("@/components/sections/Dashboa
 const SignatureCtaSection = lazy(() => import("@/components/sections/SignatureCtaSection"));
 const SeoLinkHub = lazy(() => import("@/components/sections/SeoLinkHub"));
 const RoiCalculatorSection = lazy(() => import("@/components/sections/RoiCalculatorSection"));
+const ClientTrustWallSection = lazy(() => import("@/components/sections/ClientTrustWallSection"));
 
 /** Skeleton placeholder that reserves vertical space to minimize CLS during chunk load. */
 function SectionFallback({ minH = "min-h-[420px]" }: { minH?: string }) {
@@ -124,6 +125,9 @@ const Index = () => {
       {/* Below-the-fold — lazy chunks */}
       <Suspense fallback={<SectionFallback minH="min-h-[160px]" />}>
         <PartnersSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[800px]" />}>
+        <ClientTrustWallSection />
       </Suspense>
       <Suspense fallback={<SectionFallback />}>
         <WebsiteAuditSection />
