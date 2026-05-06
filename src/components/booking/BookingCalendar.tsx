@@ -146,18 +146,30 @@ export default function BookingCalendar({ trigger, source = "website", defaultTo
       });
       if (error) throw error;
 
-      // Fire internal notification (non-blocking)
+      // Internal lead alert
       supabase.functions.invoke("send-notification", {
         body: {
           type: "new_lead",
           data: {
-            name,
-            email,
-            phone,
-            company,
+            name, email, phone, company,
             service: "Strategy Call Booking",
             message: `Requested ${fmtDate(date)} at ${slot} (${tz}). Topic: ${topic || "—"}`,
             source: `booking:${source}`,
+          },
+        },
+      }).catch(() => { /* noop */ });
+
+      // Confirmation email + .ics to the lead
+      supabase.functions.invoke("send-notification", {
+        body: {
+          type: "booking_confirmed",
+          data: {
+            name, email, phone, company,
+            preferred_date: toIsoDate(date),
+            preferred_slot: slot,
+            timezone: tz,
+            topic,
+            source,
           },
         },
       }).catch(() => { /* noop */ });
