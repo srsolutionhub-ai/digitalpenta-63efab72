@@ -37,7 +37,7 @@ export default function Picture({
   const webp = useMemo(() => webpSrc ?? swapExt(src, "webp"), [webpSrc, src]);
 
   return (
-    <picture>
+    <picture style={{ display: "contents" }}>
       <source srcSet={avif} type="image/avif" />
       <source srcSet={webp} type="image/webp" />
       <img

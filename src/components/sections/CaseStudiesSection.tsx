@@ -227,10 +227,11 @@ function FeaturedCard({ c }: { c: CaseItem }) {
 
       {/* Image */}
       <div className="absolute inset-0">
-        <img
+        <Picture
           src={c.image}
-          alt={c.title}
-          loading="lazy"
+          avifSrc={c.imageAvif}
+          webpSrc={c.imageWebp}
+          alt={`${c.title} — ${c.industry} case study by Digital Penta`}
           width={1200}
           height={800}
           className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-[1.04] transition-[opacity,transform] duration-700 ease-out"
@@ -367,10 +368,11 @@ function CompactCard({
 
       {/* Image */}
       <div className="absolute inset-0">
-        <img
+        <Picture
           src={c.image}
-          alt={c.title}
-          loading="lazy"
+          avifSrc={c.imageAvif}
+          webpSrc={c.imageWebp}
+          alt={`${c.title} — ${c.industry} case study by Digital Penta`}
           width={800}
           height={600}
           className="w-full h-full object-cover opacity-30 group-hover:opacity-55 group-hover:scale-[1.05] transition-[opacity,transform] duration-700"
