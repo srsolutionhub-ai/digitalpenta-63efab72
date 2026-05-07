@@ -27,6 +27,27 @@ export default function BlogPreviewSection() {
 
   return (
     <section className="py-28 md:py-36">
+      <SchemaInjector
+        id="home-blog-itemlist"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Latest from the Digital Penta Blog",
+          itemListElement: posts.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://digitalpenta.com/blog/${p.slug}`,
+            item: {
+              "@type": "BlogPosting",
+              headline: p.title,
+              description: p.excerpt,
+              url: `https://digitalpenta.com/blog/${p.slug}`,
+              articleSection: p.category,
+              author: { "@type": "Organization", name: "Digital Penta" },
+            },
+          })),
+        }}
+      />
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
@@ -60,10 +81,11 @@ export default function BlogPreviewSection() {
                 className="group glass-card-pro overflow-hidden flex flex-col h-full"
               >
                 <div className="h-36 relative overflow-hidden">
-                  <img
+                  <Picture
                     src={post.image}
-                    alt={post.title}
-                    loading="lazy"
+                    avifSrc={post.avif}
+                    webpSrc={post.webp}
+                    alt={`${post.title} — Digital Penta blog`}
                     width={800}
                     height={512}
                     className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
