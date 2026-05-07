@@ -2,11 +2,21 @@ import { ArrowUpRight, TrendingUp, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import Picture from "@/components/ui/Picture";
+import SchemaInjector from "@/components/seo/SchemaInjector";
 
 import caseProptech from "@/assets/case-proptech.jpg";
+import caseProptechAvif from "@/assets/case-proptech.avif";
+import caseProptechWebp from "@/assets/case-proptech.webp";
 import caseHealthcare from "@/assets/case-healthcare.jpg";
+import caseHealthcareAvif from "@/assets/case-healthcare.avif";
+import caseHealthcareWebp from "@/assets/case-healthcare.webp";
 import caseEcommerce from "@/assets/case-ecommerce.jpg";
+import caseEcommerceAvif from "@/assets/case-ecommerce.avif";
+import caseEcommerceWebp from "@/assets/case-ecommerce.webp";
 import caseFintech from "@/assets/case-fintech.jpg";
+import caseFintechAvif from "@/assets/case-fintech.avif";
+import caseFintechWebp from "@/assets/case-fintech.webp";
 
 type CaseItem = {
   title: string;
@@ -16,6 +26,8 @@ type CaseItem = {
   description: string;
   services: string[];
   image: string;
+  imageAvif: string;
+  imageWebp: string;
   glow: string;
   glowSoft: string;
 };
@@ -30,6 +42,8 @@ const cases: CaseItem[] = [
       "A full-funnel lead engine — SEO landing pages, Google Ads, and CRM automation — that tripled qualified pipeline in two quarters.",
     services: ["SEO", "PPC", "Automation"],
     image: caseProptech,
+    imageAvif: caseProptechAvif,
+    imageWebp: caseProptechWebp,
     glow: "hsl(256 90% 65%)",
     glowSoft: "hsl(256 90% 65% / 0.18)",
   },
@@ -42,6 +56,8 @@ const cases: CaseItem[] = [
       "Multi-channel growth: organic, PR coverage, and a custom patient portal that scaled MRR.",
     services: ["Marketing", "PR", "Dev"],
     image: caseHealthcare,
+    imageAvif: caseHealthcareAvif,
+    imageWebp: caseHealthcareWebp,
     glow: "hsl(162 100% 50%)",
     glowSoft: "hsl(162 100% 50% / 0.18)",
   },
@@ -54,6 +70,8 @@ const cases: CaseItem[] = [
       "Scaled Meta & Google ad spend with creator partnerships and creative testing.",
     services: ["Social", "Influencer", "Performance"],
     image: caseEcommerce,
+    imageAvif: caseEcommerceAvif,
+    imageWebp: caseEcommerceWebp,
     glow: "hsl(322 90% 65%)",
     glowSoft: "hsl(322 90% 65% / 0.18)",
   },
@@ -66,6 +84,8 @@ const cases: CaseItem[] = [
       "ASO, paid UA, and AI chatbot onboarding driving installs and activation.",
     services: ["App Dev", "AI", "Marketing"],
     image: caseFintech,
+    imageAvif: caseFintechAvif,
+    imageWebp: caseFintechWebp,
     glow: "hsl(192 95% 60%)",
     glowSoft: "hsl(192 95% 60% / 0.18)",
   },
