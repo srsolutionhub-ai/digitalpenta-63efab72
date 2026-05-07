@@ -2,15 +2,23 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import Picture from "@/components/ui/Picture";
+import SchemaInjector from "@/components/seo/SchemaInjector";
 
 import blogAiImg from "@/assets/blog-ai.jpg";
+import blogAiAvif from "@/assets/blog-ai.avif";
+import blogAiWebp from "@/assets/blog-ai.webp";
 import blogSeoImg from "@/assets/blog-seo.jpg";
+import blogSeoAvif from "@/assets/blog-seo.avif";
+import blogSeoWebp from "@/assets/blog-seo.webp";
 import blogAutoImg from "@/assets/blog-automation.jpg";
+import blogAutoAvif from "@/assets/blog-automation.avif";
+import blogAutoWebp from "@/assets/blog-automation.webp";
 
 const posts = [
-  { title: "How AI is Reshaping Digital Marketing in 2026", excerpt: "From predictive analytics to AI-generated campaigns — here's what CMOs need to know.", category: "AI & Marketing", date: "Mar 2026", readTime: "6 min read", slug: "ai-reshaping-marketing-2026", image: blogAiImg },
-  { title: "SEO Strategy for Middle East Markets: A Complete Guide", excerpt: "Arabic SEO, local search, and cultural nuances that make or break your MENA strategy.", category: "SEO", date: "Mar 2026", readTime: "8 min read", slug: "seo-middle-east-guide", image: blogSeoImg },
-  { title: "The ROI of Marketing Automation: Real Numbers from Real Clients", excerpt: "We break down the exact savings and revenue gains from automating marketing workflows.", category: "Automation", date: "Feb 2026", readTime: "5 min read", slug: "roi-marketing-automation", image: blogAutoImg },
+  { title: "How AI is Reshaping Digital Marketing in 2026", excerpt: "From predictive analytics to AI-generated campaigns — here's what CMOs need to know.", category: "AI & Marketing", date: "Mar 2026", readTime: "6 min read", slug: "ai-reshaping-marketing-2026", image: blogAiImg, avif: blogAiAvif, webp: blogAiWebp },
+  { title: "SEO Strategy for Middle East Markets: A Complete Guide", excerpt: "Arabic SEO, local search, and cultural nuances that make or break your MENA strategy.", category: "SEO", date: "Mar 2026", readTime: "8 min read", slug: "seo-middle-east-guide", image: blogSeoImg, avif: blogSeoAvif, webp: blogSeoWebp },
+  { title: "The ROI of Marketing Automation: Real Numbers from Real Clients", excerpt: "We break down the exact savings and revenue gains from automating marketing workflows.", category: "Automation", date: "Feb 2026", readTime: "5 min read", slug: "roi-marketing-automation", image: blogAutoImg, avif: blogAutoAvif, webp: blogAutoWebp },
 ];
 
 export default function BlogPreviewSection() {
