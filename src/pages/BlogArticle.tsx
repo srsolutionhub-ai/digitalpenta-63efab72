@@ -7,6 +7,18 @@ import { toast } from "sonner";
 import { motion, useScroll } from "motion/react";
 import { useRef, useMemo, useState } from "react";
 import SEOHead, { breadcrumbSchema, personSchema } from "@/components/seo/SEOHead";
+import blogAiImg from "@/assets/blog-ai.jpg";
+import blogSeoImg from "@/assets/blog-seo.jpg";
+import blogAutoImg from "@/assets/blog-automation.jpg";
+
+const CATEGORY_OG: Record<string, string> = {
+  AI: blogAiImg,
+  SEO: blogSeoImg,
+  Automation: blogAutoImg,
+  Marketing: blogAiImg,
+  Development: blogAiImg,
+  PR: blogAutoImg,
+};
 
 interface ArticleData {
   title: string;
@@ -266,6 +278,7 @@ export default function BlogArticle() {
         description={displayArticle.excerpt.slice(0, 160)}
         canonical={`https://digitalpenta.com/blog/${slug}`}
         ogType="article"
+        ogImage={`https://digitalpenta.com${CATEGORY_OG[displayArticle.category] ?? blogAiImg}`}
         hreflangs={[
           { hreflang: "en", href: `https://digitalpenta.com/blog/${slug}` },
           { hreflang: "en-IN", href: `https://digitalpenta.com/blog/${slug}` },
