@@ -81,6 +81,8 @@ export default function MatrixPage() {
         canonical={canonical}
         hreflangs={hreflangs}
         schemas={schemas}
+        ogType="website"
+        ogImage="https://digitalpenta.com/og-image.png"
       />
 
       {/* Breadcrumb */}
