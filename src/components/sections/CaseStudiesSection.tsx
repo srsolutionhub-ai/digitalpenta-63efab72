@@ -99,6 +99,25 @@ export default function CaseStudiesSection() {
 
   return (
     <section className="py-28 md:py-36 relative overflow-hidden">
+      <SchemaInjector
+        id="home-case-studies-itemlist"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Digital Penta — Featured Case Studies",
+          itemListElement: cases.map((c, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "CreativeWork",
+              name: `${c.title} — ${c.metric} ${c.metricLabel}`,
+              about: c.industry,
+              description: c.description,
+              url: "https://digitalpenta.com/portfolio",
+            },
+          })),
+        }}
+      />
       {/* Ambient glow */}
       <div
         aria-hidden
