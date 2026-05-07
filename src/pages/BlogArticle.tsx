@@ -307,6 +307,7 @@ export default function BlogArticle() {
             mainEntityOfPage: `https://digitalpenta.com/blog/${slug}`,
             url: `https://digitalpenta.com/blog/${slug}`,
             articleSection: displayArticle.category,
+            image: [`https://digitalpenta.com${CATEGORY_OG[displayArticle.category] ?? blogAiImg}`],
             inLanguage: "en",
           },
           personSchema({
