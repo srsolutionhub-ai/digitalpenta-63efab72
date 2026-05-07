@@ -2,15 +2,23 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import Picture from "@/components/ui/Picture";
+import SchemaInjector from "@/components/seo/SchemaInjector";
 
 import blogAiImg from "@/assets/blog-ai.jpg";
+import blogAiAvif from "@/assets/blog-ai.avif";
+import blogAiWebp from "@/assets/blog-ai.webp";
 import blogSeoImg from "@/assets/blog-seo.jpg";
+import blogSeoAvif from "@/assets/blog-seo.avif";
+import blogSeoWebp from "@/assets/blog-seo.webp";
 import blogAutoImg from "@/assets/blog-automation.jpg";
+import blogAutoAvif from "@/assets/blog-automation.avif";
+import blogAutoWebp from "@/assets/blog-automation.webp";
 
 const posts = [
-  { title: "How AI is Reshaping Digital Marketing in 2026", excerpt: "From predictive analytics to AI-generated campaigns — here's what CMOs need to know.", category: "AI & Marketing", date: "Mar 2026", readTime: "6 min read", slug: "ai-reshaping-marketing-2026", image: blogAiImg },
-  { title: "SEO Strategy for Middle East Markets: A Complete Guide", excerpt: "Arabic SEO, local search, and cultural nuances that make or break your MENA strategy.", category: "SEO", date: "Mar 2026", readTime: "8 min read", slug: "seo-middle-east-guide", image: blogSeoImg },
-  { title: "The ROI of Marketing Automation: Real Numbers from Real Clients", excerpt: "We break down the exact savings and revenue gains from automating marketing workflows.", category: "Automation", date: "Feb 2026", readTime: "5 min read", slug: "roi-marketing-automation", image: blogAutoImg },
+  { title: "How AI is Reshaping Digital Marketing in 2026", excerpt: "From predictive analytics to AI-generated campaigns — here's what CMOs need to know.", category: "AI & Marketing", date: "Mar 2026", readTime: "6 min read", slug: "ai-reshaping-marketing-2026", image: blogAiImg, avif: blogAiAvif, webp: blogAiWebp },
+  { title: "SEO Strategy for Middle East Markets: A Complete Guide", excerpt: "Arabic SEO, local search, and cultural nuances that make or break your MENA strategy.", category: "SEO", date: "Mar 2026", readTime: "8 min read", slug: "seo-middle-east-guide", image: blogSeoImg, avif: blogSeoAvif, webp: blogSeoWebp },
+  { title: "The ROI of Marketing Automation: Real Numbers from Real Clients", excerpt: "We break down the exact savings and revenue gains from automating marketing workflows.", category: "Automation", date: "Feb 2026", readTime: "5 min read", slug: "roi-marketing-automation", image: blogAutoImg, avif: blogAutoAvif, webp: blogAutoWebp },
 ];
 
 export default function BlogPreviewSection() {
@@ -19,6 +27,27 @@ export default function BlogPreviewSection() {
 
   return (
     <section className="py-28 md:py-36">
+      <SchemaInjector
+        id="home-blog-itemlist"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Latest from the Digital Penta Blog",
+          itemListElement: posts.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://digitalpenta.com/blog/${p.slug}`,
+            item: {
+              "@type": "BlogPosting",
+              headline: p.title,
+              description: p.excerpt,
+              url: `https://digitalpenta.com/blog/${p.slug}`,
+              articleSection: p.category,
+              author: { "@type": "Organization", name: "Digital Penta" },
+            },
+          })),
+        }}
+      />
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 32 }}
@@ -52,10 +81,11 @@ export default function BlogPreviewSection() {
                 className="group glass-card-pro overflow-hidden flex flex-col h-full"
               >
                 <div className="h-36 relative overflow-hidden">
-                  <img
+                  <Picture
                     src={post.image}
-                    alt={post.title}
-                    loading="lazy"
+                    avifSrc={post.avif}
+                    webpSrc={post.webp}
+                    alt={`${post.title} — Digital Penta blog`}
                     width={800}
                     height={512}
                     className="absolute inset-0 w-full h-full object-cover opacity-55 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
