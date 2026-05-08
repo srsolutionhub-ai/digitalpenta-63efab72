@@ -11,6 +11,20 @@ interface EmailPayload {
   data: Record<string, unknown>;
 }
 
+// Per-cold-start in-memory rate limit by IP to prevent unauth email spam abuse.
+const sendBuckets = new Map<string, { count: number; reset: number }>();
+function rateLimit(ip: string, max = 5, windowMs = 60_000): boolean {
+  const now = Date.now();
+  const b = sendBuckets.get(ip);
+  if (!b || now > b.reset) {
+    sendBuckets.set(ip, { count: 1, reset: now + windowMs });
+    return true;
+  }
+  if (b.count >= max) return false;
+  b.count++;
+  return true;
+}
+
 /* ----------------------------- ICS helpers ------------------------------ */
 function pad(n: number) { return n < 10 ? `0${n}` : `${n}`; }
 function toIcsUtc(d: Date) {
