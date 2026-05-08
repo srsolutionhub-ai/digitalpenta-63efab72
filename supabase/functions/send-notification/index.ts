@@ -71,7 +71,60 @@ Deno.serve(async (req) => {
       throw new Error("Resend API key not configured");
     }
 
+    // Anti-abuse rate limit (per IP, per cold start)
+    const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "unknown";
+    if (!rateLimit(ip, 5, 60_000)) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const payload: EmailPayload = await req.json();
+
+    // For payload types that send to arbitrary emails, validate the recipient
+    // exists in our DB to prevent the function being used as an open relay.
+    if (payload.type === "booking_confirmed" || payload.type === "abandoned_draft") {
+      const recip = String((payload.data as any)?.email || "").trim().toLowerCase();
+      if (!recip) {
+        return new Response(JSON.stringify({ error: "Email required" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const guard = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      );
+      if (payload.type === "booking_confirmed") {
+        const { data: booking } = await guard
+          .from("strategy_call_bookings")
+          .select("id, created_at")
+          .eq("email", recip)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!booking || (Date.now() - new Date(booking.created_at).getTime()) > 10 * 60_000) {
+          return new Response(JSON.stringify({ error: "No matching recent booking" }), {
+            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      } else {
+        // abandoned_draft → must match a recent contact (last 24h)
+        const { data: c } = await guard
+          .from("contacts")
+          .select("id, created_at")
+          .eq("email", recip)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!c || (Date.now() - new Date(c.created_at).getTime()) > 24 * 60 * 60_000) {
+          return new Response(JSON.stringify({ error: "No matching recent draft" }), {
+            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
+    }
+
 
     let subject = "";
     let html = "";
