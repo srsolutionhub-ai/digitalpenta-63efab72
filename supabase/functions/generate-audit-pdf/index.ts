@@ -78,6 +78,15 @@ serve(async (req) => {
       .single();
     if (aErr || !audit) throw new Error("Audit not found");
 
+    // Anti-abuse: only allow PDF generation/contact mutation for audits created within the last 30 minutes.
+    const ageMs = Date.now() - new Date(audit.created_at as string).getTime();
+    if (ageMs > 30 * 60_000) {
+      return new Response(JSON.stringify({ error: "Audit too old to generate PDF" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: runs } = await supabase
       .from("audit_lighthouse_runs")
       .select("*")

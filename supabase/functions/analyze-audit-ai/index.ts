@@ -58,6 +58,30 @@ serve(async (req) => {
       });
     }
 
+    // Anti-abuse: only process audits created within the last 30 minutes.
+    // Prevents arbitrary callers from triggering AI spend or overwriting historical audits.
+    {
+      const guard = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+      const { data: row, error: rowErr } = await guard
+        .from("audits")
+        .select("id, created_at")
+        .eq("id", audit_id)
+        .maybeSingle();
+      if (rowErr || !row) {
+        return new Response(JSON.stringify({ error: "Unknown audit" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const ageMs = Date.now() - new Date(row.created_at as string).getTime();
+      if (ageMs > 30 * 60_000) {
+        return new Response(JSON.stringify({ error: "Audit too old to analyze" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     const systemPrompt = `You are a senior SEO and Web Performance consultant at Digital Penta, a top-tier digital marketing agency. You produce actionable, prioritized recommendations for clients. Be concrete, technical, and reference industry best practices. Avoid generic advice. When on-page issues are present (missing meta description, multiple H1s, missing alt text, no robots/sitemap, missing security headers), surface them as concrete fixes.`;
 
     const onPageSummary = on_page
