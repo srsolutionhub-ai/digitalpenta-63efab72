@@ -31,6 +31,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SeoAuditTool = lazy(() => import("./pages/SeoAuditTool"));
+const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 
 // Auth pages
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -105,10 +106,16 @@ function AnimatedRoutes() {
             <Route path="/ar/locations/:location" element={<LocationPageAr />} />
             <Route path="/lp/:keyword" element={<KeywordLandingPage />} />
             <Route path="/seo/:city" element={<MatrixPage />} />
+            <Route path="/seo/:city/:intent" element={<MatrixPage />} />
             <Route path="/ppc/:city" element={<MatrixPage />} />
+            <Route path="/ppc/:city/:intent" element={<MatrixPage />} />
             <Route path="/social-media/:city" element={<MatrixPage />} />
+            <Route path="/social-media/:city/:intent" element={<MatrixPage />} />
             <Route path="/web-development/:city" element={<MatrixPage />} />
+            <Route path="/web-development/:city/:intent" element={<MatrixPage />} />
             <Route path="/ai-solutions/:city" element={<MatrixPage />} />
+            <Route path="/ai-solutions/:city/:intent" element={<MatrixPage />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/tools/seo-audit" element={<SeoAuditTool />} />
