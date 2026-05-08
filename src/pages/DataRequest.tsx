@@ -83,21 +83,30 @@ export default function DataRequest() {
         ) : (
           <div className="card-surface rounded-2xl p-6 space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Full name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label>Email on file</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div>
+                <Label htmlFor="dsr-name">Full name *</Label>
+                <Input id="dsr-name" aria-invalid={!!errors.name} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                {errors.name && <p className="text-[11px] text-destructive mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <Label htmlFor="dsr-email">Email on file *</Label>
+                <Input id="dsr-email" type="email" aria-invalid={!!errors.email} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                {errors.email && <p className="text-[11px] text-destructive mt-1">{errors.email}</p>}
+              </div>
             </div>
             <div>
-              <Label>Request type</Label>
+              <Label htmlFor="dsr-type">Request type *</Label>
               <Select value={form.request_type} onValueChange={(v) => setForm({ ...form, request_type: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="dsr-type"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {REQUEST_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Additional details (optional)</Label>
-              <Textarea rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell us which data, accounts, or interactions this concerns." />
+              <Label htmlFor="dsr-details">Additional details (optional)</Label>
+              <Textarea id="dsr-details" rows={4} maxLength={2000} aria-invalid={!!errors.details} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell us which data, accounts, or interactions this concerns." />
+              {errors.details && <p className="text-[11px] text-destructive mt-1">{errors.details}</p>}
             </div>
             <Button onClick={submit} disabled={loading} className="w-full">{loading ? "Submitting..." : "Submit request"}</Button>
             <p className="text-[11px] text-muted-foreground text-center">
