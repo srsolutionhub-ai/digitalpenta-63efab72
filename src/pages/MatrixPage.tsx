@@ -100,7 +100,7 @@ export default function MatrixPage() {
 
   const schemas: Record<string, unknown>[] = [
     serviceSchema({
-      name: `${svc.name} Agency in ${cty.city}`,
+      name: intent ? `${svc.name} ${intent.label} in ${cty.city}` : `${svc.name} Agency in ${cty.city}`,
       description: metaDescription,
       url: canonical,
       serviceType: svc.serviceType,
@@ -108,11 +108,12 @@ export default function MatrixPage() {
     breadcrumbSchema([
       { name: "Home", url: "https://digitalpenta.com/" },
       { name: svc.name, url: `https://digitalpenta.com${svc.hubHref}` },
-      { name: cty.city, url: canonical },
+      { name: cty.city, url: `https://digitalpenta.com/${svc.slug}/${cty.slug}` },
+      ...(intent ? [{ name: intent.label, url: canonical }] : []),
     ]),
     faqPageSchema(faqs),
     aggregateRatingSchema({
-      itemName: `${svc.name} Agency in ${cty.city}`,
+      itemName: intent ? `${svc.name} ${intent.label} in ${cty.city}` : `${svc.name} Agency in ${cty.city}`,
       itemUrl: canonical,
     }),
   ];
@@ -140,7 +141,15 @@ export default function MatrixPage() {
             <span>›</span>
             <Link to={svc.hubHref} className="hover:text-foreground transition-colors">{svc.name}</Link>
             <span>›</span>
-            <span className="text-foreground">{cty.city}</span>
+            {intent ? (
+              <>
+                <Link to={`/${svc.slug}/${cty.slug}`} className="hover:text-foreground transition-colors">{cty.city}</Link>
+                <span>›</span>
+                <span className="text-foreground">{intent.label}</span>
+              </>
+            ) : (
+              <span className="text-foreground">{cty.city}</span>
+            )}
           </nav>
         </div>
       </div>
