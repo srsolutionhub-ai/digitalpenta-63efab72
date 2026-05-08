@@ -32,6 +32,18 @@ const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SeoAuditTool = lazy(() => import("./pages/SeoAuditTool"));
 const SitemapPage = lazy(() => import("./pages/SitemapPage"));
+const Manifesto = lazy(() => import("./pages/Manifesto"));
+const Trust = lazy(() => import("./pages/Trust"));
+const Roadmap = lazy(() => import("./pages/Roadmap"));
+const Resources = lazy(() => import("./pages/Resources"));
+const PricingCalculator = lazy(() => import("./pages/PricingCalculator"));
+const ToolsIndex = lazy(() => import("./pages/tools/ToolsIndex"));
+const GrowthScoreTool = lazy(() => import("./pages/tools/GrowthScoreTool"));
+const AdCopyTool = lazy(() => import("./pages/tools/AdCopyTool"));
+const MetaTagsTool = lazy(() => import("./pages/tools/MetaTagsTool"));
+const BlogOutlineTool = lazy(() => import("./pages/tools/BlogOutlineTool"));
+const CompetitorXrayTool = lazy(() => import("./pages/tools/CompetitorXrayTool"));
+const RoiPredictorTool = lazy(() => import("./pages/tools/RoiPredictorTool"));
 
 // Auth pages
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -118,7 +130,19 @@ function AnimatedRoutes() {
             <Route path="/sitemap" element={<SitemapPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/manifesto" element={<Manifesto />} />
+            <Route path="/trust" element={<Trust />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/pricing-calculator" element={<PricingCalculator />} />
+            <Route path="/tools" element={<ToolsIndex />} />
             <Route path="/tools/seo-audit" element={<SeoAuditTool />} />
+            <Route path="/tools/growth-score" element={<GrowthScoreTool />} />
+            <Route path="/tools/ad-copy" element={<AdCopyTool />} />
+            <Route path="/tools/meta-tags" element={<MetaTagsTool />} />
+            <Route path="/tools/blog-outline" element={<BlogOutlineTool />} />
+            <Route path="/tools/competitor-xray" element={<CompetitorXrayTool />} />
+            <Route path="/tools/roi-predictor" element={<RoiPredictorTool />} />
 
             {/* Auth routes */}
             <Route path="/auth/login" element={<Login />} />
