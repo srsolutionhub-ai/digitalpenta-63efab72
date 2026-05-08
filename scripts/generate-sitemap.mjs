@@ -80,6 +80,7 @@ function add(loc, priority = "0.6", changefreq = "weekly") {
   ["/manifesto", "0.6"],
   ["/trust", "0.5"],
   ["/roadmap", "0.5"],
+  ["/data-request", "0.3"],
   ["/resources", "0.7"],
   ["/pricing-calculator", "0.8"],
   ["/tools", "0.8"],
