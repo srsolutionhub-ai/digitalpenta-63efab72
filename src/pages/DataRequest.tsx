@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
@@ -17,23 +18,40 @@ const REQUEST_TYPES = [
   { value: "object", label: "Object to processing" },
 ];
 
+const dsrSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your full name").max(100, "Name too long"),
+  email: z.string().trim().email("Please enter a valid email address").max(255),
+  request_type: z.enum(["access", "delete", "rectify", "portability", "object"]),
+  details: z.string().trim().max(2000, "Details must be under 2000 characters").optional(),
+});
+
 export default function DataRequest() {
   const [form, setForm] = useState({ name: "", email: "", request_type: "access", details: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    if (!form.email || !form.name) { toast.error("Name and email required"); return; }
+    setErrors({});
+    const parsed = dsrSchema.safeParse(form);
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      parsed.error.issues.forEach((i) => { fieldErrors[i.path[0] as string] = i.message; });
+      setErrors(fieldErrors);
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     setLoading(true);
     try {
-      await supabase.from("contacts").insert({
-        name: form.name,
-        email: form.email,
-        message: `[DSR/${form.request_type}] ${form.details}`,
+      const { error } = await supabase.from("contacts").insert({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        message: `[DSR/${parsed.data.request_type}] ${parsed.data.details || "(no additional details)"}`,
         service: "Data Subject Request",
         source: "dsr_form",
         urgency: "high",
       });
+      if (error) throw error;
       setSubmitted(true);
     } catch (e: any) {
       toast.error("Failed to submit. Email support@digitalpenta.com");
