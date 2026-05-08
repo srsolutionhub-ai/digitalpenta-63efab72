@@ -68,6 +68,10 @@ const Invoices = lazy(() => import("./pages/dashboard/admin/Invoices"));
 const Projects = lazy(() => import("./pages/dashboard/admin/Projects"));
 const TimeTracking = lazy(() => import("./pages/dashboard/admin/TimeTracking"));
 const Bookings = lazy(() => import("./pages/dashboard/admin/Bookings"));
+const ToolRuns = lazy(() => import("./pages/dashboard/admin/ToolRuns"));
+const FunnelAnalytics = lazy(() => import("./pages/dashboard/admin/FunnelAnalytics"));
+const DataRequest = lazy(() => import("./pages/DataRequest"));
+const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
@@ -143,6 +147,7 @@ function AnimatedRoutes() {
             <Route path="/tools/blog-outline" element={<BlogOutlineTool />} />
             <Route path="/tools/competitor-xray" element={<CompetitorXrayTool />} />
             <Route path="/tools/roi-predictor" element={<RoiPredictorTool />} />
+            <Route path="/data-request" element={<DataRequest />} />
 
             {/* Auth routes */}
             <Route path="/auth/login" element={<Login />} />
@@ -174,6 +179,8 @@ function AnimatedRoutes() {
               <Route path="projects" element={<Projects />} />
               <Route path="time" element={<TimeTracking />} />
               <Route path="bookings" element={<Bookings />} />
+              <Route path="tool-runs" element={<ToolRuns />} />
+              <Route path="funnel" element={<FunnelAnalytics />} />
             </Route>
 
             {/* Client dashboard */}
@@ -213,6 +220,9 @@ function AppShell() {
       <Sonner />
       <BrowserRouter>
         <AnimatedRoutes />
+        <Suspense fallback={null}>
+          <CookiePreferenceModal />
+        </Suspense>
       </BrowserRouter>
     </>
   );
