@@ -38,7 +38,34 @@ Deno.serve(async (req) => {
   // POST — incoming messages
   if (req.method === "POST") {
     try {
-      const body = await req.json();
+      // Read raw body for HMAC signature verification
+      const rawBody = await req.arrayBuffer();
+      const APP_SECRET = Deno.env.get("WHATSAPP_APP_SECRET");
+      if (!APP_SECRET) {
+        console.error("WHATSAPP_APP_SECRET not configured — rejecting webhook");
+        return new Response("Forbidden", { status: 403 });
+      }
+      const sigHeader = req.headers.get("x-hub-signature-256") ?? "";
+      const key = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(APP_SECRET),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["sign"],
+      );
+      const sigBuf = await crypto.subtle.sign("HMAC", key, rawBody);
+      const expected = "sha256=" + Array.from(new Uint8Array(sigBuf))
+        .map((b) => b.toString(16).padStart(2, "0")).join("");
+      // Constant-time-ish comparison
+      const a = new TextEncoder().encode(sigHeader);
+      const b = new TextEncoder().encode(expected);
+      let mismatch = a.length ^ b.length;
+      for (let i = 0; i < Math.min(a.length, b.length); i++) mismatch |= a[i] ^ b[i];
+      if (mismatch !== 0) {
+        return new Response("Forbidden", { status: 403 });
+      }
+
+      const body = JSON.parse(new TextDecoder().decode(rawBody));
       const entry = body.entry?.[0];
       const change = entry?.changes?.[0]?.value;
       const messages = change?.messages || [];
