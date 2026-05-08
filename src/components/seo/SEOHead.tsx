@@ -381,3 +381,174 @@ export function aggregateRatingSchema(opts: {
     worstRating: "1",
   };
 }
+
+/* ────────────── Phase 1 (Audit upgrade): rich-snippet expansions ────────────── */
+
+/**
+ * Article schema for blog posts and case studies. Includes `speakable` so
+ * Google Assistant + voice-search surfaces can read the headline and summary.
+ */
+export function articleSchema(opts: {
+  headline: string;
+  description: string;
+  url: string;
+  image: string;
+  datePublished: string;       // ISO 8601
+  dateModified?: string;       // ISO 8601
+  authorName: string;
+  authorUrl?: string;
+  section?: string;            // e.g. "SEO" / "Case Studies"
+  wordCount?: number;
+  keywords?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline,
+    description: opts.description,
+    image: [opts.image],
+    datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
+    author: {
+      "@type": "Person",
+      name: opts.authorName,
+      url: opts.authorUrl ?? "https://digitalpenta.com/about",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Digital Penta",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://digitalpenta.com/logo.png",
+      },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
+    articleSection: opts.section,
+    wordCount: opts.wordCount,
+    keywords: opts.keywords?.join(", "),
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "[data-speakable]"],
+    },
+  };
+}
+
+/**
+ * VideoObject schema for hero/case-study videos. Required by Google Search
+ * to surface video thumbnails in SERP results.
+ */
+export function videoObjectSchema(opts: {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  contentUrl?: string;
+  embedUrl?: string;
+  duration?: string;             // ISO 8601 duration e.g. "PT1M30S"
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: opts.name,
+    description: opts.description,
+    thumbnailUrl: [opts.thumbnailUrl],
+    uploadDate: opts.uploadDate,
+    contentUrl: opts.contentUrl,
+    embedUrl: opts.embedUrl,
+    duration: opts.duration,
+    publisher: {
+      "@type": "Organization",
+      name: "Digital Penta",
+      logo: { "@type": "ImageObject", url: "https://digitalpenta.com/logo.png" },
+    },
+  };
+}
+
+/**
+ * HowTo schema for guide / playbook content (e.g. "How to rank a Dubai
+ * ecommerce store on Google in 90 days").
+ */
+export function howToSchema(opts: {
+  name: string;
+  description: string;
+  totalTime?: string;       // ISO 8601 duration
+  steps: { name: string; text: string; url?: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: opts.name,
+    description: opts.description,
+    totalTime: opts.totalTime,
+    step: opts.steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      url: s.url,
+    })),
+  };
+}
+
+/**
+ * SoftwareApplication schema for our free AI tools (audit, growth-score etc.).
+ * Helps tools win rich-result cards in SERPs and in tool-comparison queries.
+ */
+export function softwareApplicationSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  applicationCategory?: string;       // e.g. "BusinessApplication"
+  operatingSystem?: string;
+  price?: string;                     // "0" for free
+  ratingValue?: string;
+  ratingCount?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    applicationCategory: opts.applicationCategory ?? "BusinessApplication",
+    operatingSystem: opts.operatingSystem ?? "Web",
+    offers: {
+      "@type": "Offer",
+      price: opts.price ?? "0",
+      priceCurrency: "USD",
+    },
+    aggregateRating: opts.ratingValue
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: opts.ratingValue,
+          ratingCount: opts.ratingCount ?? "50",
+          bestRating: "5",
+          worstRating: "1",
+        }
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "Digital Penta",
+      url: "https://digitalpenta.com",
+    },
+  };
+}
+
+/**
+ * ItemList helper — wraps an array of links into the schema.org ItemList type.
+ * Used by the HTML sitemap page and listing pages.
+ */
+export function itemListSchema(opts: { name: string; items: { name: string; url: string }[] }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: opts.name,
+    numberOfItems: opts.items.length,
+    itemListElement: opts.items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      url: it.url,
+    })),
+  };
+}
