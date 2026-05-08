@@ -1603,6 +1603,87 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_rank_history: {
+        Row: {
+          checked_at: string
+          city: string | null
+          country: string | null
+          created_at: string
+          device: string
+          difficulty: number | null
+          id: string
+          keyword: string
+          position: number | null
+          search_engine: string
+          search_volume: number | null
+          service: string | null
+          url: string | null
+        }
+        Insert: {
+          checked_at?: string
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string
+          difficulty?: number | null
+          id?: string
+          keyword: string
+          position?: number | null
+          search_engine?: string
+          search_volume?: number | null
+          service?: string | null
+          url?: string | null
+        }
+        Update: {
+          checked_at?: string
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string
+          difficulty?: number | null
+          id?: string
+          keyword?: string
+          position?: number | null
+          search_engine?: string
+          search_volume?: number | null
+          service?: string | null
+          url?: string | null
+        }
+        Relationships: []
+      }
+      seo_tracked_keywords: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          keyword: string
+          priority: number | null
+          service: string | null
+          target_url: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          keyword: string
+          priority?: number | null
+          service?: string | null
+          target_url?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          keyword?: string
+          priority?: number | null
+          service?: string | null
+          target_url?: string | null
+        }
+        Relationships: []
+      }
       strategy_call_bookings: {
         Row: {
           company: string | null

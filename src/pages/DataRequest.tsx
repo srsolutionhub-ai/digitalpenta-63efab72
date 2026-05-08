@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
@@ -17,23 +18,40 @@ const REQUEST_TYPES = [
   { value: "object", label: "Object to processing" },
 ];
 
+const dsrSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your full name").max(100, "Name too long"),
+  email: z.string().trim().email("Please enter a valid email address").max(255),
+  request_type: z.enum(["access", "delete", "rectify", "portability", "object"]),
+  details: z.string().trim().max(2000, "Details must be under 2000 characters").optional(),
+});
+
 export default function DataRequest() {
   const [form, setForm] = useState({ name: "", email: "", request_type: "access", details: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    if (!form.email || !form.name) { toast.error("Name and email required"); return; }
+    setErrors({});
+    const parsed = dsrSchema.safeParse(form);
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      parsed.error.issues.forEach((i) => { fieldErrors[i.path[0] as string] = i.message; });
+      setErrors(fieldErrors);
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     setLoading(true);
     try {
-      await supabase.from("contacts").insert({
-        name: form.name,
-        email: form.email,
-        message: `[DSR/${form.request_type}] ${form.details}`,
+      const { error } = await supabase.from("contacts").insert({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        message: `[DSR/${parsed.data.request_type}] ${parsed.data.details || "(no additional details)"}`,
         service: "Data Subject Request",
         source: "dsr_form",
         urgency: "high",
       });
+      if (error) throw error;
       setSubmitted(true);
     } catch (e: any) {
       toast.error("Failed to submit. Email support@digitalpenta.com");
@@ -65,21 +83,30 @@ export default function DataRequest() {
         ) : (
           <div className="card-surface rounded-2xl p-6 space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Full name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label>Email on file</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div>
+                <Label htmlFor="dsr-name">Full name *</Label>
+                <Input id="dsr-name" aria-invalid={!!errors.name} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                {errors.name && <p className="text-[11px] text-destructive mt-1">{errors.name}</p>}
+              </div>
+              <div>
+                <Label htmlFor="dsr-email">Email on file *</Label>
+                <Input id="dsr-email" type="email" aria-invalid={!!errors.email} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                {errors.email && <p className="text-[11px] text-destructive mt-1">{errors.email}</p>}
+              </div>
             </div>
             <div>
-              <Label>Request type</Label>
+              <Label htmlFor="dsr-type">Request type *</Label>
               <Select value={form.request_type} onValueChange={(v) => setForm({ ...form, request_type: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="dsr-type"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {REQUEST_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Additional details (optional)</Label>
-              <Textarea rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell us which data, accounts, or interactions this concerns." />
+              <Label htmlFor="dsr-details">Additional details (optional)</Label>
+              <Textarea id="dsr-details" rows={4} maxLength={2000} aria-invalid={!!errors.details} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} placeholder="Tell us which data, accounts, or interactions this concerns." />
+              {errors.details && <p className="text-[11px] text-destructive mt-1">{errors.details}</p>}
             </div>
             <Button onClick={submit} disabled={loading} className="w-full">{loading ? "Submitting..." : "Submit request"}</Button>
             <p className="text-[11px] text-muted-foreground text-center">
