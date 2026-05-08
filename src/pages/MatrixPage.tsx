@@ -203,7 +203,27 @@ export default function MatrixPage() {
         </div>
       </section>
 
-      {/* Bullets */}
+      {/* Intent-specific promises (only on /:service/:city/:intent pages) */}
+      {intent && (
+        <section className="py-16 border-t border-border/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mb-8">
+              <p className="type-label text-primary mb-3 font-mono">Specialised for {intent.intentNoun}s</p>
+              <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
+                Why {intent.intentNoun}s in <span className="text-gradient">{cty.city}</span> pick us
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              {intent.promises.map((p, i) => (
+                <div key={i} className="card-premium p-6">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${svc.iconAccent} bg-white/[0.04] mb-3 font-display font-semibold`}>{i + 1}</div>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{p}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
       <section className="py-20 border-t border-border/30">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mb-10">
