@@ -748,6 +748,39 @@ export type Database = {
           },
         ]
       }
+      cookie_consent_ledger: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          ip_hash: string | null
+          policy_version: string
+          preferences: Json
+          user_agent: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip_hash?: string | null
+          policy_version?: string
+          preferences: Json
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip_hash?: string | null
+          policy_version?: string
+          preferences?: Json
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       crm_activities: {
         Row: {
           account_id: string | null
@@ -1747,6 +1780,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tool_runs: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          error: string | null
+          id: string
+          inputs: Json
+          ip_hash: string | null
+          name: string | null
+          output: Json | null
+          phone: string | null
+          status: string
+          tool_slug: string
+          user_agent: string | null
+          utm: Json | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          error?: string | null
+          id?: string
+          inputs?: Json
+          ip_hash?: string | null
+          name?: string | null
+          output?: Json | null
+          phone?: string | null
+          status?: string
+          tool_slug: string
+          user_agent?: string | null
+          utm?: Json | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          error?: string | null
+          id?: string
+          inputs?: Json
+          ip_hash?: string | null
+          name?: string | null
+          output?: Json | null
+          phone?: string | null
+          status?: string
+          tool_slug?: string
+          user_agent?: string | null
+          utm?: Json | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
