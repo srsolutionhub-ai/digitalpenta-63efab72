@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
-  Sparkles, Activity,
+  Sparkles, Activity, TrendingUp,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -36,6 +36,7 @@ const navGroups = [
       { label: "Projects", icon: FolderKanban, path: "/dashboard/admin/projects" },
       { label: "Time Tracking", icon: Clock, path: "/dashboard/admin/time" },
       { label: "SEO Audits", icon: FileSearch, path: "/dashboard/admin/audits" },
+      { label: "SEO Ranks", icon: TrendingUp, path: "/dashboard/admin/seo-ranks" },
       { label: "WhatsApp Hub", icon: MessageCircle, path: "/dashboard/admin/whatsapp" },
     ],
   },

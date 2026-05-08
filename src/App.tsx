@@ -70,6 +70,7 @@ const TimeTracking = lazy(() => import("./pages/dashboard/admin/TimeTracking"));
 const Bookings = lazy(() => import("./pages/dashboard/admin/Bookings"));
 const ToolRuns = lazy(() => import("./pages/dashboard/admin/ToolRuns"));
 const FunnelAnalytics = lazy(() => import("./pages/dashboard/admin/FunnelAnalytics"));
+const SeoRankTracker = lazy(() => import("./pages/dashboard/admin/SeoRankTracker"));
 const DataRequest = lazy(() => import("./pages/DataRequest"));
 const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
 
@@ -181,6 +182,7 @@ function AnimatedRoutes() {
               <Route path="bookings" element={<Bookings />} />
               <Route path="tool-runs" element={<ToolRuns />} />
               <Route path="funnel" element={<FunnelAnalytics />} />
+              <Route path="seo-ranks" element={<SeoRankTracker />} />
             </Route>
 
             {/* Client dashboard */}
