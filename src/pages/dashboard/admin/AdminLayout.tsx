@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
+  Sparkles, Activity,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -15,6 +16,8 @@ const navGroups = [
     label: "Overview",
     items: [
       { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard/admin" },
+      { label: "Funnel", icon: Activity, path: "/dashboard/admin/funnel" },
+      { label: "AI Tool Leads", icon: Sparkles, path: "/dashboard/admin/tool-runs" },
     ],
   },
   {
