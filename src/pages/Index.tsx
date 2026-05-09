@@ -182,6 +182,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback minH="min-h-[200px]" />}>
         <SeoLinkHub />
       </Suspense>
+      <SectionDivider variant="aurora" />
       <Suspense fallback={<SectionFallback />}>
         <SignatureCtaSection />
       </Suspense>
