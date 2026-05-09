@@ -3,29 +3,34 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "motion/react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 export default function ExitIntentPopup() {
-  const [show, setShow] = useState(false);
+  const [wantsShow, setWantsShow] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined" || window.innerWidth < 1024) return;
     if (sessionStorage.getItem("dp-exit-shown")) return;
 
     const handler = (e: MouseEvent) => {
-      if (e.clientY < 10) {
-        setShow(true);
+      if (e.clientY < 10 && overlayBus.isCookieResolved()) {
+        setWantsShow(true);
         sessionStorage.setItem("dp-exit-shown", "1");
         document.removeEventListener("mouseout", handler);
       }
     };
     const timer = setTimeout(() => {
       document.addEventListener("mouseout", handler);
-    }, 5000);
+    }, 8000);
     return () => {
       clearTimeout(timer);
       document.removeEventListener("mouseout", handler);
     };
   }, []);
+
+  const show = useOverlaySlot("exit-intent", wantsShow);
+  const setShow = (v: boolean) => setWantsShow(v);
 
   return (
     <AnimatePresence>
