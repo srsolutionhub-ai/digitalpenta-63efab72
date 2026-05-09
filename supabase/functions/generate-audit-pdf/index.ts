@@ -78,6 +78,17 @@ serve(async (req) => {
       .single();
     if (aErr || !audit) throw new Error("Audit not found");
 
+    // Anti-abuse: only allow PDF generation for audits created in the last 30 minutes.
+    // Prevents arbitrary callers from enumerating UUIDs, polluting the CRM, or
+    // overwriting visitor data on historical audits.
+    const ageMs = Date.now() - new Date((audit as any).created_at).getTime();
+    if (ageMs > 30 * 60_000) {
+      return new Response(JSON.stringify({ error: "Audit too old" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Anti-abuse: only allow PDF generation/contact mutation for audits created within the last 30 minutes.
     const ageMs = Date.now() - new Date(audit.created_at as string).getTime();
     if (ageMs > 30 * 60_000) {
