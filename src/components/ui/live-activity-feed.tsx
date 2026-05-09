@@ -81,9 +81,9 @@ export default function LiveActivityFeed() {
     }
   };
 
-  if (dismissed) return null;
+  const slot = useOverlaySlot("live-activity", !!active && !dismissed);
 
-  const slot = useOverlaySlot("live-activity", !!active);
+  if (dismissed) return null;
 
   return (
     <AnimatePresence>
