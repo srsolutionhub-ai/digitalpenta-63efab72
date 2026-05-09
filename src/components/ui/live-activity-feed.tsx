@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { TrendingUp, X } from "lucide-react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 type Activity = {
   name: string;
@@ -23,9 +25,10 @@ const ACTIVITIES: Activity[] = [
   { name: "Neha T.", city: "Noida", action: "got their custom audit report", timeAgo: "2 hr ago" },
 ];
 
-const SHOW_DELAY_MS = 12000; // first appearance
+const SHOW_DELAY_MS = 25000; // first appearance — after cookie + lead bar windows
 const VISIBLE_MS = 6500;
-const GAP_MS = 9000;
+const GAP_MS = 14000;
+const MAX_PER_SESSION = 3;
 const DISMISS_KEY = "dp-activity-feed-dismissed";
 
 export default function LiveActivityFeed() {
