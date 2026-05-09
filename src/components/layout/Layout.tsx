@@ -16,9 +16,10 @@ const LiveActivityFeed = lazy(() => import("@/components/ui/live-activity-feed")
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <div className="grain-overlay" aria-hidden />
       <ScrollProgressBar />
       <Navbar />
-      <main id="main-content" className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1 relative">{children}</main>
       <Footer />
       <WhatsAppFloat />
       <MobileStickyBar />
