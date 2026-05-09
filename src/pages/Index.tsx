@@ -118,11 +118,15 @@ const Index = () => {
         ]}
       />
       {/* Above-the-fold — eager */}
-      <HeroSection />
+      <div className="relative">
+        <HeroSection />
+        <FloatingShapes className="z-[1]" />
+      </div>
       <UrgencyStrip />
       <TrustStrip />
       <PressAwardsStrip />
       <HomeIntroSection />
+      <SectionDivider variant="aurora" />
 
       {/* Below-the-fold — lazy chunks */}
       <Suspense fallback={<SectionFallback minH="min-h-[160px]" />}>
@@ -134,6 +138,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <WebsiteAuditSection />
       </Suspense>
+      <SectionDivider variant="spark" />
       <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
         <StatsSection />
       </Suspense>
@@ -152,6 +157,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <ResultsReelSection />
       </Suspense>
+      <SectionDivider variant="seam" />
       <Suspense fallback={<SectionFallback />}>
         <DashboardPreviewSection />
       </Suspense>
