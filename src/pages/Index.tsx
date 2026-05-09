@@ -4,6 +4,8 @@ import HeroSection from "@/components/sections/HeroSection";
 import HomeIntroSection from "@/components/sections/HomeIntroSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import UrgencyStrip from "@/components/ui/urgency-strip";
+import SectionDivider from "@/components/ui/section-divider";
+import FloatingShapes from "@/components/ui/floating-shapes";
 import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
@@ -116,11 +118,15 @@ const Index = () => {
         ]}
       />
       {/* Above-the-fold — eager */}
-      <HeroSection />
+      <div className="relative">
+        <HeroSection />
+        <FloatingShapes className="z-[1]" />
+      </div>
       <UrgencyStrip />
       <TrustStrip />
       <PressAwardsStrip />
       <HomeIntroSection />
+      <SectionDivider variant="aurora" />
 
       {/* Below-the-fold — lazy chunks */}
       <Suspense fallback={<SectionFallback minH="min-h-[160px]" />}>
@@ -132,6 +138,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <WebsiteAuditSection />
       </Suspense>
+      <SectionDivider variant="spark" />
       <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
         <StatsSection />
       </Suspense>
@@ -150,6 +157,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <ResultsReelSection />
       </Suspense>
+      <SectionDivider variant="seam" />
       <Suspense fallback={<SectionFallback />}>
         <DashboardPreviewSection />
       </Suspense>
@@ -174,6 +182,7 @@ const Index = () => {
       <Suspense fallback={<SectionFallback minH="min-h-[200px]" />}>
         <SeoLinkHub />
       </Suspense>
+      <SectionDivider variant="aurora" />
       <Suspense fallback={<SectionFallback />}>
         <SignatureCtaSection />
       </Suspense>

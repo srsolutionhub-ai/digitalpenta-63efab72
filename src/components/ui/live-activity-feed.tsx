@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { TrendingUp, X } from "lucide-react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 type Activity = {
   name: string;
@@ -23,9 +25,10 @@ const ACTIVITIES: Activity[] = [
   { name: "Neha T.", city: "Noida", action: "got their custom audit report", timeAgo: "2 hr ago" },
 ];
 
-const SHOW_DELAY_MS = 12000; // first appearance
+const SHOW_DELAY_MS = 25000; // first appearance — after cookie + lead bar windows
 const VISIBLE_MS = 6500;
-const GAP_MS = 9000;
+const GAP_MS = 14000;
+const MAX_PER_SESSION = 3;
 const DISMISS_KEY = "dp-activity-feed-dismissed";
 
 export default function LiveActivityFeed() {
@@ -40,19 +43,26 @@ export default function LiveActivityFeed() {
     }
 
     let i = Math.floor(Math.random() * ACTIVITIES.length);
+    let shown = 0;
     let visibleTimer: number | undefined;
     let gapTimer: number | undefined;
 
     const show = () => {
+      if (shown >= MAX_PER_SESSION) return;
       setActive(ACTIVITIES[i % ACTIVITIES.length]);
       i += 1;
+      shown += 1;
       visibleTimer = window.setTimeout(() => {
         setActive(null);
-        gapTimer = window.setTimeout(show, GAP_MS);
+        if (shown < MAX_PER_SESSION) gapTimer = window.setTimeout(show, GAP_MS);
       }, VISIBLE_MS);
     };
 
-    const start = window.setTimeout(show, SHOW_DELAY_MS);
+    const tryStart = () => {
+      if (overlayBus.isCookieResolved()) show();
+      else gapTimer = window.setTimeout(tryStart, 5000);
+    };
+    const start = window.setTimeout(tryStart, SHOW_DELAY_MS);
 
     return () => {
       window.clearTimeout(start);
@@ -71,18 +81,20 @@ export default function LiveActivityFeed() {
     }
   };
 
+  const slot = useOverlaySlot("live-activity", !!active && !dismissed);
+
   if (dismissed) return null;
 
   return (
     <AnimatePresence>
-      {active && (
+      {slot && active && (
         <motion.div
           key={active.name + active.timeAgo}
           initial={{ opacity: 0, y: 16, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 12, scale: 0.96 }}
           transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          className="fixed bottom-24 left-4 z-40 hidden sm:flex max-w-xs items-start gap-3 rounded-2xl border border-primary/20 bg-card/95 backdrop-blur-xl px-4 py-3 shadow-2xl"
+          className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] lg:bottom-24 left-4 z-40 hidden sm:flex max-w-xs items-start gap-3 rounded-2xl border border-primary/20 bg-card/95 backdrop-blur-xl px-4 py-3 shadow-2xl"
           role="status"
           aria-live="polite"
         >

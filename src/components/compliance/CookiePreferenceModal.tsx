@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Cookie, Shield } from "lucide-react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
 
 const STORAGE_KEY = "cookie_consent_v1";
 
@@ -48,9 +49,11 @@ export default function CookiePreferenceModal() {
     } catch { /* non-blocking */ }
   };
 
+  const bannerVisible = useOverlaySlot("cookie-consent", showBanner);
+
   return (
     <>
-      {showBanner && (
+      {bannerVisible && (
         <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[60] card-surface rounded-2xl p-5 shadow-2xl border border-border/30">
           <div className="flex items-start gap-3">
             <Cookie className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
