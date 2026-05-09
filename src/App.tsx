@@ -7,7 +7,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
-import CustomCursor from "@/components/ui/custom-cursor";
+import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
@@ -217,7 +217,7 @@ function AppShell() {
   }, []);
   return (
     <>
-      <CustomCursor />
+      <PremiumCursor />
       <Toaster />
       <Sonner />
       <BrowserRouter>
