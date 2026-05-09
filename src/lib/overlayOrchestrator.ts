@@ -54,6 +54,6 @@ export const overlayBus = {
   },
   isCookieResolved(): boolean {
     if (typeof window === "undefined") return true;
-    return !!localStorage.getItem("dp-cookie-consent");
+    return !!(localStorage.getItem("cookie_consent_v1") || localStorage.getItem("dp-cookie-consent"));
   },
 };

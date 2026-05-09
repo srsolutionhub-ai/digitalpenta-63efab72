@@ -5,7 +5,6 @@ import ScrollProgressBar from "@/components/ui/scroll-progress-bar";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
 import MobileStickyBar from "@/components/ui/mobile-sticky-bar";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
-import CookieConsent from "@/components/ui/cookie-consent";
 
 /* Deferred: appear after delays / user interaction — keep out of initial JS bundle */
 const ExitIntentPopup = lazy(() => import("@/components/ui/exit-intent-popup"));
@@ -24,7 +23,6 @@ export default function Layout({ children }: { children: ReactNode }) {
       <WhatsAppFloat />
       <MobileStickyBar />
       <LeadCaptureBar />
-      <CookieConsent />
       <Suspense fallback={null}>
         <ExitIntentPopup />
         <SmartCTA />
