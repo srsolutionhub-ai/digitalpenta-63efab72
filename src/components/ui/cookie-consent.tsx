@@ -3,31 +3,32 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "motion/react";
 import { Shield } from "lucide-react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 export default function CookieConsent() {
-  const [show, setShow] = useState(false);
+  const [wantsShow, setWantsShow] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("dp-cookie-consent");
-    if (consent) return;
-    const showTimer = setTimeout(() => setShow(true), 2000);
-    // Auto-dismiss after 8 seconds of being visible if no interaction
+    if (overlayBus.isCookieResolved()) return;
+    const showTimer = setTimeout(() => setWantsShow(true), 2000);
     const autoHideTimer = setTimeout(() => {
-      const stillNoConsent = !localStorage.getItem("dp-cookie-consent");
-      if (stillNoConsent) {
+      if (!overlayBus.isCookieResolved()) {
         localStorage.setItem("dp-cookie-consent", "auto-dismissed");
-        setShow(false);
+        setWantsShow(false);
       }
-    }, 10000); // 2s delay + 8s visible
+    }, 12000);
     return () => {
       clearTimeout(showTimer);
       clearTimeout(autoHideTimer);
     };
   }, []);
 
+  const show = useOverlaySlot("cookie-consent", wantsShow);
+
   const handle = (choice: "accepted" | "rejected") => {
     localStorage.setItem("dp-cookie-consent", choice);
-    setShow(false);
+    setWantsShow(false);
   };
 
   return (
@@ -38,9 +39,9 @@ export default function CookieConsent() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          className="fixed bottom-0 left-0 right-0 z-[60] p-4 lg:p-0"
+          className="fixed bottom-0 left-0 right-0 z-[60] p-4 lg:p-0 lg:bottom-[max(env(safe-area-inset-bottom),1rem)]"
         >
-          <div className="max-w-4xl mx-auto lg:mb-4 rounded-2xl bg-card/95 backdrop-blur-xl border border-border/40 px-6 py-5 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="max-w-4xl mx-auto rounded-2xl bg-card/95 backdrop-blur-xl border border-border/40 px-6 py-5 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex items-start gap-3 flex-1">
               <Shield className="w-5 h-5 text-primary mt-0.5 shrink-0" />
               <div>

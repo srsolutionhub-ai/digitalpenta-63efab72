@@ -2,18 +2,26 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "motion/react";
+import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 export default function LeadCaptureBar() {
-  const [show, setShow] = useState(false);
+  const [wantsShow, setWantsShow] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("dp-lead-bar-dismissed")) return;
-    const timer = setTimeout(() => setShow(true), 30000);
+    const tick = () => {
+      if (overlayBus.isCookieResolved()) setWantsShow(true);
+      else setTimeout(tick, 5000);
+    };
+    const timer = setTimeout(tick, 45000);
     return () => clearTimeout(timer);
   }, []);
 
+  const show = useOverlaySlot("lead-capture", wantsShow);
+
   const dismiss = () => {
-    setShow(false);
+    setWantsShow(false);
     localStorage.setItem("dp-lead-bar-dismissed", "1");
   };
 
@@ -24,7 +32,7 @@ export default function LeadCaptureBar() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 lg:bottom-4 left-0 lg:left-4 right-0 lg:right-4 z-50 lg:rounded-2xl bg-card/95 backdrop-blur-xl border-t lg:border border-primary/20 px-6 py-4 flex items-center justify-between gap-4 shadow-2xl"
+          className="fixed bottom-[calc(56px+env(safe-area-inset-bottom))] lg:bottom-4 left-0 lg:left-4 right-0 lg:right-4 z-50 lg:rounded-2xl bg-card/95 backdrop-blur-xl border-t lg:border border-primary/20 px-6 py-4 flex items-center justify-between gap-4 shadow-2xl"
         >
           <div className="flex items-center gap-3">
             <span className="text-2xl">📊</span>
@@ -39,7 +47,7 @@ export default function LeadCaptureBar() {
                 Yes, Audit My Website!
               </Button>
             </a>
-            <button onClick={dismiss} className="text-muted-foreground hover:text-foreground transition-colors p-1">
+            <button onClick={dismiss} className="text-muted-foreground hover:text-foreground transition-colors p-1" aria-label="Dismiss">
               <X className="w-4 h-4" />
             </button>
           </div>
