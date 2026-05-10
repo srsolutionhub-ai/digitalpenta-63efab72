@@ -1,12 +1,14 @@
 import { lazy, Suspense } from "react";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/sections/HeroSection";
+import HeroFeatureCardsSection from "@/components/sections/HeroFeatureCardsSection";
+import HomepageLeadCaptureSection from "@/components/sections/HomepageLeadCaptureSection";
 import HomeIntroSection from "@/components/sections/HomeIntroSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import UrgencyStrip from "@/components/ui/urgency-strip";
 import SectionDivider from "@/components/ui/section-divider";
 import FloatingShapes from "@/components/ui/floating-shapes";
-import SEOHead, { breadcrumbSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, faqPageSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
 
 /* Below-the-fold: code-split to keep initial JS small and improve LCP/TBT */
@@ -73,8 +75,8 @@ const Index = () => {
   return (
     <Layout>
       <SEOHead
-        title="Digital Penta | Digital Marketing Agency in Delhi | Free Audit"
-        description="Delhi's top digital marketing agency — SEO, Google Ads, social, AI automation. 500+ brands, 4.9★ rating. Get a free growth audit today."
+        title="Digital Marketing Agency in Delhi | Digital Penta"
+        description="Delhi's #1 digital marketing agency. SEO, Google Ads, social media & AI automation. 500+ brands, 4.9★, ₹10Cr+ revenue generated. Free audit."
         canonical="https://digitalpenta.com/"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/" },
@@ -84,6 +86,53 @@ const Index = () => {
         schemas={[
           breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.com/" }]),
           organizationSchema(),
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": "https://digitalpenta.com/#website",
+            url: "https://digitalpenta.com/",
+            name: "Digital Penta",
+            publisher: { "@id": "https://digitalpenta.com/#organization" },
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://digitalpenta.com/blog?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://digitalpenta.com/#webpage",
+            url: "https://digitalpenta.com/",
+            name: "Digital Marketing Agency in Delhi | Digital Penta",
+            isPartOf: { "@id": "https://digitalpenta.com/#website" },
+            about: { "@id": "https://digitalpenta.com/#organization" },
+            primaryImageOfPage: "https://digitalpenta.com/og-image.png",
+            inLanguage: "en-IN",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            name: "Digital Penta — Digital Marketing Agency",
+            image: "https://digitalpenta.com/og-image.png",
+            url: "https://digitalpenta.com/",
+            telephone: "+91-88601-00039",
+            priceRange: "₹₹-₹₹₹₹",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "124 C Katwaria Sarai",
+              addressLocality: "New Delhi",
+              addressRegion: "Delhi",
+              postalCode: "110016",
+              addressCountry: "IN",
+            },
+            areaServed: ["Delhi", "Mumbai", "Bangalore", "Dubai", "Riyadh"],
+            sameAs: [
+              "https://www.linkedin.com/company/digitalpenta",
+              "https://www.instagram.com/digitalpenta",
+              "https://twitter.com/digitalpenta",
+            ],
+          },
           serviceSchema({
             name: "Digital Marketing Services",
             description:
@@ -106,6 +155,12 @@ const Index = () => {
               { "@type": "ListItem", position: 8, name: "Public Relations", url: "https://digitalpenta.com/services/public-relations" },
             ],
           },
+          faqPageSchema([
+            { q: "How much does digital marketing cost in India?", a: "Digital marketing in India ranges from ₹15,000/month for startups to ₹5,00,000+/month for enterprises. Digital Penta's Starter plan begins at ₹9,999/month." },
+            { q: "How long does SEO take to show results?", a: "SEO typically shows initial improvement in 30–60 days, with significant organic growth in 3–6 months. Competitive keywords may take 6–12 months." },
+            { q: "Do you work with clients in Dubai and the UAE?", a: "Yes — we serve clients across India and the Middle East including Dubai, Abu Dhabi, Riyadh and Doha." },
+            { q: "What makes Digital Penta different?", a: "We integrate Marketing, PR, Development, AI and Automation under one roof — no fragmented agencies, no communication gaps, ROI-obsessed reporting." },
+          ]),
           reviewedItemSchema({
             itemName: "Digital Penta — Digital Marketing Agency",
             itemUrl: "https://digitalpenta.com/",
@@ -124,8 +179,10 @@ const Index = () => {
       </div>
       <UrgencyStrip />
       <TrustStrip />
+      <HeroFeatureCardsSection />
       <PressAwardsStrip />
       <HomeIntroSection />
+      <HomepageLeadCaptureSection />
       <SectionDivider variant="aurora" />
 
       {/* Below-the-fold — lazy chunks */}

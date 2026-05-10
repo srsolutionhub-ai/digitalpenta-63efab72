@@ -115,6 +115,13 @@ export default {
           "0%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "-200% 0" },
         },
+        wordRoll: {
+          "0%, 18%": { transform: "translateY(0)" },
+          "25%, 43%": { transform: "translateY(-1.2em)" },
+          "50%, 68%": { transform: "translateY(-2.4em)" },
+          "75%, 93%": { transform: "translateY(-3.6em)" },
+          "100%": { transform: "translateY(-4.8em)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

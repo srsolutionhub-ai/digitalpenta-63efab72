@@ -25,7 +25,7 @@ const footerSections = [
       { label: "About Us", href: "/about" },
       { label: "Case Studies", href: "/portfolio" },
       { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "/about" },
+      { label: "Careers", href: "/about#careers" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy" },
     ],
@@ -212,7 +212,7 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
-                  <li key={link.href}>
+                  <li key={`${section.title}-${link.label}`}>
                     <Link
                       to={link.href}
                       className="text-xs text-muted-foreground hover:text-foreground hover:translate-x-0.5 transition-all inline-block"
