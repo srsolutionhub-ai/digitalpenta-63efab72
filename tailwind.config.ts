@@ -122,6 +122,10 @@ export default {
           "75%, 93%": { transform: "translateY(-3.6em)" },
           "100%": { transform: "translateY(-4.8em)" },
         },
+        slideUpFade: {
+          "0%": { transform: "translate(-50%, 24px)", opacity: "0" },
+          "100%": { transform: "translate(-50%, 0)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

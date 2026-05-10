@@ -54,18 +54,72 @@ export default function CookiePreferenceModal() {
   return (
     <>
       {bannerVisible && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[60] card-surface rounded-2xl p-5 shadow-2xl border border-border/30">
-          <div className="flex items-start gap-3">
-            <Cookie className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-sm font-display font-semibold text-foreground">We value your privacy</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                We use cookies to improve your experience, analyze traffic, and personalize content. GDPR & DPDP compliant.
-              </p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                <Button size="sm" onClick={() => persist({ necessary: true, analytics: true, marketing: true, personalization: true })}>Accept all</Button>
-                <Button size="sm" variant="outline" onClick={() => persist(DEFAULTS)}>Reject all</Button>
-                <Button size="sm" variant="ghost" onClick={() => { setShowBanner(false); setShowModal(true); }}>Customize</Button>
+        <div
+          className="fixed z-[60] bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-[640px] motion-safe:animate-[slideUpFade_.5s_cubic-bezier(.16,1,.3,1)_both]"
+          role="dialog"
+          aria-label="Cookie preferences"
+        >
+          {/* Gradient border wrapper */}
+          <div
+            className="rounded-2xl p-[1px] shadow-[0_20px_60px_-20px_hsl(256_90%_30%/0.55)]"
+            style={{
+              background:
+                "linear-gradient(135deg, hsl(256 90% 65% / 0.55), hsl(192 95% 60% / 0.25) 45%, hsl(322 90% 65% / 0.45))",
+            }}
+          >
+            <div className="relative rounded-2xl bg-background/85 backdrop-blur-xl px-4 py-3.5 md:px-5 md:py-4 overflow-hidden">
+              {/* Soft inner glow */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-16 -left-12 w-48 h-48 rounded-full opacity-40 blur-3xl"
+                style={{ background: "radial-gradient(closest-side, hsl(256 90% 60% / 0.55), transparent)" }}
+              />
+              <div className="relative flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, hsl(256 90% 65% / 0.25), hsl(256 90% 65% / 0.05))",
+                      boxShadow: "0 6px 20px -8px hsl(256 90% 60% / 0.6)",
+                    }}
+                  >
+                    <Cookie className="w-4.5 h-4.5 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[13px] md:text-sm font-display font-semibold text-foreground leading-tight">
+                      We value your privacy
+                    </p>
+                    <p className="text-[11px] md:text-xs text-muted-foreground mt-0.5 leading-snug">
+                      Cookies help us improve your experience &amp; analyze traffic.{" "}
+                      <span className="hidden md:inline">GDPR &amp; DPDP compliant.</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 md:flex-shrink-0">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 px-2.5 text-[11px] text-muted-foreground hover:text-foreground"
+                    onClick={() => { setShowBanner(false); setShowModal(true); }}
+                  >
+                    Customize
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 px-3 text-[11px]"
+                    onClick={() => persist(DEFAULTS)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-8 px-3.5 text-[11px] font-semibold shadow-[0_6px_20px_-6px_hsl(256_90%_60%/0.7)]"
+                    onClick={() => persist({ necessary: true, analytics: true, marketing: true, personalization: true })}
+                  >
+                    Accept all
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
