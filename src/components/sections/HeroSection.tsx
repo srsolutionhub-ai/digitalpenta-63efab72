@@ -44,8 +44,8 @@ export default function HeroSection() {
             aria-hidden
             className="w-full h-full object-cover"
             loading="eager"
-            fetchPriority="high"
             decoding="async"
+            {...({ fetchpriority: "high" } as Record<string, string>)}
             width={1920}
             height={1080}
             style={{ opacity: 0.55 }}
