@@ -41,8 +41,29 @@ const valueWords = ["Rank", "Convert", "Automate", "Scale"];
 
 export default function HeroFeatureCardsSection() {
   return (
-    <section className="relative py-16 md:py-20" aria-labelledby="hero-features-heading">
-      <div className="container mx-auto px-4">
+    <section className="relative py-16 md:py-20 overflow-hidden" aria-labelledby="hero-features-heading">
+      {/* Decorative aurora + grid backdrop */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 opacity-[0.35]"
+          style={{
+            background:
+              "radial-gradient(60% 50% at 20% 0%, hsl(256 90% 45% / 0.25), transparent 70%), radial-gradient(50% 45% at 85% 100%, hsl(322 90% 50% / 0.2), transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "linear-gradient(hsl(0 0% 100% / 0.6) 1px, transparent 1px), linear-gradient(90deg, hsl(0 0% 100% / 0.6) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            maskImage: "radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 80%)",
+            WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 80%)",
+          }}
+        />
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[1px] h-24 bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
+      </div>
+      <div className="container mx-auto px-4 relative">
         {/* Animated value prop */}
         <div className="text-center mb-12">
           <h2
