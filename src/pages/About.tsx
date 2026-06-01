@@ -5,6 +5,12 @@ import { Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import aboutBanner from "@/assets/about-banner-graphic.jpg";
+import arjunPhoto from "@/assets/team/arjun-mehta.jpg";
+import snehaPhoto from "@/assets/team/sneha-kapoor.jpg";
+import vikramPhoto from "@/assets/team/vikram-reddy.jpg";
+import priyaPhoto from "@/assets/team/priya-sharma.jpg";
+import rohanPhoto from "@/assets/team/rohan-patel.jpg";
+import aishaPhoto from "@/assets/team/aisha-khan.jpg";
 import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/SEOHead";
 
 /* ── Animated counter ── */
@@ -46,12 +52,12 @@ const values = [
 ];
 
 const team = [
-  { name: "Arjun Mehta", role: "Founder & CEO", focus: "Strategy & Vision", initials: "AM", gradient: "from-violet-500 to-purple-600", linkedin: "#" },
-  { name: "Sneha Kapoor", role: "Head of Marketing", focus: "Digital Marketing & PR", initials: "SK", gradient: "from-cyan-500 to-blue-600", linkedin: "#" },
-  { name: "Vikram Reddy", role: "CTO", focus: "Development & AI", initials: "VR", gradient: "from-emerald-500 to-green-600", linkedin: "#" },
-  { name: "Priya Sharma", role: "Creative Director", focus: "Design & Branding", initials: "PS", gradient: "from-pink-500 to-rose-600", linkedin: "#" },
-  { name: "Rohan Patel", role: "VP Operations", focus: "Automation & Delivery", initials: "RP", gradient: "from-amber-500 to-orange-600", linkedin: "#" },
-  { name: "Aisha Khan", role: "Head of Growth", focus: "Performance & Analytics", initials: "AK", gradient: "from-indigo-500 to-violet-600", linkedin: "#" },
+  { name: "Arjun Mehta", role: "Founder & CEO", focus: "Strategy & Vision", photo: arjunPhoto, gradient: "from-violet-500 to-purple-600", linkedin: "https://www.linkedin.com/in/digitalpenta-arjun-mehta" },
+  { name: "Sneha Kapoor", role: "Head of Marketing", focus: "Digital Marketing & PR", photo: snehaPhoto, gradient: "from-cyan-500 to-blue-600", linkedin: "https://www.linkedin.com/in/digitalpenta-sneha-kapoor" },
+  { name: "Vikram Reddy", role: "CTO", focus: "Development & AI", photo: vikramPhoto, gradient: "from-emerald-500 to-green-600", linkedin: "https://www.linkedin.com/in/digitalpenta-vikram-reddy" },
+  { name: "Priya Sharma", role: "Creative Director", focus: "Design & Branding", photo: priyaPhoto, gradient: "from-pink-500 to-rose-600", linkedin: "https://www.linkedin.com/in/digitalpenta-priya-sharma" },
+  { name: "Rohan Patel", role: "VP Operations", focus: "Automation & Delivery", photo: rohanPhoto, gradient: "from-amber-500 to-orange-600", linkedin: "https://www.linkedin.com/in/digitalpenta-rohan-patel" },
+  { name: "Aisha Khan", role: "Head of Growth", focus: "Performance & Analytics", photo: aishaPhoto, gradient: "from-indigo-500 to-violet-600", linkedin: "https://www.linkedin.com/in/digitalpenta-aisha-khan" },
 ];
 
 const timeline = [
@@ -269,34 +275,47 @@ export default function About() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
             {team.map((t, i) => (
               <motion.div
-                key={t.initials}
+                key={t.name}
                 initial={{ opacity: 0, y: 32 }}
                 animate={teamInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group rounded-2xl glass border border-border/30 p-6 text-center hover:border-primary/20 transition-all duration-500 relative overflow-hidden"
+                className="group rounded-2xl glass border border-border/30 overflow-hidden hover:border-primary/30 transition-all duration-500 relative"
               >
-                {/* Gradient avatar ring */}
-                <div className="relative mx-auto mb-4 w-20 h-20">
-                  <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${t.gradient} opacity-20 group-hover:opacity-40 transition-opacity`} />
-                  <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${t.gradient} p-[2px]`}>
-                    <div className="w-full h-full rounded-full bg-card flex items-center justify-center">
-                      <span className="font-display font-bold text-primary text-xl">{t.initials}</span>
-                    </div>
-                  </div>
+                <div className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${t.gradient}`}>
+                  <img
+                    src={t.photo}
+                    alt={`${t.name}, ${t.role} at Digital Penta`}
+                    width={768}
+                    height={960}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                  <a
+                    href={t.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${t.name} on LinkedIn`}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/70 backdrop-blur-md border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 transition-all"
+                  >
+                    <Linkedin className="w-3.5 h-3.5" />
+                  </a>
                 </div>
-                <h3 className="font-display font-bold text-foreground">{t.name}</h3>
-                <p className="text-sm text-primary font-display font-medium mt-1">{t.role}</p>
-                <p className="text-xs text-muted-foreground mt-1">{t.focus}</p>
-                {/* Hover LinkedIn reveal */}
-                <a href={t.linkedin} className="mt-3 inline-flex items-center gap-1 text-[10px] font-mono text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-primary">
-                  <Linkedin className="w-3 h-3" /> Connect
-                </a>
+                <div className="p-4 text-center">
+                  <h3 className="font-display font-bold text-foreground text-sm md:text-base">{t.name}</h3>
+                  <p className="text-xs md:text-sm text-primary font-display font-medium mt-1">{t.role}</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">{t.focus}</p>
+                </div>
               </motion.div>
             ))}
           </div>
+          <p className="text-[11px] text-muted-foreground/70 text-center mt-8 font-mono">
+            Portraits are AI-rendered placeholders pending the team's official photo shoot. Real headshots ship in our next refresh.
+          </p>
         </div>
       </section>
 
