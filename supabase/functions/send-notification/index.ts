@@ -60,6 +60,17 @@ function b64(s: string) {
   return btoa(unescape(encodeURIComponent(s)));
 }
 
+/** Escape user-supplied strings before embedding in HTML email templates. */
+function esc(s: unknown): string {
+  return String(s ?? "—")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
