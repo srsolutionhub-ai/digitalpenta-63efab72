@@ -60,6 +60,17 @@ function b64(s: string) {
   return btoa(unescape(encodeURIComponent(s)));
 }
 
+/** Escape user-supplied strings before embedding in HTML email templates. */
+function esc(s: unknown): string {
+  return String(s ?? "—")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -136,7 +147,7 @@ Deno.serve(async (req) => {
 
     if (payload.type === "new_lead") {
       const d = payload.data;
-      subject = `🔥 New Lead: ${d.name || "Unknown"} — ${d.service || "General"}`;
+      subject = `🔥 New Lead: ${esc(d.name || "Unknown")} — ${esc(d.service || "General")}`;
       html = `
         <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">
           <div style="background: linear-gradient(135deg, #6C3BF5, #4F1CD4); padding: 32px; text-align: center;">
@@ -144,14 +155,14 @@ Deno.serve(async (req) => {
           </div>
           <div style="padding: 32px;">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Name</td><td style="padding: 8px 0; font-weight: 600;">${d.name || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Email</td><td style="padding: 8px 0;">${d.email || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Phone</td><td style="padding: 8px 0;">${d.phone || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Company</td><td style="padding: 8px 0;">${d.company || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Service</td><td style="padding: 8px 0; color: #6C3BF5; font-weight: 600;">${d.service || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Budget</td><td style="padding: 8px 0;">${d.budget_range || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Message</td><td style="padding: 8px 0;">${d.message || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Source</td><td style="padding: 8px 0;">${d.source || "Website"}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Name</td><td style="padding: 8px 0; font-weight: 600;">${esc(d.name || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Email</td><td style="padding: 8px 0;">${esc(d.email || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Phone</td><td style="padding: 8px 0;">${esc(d.phone || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Company</td><td style="padding: 8px 0;">${esc(d.company || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Service</td><td style="padding: 8px 0; color: #6C3BF5; font-weight: 600;">${esc(d.service || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Budget</td><td style="padding: 8px 0;">${esc(d.budget_range || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Message</td><td style="padding: 8px 0;">${esc(d.message || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Source</td><td style="padding: 8px 0;">${esc(d.source || "Website")}</td></tr>
             </table>
             <div style="margin-top: 24px; text-align: center;">
               <a href="https://digitalpenta.com/dashboard/admin/leads" style="display: inline-block; background: #6C3BF5; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
@@ -166,7 +177,7 @@ Deno.serve(async (req) => {
       `;
     } else if (payload.type === "invoice_created") {
       const d = payload.data;
-      subject = `💰 Invoice Created: ${d.invoice_number || ""} — ${d.client_name || "Client"}`;
+      subject = `💰 Invoice Created: ${esc(d.invoice_number || "")} — ${esc(d.client_name || "Client")}`;
       html = `
         <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">
           <div style="background: linear-gradient(135deg, #059669, #047857); padding: 32px; text-align: center;">
@@ -174,12 +185,12 @@ Deno.serve(async (req) => {
           </div>
           <div style="padding: 32px;">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Invoice #</td><td style="padding: 8px 0; font-weight: 600;">${d.invoice_number || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Client</td><td style="padding: 8px 0;">${d.client_name || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Email</td><td style="padding: 8px 0;">${d.client_email || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Amount</td><td style="padding: 8px 0; color: #10B981; font-weight: 700; font-size: 18px;">₹${d.total || "0"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Due Date</td><td style="padding: 8px 0;">${d.due_date || "—"}</td></tr>
-              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Status</td><td style="padding: 8px 0;">${d.status || "draft"}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Invoice #</td><td style="padding: 8px 0; font-weight: 600;">${esc(d.invoice_number || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Client</td><td style="padding: 8px 0;">${esc(d.client_name || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Email</td><td style="padding: 8px 0;">${esc(d.client_email || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Amount</td><td style="padding: 8px 0; color: #10B981; font-weight: 700; font-size: 18px;">₹${esc(d.total || "0")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Due Date</td><td style="padding: 8px 0;">${esc(d.due_date || "—")}</td></tr>
+              <tr><td style="padding: 8px 0; color: #9CA3AF; font-size: 14px;">Status</td><td style="padding: 8px 0;">${esc(d.status || "draft")}</td></tr>
             </table>
             <div style="margin-top: 24px; text-align: center;">
               <a href="https://digitalpenta.com/dashboard/admin/billing" style="display: inline-block; background: #6C3BF5; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
@@ -207,7 +218,7 @@ Deno.serve(async (req) => {
       to = recipient;
       bcc = internalTo;
       replyTo = "support@digitalpenta.com";
-      const greet = d.name ? `Hi ${d.name},` : "Hi there,";
+      const greet = d.name ? `Hi ${esc(d.name)},` : "Hi there,";
       const resumeUrl = d.resumeUrl || "https://digitalpenta.com/get-proposal";
       subject = "Your Digital Penta proposal draft is waiting 👋";
       html = `
@@ -264,10 +275,10 @@ Deno.serve(async (req) => {
 
       const summary = "Digital Penta — Free Strategy Call (30 min)";
       const desc = [
-        `Hi ${d.name || "there"},`,
+        `Hi ${esc(d.name || "there")},`,
         ``,
         `Your 30-minute strategy call with Digital Penta is confirmed.`,
-        `Topic: ${d.topic || "Growth strategy"}`,
+        `Topic: ${esc(d.topic || "Growth strategy")}`,
         ``,
         `A senior strategist will join via Google Meet — link will be shared 10 minutes before the call.`,
         ``,
@@ -287,7 +298,7 @@ Deno.serve(async (req) => {
       to = recipient;
       bcc = internalTo;
       replyTo = "support@digitalpenta.com";
-      subject = `✅ Strategy call confirmed — ${d.preferred_date} at ${d.preferred_slot} IST`;
+      subject = `✅ Strategy call confirmed — ${esc(d.preferred_date)} at ${esc(d.preferred_slot)} IST`;
       html = `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 580px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">
           <div style="background: linear-gradient(135deg, #6C3BF5, #4F1CD4); padding: 32px;">
@@ -295,15 +306,15 @@ Deno.serve(async (req) => {
             <p style="margin: 8px 0 0; opacity: .85; font-size: 13px;">A senior strategist will join you on the dot.</p>
           </div>
           <div style="padding: 28px 32px;">
-            <p style="margin: 0 0 14px; font-size: 15px;">Hi ${d.name || "there"},</p>
+            <p style="margin: 0 0 14px; font-size: 15px;">Hi ${esc(d.name || "there")},</p>
             <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: #D1D5DB;">
               Thanks for booking — we've reserved your slot and added an invite to your calendar.
             </p>
             <table style="width: 100%; border-collapse: collapse; margin: 16px 0; background: rgba(108,59,245,0.08); border: 1px solid rgba(108,59,245,0.25); border-radius: 12px;">
-              <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px; width: 30%;">When</td><td style="padding: 12px 16px; font-weight: 600;">${d.preferred_date} · ${d.preferred_slot} IST</td></tr>
+              <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px; width: 30%;">When</td><td style="padding: 12px 16px; font-weight: 600;">${esc(d.preferred_date)} · ${esc(d.preferred_slot)} IST</td></tr>
               <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px;">Duration</td><td style="padding: 12px 16px;">30 minutes</td></tr>
               <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px;">Where</td><td style="padding: 12px 16px;">Google Meet (link sent 10 min prior)</td></tr>
-              <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px;">Topic</td><td style="padding: 12px 16px;">${d.topic || "Growth strategy"}</td></tr>
+              <tr><td style="padding: 12px 16px; color: #9CA3AF; font-size: 13px;">Topic</td><td style="padding: 12px 16px;">${esc(d.topic || "Growth strategy")}</td></tr>
             </table>
             <p style="margin: 18px 0 6px; font-size: 13px; color: #D1D5DB;">📅 The .ics calendar invite is attached — opens directly in Google / Apple / Outlook calendar.</p>
             <p style="margin: 16px 0 0; font-size: 12px; color: #9CA3AF; line-height: 1.5;">

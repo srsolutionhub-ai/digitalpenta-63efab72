@@ -36,10 +36,36 @@ interface ChatBody {
   context?: { url?: string; referrer?: string };
 }
 
+// Per-cold-start in-memory rate limit (per IP) to prevent AI credit exhaustion.
+const RL = new Map<string, { count: number; resetAt: number }>();
+function checkRateLimit(ip: string, max: number, windowMs: number): boolean {
+  const now = Date.now();
+  const b = RL.get(ip);
+  if (!b || now > b.resetAt) {
+    RL.set(ip, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
+  if (b.count >= max) return false;
+  b.count++;
+  return true;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const ip =
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "anon";
+    // 20 chat requests / hour / IP
+    if (!checkRateLimit(ip, 20, 60 * 60 * 1000)) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded — please retry in an hour." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const body = (await req.json()) as ChatBody;
 
     if (!Array.isArray(body.messages) || body.messages.length === 0) {
@@ -48,6 +74,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
 
     // Sanitize: keep last 12 turns, cap each message to 2000 chars
     const trimmed = body.messages.slice(-12).map((m) => ({
