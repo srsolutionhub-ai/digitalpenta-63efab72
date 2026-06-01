@@ -198,7 +198,10 @@ function pickScores(json: any) {
 // On-page SEO checks (direct fetch + parse)
 // ─────────────────────────────────────────────
 async function fetchHtml(url: string) {
-  const controller = new AbortController();
+  if (!safeFetchAllowed(url)) {
+    return { ok: false, status: 0, finalUrl: url, headers: {}, html: "", size_kb: 0, error: "Blocked host" };
+  }
+
   const timeout = setTimeout(() => controller.abort(), 15_000);
   try {
     const res = await fetch(url, {
