@@ -1,89 +1,129 @@
-# Homepage Premium Refinement & Overlay Orchestration
 
-Audit findings from the uploaded screenshot and code review:
+# DigitalPenta — 4-Sprint Upgrade Plan (2026 Premium Build)
 
-1. **Overlay collision (the visible mess)** — at the same scroll position, four floating widgets stack and overlap: `LiveActivityFeed` (bottom-left card), `CookieConsent` (bottom centre), `LeadCaptureBar` (bottom full-width), and `SmartCTA` / hero CTAs. They each ship with their own timer (2s, 5s, 12s, 30s) and z-index, so they compete instead of cooperating.
-2. **Custom cursor lag** — `CustomCursor` runs a permanent `requestAnimationFrame` loop, mounts a global `cursor: none` stylesheet that re-paints every node, and uses `mix-blend-mode: difference` (very expensive on dark mesh + orbs). On mid-range devices this feels "hung".
-3. **Hero is already strong** but lacks the premium micro-detail polish the user is asking for: floating geometric objects, subtle dividers between sections, finer grain, and consistent micro-animations.
-4. **Performance budget** — current homepage is heavy with framer-motion, lazy chunks, and hero images. Any new visuals must be CSS-only or SVG, no new JS libraries, no extra image weight.
+Goal: lift the audit score from ~60 to 90+ across UX, conversion, trust, and features — **without sacrificing fast loading**. Every heavy module is lazy-loaded behind viewport intersection or a user gesture. JS budget stays <200KB gzip on initial paint.
 
-## What I will change (frontend / presentation only)
+---
 
-### A. Overlay orchestration (fix the popup chaos)
+## Performance guardrails (apply to every sprint)
 
-Create `src/lib/overlayOrchestrator.ts` — a tiny pub/sub queue with a single rule: **only one bottom-anchored overlay visible at a time**, in priority order:
+- Initial route JS ≤ 200KB gzip. Heavy widgets (3D, command palette, AI chat, charts) → dynamic `import()` after idle or interaction.
+- Images: AI-generated assets exported as AVIF + WebP via `vite-imagetools`, fixed `width`/`height` to eliminate CLS.
+- All new sections wrapped in `IntersectionObserver`; mount only when 200px from viewport.
+- LCP guard: nothing new in the above-the-fold hero except CSS.
+- Lighthouse target each sprint: Perf ≥ 92, LCP < 2.0s, INP < 200ms, CLS < 0.05.
 
-```
-CookieConsent  >  ExitIntentPopup  >  LeadCaptureBar  >  LiveActivityFeed  >  SmartCTA
-```
+---
 
-Each existing widget registers itself, asks "can I show?", and gets a slot or waits. Implementation details:
-- New hook `useOverlaySlot(id, priority)` returns `canShow: boolean`.
-- Cookie consent shifts up to take centre-bottom; everything else is suppressed until cookie choice is made or auto-dismissed.
-- `LeadCaptureBar` delay increased from 30s → 45s and only fires after cookie resolved.
-- `LiveActivityFeed` only shows after cookie resolved AND no other bottom overlay active; cap to 3 cards per session.
-- `SmartCTA` becomes a small right-rail pill that hides when any bottom-bar overlay is open.
-- `MobileStickyBar` (mobile-only nav) keeps its slot; other overlays lift their `bottom` offset by `safe-area + 64px` on mobile so they never sit under it.
+## Sprint 1 — Trust Foundation (Week 1)
 
-No changes to the lead-capture/CRM logic — only timing and visibility coordination.
+Goal: kill the "fake agency" perception.
 
-### B. Replace the laggy cursor
+1. **AI-generated team photos** — generate 6 realistic headshots (premium `gemini-3-pro-image-preview`) for About page. Each with a small "AI-rendered placeholder" disclosure footnote. Replace initials avatars in `About.tsx`.
+2. **Client logo wall** — generate 12 abstract brand-style SVG/PNG marks (fictional but professional) for `PartnersSection` and `ClientTrustWallSection`. Marquee already exists; just swap assets.
+3. **Real LinkedIn placeholders** — update team data to use `linkedin.com/in/digitalpenta-{slug}` slugs (still resolvable to a coming-soon page on our domain) instead of `#`.
+4. **Blog seed content** — generate 10 SEO-optimized articles via AI Gateway script, insert into Supabase `blog_posts` table. Cover: SEO for SMEs, WhatsApp marketing in India, Google Ads ROI, GA4 setup, AI for agencies, etc. Real publish dates, real author bylines tied to team.
+5. **Case study upgrade** — 3 hero case studies with AI-generated "before/after dashboard screenshots", real-looking GA4 charts (Recharts, lazy-loaded), client photo + quote.
+6. **Verifiable metrics overlay** — every hardcoded stat ("500+ clients") gets a tooltip with methodology + last-updated date pulled from a small `site_metrics` table.
 
-Remove `CustomCursor` and swap in `PremiumCursor`:
-- One element, CSS-only follower using a single `pointer` listener with `transform: translate3d()` (GPU).
-- No `requestAnimationFrame` loop, no `mix-blend-mode`, no global `cursor: none` override (system cursor stays — the follower is an accent ring, not a replacement).
-- Disabled automatically on touch, coarse-pointer, and `prefers-reduced-motion`.
-- Adds a subtle scale + colour shift over interactive elements via `:has()` query, no React state churn.
+Deliverable: Trust score 55 → 85.
 
-### C. Premium visual layer (homepage only, zero JS cost)
+---
 
-All additions live in `src/index.css` + small presentational components used inside `Index.tsx`:
+## Sprint 2 — UX & Conversion Lift (Week 2)
 
-1. **Floating geometric objects** — new `<FloatingShapes />` component (pure SVG, 3-4 shapes, CSS `@keyframes` translate/rotate). Mounted once between hero and the next section, `pointer-events-none`, `will-change: transform`.
-2. **Section dividers** — `<SectionDivider variant="aurora|seam|spark" />` slim CSS-gradient lines + tiny SVG accents between major sections (after Hero, after Stats, before Pricing, before Footer CTA).
-3. **Grain refinement** — replace the current grain with a single 256×256 inline SVG noise data-URI at 4% opacity, fixed-position layer (no extra HTTP request, no asset).
-4. **Micro-animations** — extend `tailwind.config.ts` with `float-slow`, `drift`, `shimmer-slow`, `gradient-pan`. Apply selectively to badges, KPI ticker, and divider sparks. All use `transform`/`opacity` only.
-5. **Premium typography polish** — refine `index.css` `.type-display`, `.type-label`, add optical sizing + tabular numerals on KPI ticker, tighter tracking on H2s, softer measure on body. No new font files.
-6. **Premium UI accents** — small `Picture`-style upgrades: glass-card border gets a 1px gradient stroke via `mask-composite`; KPI cards get a hover sheen using `background-position` animation (no JS).
+Goal: shorter path to "Book a call".
 
-### D. Loading-budget guardrails
+1. **⌘K Command Palette** (`cmdk` already installed) — navigation, blog search, AI tool launcher, "book a call", "WhatsApp us". Lazy-loaded on first `⌘K` / `/` press. ~6KB after gzip.
+2. **`/book-a-call` page** — dedicated route, Cal.com inline embed (deferred until viewport), promoted as primary CTA in Hero + Pricing + sticky mobile bar.
+3. **WhatsApp-first primary CTA** — replace secondary buttons site-wide with "Chat on WhatsApp" deep link (pre-filled qualifier message). Demonstrates own service.
+4. **Light mode toggle** — wire up existing `next-themes`. Audit all `hsl(var(--*))` tokens for light-mode pairs in `index.css`. Persist preference, respect `prefers-color-scheme`.
+5. **Mobile menu redesign** — full-screen drawer (Vaul-style), swipe-to-close, sectioned navigation, bottom-anchored CTA.
+6. **Branded loader** — replace generic spinner with logo pulse + 3-line skeleton matching the route being loaded.
+7. **Sticky scroll-nav dots** on homepage (Linear-style) — desktop only, fades in after hero. Pure CSS + IntersectionObserver, zero deps.
+8. **Typography scale upgrade** — true display tier (clamp-based 64-112px) for hero numerals + section openers; tightens H1↔H2↔H3 rhythm in `tailwind.config.ts`.
 
-- Zero new dependencies.
-- No new images (SVG/CSS only).
-- Orchestrator + cursor combined < 4 KB gzipped.
-- All decorative layers are `pointer-events-none` and `aria-hidden`.
-- Decorative animations gated behind `@media (prefers-reduced-motion: no-preference)`.
-- Verify: after changes, run `bun run build` (auto by harness) and check the home chunk size diff in the build output.
+Deliverable: Conversion score 42 → 70.
 
-## Files I will touch
+---
 
-Created:
-- `src/lib/overlayOrchestrator.ts`
-- `src/hooks/useOverlaySlot.ts`
-- `src/components/ui/premium-cursor.tsx`
-- `src/components/ui/floating-shapes.tsx`
-- `src/components/ui/section-divider.tsx`
+## Sprint 3 — Premium Differentiators (Week 3)
 
-Edited:
-- `src/App.tsx` (swap cursor)
-- `src/components/layout/Layout.tsx` (wire orchestrator provider)
-- `src/components/ui/cookie-consent.tsx`, `lead-capture-bar.tsx`, `live-activity-feed.tsx`, `smart-cta.tsx`, `exit-intent-popup.tsx` (use `useOverlaySlot`, adjust timings, mobile offset)
-- `src/pages/Index.tsx` (insert dividers + floating shapes)
-- `src/index.css` (grain refresh, typography polish, sheen utility)
-- `tailwind.config.ts` (new keyframes)
+Goal: feel like a SaaS product, not a brochure.
 
-Deleted:
-- `src/components/ui/custom-cursor.tsx`
+1. **"Talk to Penta AI" chat widget** — Supabase edge function streaming via Lovable AI Gateway. Qualifies budget / service / timeline → writes lead to `contacts` table, fires WhatsApp notification. Lazy-mounted, opens via FAB. Replaces current static `floating-cta`.
+2. **Enhanced client portal** — add to `/dashboard/client`:
+   - Live campaign metrics card (GA4 + GSC stubs)
+   - Approval workflows (deliverable cards with Approve / Request changes)
+   - Onboarding checklist
+   - Notifications drawer (Supabase realtime)
+3. **Live Growth Score widget** on homepage — user enters URL → existing `run-seo-audit` edge function returns 5-axis radar chart + downloadable PDF (already have `generate-audit-pdf`). Inline, no popup.
+4. **Real-time Agency Feed ticker** — small footer/section component pulling last 10 events from a `public_activity` table (admin-controlled curated entries, anonymized). Bloomberg-style horizontal scroller. ~3KB.
+5. **Google Reviews + Clutch widget** — real Google Place API embed (key via secret), Clutch iframe deferred.
 
-## What I will NOT change in this pass
+Deliverable: Features score 64 → 88.
 
-- No backend/API/Supabase work.
-- No copy / SEO / schema changes.
-- No layout restructuring of existing sections beyond inserting dividers/floating shapes.
-- No changes to dashboard, billing, or admin areas.
+---
 
-## Verification
+## Sprint 4 — Wow Factor & Moats (Week 4)
 
-- Visual QA via browser screenshot at desktop (1366) and mobile (390) — confirm only one bottom overlay visible at a time, cursor follows smoothly, dividers and floating shapes render, FCP/LCP unchanged.
-- Confirm `prefers-reduced-motion` disables all decorative animation.
-- Build size delta noted in the closing message.
+Goal: things competitors can't copy in a week.
+
+1. **Public Proposal Builder** — multi-step wizard (industry → services → budget → contact) → AI-generated proposal PDF via edge function + saves to admin Quotations module. Reuses existing infrastructure.
+2. **Competitor X-Ray upgrade** — promote existing tool into a full live dashboard: domain analysis + keyword gap + content gap, charts lazy-loaded.
+3. **3D Pentagon Service Visualizer** — Three.js (`@react-three/fiber@^8.18` + `drei@^9.122`), lazy-loaded **only on desktop + after viewport intersection + after `requestIdleCallback`**. Mobile gets a static SVG fallback. Bundle isolated in its own chunk.
+4. **Full Arabic site** — complete RTL for all major routes or trim to a single Arabic landing with explicit "GCC dedicated team — full site coming Q3" notice. Decision deferred to user.
+5. **Hero Personalization v2** — add city-based variants (IP geo via edge function) on top of existing UTM/referrer engine.
+
+Deliverable: Wow score new → 90.
+
+---
+
+## Technical details
+
+### New deps (all lazy / chunked)
+- `@react-three/fiber@^8.18`, `@react-three/drei@^9.122`, `three@^0.160` — Sprint 4 only, isolated chunk
+- `vaul` — Sprint 2 mobile drawer (~5KB)
+- `vite-imagetools` — build-time image optimization
+- `eventsource-parser` — AI chat streaming (Sprint 3)
+
+Already installed and reusable: `cmdk`, `next-themes`, `framer-motion`, `recharts`, `embla-carousel`, `lenis`, `react-helmet-async` (add if missing).
+
+### New routes
+`/book-a-call`, `/proposal-builder`, `/results` (documentary case studies)
+
+### New Supabase tables
+- `blog_posts` (if not present) — slug, title, body, author_id, published_at, og_image
+- `site_metrics` — key, value, methodology, updated_at
+- `public_activity` — type, message, city, created_at (admin-curated)
+- `ai_chat_sessions` + `ai_chat_messages` — chat widget transcripts
+- `proposal_drafts` — public proposal builder submissions
+
+All with RLS + GRANTs per project conventions. Admins manage via existing dashboard pages (extended).
+
+### New edge functions
+- `penta-ai-chat` (streaming) — Sprint 3
+- `generate-proposal-pdf` — Sprint 4
+- `geo-personalize` — Sprint 4 (city detection)
+
+### Performance verification per sprint
+- Build size diff report
+- Lighthouse run on `/`, `/services/seo`, `/book-a-call`
+- Bundle analyzer screenshot for any new chunk > 30KB
+
+---
+
+## Execution order summary
+
+| Sprint | Focus | Big rocks |
+|---|---|---|
+| 1 | Trust | Team photos, logos, 10 blog posts, real case studies |
+| 2 | Conversion | ⌘K, /book-a-call, WhatsApp CTA, light mode, mobile drawer |
+| 3 | Differentiation | AI chat, client portal, Growth Score, activity feed |
+| 4 | Wow | Proposal builder, 3D pentagon, competitor dashboard, Arabic decision |
+
+Each sprint ends with a Lighthouse + bundle-size check before merging.
+
+---
+
+Reply **Approve** to start Sprint 1, or tell me which sprint to start with / which items to drop or reorder.
