@@ -10,15 +10,35 @@ const corsHeaders = {
 
 const PAGESPEED_API_KEY = Deno.env.get("PAGESPEED_API_KEY") ?? "";
 
+function isPrivateHost(host: string): boolean {
+  const h = host.toLowerCase().replace(/^\[|\]$/g, "");
+  if (["localhost", "ip6-localhost", "ip6-loopback", "metadata.google.internal",
+       "metadata", "metadata.goog", "0.0.0.0"].includes(h)) return true;
+  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (m) {
+    const [a, b] = [parseInt(m[1]), parseInt(m[2])];
+    if (a === 10 || a === 127 || a === 0) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a >= 224) return true;
+    return false;
+  }
+  if (h === "::1" || h.startsWith("fc") || h.startsWith("fd") || h.startsWith("fe80")) return true;
+  return false;
+}
+
 function normalizeUrl(input: string): string | null {
   try {
     const u = new URL(input.trim().startsWith("http") ? input.trim() : `https://${input.trim()}`);
     if (!["http:", "https:"].includes(u.protocol)) return null;
+    if (isPrivateHost(u.hostname)) return null;
     return u.toString();
   } catch {
     return null;
   }
 }
+
 
 async function checkCrawl(url: string) {
   const start = Date.now();
