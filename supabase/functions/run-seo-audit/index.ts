@@ -27,15 +27,46 @@ function rateLimit(ip: string, max = 5, windowMs = 60_000): boolean {
   return true;
 }
 
+function isPrivateHost(host: string): boolean {
+  const h = host.toLowerCase().replace(/^\[|\]$/g, "");
+  if (["localhost", "ip6-localhost", "ip6-loopback", "metadata.google.internal",
+       "metadata", "metadata.goog", "0.0.0.0"].includes(h)) return true;
+  // IPv4
+  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (m) {
+    const [a, b] = [parseInt(m[1]), parseInt(m[2])];
+    if (a === 10) return true;
+    if (a === 127) return true;
+    if (a === 0) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a >= 224) return true; // multicast / reserved
+    return false;
+  }
+  // IPv6 loopback / ULA / link-local
+  if (h === "::1" || h.startsWith("fc") || h.startsWith("fd") || h.startsWith("fe80")) return true;
+  return false;
+}
+
 function normalizeUrl(input: string): string | null {
   try {
     const u = new URL(input.trim().startsWith("http") ? input.trim() : `https://${input.trim()}`);
     if (!["http:", "https:"].includes(u.protocol)) return null;
+    if (isPrivateHost(u.hostname)) return null;
     return u.toString();
   } catch {
     return null;
   }
 }
+
+function safeFetchAllowed(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return ["http:", "https:"].includes(u.protocol) && !isPrivateHost(u.hostname);
+  } catch { return false; }
+}
+
 
 // ─────────────────────────────────────────────
 // Server-side lead validation
