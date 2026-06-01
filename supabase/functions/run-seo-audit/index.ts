@@ -242,7 +242,7 @@ function getAll(html: string, regex: RegExp): string[] {
 
 async function urlExists(url: string): Promise<boolean> {
   if (!safeFetchAllowed(url)) return false;
-
+  try {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 8_000);
     const r = await fetch(url, { signal: c.signal, method: "GET", redirect: "follow" });
@@ -252,6 +252,7 @@ async function urlExists(url: string): Promise<boolean> {
     return false;
   }
 }
+
 
 async function runOnPageChecks(url: string) {
   const fetched = await fetchHtml(url);
