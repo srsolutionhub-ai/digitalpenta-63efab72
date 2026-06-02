@@ -18,6 +18,14 @@ export default {
         display: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
+      fontSize: {
+        // Display tier — clamp-based for hero numerals and section openers.
+        // Tightens the H1↔H2↔H3 rhythm sitewide without breaking existing utility classes.
+        "display-2xl": ["clamp(4rem, 9vw, 7rem)", { lineHeight: "0.95", letterSpacing: "-0.04em", fontWeight: "800" }],
+        "display-xl": ["clamp(3.25rem, 7vw, 5.5rem)", { lineHeight: "1", letterSpacing: "-0.035em", fontWeight: "800" }],
+        "display-lg": ["clamp(2.5rem, 5vw, 4.25rem)", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "700" }],
+        "display-md": ["clamp(2rem, 4vw, 3.25rem)", { lineHeight: "1.1", letterSpacing: "-0.025em", fontWeight: "700" }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
