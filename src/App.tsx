@@ -81,17 +81,18 @@ const ClientSupport = lazy(() => import("./pages/dashboard/client/ClientSupport"
 const ClientFiles = lazy(() => import("./pages/dashboard/client/ClientFiles"));
 const ClientKnowledge = lazy(() => import("./pages/dashboard/client/ClientKnowledge"));
 
+const BookACall = lazy(() => import("./pages/BookACall"));
+const CommandPalette = lazy(() => import("./components/ui/CommandPalette"));
+
 const queryClient = new QueryClient();
 
 const ADMIN_ROLES = ["super_admin", "account_manager", "finance", "content_writer", "seo_specialist"];
 const CLIENT_ROLES = ["client"];
 
+import BrandedLoader from "@/components/ui/branded-loader";
+
 function PageLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-    </div>
-  );
+  return <BrandedLoader />;
 }
 
 function AnimatedRoutes() {
@@ -148,6 +149,7 @@ function AnimatedRoutes() {
             <Route path="/tools/blog-outline" element={<BlogOutlineTool />} />
             <Route path="/tools/competitor-xray" element={<CompetitorXrayTool />} />
             <Route path="/tools/roi-predictor" element={<RoiPredictorTool />} />
+            <Route path="/book-a-call" element={<BookACall />} />
             <Route path="/data-request" element={<DataRequest />} />
 
             {/* Auth routes */}
@@ -224,6 +226,9 @@ function AppShell() {
         <AnimatedRoutes />
         <Suspense fallback={null}>
           <CookiePreferenceModal />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CommandPalette />
         </Suspense>
       </BrowserRouter>
     </>
