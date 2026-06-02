@@ -8,8 +8,18 @@ import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import UrgencyStrip from "@/components/ui/urgency-strip";
 import SectionDivider from "@/components/ui/section-divider";
 import FloatingShapes from "@/components/ui/floating-shapes";
+import ScrollNavDots from "@/components/ui/scroll-nav-dots";
 import SEOHead, { breadcrumbSchema, faqPageSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
 import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
+
+const HOME_SECTIONS = [
+  { id: "hero", label: "Top" },
+  { id: "services", label: "Services" },
+  { id: "results", label: "Results" },
+  { id: "cases", label: "Cases" },
+  { id: "pricing", label: "Pricing" },
+  { id: "faq", label: "FAQ" },
+];
 
 /* Below-the-fold: code-split to keep initial JS small and improve LCP/TBT */
 const PartnersSection = lazy(() => import("@/components/sections/PartnersSection"));
@@ -173,7 +183,7 @@ const Index = () => {
         ]}
       />
       {/* Above-the-fold — eager */}
-      <div className="relative">
+      <div className="relative" data-scroll-section="hero">
         <HeroSection />
         <FloatingShapes className="z-[1]" />
       </div>
@@ -196,21 +206,27 @@ const Index = () => {
         <WebsiteAuditSection />
       </Suspense>
       <SectionDivider variant="spark" />
-      <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
-        <StatsSection />
-      </Suspense>
-      <Suspense fallback={<SectionFallback />}>
-        <ServicesSection />
-      </Suspense>
+      <div data-scroll-section="results">
+        <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
+          <StatsSection />
+        </Suspense>
+      </div>
+      <div data-scroll-section="services">
+        <Suspense fallback={<SectionFallback />}>
+          <ServicesSection />
+        </Suspense>
+      </div>
       <Suspense fallback={<SectionFallback />}>
         <ProcessSection />
       </Suspense>
       <Suspense fallback={<SectionFallback />}>
         <WhyUsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
-        <CaseStudiesSection />
-      </Suspense>
+      <div data-scroll-section="cases">
+        <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
+          <CaseStudiesSection />
+        </Suspense>
+      </div>
       <Suspense fallback={<SectionFallback />}>
         <ResultsReelSection />
       </Suspense>
@@ -221,15 +237,19 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <TestimonialsSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
-        <PricingSection />
-      </Suspense>
+      <div data-scroll-section="pricing">
+        <Suspense fallback={<SectionFallback />}>
+          <PricingSection />
+        </Suspense>
+      </div>
       <Suspense fallback={<SectionFallback minH="min-h-[600px]" />}>
         <RoiCalculatorSection />
       </Suspense>
-      <Suspense fallback={<SectionFallback />}>
-        <FAQSection />
-      </Suspense>
+      <div data-scroll-section="faq">
+        <Suspense fallback={<SectionFallback />}>
+          <FAQSection />
+        </Suspense>
+      </div>
       <Suspense fallback={<SectionFallback minH="min-h-[280px]" />}>
         <IndustriesSection />
       </Suspense>
@@ -243,6 +263,8 @@ const Index = () => {
       <Suspense fallback={<SectionFallback />}>
         <SignatureCtaSection />
       </Suspense>
+
+      <ScrollNavDots sections={HOME_SECTIONS} />
     </Layout>
   );
 };
