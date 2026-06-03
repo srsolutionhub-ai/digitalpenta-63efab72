@@ -83,6 +83,7 @@ const ClientKnowledge = lazy(() => import("./pages/dashboard/client/ClientKnowle
 
 const BookACall = lazy(() => import("./pages/BookACall"));
 const CommandPalette = lazy(() => import("./components/ui/CommandPalette"));
+const PentaAiChat = lazy(() => import("./components/ai/PentaAiChat"));
 
 const queryClient = new QueryClient();
 
@@ -229,6 +230,9 @@ function AppShell() {
         </Suspense>
         <Suspense fallback={null}>
           <CommandPalette />
+        </Suspense>
+        <Suspense fallback={null}>
+          <PentaAiChat />
         </Suspense>
       </BrowserRouter>
     </>
