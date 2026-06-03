@@ -13,6 +13,8 @@ import {
   ArrowRight,
   Phone,
   Globe,
+  MessageCircle,
+  CalendarCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
@@ -409,7 +411,7 @@ export default function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="lg:hidden fixed top-16 bottom-0 right-0 z-40 w-[88vw] max-w-sm bg-background/95 backdrop-blur-3xl border-l border-white/[0.06] overflow-y-auto overscroll-contain"
+                className="lg:hidden fixed top-16 bottom-0 right-0 z-40 w-[92vw] max-w-sm bg-background/95 backdrop-blur-3xl border-l border-white/[0.06] flex flex-col"
                 style={{
                   boxShadow: "-30px 0 80px -20px hsl(256 90% 30% / 0.5)",
                 }}
@@ -424,7 +426,7 @@ export default function Navbar() {
                   }}
                 />
 
-                <nav className="relative px-5 py-6 space-y-6" aria-label="Mobile primary">
+                <nav className="relative px-5 py-6 space-y-6 flex-1 overflow-y-auto overscroll-contain" aria-label="Mobile primary">
                   {/* Services with collapsible groups */}
                   <div>
                     <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] mb-3 px-1">Services</p>
@@ -538,25 +540,32 @@ export default function Navbar() {
                     </Link>
                   </div>
 
-                  {/* CTAs */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.32, delay: 0.35 }}
-                    className="space-y-2.5 pt-2"
-                  >
-                    <Link to="/contact" className="block">
-                      <Button variant="outline" className="w-full rounded-full font-display font-semibold text-sm h-12">
-                        Book Free Call
-                      </Button>
-                    </Link>
-                    <Link to="/get-proposal" className="block">
-                      <Button className="w-full rounded-full font-display font-bold text-sm h-12 btn-glow">
-                        Get Free Proposal →
-                      </Button>
-                    </Link>
-                  </motion.div>
                 </nav>
+
+                {/* Sticky bottom CTA cluster */}
+                <div className="relative border-t border-white/[0.08] bg-background/95 backdrop-blur-3xl p-4 space-y-2.5 shadow-[0_-20px_40px_-20px_hsl(256_90%_30%/0.5)]">
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href="https://wa.me/918860100039?text=Hi%20Digital%20Penta%2C%20I%27d%20like%20a%20free%20strategy%20call."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 rounded-full h-11 text-xs font-display font-semibold border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4" aria-hidden /> WhatsApp
+                    </a>
+                    <Link
+                      to="/book-a-call"
+                      className="flex items-center justify-center gap-2 rounded-full h-11 text-xs font-display font-semibold border border-white/15 bg-white/5 text-foreground hover:bg-white/10 transition-colors"
+                    >
+                      <CalendarCheck className="w-4 h-4" aria-hidden /> Book Call
+                    </Link>
+                  </div>
+                  <Link to="/get-proposal" className="block">
+                    <Button className="w-full rounded-full font-display font-bold text-sm h-12 btn-glow">
+                      Get Free Proposal →
+                    </Button>
+                  </Link>
+                </div>
               </motion.div>
             </>
           )}
