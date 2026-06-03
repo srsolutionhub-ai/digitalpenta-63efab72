@@ -40,6 +40,7 @@ const SignatureCtaSection = lazy(() => import("@/components/sections/SignatureCt
 const SeoLinkHub = lazy(() => import("@/components/sections/SeoLinkHub"));
 const RoiCalculatorSection = lazy(() => import("@/components/sections/RoiCalculatorSection"));
 const ClientTrustWallSection = lazy(() => import("@/components/sections/ClientTrustWallSection"));
+const LiveGrowthScoreSection = lazy(() => import("@/components/sections/LiveGrowthScoreSection"));
 
 /** Skeleton placeholder that reserves vertical space to minimize CLS during chunk load. */
 function SectionFallback({ minH = "min-h-[420px]" }: { minH?: string }) {
@@ -204,6 +205,9 @@ const Index = () => {
       </Suspense>
       <Suspense fallback={<SectionFallback />}>
         <WebsiteAuditSection />
+      </Suspense>
+      <Suspense fallback={<SectionFallback minH="min-h-[520px]" />}>
+        <LiveGrowthScoreSection />
       </Suspense>
       <SectionDivider variant="spark" />
       <div data-scroll-section="results">

@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { TrendingUp, Search, MousePointerClick, Link2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ApprovalsCard from "@/components/dashboard/client/ApprovalsCard";
+import OnboardingChecklist from "@/components/dashboard/client/OnboardingChecklist";
 
 function HealthGauge({ score }: { score: number }) {
   const color = score >= 70 ? "hsl(162,100%,44%)" : score >= 40 ? "hsl(45,100%,50%)" : "hsl(0,72%,51%)";
@@ -78,9 +80,15 @@ export default function ClientHome() {
 
   if (!campaign) {
     return (
-      <div className="card-surface rounded-2xl p-12 text-center">
-        <h2 className="font-display font-bold text-xl text-foreground mb-2">Welcome to Your Dashboard</h2>
-        <p className="text-muted-foreground text-sm">Your campaign data will appear here once your account manager sets it up.</p>
+      <div className="space-y-6">
+        <div className="card-surface rounded-2xl p-12 text-center">
+          <h2 className="font-display font-bold text-xl text-foreground mb-2">Welcome to Your Dashboard</h2>
+          <p className="text-muted-foreground text-sm">Your campaign data will appear here once your account manager sets it up.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          <OnboardingChecklist />
+          <ApprovalsCard />
+        </div>
       </div>
     );
   }
@@ -142,6 +150,11 @@ export default function ClientHome() {
             <MetricCard icon={MousePointerClick} label="Engagement Rate" value={social.engagementRate ? `${social.engagementRate}%` : "—"} />
           </div>
         </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <OnboardingChecklist />
+        <ApprovalsCard />
       </div>
 
       {/* Reports */}
