@@ -113,7 +113,7 @@ export default function LiveActivityTicker() {
 
       {/* Horizontal scrolling ticker — pauses on hover */}
       <div className="relative -mx-5 group">
-        <div className="flex gap-3 px-5 overflow-x-auto scrollbar-none [mask-image:linear-gradient(to_right,transparent,#000_3%,#000_97%,transparent)]">
+        <div className="flex gap-3 px-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,transparent,#000_3%,#000_97%,transparent)]">
           <div className="flex gap-3 animate-marquee group-hover:[animation-play-state:paused]">
             {[...events, ...events].map((e, i) => {
               const Icon = ICONS[e.kind];
