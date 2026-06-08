@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +12,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar
 } from "recharts";
+
+// Lazy-loaded — does its own data fetching, so initial render stays snappy.
+const LiveActivityTicker = lazy(() => import("@/components/dashboard/LiveActivityTicker"));
 
 const COLORS = ["hsl(256,90%,62%)", "hsl(162,100%,44%)", "hsl(18,100%,60%)", "hsl(45,100%,50%)", "hsl(210,100%,50%)"];
 
@@ -135,6 +139,11 @@ export default function DashboardHome() {
         <KPICard icon={FileText} label="Open Invoices" value={`${invoiceStats?.openCount ?? 0} (${formatCurrency(invoiceStats?.openTotal ?? 0)})`} loading={loadingInvoices} />
         <KPICard icon={Send} label="Proposals Sent" value={quotationCount ?? 0} loading={loadingQuotations} />
       </div>
+
+      {/* Live Bloomberg-style activity ticker */}
+      <Suspense fallback={<Skeleton className="h-28 rounded-2xl" />}>
+        <LiveActivityTicker />
+      </Suspense>
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-3">

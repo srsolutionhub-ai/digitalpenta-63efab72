@@ -23,3 +23,9 @@ verify_jwt = true
 
 [functions.ai-strategist]
 verify_jwt = false
+
+[functions.generate-proposal-pdf]
+verify_jwt = false
+
+[functions.penta-ai-chat]
+verify_jwt = false

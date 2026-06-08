@@ -82,6 +82,7 @@ const ClientFiles = lazy(() => import("./pages/dashboard/client/ClientFiles"));
 const ClientKnowledge = lazy(() => import("./pages/dashboard/client/ClientKnowledge"));
 
 const BookACall = lazy(() => import("./pages/BookACall"));
+const ProposalBuilder = lazy(() => import("./pages/ProposalBuilder"));
 const CommandPalette = lazy(() => import("./components/ui/CommandPalette"));
 const PentaAiChat = lazy(() => import("./components/ai/PentaAiChat"));
 
@@ -151,6 +152,7 @@ function AnimatedRoutes() {
             <Route path="/tools/competitor-xray" element={<CompetitorXrayTool />} />
             <Route path="/tools/roi-predictor" element={<RoiPredictorTool />} />
             <Route path="/book-a-call" element={<BookACall />} />
+            <Route path="/proposal-builder" element={<ProposalBuilder />} />
             <Route path="/data-request" element={<DataRequest />} />
 
             {/* Auth routes */}

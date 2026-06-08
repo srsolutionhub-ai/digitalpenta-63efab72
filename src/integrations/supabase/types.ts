@@ -177,6 +177,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_daily_budget: {
+        Row: {
+          call_count: number
+          cap: number
+          day: string
+          feature: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          call_count?: number
+          cap?: number
+          day?: string
+          feature: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          call_count?: number
+          cap?: number
+          day?: string
+          feature?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           browser: string | null
@@ -1580,7 +1607,9 @@ export type Database = {
           id: string
           items: Json
           notes: string | null
+          pdf_url: string | null
           quote_number: string
+          source: string | null
           status: string | null
           subtotal: number
           tax_amount: number | null
@@ -1598,7 +1627,9 @@ export type Database = {
           id?: string
           items?: Json
           notes?: string | null
+          pdf_url?: string | null
           quote_number: string
+          source?: string | null
           status?: string | null
           subtotal?: number
           tax_amount?: number | null
@@ -1616,7 +1647,9 @@ export type Database = {
           id?: string
           items?: Json
           notes?: string | null
+          pdf_url?: string | null
           quote_number?: string
+          source?: string | null
           status?: string | null
           subtotal?: number
           tax_amount?: number | null
@@ -2524,6 +2557,14 @@ export type Database = {
       }
     }
     Functions: {
+      bump_ai_budget: {
+        Args: { _cap?: number; _feature: string }
+        Returns: {
+          allowed: boolean
+          cap: number
+          used: number
+        }[]
+      }
       calculate_lead_score: {
         Args: {
           contact_budget: string

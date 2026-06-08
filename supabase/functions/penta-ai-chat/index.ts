@@ -240,9 +240,19 @@ Deno.serve(async (req) => {
             });
           }
 
-          // Try lightweight qualification every turn after turn 3
+          // Try lightweight qualification every turn after turn 3 (cap-guarded)
           const turnCount = (trimmed.length + 1);
           if (turnCount >= 4 && turnCount % 2 === 0) {
+            // Daily AI budget cap — prevents cost spikes if traffic surges.
+            const { data: budget } = await supabase.rpc("bump_ai_budget", {
+              _feature: "penta_chat_qualify",
+              _cap: Number(Deno.env.get("PENTA_QUALIFY_DAILY_CAP") ?? 500),
+            });
+            const allowed = Array.isArray(budget) ? budget[0]?.allowed : (budget as any)?.allowed;
+            if (allowed === false) {
+              console.warn("penta-ai-chat: daily qualification budget reached, skipping qualify call");
+              return;
+            }
             const transcript = [...trimmed, { role: "assistant" as const, content: fullAssistant }]
               .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
               .join("\n");
