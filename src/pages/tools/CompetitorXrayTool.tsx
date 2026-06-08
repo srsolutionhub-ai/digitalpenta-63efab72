@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SEOHead, { breadcrumbSchema, softwareApplicationSchema } from "@/components/seo/SEOHead";
 import AiToolRunner from "@/components/tools/AiToolRunner";
+
+// Dashboard + charts lazy-loaded so the tool landing page stays light.
+const CompetitorXrayDashboard = lazy(() => import("@/components/tools/CompetitorXrayDashboard"));
 
 interface Result {
   summary: string;
@@ -55,43 +58,9 @@ export default function CompetitorXrayTool() {
             inputs={inputs}
             isReady={ready}
             renderResult={(r) => (
-              <div className="space-y-4 text-sm">
-                <p className="text-foreground/80">{r.summary}</p>
-                {r.gaps?.length > 0 && (
-                  <div>
-                    <p className="type-label text-primary mb-2 font-mono">Gaps</p>
-                    <div className="space-y-2">
-                      {r.gaps.map((g, i) => (
-                        <div key={i} className="border border-border/30 rounded-lg p-3">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-display font-semibold text-foreground">{g.category}</span>
-                            <span className={`text-[11px] px-2 py-0.5 rounded-full font-mono ${g.priority === "High" ? "bg-rose-500/10 text-rose-400" : g.priority === "Medium" ? "bg-amber-500/10 text-amber-400" : "bg-white/5 text-muted-foreground"}`}>{g.priority}</span>
-                          </div>
-                          <div className="grid sm:grid-cols-2 gap-2 text-xs mt-1">
-                            <div><span className="text-muted-foreground">You: </span>{g.you}</div>
-                            <div><span className="text-muted-foreground">Them: </span>{g.competitor}</div>
-                          </div>
-                          <div className="text-foreground/80 text-xs mt-2">→ {g.opportunity}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {r.quick_wins && (
-                  <div>
-                    <p className="type-label text-emerald-400 mb-1.5 font-mono">Quick wins</p>
-                    <ul className="list-disc list-inside text-foreground/80 space-y-1">{r.quick_wins.map((q, i) => <li key={i}>{q}</li>)}</ul>
-                  </div>
-                )}
-                {r.keyword_opportunities && (
-                  <div>
-                    <p className="type-label text-sky-400 mb-1.5 font-mono">Keyword opportunities</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {r.keyword_opportunities.map((k, i) => <span key={i} className="px-2 py-0.5 rounded-full bg-white/[0.04] text-xs text-foreground/80 border border-border/30">{k}</span>)}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Suspense fallback={<div className="h-64 rounded-lg bg-card/30 animate-pulse" />}>
+                <CompetitorXrayDashboard r={r} />
+              </Suspense>
             )}
           >
             <div>
