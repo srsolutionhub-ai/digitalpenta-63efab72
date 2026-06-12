@@ -110,9 +110,21 @@ for (const svc of services) {
   }
 }
 
-// Locations + Arabic mirrors (cities array reused)
-for (const city of cities) {
-  add(`/locations/${city}`, "0.7");
+// Locations — read full set directly from locationData.ts so we include
+// every location page (not only the 5 in the matrix). Without this the
+// /locations/* pages for Pune, Hyderabad, Noida, etc. never reach Google.
+const locationSrc = path.join(ROOT, "src/data/locationData.ts");
+const locationText = fs.readFileSync(locationSrc, "utf8");
+const locationSlugs = [...locationText.matchAll(/slug:\s*"([a-z-]+)"/g)]
+  .map(m => m[1])
+  // dedupe (multiple slug:"..." per record, we want unique top-level entries)
+  .filter((v, i, arr) => arr.indexOf(v) === i);
+for (const slug of locationSlugs) {
+  add(`/locations/${slug}`, "0.85");
+}
+// Arabic mirrors for Middle-East cities
+for (const slug of ["dubai", "abu-dhabi", "riyadh", "doha", "bahrain"]) {
+  add(`/ar/locations/${slug}`, "0.7");
 }
 add(`/ar`, "0.6");
 
