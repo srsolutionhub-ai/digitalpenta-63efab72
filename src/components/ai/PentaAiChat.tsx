@@ -8,6 +8,7 @@ import { MessageCircle, X, Send, Sparkles, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
+import { overlayBus } from "@/lib/overlayOrchestrator";
 
 const SESSION_KEY = "penta-ai-session-id";
 const VISITOR_KEY = "penta-ai-visitor-id";
@@ -181,6 +182,13 @@ export default function PentaAiChat() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Claim the overlay slot while open so LeadCaptureBar / SmartCTA / WhatsApp yield.
+  useEffect(() => {
+    if (open) overlayBus.request("penta-ai-chat");
+    else overlayBus.release("penta-ai-chat");
+    return () => overlayBus.release("penta-ai-chat");
+  }, [open]);
+
   return (
     <>
       {/* FAB */}
@@ -192,7 +200,7 @@ export default function PentaAiChat() {
         }}
         aria-label={open ? "Close Penta AI chat" : "Open Penta AI chat"}
         aria-expanded={open}
-        className="fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full pl-3 pr-4 py-3 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[0_20px_60px_-15px_hsl(256_90%_45%/0.7)] hover:shadow-[0_24px_70px_-12px_hsl(256_90%_45%/0.9)] hover:scale-[1.03] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] lg:bottom-6 right-4 lg:right-5 z-[60] flex items-center gap-2 rounded-full pl-3 pr-4 py-3 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[0_20px_60px_-15px_hsl(256_90%_45%/0.7)] hover:shadow-[0_24px_70px_-12px_hsl(256_90%_45%/0.9)] hover:scale-[1.03] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         {open ? (
           <X className="w-5 h-5" aria-hidden />
@@ -219,7 +227,7 @@ export default function PentaAiChat() {
             role="dialog"
             aria-modal="false"
             aria-label="Penta AI chat"
-            className="fixed bottom-24 right-4 z-[60] w-[min(380px,calc(100vw-2rem))] h-[min(560px,calc(100vh-9rem))] flex flex-col rounded-2xl border border-white/[0.08] bg-background/95 backdrop-blur-3xl shadow-[0_40px_100px_-20px_hsl(256_90%_20%/0.7)] overflow-hidden"
+            className="fixed bottom-[calc(140px+env(safe-area-inset-bottom))] lg:bottom-24 right-4 z-[60] w-[min(380px,calc(100vw-2rem))] h-[min(560px,calc(100vh-14rem))] lg:h-[min(560px,calc(100vh-9rem))] flex flex-col rounded-2xl border border-white/[0.08] bg-background/95 backdrop-blur-3xl shadow-[0_40px_100px_-20px_hsl(256_90%_20%/0.7)] overflow-hidden"
           >
             {/* Header */}
             <div className="relative flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">

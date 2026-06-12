@@ -1,129 +1,108 @@
+# Sprint 5 — Polish, Voice, SEO Fixes, Auth Recovery
 
-# DigitalPenta — 4-Sprint Upgrade Plan (2026 Premium Build)
-
-Goal: lift the audit score from ~60 to 90+ across UX, conversion, trust, and features — **without sacrificing fast loading**. Every heavy module is lazy-loaded behind viewport intersection or a user gesture. JS budget stays <200KB gzip on initial paint.
-
----
-
-## Performance guardrails (apply to every sprint)
-
-- Initial route JS ≤ 200KB gzip. Heavy widgets (3D, command palette, AI chat, charts) → dynamic `import()` after idle or interaction.
-- Images: AI-generated assets exported as AVIF + WebP via `vite-imagetools`, fixed `width`/`height` to eliminate CLS.
-- All new sections wrapped in `IntersectionObserver`; mount only when 200px from viewport.
-- LCP guard: nothing new in the above-the-fold hero except CSS.
-- Lighthouse target each sprint: Perf ≥ 92, LCP < 2.0s, INP < 200ms, CLS < 0.05.
+Six tracks, sequenced so blocking issues (auth, overlay collisions) land first, then SEO/GSC fixes, then nice-to-haves and ElevenLabs.
 
 ---
 
-## Sprint 1 — Trust Foundation (Week 1)
+## Track 1 — Auth recovery for super admin (BLOCKER, ship first)
 
-Goal: kill the "fake agency" perception.
+**Problem:** `srsolutionhub@gmail.com` (uid `9c8cb5e5-13f4-41b0-b104-3c3cd3ac4357`) cannot log in to admin/client dashboards. Reset-password flow also unverified.
 
-1. **AI-generated team photos** — generate 6 realistic headshots (premium `gemini-3-pro-image-preview`) for About page. Each with a small "AI-rendered placeholder" disclosure footnote. Replace initials avatars in `About.tsx`.
-2. **Client logo wall** — generate 12 abstract brand-style SVG/PNG marks (fictional but professional) for `PartnersSection` and `ClientTrustWallSection`. Marquee already exists; just swap assets.
-3. **Real LinkedIn placeholders** — update team data to use `linkedin.com/in/digitalpenta-{slug}` slugs (still resolvable to a coming-soon page on our domain) instead of `#`.
-4. **Blog seed content** — generate 10 SEO-optimized articles via AI Gateway script, insert into Supabase `blog_posts` table. Cover: SEO for SMEs, WhatsApp marketing in India, Google Ads ROI, GA4 setup, AI for agencies, etc. Real publish dates, real author bylines tied to team.
-5. **Case study upgrade** — 3 hero case studies with AI-generated "before/after dashboard screenshots", real-looking GA4 charts (Recharts, lazy-loaded), client photo + quote.
-6. **Verifiable metrics overlay** — every hardcoded stat ("500+ clients") gets a tooltip with methodology + last-updated date pulled from a small `site_metrics` table.
+**Plan:**
 
-Deliverable: Trust score 55 → 85.
-
----
-
-## Sprint 2 — UX & Conversion Lift (Week 2)
-
-Goal: shorter path to "Book a call".
-
-1. **⌘K Command Palette** (`cmdk` already installed) — navigation, blog search, AI tool launcher, "book a call", "WhatsApp us". Lazy-loaded on first `⌘K` / `/` press. ~6KB after gzip.
-2. **`/book-a-call` page** — dedicated route, Cal.com inline embed (deferred until viewport), promoted as primary CTA in Hero + Pricing + sticky mobile bar.
-3. **WhatsApp-first primary CTA** — replace secondary buttons site-wide with "Chat on WhatsApp" deep link (pre-filled qualifier message). Demonstrates own service.
-4. **Light mode toggle** — wire up existing `next-themes`. Audit all `hsl(var(--*))` tokens for light-mode pairs in `index.css`. Persist preference, respect `prefers-color-scheme`.
-5. **Mobile menu redesign** — full-screen drawer (Vaul-style), swipe-to-close, sectioned navigation, bottom-anchored CTA.
-6. **Branded loader** — replace generic spinner with logo pulse + 3-line skeleton matching the route being loaded.
-7. **Sticky scroll-nav dots** on homepage (Linear-style) — desktop only, fades in after hero. Pure CSS + IntersectionObserver, zero deps.
-8. **Typography scale upgrade** — true display tier (clamp-based 64-112px) for hero numerals + section openers; tightens H1↔H2↔H3 rhythm in `tailwind.config.ts`.
-
-Deliverable: Conversion score 42 → 70.
+1. Run diagnostic SQL: confirm the user exists in `auth.users`, has a row in `public.user_roles` with role `admin`, and `email_confirmed_at` is set. Check `profiles` row exists.
+2. If role missing → insert `('9c8cb5e5-...', 'admin')` into `user_roles`.
+3. If email unconfirmed → confirm via SQL update on `auth.users.email_confirmed_at`.
+4. Inspect `ProtectedRoute.tsx` + `useAuth.ts` for the `get_user_role` RPC return path; verify it doesn't 401 on the role lookup (common bug: RPC not granted to `authenticated`).
+5. Trigger a server-side password reset link, then verify `/reset-password` page handles `type=recovery` hash and calls `supabase.auth.updateUser({ password })`. Add the page if missing or broken.
+6. Smoke-test: login → redirect to `/dashboard` (admin) or `/client` (client) based on role.
 
 ---
 
-## Sprint 3 — Premium Differentiators (Week 3)
+## Track 2 — Overlay collision fix (UI blocker shown in screenshot)
 
-Goal: feel like a SaaS product, not a brochure.
+**Problem:** Bottom of viewport stacks 3–4 floating elements (WhatsApp float, exit-intent, lead-capture bar, smart-CTA, Penta AI chat launcher, mobile sticky CTA) which overlap as shown in the attached screenshot.
 
-1. **"Talk to Penta AI" chat widget** — Supabase edge function streaming via Lovable AI Gateway. Qualifies budget / service / timeline → writes lead to `contacts` table, fires WhatsApp notification. Lazy-mounted, opens via FAB. Replaces current static `floating-cta`.
-2. **Enhanced client portal** — add to `/dashboard/client`:
-   - Live campaign metrics card (GA4 + GSC stubs)
-   - Approval workflows (deliverable cards with Approve / Request changes)
-   - Onboarding checklist
-   - Notifications drawer (Supabase realtime)
-3. **Live Growth Score widget** on homepage — user enters URL → existing `run-seo-audit` edge function returns 5-axis radar chart + downloadable PDF (already have `generate-audit-pdf`). Inline, no popup.
-4. **Real-time Agency Feed ticker** — small footer/section component pulling last 10 events from a `public_activity` table (admin-controlled curated entries, anonymized). Bloomberg-style horizontal scroller. ~3KB.
-5. **Google Reviews + Clutch widget** — real Google Place API embed (key via secret), Clutch iframe deferred.
+**Plan:**
 
-Deliverable: Features score 64 → 88.
-
----
-
-## Sprint 4 — Wow Factor & Moats (Week 4)
-
-Goal: things competitors can't copy in a week.
-
-1. **Public Proposal Builder** — multi-step wizard (industry → services → budget → contact) → AI-generated proposal PDF via edge function + saves to admin Quotations module. Reuses existing infrastructure.
-2. **Competitor X-Ray upgrade** — promote existing tool into a full live dashboard: domain analysis + keyword gap + content gap, charts lazy-loaded.
-3. **3D Pentagon Service Visualizer** — Three.js (`@react-three/fiber@^8.18` + `drei@^9.122`), lazy-loaded **only on desktop + after viewport intersection + after `requestIdleCallback`**. Mobile gets a static SVG fallback. Bundle isolated in its own chunk.
-4. **Full Arabic site** — complete RTL for all major routes or trim to a single Arabic landing with explicit "GCC dedicated team — full site coming Q3" notice. Decision deferred to user.
-5. **Hero Personalization v2** — add city-based variants (IP geo via edge function) on top of existing UTM/referrer engine.
-
-Deliverable: Wow score new → 90.
+1. Audit overlay components: `whatsapp-float`, `floating-cta`, `exit-intent-popup`, `lead-capture-bar`, `mobile-sticky-bar`, `smart-cta`, `urgency-strip`, `announce-bar`, `PentaAiChat`.
+2. Centralize through existing `useOverlaySlot` / `overlayOrchestrator` — enforce a single overlay per slot (bottom-right, bottom-center, bottom-left) with priority order:
+  - Bottom-right: Penta AI chat (highest)
+  - Bottom-center (mobile only): sticky CTA bar
+  - Bottom-left: WhatsApp float (suppressed if chat is open)
+3. Remove redundant duplicates: `lead-capture-bar` + `smart-cta` + `floating-cta` doing similar jobs → keep one ("Free Website Audit" bar) and delete unused ones from `App.tsx`/`Layout.tsx`.
+4. Add z-index scale tokens in `index.css` (z-overlay-low/mid/high) so stacking is deterministic.
+5. Verify on mobile + desktop preview.
 
 ---
 
-## Technical details
+## Track 3 — SEO/GSC audit & city-page fixes
 
-### New deps (all lazy / chunked)
-- `@react-three/fiber@^8.18`, `@react-three/drei@^9.122`, `three@^0.160` — Sprint 4 only, isolated chunk
-- `vaul` — Sprint 2 mobile drawer (~5KB)
-- `vite-imagetools` — build-time image optimization
-- `eventsource-parser` — AI chat streaming (Sprint 3)
+**Problem:** Location pages exist but not surfacing on SERP; need GSC health check.
 
-Already installed and reusable: `cmdk`, `next-themes`, `framer-motion`, `recharts`, `embla-carousel`, `lenis`, `react-helmet-async` (add if missing).
+**Plan:**
 
-### New routes
-`/book-a-call`, `/proposal-builder`, `/results` (documentary case studies)
-
-### New Supabase tables
-- `blog_posts` (if not present) — slug, title, body, author_id, published_at, og_image
-- `site_metrics` — key, value, methodology, updated_at
-- `public_activity` — type, message, city, created_at (admin-curated)
-- `ai_chat_sessions` + `ai_chat_messages` — chat widget transcripts
-- `proposal_drafts` — public proposal builder submissions
-
-All with RLS + GRANTs per project conventions. Admins manage via existing dashboard pages (extended).
-
-### New edge functions
-- `penta-ai-chat` (streaming) — Sprint 3
-- `generate-proposal-pdf` — Sprint 4
-- `geo-personalize` — Sprint 4 (city detection)
-
-### Performance verification per sprint
-- Build size diff report
-- Lighthouse run on `/`, `/services/seo`, `/book-a-call`
-- Bundle analyzer screenshot for any new chunk > 30KB
+1. **GSC audit via connector gateway:**
+  - Sites list, sitemap status, coverage (indexed vs excluded), top URLs by impressions, Core Web Vitals report, mobile usability.
+  - URL Inspection API on 5–10 city pages to see indexation status & last-crawl.
+2. **Trigger Lovable SEO review** (`seo_chat--trigger_scan`) and read findings.
+3. **Semrush** competitive_analysis + top_pages for digitalpenta.com to confirm which queries we already rank for and identify city-keyword gaps.
+4. **Fix likely causes for city pages not ranking:**
+  - Add `LocalBusiness` + `Service` JSON-LD with `areaServed` per city.
+  - Unique H1, title (`<60c`), meta (`<160c`) per city — audit `LocationPage.tsx` to ensure they're not templated identically.
+  - Internal linking: add city links from footer, `/sitemap` page, and a "Service Areas" grid on relevant service pages.
+  - Add breadcrumb schema on all city + service pages.
+  - Regenerate `public/sitemap.xml` with all city URLs + correct lastmod, resubmit via GSC API.
+  - Ensure each city page has a canonical pointing to itself.
+5. Fix any failing findings from the SEO scan (title/desc/og/canonical/h1).
 
 ---
 
-## Execution order summary
+## Track 4 — ElevenLabs voice layer (customer-experience upgrade)
 
-| Sprint | Focus | Big rocks |
-|---|---|---|
-| 1 | Trust | Team photos, logos, 10 blog posts, real case studies |
-| 2 | Conversion | ⌘K, /book-a-call, WhatsApp CTA, light mode, mobile drawer |
-| 3 | Differentiation | AI chat, client portal, Growth Score, activity feed |
-| 4 | Wow | Proposal builder, 3D pentagon, competitor dashboard, Arabic decision |
+ElevenLabs key is connected. Pick high-ROI surfaces, not gimmicks. Performance-gated (lazy + on-demand).
 
-Each sprint ends with a Lighthouse + bundle-size check before merging.
+**Plan — three additions:**
+
+1. **Voice intro on Penta AI chat** — TTS the agent's first reply (and any reply on a "speaker" toggle) via `eleven_turbo_v2_5` streaming. Keeps text default; voice is opt-in (mute by default to protect autoplay policies & perf budget).
+2. **Voice-narrated audit report** — on the Website Audit results screen, a "Listen to your report" button TTSes the top 3 issues + recommendation (~30s). Drives engagement, captures leads who skim.
+3. **Voice "Talk to Penta" widget on Book-a-Call page** — `useConversation` (WebRTC) with a Conversational Agent persona, so prospects can speak with an AI consultant before booking. Mic permission gated behind explicit user click. Server token endpoint via edge function `elevenlabs-token`.
+
+All audio components `lazy()`-loaded; bundle stays under budget. Edge functions: `elevenlabs-tts` (batch + stream), `elevenlabs-token` (Convai WebRTC token). Standard connector — read `ELEVENLABS_API_KEY` from env.
 
 ---
 
-Reply **Approve** to start Sprint 1, or tell me which sprint to start with / which items to drop or reorder.
+## Track 5 — Nice-to-haves
+
+1. **Light-mode toggle (deferred items resolved):**
+  - Add `next-themes`-style provider over existing tokens.
+  - Audit `index.css` — most colors are HSL tokens already; add `.light` overrides for `--background`, `--foreground`, `--card`, `--border`, `--muted`, `--primary-foreground`. Surfaces using raw `bg-black`/`text-white` get a sweep replaced with `bg-background`/`text-foreground`.
+  - Toggle in navbar (sun/moon), persisted in localStorage, default = dark.
+2. **3D Pentagon Visualizer:** lightweight CSS-3D (transform: rotateY) — NOT three.js — to stay in perf budget. Renders the 5 service pillars as faces of a slowly auto-rotating pentagon on the hero or About page. Pauses on `prefers-reduced-motion`.
+3. **Hero personalization A/B telemetry dashboard:** new admin route `/dashboard/admin/experiments` reading from `hero_variant_events` (add table if missing). Charts: variant exposure, CTA CTR, lead conversion per variant. Lazy `recharts`.
+
+---
+
+## Track 6 — QA & health check
+
+- Run build + lint.
+- Smoke-test all 6 tracks in preview.
+- Re-run SEO scan and security scan.
+- Final health report + remaining backlog.
+
+---
+
+## Technical notes
+
+- **DB migrations:** `hero_variant_events` table (+ GRANTs + RLS), confirm `user_roles` row for super admin.
+- **Edge functions:** `elevenlabs-tts`, `elevenlabs-token`.
+- **No new heavy deps:** ElevenLabs uses fetch directly; `@elevenlabs/react` only on Book-a-Call (lazy).
+- **Perf budget preserved:** all new widgets lazy + suspense, no top-level imports of recharts/three/elevenlabs SDKs.
+
+---
+
+## Execution order
+
+1. Track 1 (auth) → 2. Track 2 (overlays) → 3. Track 3 (SEO/GSC + city pages) → 4. Track 4 (ElevenLabs) → 5. Track 5 (nice-to-haves) → 6. Track 6 (QA).
+
+Confirm and I'll start and do not stop untill all task is finished. after finished all track 1 to track 6 do think all code is working fine then give me provide a short summery.
