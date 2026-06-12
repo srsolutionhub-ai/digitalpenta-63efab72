@@ -3,6 +3,7 @@
 
 export type OverlayId =
   | "cookie-consent"
+  | "penta-ai-chat"
   | "exit-intent"
   | "lead-capture"
   | "live-activity"
@@ -10,6 +11,7 @@ export type OverlayId =
 
 const PRIORITY: Record<OverlayId, number> = {
   "cookie-consent": 100,
+  "penta-ai-chat": 95,
   "exit-intent": 90,
   "lead-capture": 70,
   "live-activity": 40,
@@ -47,6 +49,9 @@ export const overlayBus = {
       }
     });
     return best;
+  },
+  isActive(id: OverlayId): boolean {
+    return requested.has(id);
   },
   subscribe(l: Listener) {
     listeners.add(l);

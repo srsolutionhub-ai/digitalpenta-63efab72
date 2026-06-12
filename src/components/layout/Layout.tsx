@@ -8,10 +8,18 @@ import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 
 /* Deferred: appear after delays / user interaction — keep out of initial JS bundle */
 const ExitIntentPopup = lazy(() => import("@/components/ui/exit-intent-popup"));
-const SmartCTA = lazy(() => import("@/components/ui/smart-cta"));
-const AiStrategistChat = lazy(() => import("@/components/ai/AiStrategistChat"));
 const LiveActivityFeed = lazy(() => import("@/components/ui/live-activity-feed"));
 
+/**
+ * Bottom-of-viewport overlay layout (single source of truth):
+ *   bottom-right : Penta AI chat FAB              (App.tsx, z-60)
+ *   bottom-left  : WhatsApp float (desktop only)  (z-50)
+ *   bottom-edge  : LeadCaptureBar (rotates w/ bus, mobile sits above sticky)
+ *   bottom-strip : MobileStickyBar (mobile only)
+ *   bottom-left  : LiveActivityFeed (toast, time-limited)
+ * SmartCTA and AiStrategistChat were removed — they duplicated PentaAiChat
+ * and collided with the chat FAB on the right edge.
+ */
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
@@ -25,8 +33,6 @@ export default function Layout({ children }: { children: ReactNode }) {
       <LeadCaptureBar />
       <Suspense fallback={null}>
         <ExitIntentPopup />
-        <SmartCTA />
-        <AiStrategistChat />
         <LiveActivityFeed />
       </Suspense>
     </div>
