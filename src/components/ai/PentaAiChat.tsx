@@ -4,7 +4,7 @@
  * Persists session_id in localStorage so a returning visitor resumes the same thread.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Sparkles, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, Loader2, Volume2, Square } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,8 @@ export default function PentaAiChat() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [bumped, setBumped] = useState(false);
+  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const visitorIdRef = useRef<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -189,6 +191,73 @@ export default function PentaAiChat() {
     return () => overlayBus.release("penta-ai-chat");
   }, [open]);
 
+  // Stop any in-flight audio when chat closes
+  useEffect(() => {
+    if (!open && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setPlayingIdx(null);
+    }
+  }, [open]);
+
+  const speak = useCallback(async (idx: number, text: string) => {
+    // Toggle off if same message is playing
+    if (playingIdx === idx && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setPlayingIdx(null);
+      return;
+    }
+    // Stop any prior playback
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setPlayingIdx(idx);
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      // Strip markdown for cleaner narration
+      const cleanText = text
+        .replace(/```[\s\S]*?```/g, "")
+        .replace(/[*_`#>~|-]/g, "")
+        .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
+        .slice(0, 1000);
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/elevenlabs-tts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`,
+          },
+          body: JSON.stringify({ text: cleanText }),
+        }
+      );
+      if (!res.ok) throw new Error(`TTS ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        if (audioRef.current === audio) {
+          audioRef.current = null;
+          setPlayingIdx(null);
+        }
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        setPlayingIdx(null);
+      };
+      await audio.play();
+    } catch (e) {
+      console.error("tts failed", e);
+      setPlayingIdx(null);
+    }
+  }, [playingIdx]);
+
   return (
     <>
       {/* FAB */}
@@ -293,7 +362,7 @@ export default function PentaAiChat() {
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
+                    className={`group max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed relative ${
                       m.role === "user"
                         ? "bg-primary/90 text-primary-foreground rounded-tr-sm"
                         : "bg-white/[0.04] border border-white/[0.05] text-foreground/95 rounded-tl-sm"
@@ -301,9 +370,27 @@ export default function PentaAiChat() {
                   >
                     {m.content ? (
                       m.role === "assistant" ? (
-                        <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
-                          <ReactMarkdown>{m.content}</ReactMarkdown>
-                        </div>
+                        <>
+                          <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
+                            <ReactMarkdown>{m.content}</ReactMarkdown>
+                          </div>
+                          {/* Voice playback — opt-in, fetches TTS on click */}
+                          {!streaming || i < messages.length - 1 ? (
+                            <button
+                              type="button"
+                              onClick={() => speak(i, m.content)}
+                              aria-label={playingIdx === i ? "Stop voice playback" : "Listen to this reply"}
+                              title={playingIdx === i ? "Stop" : "Listen"}
+                              className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.03] text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors"
+                            >
+                              {playingIdx === i ? (
+                                <><Square className="w-2.5 h-2.5" /> Stop</>
+                              ) : (
+                                <><Volume2 className="w-2.5 h-2.5" /> Listen</>
+                              )}
+                            </button>
+                          ) : null}
+                        </>
                       ) : (
                         m.content
                       )

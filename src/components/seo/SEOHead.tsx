@@ -552,3 +552,59 @@ export function itemListSchema(opts: { name: string; items: { name: string; url:
     })),
   };
 }
+
+/**
+ * Service schema with areaServed — critical for city / location pages.
+ * Tells Google "we offer service X in city Y", which is the explicit signal
+ * required for local SERP ranking on terms like "digital marketing agency in <city>".
+ */
+export function serviceWithAreaSchema(opts: {
+  city: string;
+  country: string;
+  url: string;
+  services: string[];
+  description: string;
+  ratingValue?: string;
+  reviewCount?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: "Digital Marketing Agency",
+    name: `Digital Penta — Digital Marketing Services in ${opts.city}`,
+    description: opts.description,
+    url: opts.url,
+    provider: {
+      "@type": "Organization",
+      name: "Digital Penta",
+      url: "https://digitalpenta.com",
+      logo: "https://digitalpenta.com/logo.png",
+    },
+    areaServed: {
+      "@type": "City",
+      name: opts.city,
+      containedInPlace: {
+        "@type": "Country",
+        name: opts.country,
+      },
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${opts.city} services`,
+      itemListElement: opts.services.map((s) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: s },
+      })),
+    },
+    aggregateRating: opts.ratingValue
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: opts.ratingValue,
+          reviewCount: opts.reviewCount ?? "50",
+          bestRating: "5",
+          worstRating: "1",
+        }
+      : undefined,
+  };
+}
+

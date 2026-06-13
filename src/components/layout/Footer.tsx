@@ -225,6 +225,41 @@ export default function Footer() {
             </div>
           ))}
         </div>
+
+        {/* Service Areas — internal links boost city-page indexation & local rank */}
+        <div className="border-t border-border/20 pt-8 mt-4">
+          <h3 className="font-display font-semibold text-sm text-foreground mb-4">
+            Service Areas
+          </h3>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-x-3 gap-y-2 text-xs">
+            {[
+              { slug: "delhi", label: "Delhi" },
+              { slug: "mumbai", label: "Mumbai" },
+              { slug: "bangalore", label: "Bangalore" },
+              { slug: "pune", label: "Pune" },
+              { slug: "hyderabad", label: "Hyderabad" },
+              { slug: "noida", label: "Noida" },
+              { slug: "gurgaon", label: "Gurgaon" },
+              { slug: "lucknow", label: "Lucknow" },
+              { slug: "jaipur", label: "Jaipur" },
+              { slug: "kota", label: "Kota" },
+              { slug: "dubai", label: "Dubai" },
+              { slug: "abu-dhabi", label: "Abu Dhabi" },
+              { slug: "riyadh", label: "Riyadh" },
+              { slug: "doha", label: "Doha" },
+              { slug: "bahrain", label: "Bahrain" },
+            ].map((c) => (
+              <Link
+                key={c.slug}
+                to={`/locations/${c.slug}`}
+                className="text-muted-foreground hover:text-primary transition-colors truncate"
+                title={`Digital marketing agency in ${c.label}`}
+              >
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="border-t border-border/20">
@@ -241,3 +276,4 @@ export default function Footer() {
     </footer>
   );
 }
+
