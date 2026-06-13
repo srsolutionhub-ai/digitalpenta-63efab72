@@ -11,6 +11,7 @@ import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
   breadcrumbSchema, faqPageSchema, localBusinessSchema, reviewedItemSchema,
+  serviceWithAreaSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
@@ -83,6 +84,18 @@ export default function LocationPage() {
       { name: data.city, url: canonical },
     ]),
   ];
+  // Service+areaServed — required for local SERP ranking on "<service> in <city>" queries.
+  schemas.push(
+    serviceWithAreaSchema({
+      city: data.city,
+      country: data.country,
+      url: canonical,
+      services: data.services,
+      description: data.description,
+      ratingValue: "4.9",
+      reviewCount: String(Math.max((LOCATION_REVIEWS[data.slug]?.length ?? 0), 24)),
+    })
+  );
   if (data.faqs.length) schemas.push(faqPageSchema(data.faqs));
 
   // Phase 7: customer review schema for top markets — wins SERP star ratings
