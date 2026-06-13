@@ -191,6 +191,73 @@ export default function PentaAiChat() {
     return () => overlayBus.release("penta-ai-chat");
   }, [open]);
 
+  // Stop any in-flight audio when chat closes
+  useEffect(() => {
+    if (!open && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setPlayingIdx(null);
+    }
+  }, [open]);
+
+  const speak = useCallback(async (idx: number, text: string) => {
+    // Toggle off if same message is playing
+    if (playingIdx === idx && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setPlayingIdx(null);
+      return;
+    }
+    // Stop any prior playback
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setPlayingIdx(idx);
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      // Strip markdown for cleaner narration
+      const cleanText = text
+        .replace(/```[\s\S]*?```/g, "")
+        .replace(/[*_`#>~|-]/g, "")
+        .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
+        .slice(0, 1000);
+      const res = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/elevenlabs-tts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`,
+          },
+          body: JSON.stringify({ text: cleanText }),
+        }
+      );
+      if (!res.ok) throw new Error(`TTS ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        if (audioRef.current === audio) {
+          audioRef.current = null;
+          setPlayingIdx(null);
+        }
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        setPlayingIdx(null);
+      };
+      await audio.play();
+    } catch (e) {
+      console.error("tts failed", e);
+      setPlayingIdx(null);
+    }
+  }, [playingIdx]);
+
   return (
     <>
       {/* FAB */}
