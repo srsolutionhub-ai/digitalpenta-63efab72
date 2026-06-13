@@ -362,7 +362,7 @@ export default function PentaAiChat() {
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
+                    className={`group max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed relative ${
                       m.role === "user"
                         ? "bg-primary/90 text-primary-foreground rounded-tr-sm"
                         : "bg-white/[0.04] border border-white/[0.05] text-foreground/95 rounded-tl-sm"
@@ -370,9 +370,27 @@ export default function PentaAiChat() {
                   >
                     {m.content ? (
                       m.role === "assistant" ? (
-                        <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
-                          <ReactMarkdown>{m.content}</ReactMarkdown>
-                        </div>
+                        <>
+                          <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
+                            <ReactMarkdown>{m.content}</ReactMarkdown>
+                          </div>
+                          {/* Voice playback — opt-in, fetches TTS on click */}
+                          {!streaming || i < messages.length - 1 ? (
+                            <button
+                              type="button"
+                              onClick={() => speak(i, m.content)}
+                              aria-label={playingIdx === i ? "Stop voice playback" : "Listen to this reply"}
+                              title={playingIdx === i ? "Stop" : "Listen"}
+                              className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.03] text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors"
+                            >
+                              {playingIdx === i ? (
+                                <><Square className="w-2.5 h-2.5" /> Stop</>
+                              ) : (
+                                <><Volume2 className="w-2.5 h-2.5" /> Listen</>
+                              )}
+                            </button>
+                          ) : null}
+                        </>
                       ) : (
                         m.content
                       )
