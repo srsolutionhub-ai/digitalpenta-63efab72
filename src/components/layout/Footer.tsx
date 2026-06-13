@@ -225,17 +225,6 @@ export default function Footer() {
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="border-t border-border/20">
-        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Digital Penta. All rights reserved. | Corporate Office - Delhi, India | support@digitalpenta.com
-          </span>
-          <div className="flex items-center gap-6 text-xs text-muted-foreground">
-            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
-        </div>
 
         {/* Service Areas — internal links boost city-page indexation & local rank */}
         <div className="border-t border-border/20 pt-8 mt-4">
@@ -272,6 +261,20 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      <div className="border-t border-border/20">
+        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <span className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Digital Penta. All rights reserved. | Corporate Office - Delhi, India | support@digitalpenta.com
+          </span>
+          <div className="flex items-center gap-6 text-xs text-muted-foreground">
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
     </footer>
+  );
+}
   );
 }
