@@ -29,3 +29,7 @@ verify_jwt = false
 
 [functions.penta-ai-chat]
 verify_jwt = false
+
+[functions.elevenlabs-tts]
+verify_jwt = false
+
