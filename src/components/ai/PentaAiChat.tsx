@@ -4,7 +4,7 @@
  * Persists session_id in localStorage so a returning visitor resumes the same thread.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Sparkles, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, Loader2, Volume2, Square } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,8 @@ export default function PentaAiChat() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [bumped, setBumped] = useState(false);
+  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const visitorIdRef = useRef<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
