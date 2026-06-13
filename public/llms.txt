@@ -1,0 +1,48 @@
+# Digital Penta
+
+> Digital marketing agency based in Delhi, India serving clients across India and the Middle East. We deliver SEO, Google & Meta Ads, social media, web development, and AI automation that drives measurable revenue growth.
+
+## Pages
+
+- [Home](/): What Digital Penta does and why 500+ brands trust us.
+- [About](/about): Our story, team, and 4.9★ track record.
+- [Services — Digital Marketing](/services/digital-marketing): SEO, PPC, social, content, email, performance.
+- [Services — Web & App Development](/services/development): Custom websites, e-commerce, mobile apps.
+- [Services — AI Solutions](/services/ai-solutions): AI chatbots, automation, custom GPTs.
+- [Services — Public Relations](/services/public-relations): Brand reputation, PR, digital PR.
+- [Services — Automation](/services/automation): Workflow automation and integrations.
+- [Portfolio](/portfolio): Case studies and client outcomes.
+- [Blog](/blog): SEO playbooks, ad strategy, 2026 marketing trends.
+- [Free Tools](/tools): SEO audit, growth score, ad copy, meta tags, blog outline, competitor X-ray, ROI predictor.
+- [Pricing Calculator](/pricing-calculator): Instant project pricing.
+- [Get Proposal](/get-proposal): Custom growth proposal in 24 hours.
+- [Book a Strategy Call](/book-a-call): Free 30-minute consultation.
+- [Contact](/contact): Email support@digitalpenta.com or +91-88601-00039.
+
+## Service Areas
+
+- [Delhi](/locations/delhi)
+- [Mumbai](/locations/mumbai)
+- [Bangalore](/locations/bangalore)
+- [Pune](/locations/pune)
+- [Hyderabad](/locations/hyderabad)
+- [Noida](/locations/noida)
+- [Gurgaon](/locations/gurgaon)
+- [Lucknow](/locations/lucknow)
+- [Jaipur](/locations/jaipur)
+- [Kota](/locations/kota)
+- [Dubai](/locations/dubai)
+- [Abu Dhabi](/locations/abu-dhabi)
+- [Riyadh](/locations/riyadh)
+- [Doha](/locations/doha)
+- [Bahrain](/locations/bahrain)
+
+## Optional
+
+- [Manifesto](/manifesto): What we believe about growth and craft.
+- [Trust](/trust): Security, privacy, and compliance posture.
+- [Resources](/resources): Free guides and downloadable playbooks.
+- [Roadmap](/roadmap): What's shipping next.
+- [Sitemap](/sitemap): Full HTML sitemap.
+- [Privacy](/privacy): Privacy policy.
+- [Terms](/terms): Terms of service.
