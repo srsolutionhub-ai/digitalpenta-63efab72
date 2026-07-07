@@ -74,6 +74,7 @@ function add(loc, priority = "0.6", changefreq = "weekly") {
   ["/about", "0.8"],
   ["/contact", "0.8"],
   ["/get-proposal", "0.8"],
+  ["/book-a-call", "0.8"],
   ["/portfolio", "0.7"],
   ["/blog", "0.7", "daily"],
   ["/sitemap", "0.5"],
