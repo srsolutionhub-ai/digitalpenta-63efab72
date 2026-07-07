@@ -11,7 +11,7 @@ import vikramPhoto from "@/assets/team/vikram-reddy.jpg";
 import priyaPhoto from "@/assets/team/priya-sharma.jpg";
 import rohanPhoto from "@/assets/team/rohan-patel.jpg";
 import aishaPhoto from "@/assets/team/aisha-khan.jpg";
-import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema, ceoPersonSchema, gmbBusinessSchema } from "@/components/seo/SEOHead";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
