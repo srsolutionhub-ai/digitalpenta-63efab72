@@ -111,11 +111,14 @@ export default function About() {
         ]}
         schemas={[
           organizationSchema(),
+          gmbBusinessSchema(),
+          ceoPersonSchema(),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "About", url: "https://digitalpenta.com/about" },
           ]),
         ]}
+
       />
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden">
