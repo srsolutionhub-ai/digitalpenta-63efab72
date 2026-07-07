@@ -7,9 +7,11 @@ import SEOHead, {
   breadcrumbSchema,
   faqPageSchema,
   serviceSchema,
+  serviceWithAreaSchema,
   aggregateRatingSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
+
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getMatrixPage } from "@/data/matrixData";
 import { getIntentDef, intentAppliesToService } from "@/data/matrixIntents";
@@ -105,6 +107,16 @@ export default function MatrixPage() {
       url: canonical,
       serviceType: svc.serviceType,
     }),
+    serviceWithAreaSchema({
+      city: cty.city,
+      country: cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "United Arab Emirates" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city,
+
+      url: canonical,
+      services: [svc.name, "SEO", "Google Ads", "Social Media", "Web Development", "AI Automation"],
+      description: metaDescription,
+      ratingValue: "4.9",
+      reviewCount: "87",
+    }),
     breadcrumbSchema([
       { name: "Home", url: "https://digitalpenta.com/" },
       { name: svc.name, url: `https://digitalpenta.com${svc.hubHref}` },
@@ -117,6 +129,7 @@ export default function MatrixPage() {
       itemUrl: canonical,
     }),
   ];
+
 
   const nearby = getNearbyLocations(cty.slug, 3);
   const featured = getLocationFeaturedServices();

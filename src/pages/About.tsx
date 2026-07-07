@@ -11,7 +11,7 @@ import vikramPhoto from "@/assets/team/vikram-reddy.jpg";
 import priyaPhoto from "@/assets/team/priya-sharma.jpg";
 import rohanPhoto from "@/assets/team/rohan-patel.jpg";
 import aishaPhoto from "@/assets/team/aisha-khan.jpg";
-import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, organizationSchema, ceoPersonSchema, gmbBusinessSchema } from "@/components/seo/SEOHead";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
@@ -111,11 +111,14 @@ export default function About() {
         ]}
         schemas={[
           organizationSchema(),
+          gmbBusinessSchema(),
+          ceoPersonSchema(),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "About", url: "https://digitalpenta.com/about" },
           ]),
         ]}
+
       />
       {/* ── Hero ── */}
       <section className="pt-32 pb-20 relative overflow-hidden">

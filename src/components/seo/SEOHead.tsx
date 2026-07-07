@@ -608,3 +608,121 @@ export function serviceWithAreaSchema(opts: {
   };
 }
 
+/* ────────────── CEO / Founder + GMB / ProfessionalService ────────────── */
+
+/**
+ * Person schema for Harish Kumar — founder & CEO of Digital Penta.
+ * Reinforces E-E-A-T + knowledge-panel entity resolution (Google Knowledge
+ * Graph, Bing, and AEO answer engines like Perplexity/ChatGPT).
+ */
+export function ceoPersonSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://digitalpenta.com/#harish-kumar",
+    name: "Harish Kumar",
+    givenName: "Harish",
+    familyName: "Kumar",
+    jobTitle: "Founder & Chief Executive Officer",
+    description:
+      "Harish Kumar is the founder and CEO of Digital Penta, an integrated digital marketing agency serving 500+ brands across India, UAE, KSA, Qatar and Bahrain. He leads strategy across SEO, paid media, PR, web development, AI and automation.",
+    url: "https://digitalpenta.com/about",
+    image: "https://digitalpenta.com/logo.png",
+    worksFor: { "@id": "https://digitalpenta.com/#organization" },
+    knowsAbout: [
+      "Digital Marketing", "Search Engine Optimization", "Google Ads",
+      "Performance Marketing", "AI Automation", "Public Relations",
+      "Growth Strategy", "MENA Marketing", "Ecommerce Marketing",
+    ],
+    sameAs: [
+      "https://www.linkedin.com/in/harishkumar-digitalpenta",
+      "https://twitter.com/harish_penta",
+    ],
+    nationality: { "@type": "Country", name: "India" },
+  };
+}
+
+/**
+ * Google Business Profile-aligned LocalBusiness schema for the Delhi HQ.
+ * Includes hasMap, per-weekday hours, currenciesAccepted, paymentAccepted,
+ * areaServed, founder link and knowsAbout — the fields Google's Knowledge
+ * Panel uses to resolve GMB → website entity.
+ */
+export function gmbBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "ProfessionalService", "MarketingAgency"],
+    "@id": "https://digitalpenta.com/#localbusiness",
+    name: "Digital Penta",
+    alternateName: ["Digital Penta Agency", "DigitalPenta"],
+    legalName: "Digital Penta",
+    description:
+      "Digital Penta is a Google-verified digital marketing agency in Delhi, India — offering SEO, Google Ads, social media, PR, web development, AI and automation across India and the Middle East.",
+    url: "https://digitalpenta.com",
+    logo: "https://digitalpenta.com/logo.png",
+    image: [
+      "https://digitalpenta.com/logo.png",
+      "https://digitalpenta.com/og-image.png",
+    ],
+    telephone: "+91-88601-00039",
+    email: "support@digitalpenta.com",
+    foundingDate: "2019",
+    founder: { "@id": "https://digitalpenta.com/#harish-kumar" },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "124 C Katwaria Sarai",
+      addressLocality: "New Delhi",
+      addressRegion: "Delhi",
+      postalCode: "110016",
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "28.5391",
+      longitude: "77.1957",
+    },
+    hasMap:
+      "https://www.google.com/maps/search/?api=1&query=Digital+Penta+Katwaria+Sarai+New+Delhi",
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "19:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "10:00",
+        closes: "16:00",
+      },
+    ],
+    priceRange: "₹₹-₹₹₹₹",
+    currenciesAccepted: "INR, USD, AED, SAR, QAR, BHD",
+    paymentAccepted: "Cash, Credit Card, Bank Transfer, UPI, Wire Transfer",
+    areaServed: [
+      { "@type": "Country", name: "India" },
+      { "@type": "Country", name: "United Arab Emirates" },
+      { "@type": "Country", name: "Saudi Arabia" },
+      { "@type": "Country", name: "Qatar" },
+      { "@type": "Country", name: "Bahrain" },
+      { "@type": "Country", name: "United States" },
+    ],
+    knowsAbout: [
+      "Digital Marketing", "SEO", "Google Ads", "Meta Ads",
+      "Social Media Marketing", "Public Relations", "Web Development",
+      "AI Solutions", "Marketing Automation", "Ecommerce Marketing",
+    ],
+    slogan: "Five disciplines. One growth engine.",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "87",
+      bestRating: "5",
+      worstRating: "1",
+    },
+    sameAs: SOCIAL_PROFILES,
+  };
+}
+
+
