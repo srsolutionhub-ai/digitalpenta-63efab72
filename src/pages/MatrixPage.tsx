@@ -7,9 +7,11 @@ import SEOHead, {
   breadcrumbSchema,
   faqPageSchema,
   serviceSchema,
+  serviceWithAreaSchema,
   aggregateRatingSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
+
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getMatrixPage } from "@/data/matrixData";
 import { getIntentDef, intentAppliesToService } from "@/data/matrixIntents";
