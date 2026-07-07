@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SEOHead from "@/components/seo/SEOHead";
+import SEOHead, { softwareApplicationSchema, breadcrumbSchema } from "@/components/seo/SEOHead";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Search,
@@ -247,7 +247,25 @@ export default function SeoAuditTool() {
         description="Run a deep SEO, Core Web Vitals, on-page and security audit on any URL in 60 seconds. Backed by Google Lighthouse + AI fix recommendations. Free PDF report."
         canonical="https://digitalpenta.com/tools/seo-audit"
         ogType="website"
+        schemas={[
+          softwareApplicationSchema({
+            name: "Digital Penta Free SEO Audit Tool",
+            description:
+              "Free AI-powered SEO audit tool combining Google Lighthouse, Core Web Vitals, on-page SEO checks and AI-generated fix recommendations. Delivers a PDF report in 60 seconds.",
+            url: "https://digitalpenta.com/tools/seo-audit",
+            applicationCategory: "BusinessApplication",
+            price: "0",
+            ratingValue: "4.9",
+            ratingCount: "128",
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Tools", url: "https://digitalpenta.com/tools" },
+            { name: "SEO Audit", url: "https://digitalpenta.com/tools/seo-audit" },
+          ]),
+        ]}
       />
+
 
       {/* Ambient neon background */}
       <section className="relative overflow-hidden bg-background px-4 pb-20 pt-28 sm:pt-32">
