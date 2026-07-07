@@ -99,16 +99,24 @@
     </script>
 
 
-    <!-- LocalBusiness Schema -->
+    <!-- LocalBusiness / GMB-aligned Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": ["LocalBusiness", "ProfessionalService", "MarketingAgency"],
+      "@id": "https://digitalpenta.com/#localbusiness",
       "name": "Digital Penta",
-      "image": "https://digitalpenta.com/logo.png",
+      "alternateName": ["Digital Penta Agency", "DigitalPenta"],
+      "legalName": "Digital Penta",
+      "description": "Google-verified digital marketing agency in Delhi — SEO, Google Ads, social, PR, web, AI & automation across India and the Middle East.",
+      "image": ["https://digitalpenta.com/logo.png", "https://digitalpenta.com/og-image.png"],
+      "logo": "https://digitalpenta.com/logo.png",
       "url": "https://digitalpenta.com",
       "telephone": "+91-88601-00039",
       "email": "support@digitalpenta.com",
+      "foundingDate": "2019",
+      "founder": { "@id": "https://digitalpenta.com/#harish-kumar" },
+      "parentOrganization": { "@id": "https://digitalpenta.com/#organization" },
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "124 C Katwaria Sarai",
@@ -117,25 +125,59 @@
         "postalCode": "110016",
         "addressCountry": "IN"
       },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "28.6139",
-        "longitude": "77.2090"
-      },
+      "geo": { "@type": "GeoCoordinates", "latitude": "28.5391", "longitude": "77.1957" },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=Digital+Penta+Katwaria+Sarai+New+Delhi",
       "priceRange": "₹₹-₹₹₹₹",
+      "currenciesAccepted": "INR, USD, AED, SAR, QAR, BHD",
+      "paymentAccepted": "Cash, Credit Card, Bank Transfer, UPI, Wire Transfer",
+      "areaServed": [
+        {"@type": "Country", "name": "India"},
+        {"@type": "Country", "name": "United Arab Emirates"},
+        {"@type": "Country", "name": "Saudi Arabia"},
+        {"@type": "Country", "name": "Qatar"},
+        {"@type": "Country", "name": "Bahrain"},
+        {"@type": "Country", "name": "United States"}
+      ],
+      "knowsAbout": [
+        "Digital Marketing", "SEO", "Google Ads", "Meta Ads",
+        "Social Media Marketing", "Public Relations", "Web Development",
+        "AI Solutions", "Marketing Automation", "Ecommerce Marketing"
+      ],
+      "slogan": "Five disciplines. One growth engine.",
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.9",
-        "reviewCount": "87"
+        "reviewCount": "87",
+        "bestRating": "5",
+        "worstRating": "1"
       },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-        "opens": "09:00",
-        "closes": "18:00"
+      "openingHoursSpecification": [
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "19:00"},
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "16:00"}
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/company/digitalpenta",
+        "https://www.instagram.com/digitalpenta",
+        "https://twitter.com/digitalpenta",
+        "https://www.youtube.com/@digitalpenta",
+        "https://facebook.com/digitalpenta"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Digital Penta Services",
+        "itemListElement": [
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "SEO Services", "url": "https://digitalpenta.com/services/digital-marketing"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Google Ads Management", "url": "https://digitalpenta.com/services/digital-marketing"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Social Media Marketing", "url": "https://digitalpenta.com/services/digital-marketing"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Public Relations", "url": "https://digitalpenta.com/services/public-relations"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Web & App Development", "url": "https://digitalpenta.com/services/development"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "AI Solutions", "url": "https://digitalpenta.com/services/ai-solutions"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Marketing Automation", "url": "https://digitalpenta.com/services/automation"}}
+        ]
       }
     }
     </script>
+
 
     <!-- FAQ Schema -->
     <script type="application/ld+json">
