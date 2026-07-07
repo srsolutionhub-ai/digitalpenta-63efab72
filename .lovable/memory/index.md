@@ -20,3 +20,5 @@ SEO title formula: [Service] Agency in [City] | Digital Penta | 2026 (max 60 cha
 - [Conversion Strategy](mem://features/conversion-strategy) — Lead generation UI, multi-step forms, and trust signals
 - [Legal Compliance](mem://legal/compliance) — GDPR/DPDP cookie consent and form trust signals
 - [Contact Details](mem://business/contact-details) — Official business phone, email, address, and social links
+- [Entity Schema](mem://market/entity-schema) — CEO Person (Harish Kumar), GMB-aligned LocalBusiness, per-city Service+areaServed pattern
+
