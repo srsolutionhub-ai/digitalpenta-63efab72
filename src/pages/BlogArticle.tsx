@@ -180,6 +180,16 @@ const allArticles = Object.entries(articlesData).map(([slug, data]) => ({
   readTime: data.readTime,
   excerpt: data.excerpt,
 }));
+/** Convert "March 28, 2026" or "2026" → ISO 8601 "YYYY-MM-DD". */
+function toIsoDate(input: string): string {
+  if (!input) return new Date().toISOString().slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
+  const d = new Date(input);
+  if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+  const yearMatch = input.match(/\d{4}/);
+  return yearMatch ? `${yearMatch[0]}-01-01` : new Date().toISOString().slice(0, 10);
+}
+
 
 function handleShare(platform: string, title: string) {
   const url = encodeURIComponent(window.location.href);
@@ -302,8 +312,8 @@ export default function BlogArticle() {
               url: "https://digitalpenta.com",
               logo: { "@type": "ImageObject", url: "https://digitalpenta.com/logo.png" },
             },
-            datePublished: displayArticle.date,
-            dateModified: displayArticle.date,
+            datePublished: toIsoDate(displayArticle.date),
+            dateModified: toIsoDate(displayArticle.date),
             mainEntityOfPage: `https://digitalpenta.com/blog/${slug}`,
             url: `https://digitalpenta.com/blog/${slug}`,
             articleSection: displayArticle.category,

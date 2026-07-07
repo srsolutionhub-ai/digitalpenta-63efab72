@@ -74,6 +74,7 @@ function add(loc, priority = "0.6", changefreq = "weekly") {
   ["/about", "0.8"],
   ["/contact", "0.8"],
   ["/get-proposal", "0.8"],
+  ["/book-a-call", "0.8"],
   ["/portfolio", "0.7"],
   ["/blog", "0.7", "daily"],
   ["/sitemap", "0.5"],
@@ -127,6 +128,34 @@ for (const slug of ["dubai", "abu-dhabi", "riyadh", "doha", "bahrain"]) {
   add(`/ar/locations/${slug}`, "0.7");
 }
 add(`/ar`, "0.6");
+
+// Industries — one page per key in industryData.
+const industrySrc = path.join(ROOT, "src/data/industryData.ts");
+const industryText = fs.readFileSync(industrySrc, "utf8");
+const industrySlugs = [...industryText.matchAll(/^\s+"([a-z-]+)":\s*\{/gm)].map(m => m[1]);
+for (const slug of industrySlugs) add(`/industries/${slug}`, "0.75");
+
+// Sub-service pages — /services/:category/:subService
+const subSrc = path.join(ROOT, "src/data/subServiceData.ts");
+const subText = fs.readFileSync(subSrc, "utf8");
+const subBlocks = subText.split(/\{\s*slug:\s*"/).slice(1);
+for (const block of subBlocks) {
+  const slugMatch = block.match(/^([a-z0-9-]+)"/);
+  const catMatch = block.match(/category:\s*"([a-z-]+)"/);
+  if (slugMatch && catMatch) add(`/services/${catMatch[1]}/${slugMatch[1]}`, "0.75");
+}
+
+// Keyword landing pages — /lp/:keyword
+const kwSrc = path.join(ROOT, "src/data/keywordLandingData.ts");
+const kwText = fs.readFileSync(kwSrc, "utf8");
+const kwSlugs = [...kwText.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map(m => m[1]);
+for (const slug of kwSlugs) add(`/lp/${slug}`, "0.75");
+
+// Blog articles — extracted from BlogArticle.tsx article map
+const blogSrc = path.join(ROOT, "src/pages/BlogArticle.tsx");
+const blogText = fs.readFileSync(blogSrc, "utf8");
+const blogSlugs = [...blogText.matchAll(/^\s+"([a-z0-9-]+)":\s*\{/gm)].map(m => m[1]);
+for (const slug of blogSlugs) add(`/blog/${slug}`, "0.7");
 
 // --- Emit ---------------------------------------------------------------
 const xml = [
