@@ -109,7 +109,8 @@ export default function MatrixPage() {
     }),
     serviceWithAreaSchema({
       city: cty.city,
-      country: cty.region === "india" ? "India" : cty.countryName ?? cty.city,
+      country: cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "United Arab Emirates" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city,
+
       url: canonical,
       services: [svc.name, "SEO", "Google Ads", "Social Media", "Web Development", "AI Automation"],
       description: metaDescription,
