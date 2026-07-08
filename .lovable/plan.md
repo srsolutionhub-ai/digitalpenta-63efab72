@@ -1,108 +1,127 @@
-# Sprint 5 — Polish, Voice, SEO Fixes, Auth Recovery
+# Sprint 6 — Voice, Email, SEO Hardening
 
-Six tracks, sequenced so blocking issues (auth, overlay collisions) land first, then SEO/GSC fixes, then nice-to-haves and ElevenLabs.
+Six tracks. Order minimizes rework: schema/CI first (they gate publish), then email + voice (they share edge-function patterns), then internal linking, then QA + publish.
 
 ---
 
-## Track 1 — Auth recovery for super admin (BLOCKER, ship first)
+## Track 1 — SEO: Service + OfferCatalog on dedicated service pages (Task C)
 
-**Problem:** `srsolutionhub@gmail.com` (uid `9c8cb5e5-13f4-41b0-b104-3c3cd3ac4357`) cannot log in to admin/client dashboards. Reset-password flow also unverified.
+**Current gap:** `MatrixPage` (city × service) has `serviceWithAreaSchema` and `gmbBusinessSchema`, but the dedicated service surfaces do not:
+- `src/pages/ServiceCategory.tsx` (e.g. `/services/seo`)
+- `src/pages/SubServicePage.tsx` (e.g. `/services/seo/technical-seo`)
+- `src/pages/KeywordLandingPage.tsx` (`/lp/:slug`)
 
 **Plan:**
+1. Extend `src/components/seo/SEOHead.tsx` with two new helpers:
+   - `serviceOfferCatalogSchema({ serviceName, description, offers[] })` — emits `Service` with nested `hasOfferCatalog` → `OfferCatalog` → `itemListElement: Offer[]`.
+   - Each schema uses `@id` refs: `provider: { "@id": "https://digitalpenta.com/#organization" }` and `author/founder: { "@id": "https://digitalpenta.com/#harish-kumar" }` — matching the anchor IDs already in `index.html`.
+2. Add stable `@id` anchors to the sitewide graph in `index.html` (`#organization`, `#localbusiness`, `#harish-kumar`) so per-page schemas can `@id`-reference them instead of duplicating.
+3. Wire the helper into `ServiceCategory.tsx`, `SubServicePage.tsx`, and `KeywordLandingPage.tsx` — pulling pricing/features from existing `matrixData` / `subServiceData` / `keywordLandingData` sources.
 
-1. Run diagnostic SQL: confirm the user exists in `auth.users`, has a row in `public.user_roles` with role `admin`, and `email_confirmed_at` is set. Check `profiles` row exists.
-2. If role missing → insert `('9c8cb5e5-...', 'admin')` into `user_roles`.
-3. If email unconfirmed → confirm via SQL update on `auth.users.email_confirmed_at`.
-4. Inspect `ProtectedRoute.tsx` + `useAuth.ts` for the `get_user_role` RPC return path; verify it doesn't 401 on the role lookup (common bug: RPC not granted to `authenticated`).
-5. Trigger a server-side password reset link, then verify `/reset-password` page handles `type=recovery` hash and calls `supabase.auth.updateUser({ password })`. Add the page if missing or broken.
-6. Smoke-test: login → redirect to `/dashboard` (admin) or `/client` (client) based on role.
-
----
-
-## Track 2 — Overlay collision fix (UI blocker shown in screenshot)
-
-**Problem:** Bottom of viewport stacks 3–4 floating elements (WhatsApp float, exit-intent, lead-capture bar, smart-CTA, Penta AI chat launcher, mobile sticky CTA) which overlap as shown in the attached screenshot.
+## Track 2 — CI schema validation (Task B)
 
 **Plan:**
+1. New script `scripts/seo-schema-check.mjs`:
+   - Boots a mini SSR pass using JSDOM + Vite build output — OR simpler: crawls a static allow-list of routes via `curl http://localhost:4173` after `vite preview`.
+   - For each route, extracts every `<script type="application/ld+json">` and validates:
+     - Valid JSON.
+     - Has `@context` + `@type`.
+     - Organization / LocalBusiness / Service / Person shapes each pass a small schema (required fields per type).
+     - `@id` references resolve to a node emitted elsewhere in the graph.
+   - Extends the existing `scripts/seo-qa.mjs` style (exits non-zero on error).
+2. Wire into `package.json` script `seo:schema` and reference from README. Because Lovable auto-builds, we won't hook it into `build` itself but expose it as a manual + CI-friendly check.
 
-1. Audit overlay components: `whatsapp-float`, `floating-cta`, `exit-intent-popup`, `lead-capture-bar`, `mobile-sticky-bar`, `smart-cta`, `urgency-strip`, `announce-bar`, `PentaAiChat`.
-2. Centralize through existing `useOverlaySlot` / `overlayOrchestrator` — enforce a single overlay per slot (bottom-right, bottom-center, bottom-left) with priority order:
-  - Bottom-right: Penta AI chat (highest)
-  - Bottom-center (mobile only): sticky CTA bar
-  - Bottom-left: WhatsApp float (suppressed if chat is open)
-3. Remove redundant duplicates: `lead-capture-bar` + `smart-cta` + `floating-cta` doing similar jobs → keep one ("Free Website Audit" bar) and delete unused ones from `App.tsx`/`Layout.tsx`.
-4. Add z-index scale tokens in `index.css` (z-overlay-low/mid/high) so stacking is deterministic.
-5. Verify on mobile + desktop preview.
+## Track 3 — Internal entity-based linking (Task D)
 
----
-
-## Track 3 — SEO/GSC audit & city-page fixes
-
-**Problem:** Location pages exist but not surfacing on SERP; need GSC health check.
+**Current:** `RelatedLinks.tsx` and `SeoLinkHub.tsx` exist but are generic.
 
 **Plan:**
+1. New `src/lib/entityLinks.ts` — maps entities → canonical URLs. E.g. `"SEO in Delhi" → /seo/delhi`, `"PPC in Dubai" → /ppc/dubai`, `"Harish Kumar" → /about#founder`.
+2. New component `src/components/seo/EntityLinker.tsx` — takes markdown/HTML body, auto-links first occurrence of each entity keyword using semantic anchor text ("SEO agency in Delhi" not "click here").
+3. Apply to:
+   - `BlogArticle.tsx` — run body through EntityLinker before render.
+   - `About.tsx` — add a "Where we work" grid with entity links to top 8 city matrix pages.
+   - `ServiceCategory.tsx` — add a "Service areas" strip linking `/{service}/{city}` for all cities in `matrixData`.
+4. Reciprocal: matrix pages already link back to service parent; verify + add if missing.
 
-1. **GSC audit via connector gateway:**
-  - Sites list, sitemap status, coverage (indexed vs excluded), top URLs by impressions, Core Web Vitals report, mobile usability.
-  - URL Inspection API on 5–10 city pages to see indexation status & last-crawl.
-2. **Trigger Lovable SEO review** (`seo_chat--trigger_scan`) and read findings.
-3. **Semrush** competitive_analysis + top_pages for digitalpenta.com to confirm which queries we already rank for and identify city-keyword gaps.
-4. **Fix likely causes for city pages not ranking:**
-  - Add `LocalBusiness` + `Service` JSON-LD with `areaServed` per city.
-  - Unique H1, title (`<60c`), meta (`<160c`) per city — audit `LocationPage.tsx` to ensure they're not templated identically.
-  - Internal linking: add city links from footer, `/sitemap` page, and a "Service Areas" grid on relevant service pages.
-  - Add breadcrumb schema on all city + service pages.
-  - Regenerate `public/sitemap.xml` with all city URLs + correct lastmod, resubmit via GSC API.
-  - Ensure each city page has a canonical pointing to itself.
-5. Fix any failing findings from the SEO scan (title/desc/og/canonical/h1).
+## Track 4 — Resend email system (Task 2)
+
+Resend connector is connected → `RESEND_API_KEY` present, gateway auth via `LOVABLE_API_KEY` (both confirmed in secrets). All email flows go through edge functions using the connector gateway pattern.
+
+**Sender identity:** `from` must be a Resend-verified domain. We'll use `Digital Penta <hello@digitalpenta.com>` and note the user must verify `digitalpenta.com` in Resend dashboard before first send. Fallback while unverified: `onboarding@resend.dev` (owner-only test).
+
+**Email surfaces & templates (all React-Email-style HTML with Digital Penta dark-editorial branding — pentagon logo, gradient headers, Plus Jakarta Sans, purple/pink accents):**
+
+| Trigger | Recipient | Template |
+|---|---|---|
+| Contact form submit (`contacts` insert) | Prospect + team | `contact-received.html` + `contact-notify-team.html` |
+| Audit submitted (`audit_reports` insert) | Prospect | `audit-ready.html` (with PDF link + top 3 issues) |
+| Booking confirmed | Prospect + team | `booking-confirmed.html` (with ICS attachment) |
+| Quotation sent (from admin dashboard) | Client | `quotation-sent.html` |
+| Invoice generated | Client | `invoice.html` (with PDF) |
+| Newsletter subscribe (new table `newsletter_subscribers`) | Subscriber | `newsletter-welcome.html` |
+| Weekly newsletter broadcast | All subscribers | `newsletter-issue.html` (admin composer) |
+
+**Plan:**
+1. **Edge function `send-email`** (unified): input `{ template, to, data }`, renders template server-side, calls Resend via gateway, logs to new `email_send_log` table (id, template, to, status, resend_id, error, created_at).
+2. **Templates:** store as TypeScript template functions in `supabase/functions/send-email/templates/*.ts` — each exports `render(data) → { subject, html, text }`. Design system: dark navy background (`#0a0a1a`), gradient headers (purple→pink), glass card, footer with unsub link, mobile-first (600px max-width, single-column, safe fonts stack).
+3. **Newsletter:**
+   - Migration: `newsletter_subscribers` table (email, name, source, subscribed_at, unsubscribed_at, unsub_token). GRANTs + RLS (public insert for signup, admin select).
+   - New section `src/components/sections/NewsletterSection.tsx` on homepage + blog.
+   - `newsletter_issues` table + admin composer at `/dashboard/admin/newsletter` (title, body markdown, sent_at, recipient_count). Broadcast via edge function `send-newsletter` (batched to Resend, 100/sec).
+   - Public unsub route `/unsubscribe?token=…`.
+4. **Wire existing flows:**
+   - `HomepageLeadCaptureSection.tsx`, `Contact.tsx`, `AuditLeadForm.tsx`, `BookACall.tsx`, `Quotations.tsx`, `Invoices.tsx` → call `supabase.functions.invoke("send-email", ...)`.
+   - Retire legacy `resend-email` secret usage if any.
+5. **Admin email logs page** at `/dashboard/admin/emails` — lists `email_send_log` with status filter.
+
+## Track 5 — ElevenLabs voice suite (Task 1)
+
+Current: only `elevenlabs-tts` edge function + opt-in Listen button in `PentaAiChat`. Expand to a premium 2026-era voice layer.
+
+**Surfaces:**
+1. **Voice-narrated hero intro** — hero has a "▶ Hear our pitch" ghost button that streams a 15-second brand narration (pre-generated, cached in Supabase Storage bucket `voice-cache`).
+2. **Audit report voiceover** — on `SeoAuditTool` results, "🎧 Listen to your report" button TTSes top 3 issues + recommendation.
+3. **Voice-cloneable strategist demo on About page** — pre-recorded Harish Kumar sample voice ("Hi, I'm Harish…") via cloned voice ID (user provides voice ID after cloning in ElevenLabs dashboard, stored in secret `ELEVENLABS_HARISH_VOICE_ID`).
+4. **Full conversational agent on Book-a-Call** — `@elevenlabs/react` `useConversation` (WebRTC), lazy-loaded, mic permission gated. New edge function `elevenlabs-conv-token` mints Convai token.
+5. **Voice cloning admin tool** at `/dashboard/admin/voice-studio` — upload sample → clone via `POST /v1/voices/add` → store voice_id in `voice_profiles` table. Test playback. Delete voice.
+6. **Design:** Futuristic waveform visualizer using Web Audio API `AnalyserNode` → animated pentagon-shaped equalizer (matches brand pentagon). Purple→pink gradient bars. Ambient glow. All audio components lazy + suspense.
+
+**Plan:**
+1. New edge functions:
+   - `elevenlabs-conv-token` — Convai WebRTC token
+   - `elevenlabs-voice-clone` — proxy `POST /v1/voices/add` (admin-only, JWT-gated)
+   - Extend `elevenlabs-tts` to optionally cache to Supabase Storage keyed by hash(text+voice)
+2. New components:
+   - `src/components/voice/PentagonWaveform.tsx` — CSS/canvas visualizer
+   - `src/components/voice/VoicePlayerButton.tsx` — reusable button with waveform + loading/playing states
+   - `src/components/voice/ConversationalAgent.tsx` (Book-a-Call, lazy)
+   - `src/components/voice/VoiceStudio.tsx` (admin)
+3. Migrations: `voice_profiles` (id, name, voice_id, kind, created_by, created_at) + storage bucket `voice-cache` (private, signed URLs).
+4. Perf: all voice code behind `React.lazy` + Suspense. Homepage hero button imports only the tiny player, not the full waveform, until clicked.
+
+## Track 6 — QA, publish, monitoring
+
+1. Run `scripts/seo-qa.mjs` and new `scripts/seo-schema-check.mjs`.
+2. Playwright smoke tests: submit contact form → email received in log; play hero voice → audio plays; book call → conv agent connects; visit `/services/seo` → OfferCatalog present.
+3. `seo_chat--trigger_scan` for fresh SEO audit.
+4. Security scan (`security--run_security_scan`) — new tables + edge functions must pass.
+5. **Publish** via `preview_ui--publish` (Task A).
+6. Post-publish: GSC Rich Results Test on `/`, `/about`, `/seo/delhi`, `/services/seo`; instruct user to resubmit sitemap.
 
 ---
 
-## Track 4 — ElevenLabs voice layer (customer-experience upgrade)
+## Technical Notes
 
-ElevenLabs key is connected. Pick high-ROI surfaces, not gimmicks. Performance-gated (lazy + on-demand).
+- **DB migrations:** `newsletter_subscribers`, `newsletter_issues`, `email_send_log`, `voice_profiles` — each with GRANTs + RLS.
+- **Edge functions:** `send-email`, `send-newsletter`, `elevenlabs-conv-token`, `elevenlabs-voice-clone`; extend `elevenlabs-tts`.
+- **Storage:** private `voice-cache` bucket with 30-day signed URLs.
+- **Deps:** `@elevenlabs/react` (lazy chunk only), no email library (raw HTML strings — smaller and full control).
+- **Perf budget:** all voice + admin surfaces lazy-loaded. Bundle stays under 200KB gzip.
+- **Secrets to confirm:** `RESEND_API_KEY`, `LOVABLE_API_KEY`, `ELEVENLABS_API_KEY` (all present). Optional `ELEVENLABS_HARISH_VOICE_ID` once cloned.
 
-**Plan — three additions:**
+## Execution Order
 
-1. **Voice intro on Penta AI chat** — TTS the agent's first reply (and any reply on a "speaker" toggle) via `eleven_turbo_v2_5` streaming. Keeps text default; voice is opt-in (mute by default to protect autoplay policies & perf budget).
-2. **Voice-narrated audit report** — on the Website Audit results screen, a "Listen to your report" button TTSes the top 3 issues + recommendation (~30s). Drives engagement, captures leads who skim.
-3. **Voice "Talk to Penta" widget on Book-a-Call page** — `useConversation` (WebRTC) with a Conversational Agent persona, so prospects can speak with an AI consultant before booking. Mic permission gated behind explicit user click. Server token endpoint via edge function `elevenlabs-token`.
+Track 1 → 2 → 3 → 4 → 5 → 6. I will not stop until all tracks are done, then give a short completion summary.
 
-All audio components `lazy()`-loaded; bundle stays under budget. Edge functions: `elevenlabs-tts` (batch + stream), `elevenlabs-token` (Convai WebRTC token). Standard connector — read `ELEVENLABS_API_KEY` from env.
-
----
-
-## Track 5 — Nice-to-haves
-
-1. **Light-mode toggle (deferred items resolved):**
-  - Add `next-themes`-style provider over existing tokens.
-  - Audit `index.css` — most colors are HSL tokens already; add `.light` overrides for `--background`, `--foreground`, `--card`, `--border`, `--muted`, `--primary-foreground`. Surfaces using raw `bg-black`/`text-white` get a sweep replaced with `bg-background`/`text-foreground`.
-  - Toggle in navbar (sun/moon), persisted in localStorage, default = dark.
-2. **3D Pentagon Visualizer:** lightweight CSS-3D (transform: rotateY) — NOT three.js — to stay in perf budget. Renders the 5 service pillars as faces of a slowly auto-rotating pentagon on the hero or About page. Pauses on `prefers-reduced-motion`.
-3. **Hero personalization A/B telemetry dashboard:** new admin route `/dashboard/admin/experiments` reading from `hero_variant_events` (add table if missing). Charts: variant exposure, CTA CTR, lead conversion per variant. Lazy `recharts`.
-
----
-
-## Track 6 — QA & health check
-
-- Run build + lint.
-- Smoke-test all 6 tracks in preview.
-- Re-run SEO scan and security scan.
-- Final health report + remaining backlog.
-
----
-
-## Technical notes
-
-- **DB migrations:** `hero_variant_events` table (+ GRANTs + RLS), confirm `user_roles` row for super admin.
-- **Edge functions:** `elevenlabs-tts`, `elevenlabs-token`.
-- **No new heavy deps:** ElevenLabs uses fetch directly; `@elevenlabs/react` only on Book-a-Call (lazy).
-- **Perf budget preserved:** all new widgets lazy + suspense, no top-level imports of recharts/three/elevenlabs SDKs.
-
----
-
-## Execution order
-
-1. Track 1 (auth) → 2. Track 2 (overlays) → 3. Track 3 (SEO/GSC + city pages) → 4. Track 4 (ElevenLabs) → 5. Track 5 (nice-to-haves) → 6. Track 6 (QA).
-
-Confirm and I'll start and do not stop untill all task is finished. after finished all track 1 to track 6 do think all code is working fine then give me provide a short summery.
+Confirm to proceed.

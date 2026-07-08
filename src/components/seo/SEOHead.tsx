@@ -725,4 +725,63 @@ export function gmbBusinessSchema() {
   };
 }
 
+/* ────────────── Service + OfferCatalog schema (Sprint 6) ────────────── */
+
+/**
+ * Rich Service schema with nested OfferCatalog — for dedicated service pages
+ * (/services/:category, /services/:category/:subService, /lp/:keyword).
+ *
+ * Uses `@id` refs into the sitewide entity graph so Google links this Service
+ * back to the Organization and Founder declared in index.html.
+ */
+export function serviceOfferCatalogSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  serviceType?: string;
+  offers: { name: string; description?: string; url?: string; price?: string; priceCurrency?: string }[];
+  category?: string;                 // e.g. "Digital Marketing"
+  areaServed?: string[];             // country / city names
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${opts.url}#service`,
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    serviceType: opts.serviceType ?? opts.name,
+    category: opts.category,
+    provider: { "@id": "https://digitalpenta.com/#organization" },
+    brand: { "@id": "https://digitalpenta.com/#organization" },
+    ...(opts.areaServed?.length
+      ? {
+          areaServed: opts.areaServed.map((a) => ({
+            "@type": /india|united|arab|saudi|qatar|bahrain|states/i.test(a) ? "Country" : "City",
+            name: a,
+          })),
+        }
+      : {}),
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${opts.name} Offerings`,
+      itemListElement: opts.offers.map((o, i) => ({
+        "@type": "Offer",
+        position: i + 1,
+        itemOffered: {
+          "@type": "Service",
+          name: o.name,
+          description: o.description,
+          url: o.url,
+          provider: { "@id": "https://digitalpenta.com/#organization" },
+        },
+        ...(o.price
+          ? { price: o.price, priceCurrency: o.priceCurrency ?? "INR" }
+          : {}),
+      })),
+    },
+  };
+}
+
+
 

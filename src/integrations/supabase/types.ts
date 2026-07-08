@@ -1147,6 +1147,42 @@ export type Database = {
           },
         ]
       }
+      email_send_log: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          metadata: Json | null
+          resend_id: string | null
+          status: string
+          subject: string | null
+          template: string
+          to_email: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          metadata?: Json | null
+          resend_id?: string | null
+          status?: string
+          subject?: string | null
+          template: string
+          to_email: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          metadata?: Json | null
+          resend_id?: string | null
+          status?: string
+          subject?: string | null
+          template?: string
+          to_email?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           client_email: string
@@ -1348,6 +1384,8 @@ export type Database = {
           preferences: Json | null
           source: string | null
           status: string | null
+          unsub_token: string
+          unsubscribed_at: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1360,6 +1398,8 @@ export type Database = {
           preferences?: Json | null
           source?: string | null
           status?: string | null
+          unsub_token?: string
+          unsubscribed_at?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1372,6 +1412,8 @@ export type Database = {
           preferences?: Json | null
           source?: string | null
           status?: string | null
+          unsub_token?: string
+          unsubscribed_at?: string | null
           updated_at?: string | null
         }
         Relationships: []

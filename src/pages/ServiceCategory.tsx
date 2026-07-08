@@ -7,7 +7,8 @@ import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import serviceBanner from "@/assets/service-banner-graphic.jpg";
-import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema, ceoPersonSchema } from "@/components/seo/SEOHead";
+import ServiceAreaGrid from "@/components/seo/ServiceAreaGrid";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -258,6 +259,21 @@ export default function ServiceCategory() {
           { hreflang: "en-AE", href: canonical },
         ]}
         schemas={[
+          organizationSchema(),
+          ceoPersonSchema(),
+          serviceOfferCatalogSchema({
+            name: `${data.title} Services`,
+            description: data.description,
+            url: canonical,
+            serviceType: data.title,
+            category: "Digital Marketing",
+            areaServed: ["India", "United Arab Emirates", "Saudi Arabia", "Qatar", "Bahrain"],
+            offers: data.subServices.map((s) => ({
+              name: s.title,
+              description: s.desc,
+              url: `https://digitalpenta.com${s.href}`,
+            })),
+          }),
           serviceSchema({
             name: data.title,
             description: data.description,
@@ -584,6 +600,15 @@ export default function ServiceCategory() {
           </motion.div>
         </div>
       </section>
+
+      {/* Service × City coverage grid (entity-based internal linking) */}
+      {category === "digital-marketing" && (
+        <ServiceAreaGrid
+          serviceSlug="seo"
+          heading={`${data.title} across India & MENA`}
+          intro="Local strategy, global playbook. Explore our dedicated city pages."
+        />
+      )}
     </Layout>
   );
 }
