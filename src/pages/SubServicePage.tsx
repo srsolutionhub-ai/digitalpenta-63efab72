@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getSubServiceData } from "@/data/subServiceData";
 import { motion } from "motion/react";
-import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/components/seo/SEOHead";
+import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getRelatedSubServices } from "@/data/internalLinks";
 
@@ -46,6 +46,16 @@ export default function SubServicePage() {
           { hreflang: "en-AE", href: canonical },
         ]}
         schemas={[
+          organizationSchema(),
+          serviceOfferCatalogSchema({
+            name: data.title,
+            description: data.heroDescription,
+            url: canonical,
+            serviceType: data.title,
+            category: categoryLabel,
+            areaServed: ["India", "United Arab Emirates", "Saudi Arabia"],
+            offers: (data.features || []).slice(0, 6).map((f: string) => ({ name: f })),
+          }),
           serviceSchema({
             name: data.title,
             description: data.heroDescription,
