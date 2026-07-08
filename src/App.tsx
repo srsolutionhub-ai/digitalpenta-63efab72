@@ -72,7 +72,9 @@ const ToolRuns = lazy(() => import("./pages/dashboard/admin/ToolRuns"));
 const FunnelAnalytics = lazy(() => import("./pages/dashboard/admin/FunnelAnalytics"));
 const SeoRankTracker = lazy(() => import("./pages/dashboard/admin/SeoRankTracker"));
 const DataRequest = lazy(() => import("./pages/DataRequest"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
+
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
 const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
@@ -154,6 +156,8 @@ function AnimatedRoutes() {
             <Route path="/book-a-call" element={<BookACall />} />
             <Route path="/proposal-builder" element={<ProposalBuilder />} />
             <Route path="/data-request" element={<DataRequest />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
+
 
             {/* Auth routes */}
             <Route path="/auth/login" element={<Login />} />
