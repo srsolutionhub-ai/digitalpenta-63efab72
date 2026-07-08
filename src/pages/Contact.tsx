@@ -86,22 +86,29 @@ export default function Contact() {
       });
       if (error) throw error;
 
-      // Send email notification (fire-and-forget)
-      supabase.functions.invoke("send-notification", {
+      // Send prospect confirmation + team notification (fire-and-forget)
+      supabase.functions.invoke("send-email", {
         body: {
-          type: "new_lead",
+          template: "contact-received",
+          to: formData.email.trim(),
+          data: { name: formData.name.trim(), service: formData.service },
+        },
+      }).catch(() => {});
+      supabase.functions.invoke("send-email", {
+        body: {
+          template: "contact-notify-team",
+          to: "support@digitalpenta.com",
           data: {
             name: formData.name.trim(),
             email: formData.email.trim(),
             phone: formData.phone.trim(),
-            company: formData.company.trim(),
             service: formData.service,
-            budget_range: formData.budget,
             message: formData.message.trim(),
             source: "Website Contact Form",
           },
         },
       }).catch(() => {});
+
 
       setSubmitted(true);
       toast.success("Message sent successfully!");
