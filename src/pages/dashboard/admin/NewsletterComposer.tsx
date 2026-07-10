@@ -35,11 +35,14 @@ export default function NewsletterComposer() {
 
   useEffect(() => {
     const load = async () => {
+      let countQuery = supabase
+        .from("newsletter_subscribers")
+        .select("*", { count: "exact", head: true });
+      if (audience === "confirmed") {
+        countQuery = countQuery.eq("status", "confirmed");
+      }
       const [{ count }, { data }] = await Promise.all([
-        supabase
-          .from("newsletter_subscribers")
-          .select("*", { count: "exact", head: true })
-          .eq(audience === "confirmed" ? "confirmed" : "id", audience === "confirmed" ? true : "id"),
+        countQuery,
         supabase.from("newsletter_campaigns").select("*").order("created_at", { ascending: false }).limit(10),
       ]);
       setSubscriberCount(count ?? 0);
