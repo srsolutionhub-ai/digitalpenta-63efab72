@@ -10,6 +10,7 @@ import SEOHead, { breadcrumbSchema, personSchema } from "@/components/seo/SEOHea
 import blogAiImg from "@/assets/blog-ai.jpg";
 import blogSeoImg from "@/assets/blog-seo.jpg";
 import blogAutoImg from "@/assets/blog-automation.jpg";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
 const CATEGORY_OG: Record<string, string> = {
   AI: blogAiImg,
@@ -382,6 +383,15 @@ export default function BlogArticle() {
                       {displayArticle.readTime}
                     </span>
                   </div>
+                </div>
+
+                {/* Listen to article */}
+                <div className="mb-8">
+                  <VoicePlayerButton
+                    text={`${displayArticle.title}. ${displayArticle.excerpt ?? ""} ${(displayArticle.content ?? []).join(" ")}`}
+                    label="Listen to this article"
+                    variant="premium"
+                  />
                 </div>
 
                 {/* Mobile TOC accordion */}

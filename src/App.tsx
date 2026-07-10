@@ -71,6 +71,9 @@ const Bookings = lazy(() => import("./pages/dashboard/admin/Bookings"));
 const ToolRuns = lazy(() => import("./pages/dashboard/admin/ToolRuns"));
 const FunnelAnalytics = lazy(() => import("./pages/dashboard/admin/FunnelAnalytics"));
 const SeoRankTracker = lazy(() => import("./pages/dashboard/admin/SeoRankTracker"));
+const VoiceStudio = lazy(() => import("./pages/dashboard/admin/VoiceStudio"));
+const EmailLog = lazy(() => import("./pages/dashboard/admin/EmailLog"));
+const NewsletterComposer = lazy(() => import("./pages/dashboard/admin/NewsletterComposer"));
 const DataRequest = lazy(() => import("./pages/DataRequest"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
@@ -192,6 +195,9 @@ function AnimatedRoutes() {
               <Route path="tool-runs" element={<ToolRuns />} />
               <Route path="funnel" element={<FunnelAnalytics />} />
               <Route path="seo-ranks" element={<SeoRankTracker />} />
+              <Route path="voice-studio" element={<VoiceStudio />} />
+              <Route path="email-log" element={<EmailLog />} />
+              <Route path="newsletter" element={<NewsletterComposer />} />
             </Route>
 
             {/* Client dashboard */}

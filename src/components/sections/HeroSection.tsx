@@ -11,6 +11,8 @@ import heroOrbWebp from "@/assets/hero-orb.webp";
 import heroOrbAvif from "@/assets/hero-orb.avif";
 import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
+import { heroNarration } from "@/lib/narration";
 
 const clientLogos = ["Zomato", "Lenskart", "PharmEasy", "Vedantu", "CarDekho"];
 
@@ -164,6 +166,17 @@ export default function HeroSection() {
           >
             {hero.sub}
           </motion.p>
+
+          {/* Voice narration */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={loaded ? { opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex justify-center mb-8"
+          >
+            <VoicePlayerButton text={heroNarration} label="Listen to intro" variant="premium" />
+          </motion.div>
+
 
           {/* CTAs */}
           <motion.div

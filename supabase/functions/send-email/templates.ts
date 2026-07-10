@@ -255,11 +255,31 @@ function escapeHtml(s: string) {
     .replace(/"/g, "&quot;");
 }
 
+export function renderNewsletterBroadcast(data: {
+  subject: string;
+  bodyHtml: string;
+  name?: string;
+  unsubUrl?: string;
+}): TemplateResult {
+  const preheader = data.subject.slice(0, 90);
+  const inner = data.bodyHtml.replace(/\{\{name\}\}/g, escapeHtml(data.name ?? "Friend"));
+  const unsub = data.unsubUrl
+    ? `<p style="text-align:center;margin-top:24px;font-size:11px;color:${BRAND.muted};">
+         <a href="${data.unsubUrl}" style="color:${BRAND.muted};">Unsubscribe</a> ·
+         <a href="${BRAND.url}" style="color:${BRAND.muted};">${BRAND.name}</a>
+       </p>`
+    : "";
+  const html = shell({ preheader, bodyHtml: `<div style="color:${BRAND.text};font-size:15px;line-height:1.6;">${inner}</div>${unsub}` });
+  const text = data.bodyHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return { subject: data.subject, html, text };
+}
+
 // Registry
 export const templates = {
   "contact-received": renderContactReceived,
   "contact-notify-team": renderContactNotifyTeam,
   "newsletter-welcome": renderNewsletterWelcome,
+  "newsletter-broadcast": renderNewsletterBroadcast,
   "audit-ready": renderAuditReady,
   "booking-confirmed": renderBookingConfirmed,
 } as const;

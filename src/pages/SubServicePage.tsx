@@ -8,6 +8,7 @@ import { motion } from "motion/react";
 import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getRelatedSubServices } from "@/data/internalLinks";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
 export default function SubServicePage() {
   const { category, subService } = useParams<{ category: string; subService: string }>();
@@ -101,6 +102,13 @@ export default function SubServicePage() {
               {data.heroTagline}
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">{data.heroDescription}</p>
+            <div className="mt-5">
+              <VoicePlayerButton
+                text={`${data.title}. ${data.heroTagline}. ${data.heroDescription}`}
+                label="Hear this service"
+                variant="premium"
+              />
+            </div>
             <div className="mt-8 flex gap-3">
               <Link to="/get-proposal">
                 <Button className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
