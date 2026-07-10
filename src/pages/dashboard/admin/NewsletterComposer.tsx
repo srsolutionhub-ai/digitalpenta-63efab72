@@ -186,7 +186,7 @@ export default function NewsletterComposer() {
               body{font-family:-apple-system,Inter,sans-serif;padding:24px;color:#0a0a1a;max-width:600px;margin:0 auto;line-height:1.6;}
               h1,h2{font-family:'Plus Jakarta Sans',Inter,sans-serif;}
               a{color:#8b5cf6;}
-            </style></head><body><h2 style="color:#666;font-size:14px;margin-bottom:16px">Subject: ${subject.replace(/</g, "&lt;")}</h2>${bodyHtml.replaceAll("{{name}}", "Friend")}</body></html>`}
+            </style></head><body><h2 style="color:#666;font-size:14px;margin-bottom:16px">Subject: ${subject.replace(/</g, "&lt;")}</h2>${bodyHtml.replace(/\{\{name\}\}/g, "Friend")}</body></html>`}
           />
         </div>
       </div>
