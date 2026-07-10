@@ -1,127 +1,71 @@
-# Sprint 6 — Voice, Email, SEO Hardening
+# Sprint 7 — Voice, Email Ops, Schema CI
 
-Six tracks. Order minimizes rework: schema/CI first (they gate publish), then email + voice (they share edge-function patterns), then internal linking, then QA + publish.
+## 1. Fix ElevenLabs playback on the live site
 
----
+The `elevenlabs-tts` edge function works, but `VoicePlayerButton` is **not mounted anywhere**. Also `supabase.functions.invoke()` parses `audio/mpeg` responses inconsistently across SDK versions. Fixes:
 
-## Track 1 — SEO: Service + OfferCatalog on dedicated service pages (Task C)
+- Rewrite `VoicePlayerButton` to `fetch()` the function URL directly (bearer = anon key), read `.blob()`, and play. Falls back cleanly on 429/quota.
+- Mount `<VoicePlayerButton>` on:
+  - **Hero** (`HeroSection`) — "Listen to intro" pill under headline (30-sec crafted narration).
+  - **Service category page** (`ServiceCategory`) — "Hear this service" chip near intro copy.
+  - **Sub-service page** (`SubServicePage`) — same pattern.
+  - **Blog article** (`BlogArticle`) — "Listen to this article" (first 1200 chars).
+- Add a shared `getNarration(topic)` helper so pages pass real body text, not placeholders.
 
-**Current gap:** `MatrixPage` (city × service) has `serviceWithAreaSchema` and `gmbBusinessSchema`, but the dedicated service surfaces do not:
-- `src/pages/ServiceCategory.tsx` (e.g. `/services/seo`)
-- `src/pages/SubServicePage.tsx` (e.g. `/services/seo/technical-seo`)
-- `src/pages/KeywordLandingPage.tsx` (`/lp/:slug`)
+## 2. Admin Voice Studio (`/dashboard/admin/voice-studio`)
 
-**Plan:**
-1. Extend `src/components/seo/SEOHead.tsx` with two new helpers:
-   - `serviceOfferCatalogSchema({ serviceName, description, offers[] })` — emits `Service` with nested `hasOfferCatalog` → `OfferCatalog` → `itemListElement: Offer[]`.
-   - Each schema uses `@id` refs: `provider: { "@id": "https://digitalpenta.com/#organization" }` and `author/founder: { "@id": "https://digitalpenta.com/#harish-kumar" }` — matching the anchor IDs already in `index.html`.
-2. Add stable `@id` anchors to the sitewide graph in `index.html` (`#organization`, `#localbusiness`, `#harish-kumar`) so per-page schemas can `@id`-reference them instead of duplicating.
-3. Wire the helper into `ServiceCategory.tsx`, `SubServicePage.tsx`, and `KeywordLandingPage.tsx` — pulling pricing/features from existing `matrixData` / `subServiceData` / `keywordLandingData` sources.
+New page + sidebar entry under Studio group.
 
-## Track 2 — CI schema validation (Task B)
+- **Voice library**: lists cloned + preset voices via ElevenLabs `/v1/voices`.
+- **Preview**: text box + voice selector + preview player using existing TTS function.
+- **Clone new voice**: file upload (mp3/wav ≤ 10MB), name + description → POST `/v1/voices/add`.
+- **Enable/disable**: toggles a `voice_settings` table (voice_id, label, enabled_for_site, is_default). Only `enabled_for_site` voices show up on public pages.
+- New edge function `elevenlabs-voices` handles list/clone/delete (admin-only, verify JWT + role).
 
-**Plan:**
-1. New script `scripts/seo-schema-check.mjs`:
-   - Boots a mini SSR pass using JSDOM + Vite build output — OR simpler: crawls a static allow-list of routes via `curl http://localhost:4173` after `vite preview`.
-   - For each route, extracts every `<script type="application/ld+json">` and validates:
-     - Valid JSON.
-     - Has `@context` + `@type`.
-     - Organization / LocalBusiness / Service / Person shapes each pass a small schema (required fields per type).
-     - `@id` references resolve to a node emitted elsewhere in the graph.
-   - Extends the existing `scripts/seo-qa.mjs` style (exits non-zero on error).
-2. Wire into `package.json` script `seo:schema` and reference from README. Because Lovable auto-builds, we won't hook it into `build` itself but expose it as a manual + CI-friendly check.
+## 3. Admin Email Log Viewer (`/dashboard/admin/email-log`)
 
-## Track 3 — Internal entity-based linking (Task D)
+Table view over `email_send_log`:
+- Filters: template (dropdown), status (sent/failed), date range.
+- Columns: sent_at, template, to_email, subject, status, resend_id, error preview.
+- Row click → drawer with full error + template data JSON.
+- CSV export via existing `exporters.ts`.
 
-**Current:** `RelatedLinks.tsx` and `SeoLinkHub.tsx` exist but are generic.
+## 4. Newsletter Broadcast Composer (`/dashboard/admin/newsletter`)
 
-**Plan:**
-1. New `src/lib/entityLinks.ts` — maps entities → canonical URLs. E.g. `"SEO in Delhi" → /seo/delhi`, `"PPC in Dubai" → /ppc/dubai`, `"Harish Kumar" → /about#founder`.
-2. New component `src/components/seo/EntityLinker.tsx` — takes markdown/HTML body, auto-links first occurrence of each entity keyword using semantic anchor text ("SEO agency in Delhi" not "click here").
-3. Apply to:
-   - `BlogArticle.tsx` — run body through EntityLinker before render.
-   - `About.tsx` — add a "Where we work" grid with entity links to top 8 city matrix pages.
-   - `ServiceCategory.tsx` — add a "Service areas" strip linking `/{service}/{city}` for all cities in `matrixData`.
-4. Reciprocal: matrix pages already link back to service parent; verify + add if missing.
+- **Compose**: subject, HTML body (textarea + live iframe preview), audience selector (all confirmed subscribers / by tag).
+- **Test send**: input email → sends to that address only via `send-email` (uses new `newsletter_broadcast` template).
+- **Send**: confirms count, enqueues via new edge function `newsletter-broadcast` which iterates subscribers in batches of 50 and calls `send-email` per row, logs to `email_send_log`.
+- New `newsletter_campaigns` table (subject, body_html, audience_filter, status, sent_count, created_by).
 
-## Track 4 — Resend email system (Task 2)
+## 5. Schema Validation CI (`scripts/validate-schema.mjs`)
 
-Resend connector is connected → `RESEND_API_KEY` present, gateway auth via `LOVABLE_API_KEY` (both confirmed in secrets). All email flows go through edge functions using the connector gateway pattern.
+- Renders key pages (Home, About, `/services/seo`, `/locations/gurgaon`, `/seo/mumbai`) via Vite build's static HTML OR by importing `SEOHead` helpers directly.
+- Uses `schema-dts` types + a small JSON-LD validator (custom checks: `@context`, `@type`, required fields for Organization/LocalBusiness/Service, ID resolution).
+- Wired into `package.json` as `"validate:schema"` and called in a new `"prebuild"` script → fails build on missing/invalid schema.
 
-**Sender identity:** `from` must be a Resend-verified domain. We'll use `Digital Penta <hello@digitalpenta.com>` and note the user must verify `digitalpenta.com` in Resend dashboard before first send. Fallback while unverified: `onboarding@resend.dev` (owner-only test).
+## Technical details
 
-**Email surfaces & templates (all React-Email-style HTML with Digital Penta dark-editorial branding — pentagon logo, gradient headers, Plus Jakarta Sans, purple/pink accents):**
+**Files created**
+- `src/pages/dashboard/admin/VoiceStudio.tsx`
+- `src/pages/dashboard/admin/EmailLog.tsx`
+- `src/pages/dashboard/admin/NewsletterComposer.tsx`
+- `src/lib/narration.ts` (page → narration text mapping)
+- `supabase/functions/elevenlabs-voices/index.ts`
+- `supabase/functions/newsletter-broadcast/index.ts`
+- `scripts/validate-schema.mjs`
+- Migration: `voice_settings`, `newsletter_campaigns` tables + newsletter_broadcast template in `templates.ts`
 
-| Trigger | Recipient | Template |
-|---|---|---|
-| Contact form submit (`contacts` insert) | Prospect + team | `contact-received.html` + `contact-notify-team.html` |
-| Audit submitted (`audit_reports` insert) | Prospect | `audit-ready.html` (with PDF link + top 3 issues) |
-| Booking confirmed | Prospect + team | `booking-confirmed.html` (with ICS attachment) |
-| Quotation sent (from admin dashboard) | Client | `quotation-sent.html` |
-| Invoice generated | Client | `invoice.html` (with PDF) |
-| Newsletter subscribe (new table `newsletter_subscribers`) | Subscriber | `newsletter-welcome.html` |
-| Weekly newsletter broadcast | All subscribers | `newsletter-issue.html` (admin composer) |
+**Files edited**
+- `src/components/voice/VoicePlayerButton.tsx` (direct fetch, blob playback, error toast)
+- `src/components/sections/HeroSection.tsx`, `ServiceCategory.tsx`, `SubServicePage.tsx`, `BlogArticle.tsx` (mount voice button)
+- `src/pages/dashboard/admin/AdminLayout.tsx` (nav entries)
+- `src/App.tsx` (routes)
+- `supabase/functions/send-email/templates.ts` (add `newsletter_broadcast`)
+- `supabase/config.toml` (register new functions)
+- `package.json` (prebuild hook)
 
-**Plan:**
-1. **Edge function `send-email`** (unified): input `{ template, to, data }`, renders template server-side, calls Resend via gateway, logs to new `email_send_log` table (id, template, to, status, resend_id, error, created_at).
-2. **Templates:** store as TypeScript template functions in `supabase/functions/send-email/templates/*.ts` — each exports `render(data) → { subject, html, text }`. Design system: dark navy background (`#0a0a1a`), gradient headers (purple→pink), glass card, footer with unsub link, mobile-first (600px max-width, single-column, safe fonts stack).
-3. **Newsletter:**
-   - Migration: `newsletter_subscribers` table (email, name, source, subscribed_at, unsubscribed_at, unsub_token). GRANTs + RLS (public insert for signup, admin select).
-   - New section `src/components/sections/NewsletterSection.tsx` on homepage + blog.
-   - `newsletter_issues` table + admin composer at `/dashboard/admin/newsletter` (title, body markdown, sent_at, recipient_count). Broadcast via edge function `send-newsletter` (batched to Resend, 100/sec).
-   - Public unsub route `/unsubscribe?token=…`.
-4. **Wire existing flows:**
-   - `HomepageLeadCaptureSection.tsx`, `Contact.tsx`, `AuditLeadForm.tsx`, `BookACall.tsx`, `Quotations.tsx`, `Invoices.tsx` → call `supabase.functions.invoke("send-email", ...)`.
-   - Retire legacy `resend-email` secret usage if any.
-5. **Admin email logs page** at `/dashboard/admin/emails` — lists `email_send_log` with status filter.
+**Auth**: voice-studio + email-log + newsletter routes gated by `ADMIN_ROLES` (already existing ProtectedRoute). Edge functions verify JWT + `has_role('super_admin' | 'content_writer')`.
 
-## Track 5 — ElevenLabs voice suite (Task 1)
+**Estimated scope**: ~15 files, 1 migration, 2 new edge functions.
 
-Current: only `elevenlabs-tts` edge function + opt-in Listen button in `PentaAiChat`. Expand to a premium 2026-era voice layer.
-
-**Surfaces:**
-1. **Voice-narrated hero intro** — hero has a "▶ Hear our pitch" ghost button that streams a 15-second brand narration (pre-generated, cached in Supabase Storage bucket `voice-cache`).
-2. **Audit report voiceover** — on `SeoAuditTool` results, "🎧 Listen to your report" button TTSes top 3 issues + recommendation.
-3. **Voice-cloneable strategist demo on About page** — pre-recorded Harish Kumar sample voice ("Hi, I'm Harish…") via cloned voice ID (user provides voice ID after cloning in ElevenLabs dashboard, stored in secret `ELEVENLABS_HARISH_VOICE_ID`).
-4. **Full conversational agent on Book-a-Call** — `@elevenlabs/react` `useConversation` (WebRTC), lazy-loaded, mic permission gated. New edge function `elevenlabs-conv-token` mints Convai token.
-5. **Voice cloning admin tool** at `/dashboard/admin/voice-studio` — upload sample → clone via `POST /v1/voices/add` → store voice_id in `voice_profiles` table. Test playback. Delete voice.
-6. **Design:** Futuristic waveform visualizer using Web Audio API `AnalyserNode` → animated pentagon-shaped equalizer (matches brand pentagon). Purple→pink gradient bars. Ambient glow. All audio components lazy + suspense.
-
-**Plan:**
-1. New edge functions:
-   - `elevenlabs-conv-token` — Convai WebRTC token
-   - `elevenlabs-voice-clone` — proxy `POST /v1/voices/add` (admin-only, JWT-gated)
-   - Extend `elevenlabs-tts` to optionally cache to Supabase Storage keyed by hash(text+voice)
-2. New components:
-   - `src/components/voice/PentagonWaveform.tsx` — CSS/canvas visualizer
-   - `src/components/voice/VoicePlayerButton.tsx` — reusable button with waveform + loading/playing states
-   - `src/components/voice/ConversationalAgent.tsx` (Book-a-Call, lazy)
-   - `src/components/voice/VoiceStudio.tsx` (admin)
-3. Migrations: `voice_profiles` (id, name, voice_id, kind, created_by, created_at) + storage bucket `voice-cache` (private, signed URLs).
-4. Perf: all voice code behind `React.lazy` + Suspense. Homepage hero button imports only the tiny player, not the full waveform, until clicked.
-
-## Track 6 — QA, publish, monitoring
-
-1. Run `scripts/seo-qa.mjs` and new `scripts/seo-schema-check.mjs`.
-2. Playwright smoke tests: submit contact form → email received in log; play hero voice → audio plays; book call → conv agent connects; visit `/services/seo` → OfferCatalog present.
-3. `seo_chat--trigger_scan` for fresh SEO audit.
-4. Security scan (`security--run_security_scan`) — new tables + edge functions must pass.
-5. **Publish** via `preview_ui--publish` (Task A).
-6. Post-publish: GSC Rich Results Test on `/`, `/about`, `/seo/delhi`, `/services/seo`; instruct user to resubmit sitemap.
-
----
-
-## Technical Notes
-
-- **DB migrations:** `newsletter_subscribers`, `newsletter_issues`, `email_send_log`, `voice_profiles` — each with GRANTs + RLS.
-- **Edge functions:** `send-email`, `send-newsletter`, `elevenlabs-conv-token`, `elevenlabs-voice-clone`; extend `elevenlabs-tts`.
-- **Storage:** private `voice-cache` bucket with 30-day signed URLs.
-- **Deps:** `@elevenlabs/react` (lazy chunk only), no email library (raw HTML strings — smaller and full control).
-- **Perf budget:** all voice + admin surfaces lazy-loaded. Bundle stays under 200KB gzip.
-- **Secrets to confirm:** `RESEND_API_KEY`, `LOVABLE_API_KEY`, `ELEVENLABS_API_KEY` (all present). Optional `ELEVENLABS_HARISH_VOICE_ID` once cloned.
-
-## Execution Order
-
-Track 1 → 2 → 3 → 4 → 5 → 6. I will not stop until all tracks are done, then give a short completion summary.
-
-Confirm to proceed.
+Confirm and I'll build it end-to-end.
