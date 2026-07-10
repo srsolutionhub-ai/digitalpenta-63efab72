@@ -11,6 +11,8 @@ import heroOrbWebp from "@/assets/hero-orb.webp";
 import heroOrbAvif from "@/assets/hero-orb.avif";
 import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
+import { heroNarration } from "@/lib/narration";
 
 const clientLogos = ["Zomato", "Lenskart", "PharmEasy", "Vedantu", "CarDekho"];
 
