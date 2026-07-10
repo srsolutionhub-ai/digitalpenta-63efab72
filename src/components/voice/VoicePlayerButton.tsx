@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Volume2, Loader2, Square } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 interface VoicePlayerButtonProps {
   text: string;
@@ -11,10 +11,14 @@ interface VoicePlayerButtonProps {
   variant?: "ghost" | "premium" | "inline";
 }
 
+const SUPABASE_URL = "https://ygoxxqkcxunuowtuwdxr.supabase.co";
+const ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlnb3h4cWtjeHVudW93dHV3ZHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1Mjk3NTAsImV4cCI6MjA3MTEwNTc1MH0.95NbFoK8HXaMzA1E0V9a1hpqSs_VQJRI4Z9ImqNQJ9I";
+
 /**
- * Reusable voice playback button. Fetches audio from the elevenlabs-tts
- * edge function and plays via HTMLAudioElement. Caches per-text within the
- * component lifetime.
+ * Reusable voice playback button. Fetches audio directly from the
+ * elevenlabs-tts edge function (bypasses supabase-js binary parsing quirks)
+ * and plays via HTMLAudioElement. Caches per-text within component lifetime.
  */
 export default function VoicePlayerButton({
   text,
@@ -34,6 +38,14 @@ export default function VoicePlayerButton({
     };
   }, []);
 
+  // Invalidate cache when text changes
+  useEffect(() => {
+    if (urlRef.current) {
+      URL.revokeObjectURL(urlRef.current);
+      urlRef.current = null;
+    }
+  }, [text, voiceId]);
+
   const stop = () => {
     audioRef.current?.pause();
     if (audioRef.current) audioRef.current.currentTime = 0;
@@ -43,14 +55,31 @@ export default function VoicePlayerButton({
   const play = async () => {
     if (state === "playing") { stop(); return; }
     if (state === "loading") return;
+    if (!text?.trim()) return;
     setState("loading");
     try {
       if (!urlRef.current) {
-        const { data, error } = await supabase.functions.invoke("elevenlabs-tts", {
-          body: { text, voiceId },
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-tts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${ANON_KEY}`,
+            apikey: ANON_KEY,
+          },
+          body: JSON.stringify({ text: text.slice(0, 1200), voiceId }),
         });
-        if (error) throw error;
-        const blob = data instanceof Blob ? data : new Blob([data], { type: "audio/mpeg" });
+        if (!res.ok) {
+          const errBody = await res.text();
+          if (res.status === 429) {
+            toast({ title: "Voice quota reached", description: "Try again tomorrow.", variant: "destructive" });
+          } else {
+            toast({ title: "Voice unavailable", description: `Error ${res.status}`, variant: "destructive" });
+          }
+          console.error("TTS failed", res.status, errBody);
+          setState("idle");
+          return;
+        }
+        const blob = await res.blob();
         urlRef.current = URL.createObjectURL(blob);
       }
       const audio = audioRef.current ?? new Audio();
@@ -62,6 +91,7 @@ export default function VoicePlayerButton({
       setState("playing");
     } catch (e) {
       console.error("voice play failed", e);
+      toast({ title: "Voice unavailable", description: "Please try again.", variant: "destructive" });
       setState("idle");
     }
   };
