@@ -319,6 +319,13 @@ export default function ServiceCategory() {
               {data.tagline.split(".")[0]}. <span className="text-gradient">{data.tagline.split(".")[1]?.trim() || ""}</span>
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">{data.description}</p>
+            <div className="mt-6">
+              <VoicePlayerButton
+                text={`${data.title}. ${data.tagline}. ${data.description}`}
+                label="Hear this service"
+                variant="premium"
+              />
+            </div>
             <div className="mt-8 flex gap-3">
               <Link to="/get-proposal">
                 <Button size="lg" className="rounded-full px-8 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
