@@ -9,6 +9,7 @@ import MagneticCard from "@/components/ui/magnetic-card";
 import serviceBanner from "@/assets/service-banner-graphic.jpg";
 import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema, ceoPersonSchema } from "@/components/seo/SEOHead";
 import ServiceAreaGrid from "@/components/seo/ServiceAreaGrid";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
 /* ── Animated counter ── */
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
