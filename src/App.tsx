@@ -195,6 +195,9 @@ function AnimatedRoutes() {
               <Route path="tool-runs" element={<ToolRuns />} />
               <Route path="funnel" element={<FunnelAnalytics />} />
               <Route path="seo-ranks" element={<SeoRankTracker />} />
+              <Route path="voice-studio" element={<VoiceStudio />} />
+              <Route path="email-log" element={<EmailLog />} />
+              <Route path="newsletter" element={<NewsletterComposer />} />
             </Route>
 
             {/* Client dashboard */}
