@@ -384,6 +384,15 @@ export default function BlogArticle() {
                   </div>
                 </div>
 
+                {/* Listen to article */}
+                <div className="mb-8">
+                  <VoicePlayerButton
+                    text={`${displayArticle.title}. ${displayArticle.excerpt ?? ""} ${(displayArticle.content ?? []).join(" ")}`}
+                    label="Listen to this article"
+                    variant="premium"
+                  />
+                </div>
+
                 {/* Mobile TOC accordion */}
                 {headings.length > 0 && (
                   <MobileTOC headings={headings} />
