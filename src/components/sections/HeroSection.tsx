@@ -167,6 +167,17 @@ export default function HeroSection() {
             {hero.sub}
           </motion.p>
 
+          {/* Voice narration */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={loaded ? { opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex justify-center mb-8"
+          >
+            <VoicePlayerButton text={heroNarration} label="Listen to intro" variant="premium" />
+          </motion.div>
+
+
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
