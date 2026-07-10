@@ -8,6 +8,7 @@ import { motion } from "motion/react";
 import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getRelatedSubServices } from "@/data/internalLinks";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
 export default function SubServicePage() {
   const { category, subService } = useParams<{ category: string; subService: string }>();
