@@ -10,6 +10,7 @@ import SEOHead, { breadcrumbSchema, personSchema } from "@/components/seo/SEOHea
 import blogAiImg from "@/assets/blog-ai.jpg";
 import blogSeoImg from "@/assets/blog-seo.jpg";
 import blogAutoImg from "@/assets/blog-automation.jpg";
+import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
 const CATEGORY_OG: Record<string, string> = {
   AI: blogAiImg,
