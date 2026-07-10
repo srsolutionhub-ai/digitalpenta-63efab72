@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
-  Sparkles, Activity, TrendingUp,
+  Sparkles, Activity, TrendingUp, Mic, Mail, Send,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
