@@ -44,6 +44,9 @@ const navGroups = [
     label: "Studio",
     items: [
       { label: "Blog", icon: PenLine, path: "/dashboard/admin/blog" },
+      { label: "Voice Studio", icon: Mic, path: "/dashboard/admin/voice-studio" },
+      { label: "Newsletter", icon: Send, path: "/dashboard/admin/newsletter" },
+      { label: "Email Log", icon: Mail, path: "/dashboard/admin/email-log" },
       { label: "Finance", icon: Wallet, path: "/dashboard/admin/billing" },
       { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
     ],
