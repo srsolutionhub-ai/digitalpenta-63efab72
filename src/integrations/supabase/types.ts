@@ -1373,6 +1373,54 @@ export type Database = {
           },
         ]
       }
+      newsletter_campaigns: {
+        Row: {
+          audience_filter: Json
+          body_html: string
+          body_text: string | null
+          created_at: string
+          created_by: string | null
+          failed_count: number
+          id: string
+          recipient_count: number
+          sent_at: string | null
+          sent_count: number
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          audience_filter?: Json
+          body_html: string
+          body_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          audience_filter?: Json
+          body_html?: string
+          body_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           company: string | null
@@ -2256,6 +2304,48 @@ export type Database = {
           name?: string
           priority?: number | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      voice_settings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          enabled_for_site: boolean
+          id: string
+          is_cloned: boolean
+          is_default: boolean
+          label: string
+          preview_url: string | null
+          updated_at: string
+          voice_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled_for_site?: boolean
+          id?: string
+          is_cloned?: boolean
+          is_default?: boolean
+          label: string
+          preview_url?: string | null
+          updated_at?: string
+          voice_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          enabled_for_site?: boolean
+          id?: string
+          is_cloned?: boolean
+          is_default?: boolean
+          label?: string
+          preview_url?: string | null
+          updated_at?: string
+          voice_id?: string
         }
         Relationships: []
       }
