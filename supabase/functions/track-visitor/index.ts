@@ -117,9 +117,15 @@ Deno.serve(async (req) => {
       new Set([...(existing?.interests ?? []), ...(p.interests ?? [])]),
     ).slice(0, 20);
 
+    // visitor_profiles.type is constrained to a fixed vocabulary.
+    const ALLOWED_TYPES = ["b2b_client", "local_business", "returning_visitor", "enterprise", "startup"];
+    const type = ALLOWED_TYPES.includes(p.visitorType ?? "")
+      ? p.visitorType!
+      : existing ? "returning_visitor" : "local_business";
+
     const profileRow = {
       visitor_id: visitorId,
-      type: p.visitorType || "anonymous",
+      type,
       location: [city, country].filter(Boolean).join(", ") || null,
       last_visit: new Date().toISOString(),
       page_views: pageViews,

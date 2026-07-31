@@ -183,7 +183,7 @@ function buildBody() {
       pageViews: pageViewCount,
       timeOnSite: Math.round((Date.now() - started) / 1000),
       interests: Array.from(interests),
-      visitorType: interests.has("high-intent") ? "lead" : "anonymous",
+      visitorType: interests.has("high-intent") ? "b2b_client" : undefined,
     },
   });
 }
