@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Cookie, Shield } from "lucide-react";
 import { useOverlaySlot } from "@/hooks/useOverlaySlot";
+import { setTrackingConsent } from "@/lib/visitorTracking";
 
 const STORAGE_KEY = "cookie_consent_v1";
 
