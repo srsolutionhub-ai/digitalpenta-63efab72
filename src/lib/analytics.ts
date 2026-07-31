@@ -23,6 +23,8 @@
  *   initAnalytics();   // call once in App
  */
 
+import { queueVisitorEvent, trackPagePath } from "./visitorTracking";
+
 type GA4Params = Record<string, string | number | boolean | undefined>;
 
 declare global {
