@@ -226,9 +226,11 @@ function AnimatedRoutes() {
 
 function AppShell() {
   useSmoothScroll();
-  // Auto-attach GA4-compatible click / submit / scroll trackers once.
+  // Auto-attach GA4-compatible click / submit / scroll trackers once,
+  // plus the consent-gated first-party audience pipeline.
   useEffect(() => {
     initAnalytics();
+    initVisitorTracking();
   }, []);
   return (
     <>
@@ -246,8 +248,12 @@ function AppShell() {
         <Suspense fallback={null}>
           <PentaAiChat />
         </Suspense>
+        <Suspense fallback={null}>
+          <WelcomeBackToast />
+        </Suspense>
       </BrowserRouter>
     </>
+
   );
 }
 
