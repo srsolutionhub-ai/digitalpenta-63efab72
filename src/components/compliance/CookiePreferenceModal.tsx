@@ -19,7 +19,10 @@ function getStored(): Prefs | null {
 export function applyConsent(prefs: Prefs) {
   (window as any).__consent = prefs;
   if (prefs.analytics && (window as any).gtag) (window as any).gtag("consent", "update", { analytics_storage: "granted" });
+  // Enables/discards the first-party audience pipeline (visitor_profiles + analytics_events)
+  setTrackingConsent(!!prefs.analytics);
 }
+
 
 export default function CookiePreferenceModal() {
   const [showBanner, setShowBanner] = useState(false);
