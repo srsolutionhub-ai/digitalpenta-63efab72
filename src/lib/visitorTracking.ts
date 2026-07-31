@@ -234,7 +234,7 @@ export function setTrackingConsent(granted: boolean): void {
 export function trackPagePath(path: string): void {
   pageViewCount += 1;
   interestsFromPath(path).forEach((i) => interests.add(i));
-  queueVisitorEvent("page_view", { category: "navigation", label: path, value: pageViewCount });
+  scheduleFlush();
 }
 
 let booted = false;
