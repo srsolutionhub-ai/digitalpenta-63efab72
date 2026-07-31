@@ -8,6 +8,7 @@
  * we just re-frame the existing value prop around the visitor's likely intent.
  */
 import { useEffect, useState } from "react";
+import { getVisitInfo } from "@/lib/visitorTracking";
 
 export type HeroVariant =
   | "default"
@@ -194,14 +195,10 @@ function detectVariant(): HeroVariant {
     else if (/google\./.test(tld) && /\/search/.test(tld)) resolved = "seo";
   }
 
-  // Returning visitor detection (no other signal)
-  if (resolved === "default") {
-    try {
-      const visited = localStorage.getItem("dp_visited_v1");
-      if (visited) resolved = "returning";
-      localStorage.setItem("dp_visited_v1", "1");
-    } catch { /* noop */ }
-  }
+  // Returning visitor detection — the visit counter is maintained by
+  // visitorTracking (registerVisit) so it is accurate even when the first
+  // visit arrived with UTM params and resolved to a campaign variant.
+  if (resolved === "default" && getVisitInfo().isReturning) resolved = "returning";
 
   try { sessionStorage.setItem(STORAGE_KEY, resolved); } catch { /* noop */ }
   return resolved;

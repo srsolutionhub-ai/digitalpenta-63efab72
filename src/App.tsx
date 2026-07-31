@@ -11,6 +11,7 @@ import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
+import { initVisitorTracking } from "@/lib/visitorTracking";
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -77,6 +78,7 @@ const NewsletterComposer = lazy(() => import("./pages/dashboard/admin/Newsletter
 const DataRequest = lazy(() => import("./pages/DataRequest"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
+const WelcomeBackToast = lazy(() => import("./components/ui/welcome-back-toast"));
 
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
@@ -226,9 +228,11 @@ function AnimatedRoutes() {
 
 function AppShell() {
   useSmoothScroll();
-  // Auto-attach GA4-compatible click / submit / scroll trackers once.
+  // Auto-attach GA4-compatible click / submit / scroll trackers once,
+  // plus the consent-gated first-party audience pipeline.
   useEffect(() => {
     initAnalytics();
+    initVisitorTracking();
   }, []);
   return (
     <>
@@ -246,8 +250,12 @@ function AppShell() {
         <Suspense fallback={null}>
           <PentaAiChat />
         </Suspense>
+        <Suspense fallback={null}>
+          <WelcomeBackToast />
+        </Suspense>
       </BrowserRouter>
     </>
+
   );
 }
 

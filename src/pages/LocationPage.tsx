@@ -15,6 +15,7 @@ import SEOHead, {
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
+import CitySeoContent from "@/components/seo/CitySeoContent";
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
 import { LOCATION_REVIEWS } from "@/data/customerReviews";
 
@@ -171,13 +172,21 @@ export default function LocationPage() {
               )}
             </div>
 
-            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-6 leading-tight">
-              {data.tagline}
+            {/* H1 carries the exact local query ("digital marketing agency in <city>");
+                the editorial tagline moves to the sub-headline. */}
+            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-4 leading-tight">
+              Digital Marketing Agency in{" "}
+              <span className="text-gradient">{data.city}</span>
             </h1>
+
+            <p className="font-display font-semibold text-lg md:text-xl text-foreground/90 mb-5">
+              {data.tagline}
+            </p>
 
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mb-8">
               {data.description}
             </p>
+
 
             <div className="flex flex-wrap gap-3">
               <Link to="/get-proposal">
@@ -431,6 +440,14 @@ export default function LocationPage() {
           </div>
         </div>
       </section>
+
+      <CitySeoContent
+        city={data.city}
+        citySlug={data.slug}
+        country={data.country}
+        industries={data.industries}
+        services={data.services}
+      />
 
       {/* Map */}
       <section className="pb-20">

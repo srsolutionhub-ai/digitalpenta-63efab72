@@ -23,6 +23,8 @@
  *   initAnalytics();   // call once in App
  */
 
+import { queueVisitorEvent, trackPagePath } from "./visitorTracking";
+
 type GA4Params = Record<string, string | number | boolean | undefined>;
 
 declare global {
@@ -71,12 +73,22 @@ export function trackEvent(eventName: string, params: GA4Params = {}): void {
     window.gtag("event", eventName, enriched);
   }
 
+  // First-party audience store (consent-gated inside visitorTracking)
+  queueVisitorEvent(eventName, {
+    data: enriched as Record<string, unknown>,
+    label: typeof params.cta_text === "string" ? params.cta_text : String(enriched.page_path),
+    value: typeof params.percent === "number" ? params.percent
+      : typeof params.event_value === "number" ? params.event_value
+      : undefined,
+  });
+
   // Dev visibility
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
     console.info("[analytics]", eventName, enriched);
   }
 }
+
 
 /** Convenience wrappers for the events called out in the SEO master plan. */
 export const track = {
@@ -203,10 +215,13 @@ export function attachAutoTrackers(): void {
 export function trackPageView(path: string): void {
   scrollMarks = new Set();
   lastPath = path;
-  track.pageView(path);
+  // Records the page view in dataLayer/GA4 *and* the first-party audience store.
+  trackPagePath(path);
+  trackEvent("page_view", { page_path: path });
 }
 
 /** One-shot bootstrap used by App. */
 export function initAnalytics(): void {
   attachAutoTrackers();
 }
+
