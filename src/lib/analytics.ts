@@ -215,10 +215,13 @@ export function attachAutoTrackers(): void {
 export function trackPageView(path: string): void {
   scrollMarks = new Set();
   lastPath = path;
-  track.pageView(path);
+  // Records the page view in dataLayer/GA4 *and* the first-party audience store.
+  trackPagePath(path);
+  trackEvent("page_view", { page_path: path });
 }
 
 /** One-shot bootstrap used by App. */
 export function initAnalytics(): void {
   attachAutoTrackers();
 }
+
