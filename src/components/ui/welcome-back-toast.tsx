@@ -39,7 +39,7 @@ export default function WelcomeBackToast() {
 
   return (
     <div
-      className="fixed z-[55] bottom-24 md:bottom-6 left-4 right-4 md:right-auto md:left-6 md:max-w-sm motion-safe:animate-[slideUpFade_.6s_cubic-bezier(.16,1,.3,1)_both]"
+      className="fixed z-[55] bottom-24 md:bottom-6 left-4 right-4 md:right-auto md:left-6 md:max-w-sm motion-safe:animate-[riseFade_.6s_cubic-bezier(.16,1,.3,1)_both]"
       role="status"
       aria-live="polite"
     >
