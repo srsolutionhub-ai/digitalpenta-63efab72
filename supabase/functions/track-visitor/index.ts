@@ -140,15 +140,17 @@ Deno.serve(async (req) => {
       updated_at: new Date().toISOString(),
     };
 
+    let profileOk = true;
     if (existing) {
-      await admin.from("visitor_profiles").update(profileRow).eq("visitor_id", visitorId);
+      const { error: updErr } = await admin.from("visitor_profiles").update(profileRow).eq("visitor_id", visitorId);
+      if (updErr) { profileOk = false; console.error("visitor_profiles update", updErr.message); }
     } else {
       const { error: insErr } = await admin.from("visitor_profiles").insert(profileRow);
-      if (insErr) console.error("visitor_profiles insert", insErr.message);
+      if (insErr) { profileOk = false; console.error("visitor_profiles insert", insErr.message); }
     }
 
     // ── interactions + analytics events ──
-    if (events.length) {
+    if (events.length && profileOk) {
       const interactions = events.map((e) => ({
         visitor_id: visitorId,
         action: e.action.slice(0, 120),
@@ -159,7 +161,9 @@ Deno.serve(async (req) => {
       }));
       const { error: iErr } = await admin.from("visitor_interactions").insert(interactions);
       if (iErr) console.error("visitor_interactions insert", iErr.message);
+    }
 
+    if (events.length) {
       const analytics = events.map((e) => ({
         event_name: e.action.slice(0, 120),
         event_category: e.category ?? "engagement",
