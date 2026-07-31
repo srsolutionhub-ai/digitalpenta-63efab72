@@ -11,6 +11,7 @@ import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
+import { initVisitorTracking } from "@/lib/visitorTracking";
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -77,6 +78,7 @@ const NewsletterComposer = lazy(() => import("./pages/dashboard/admin/Newsletter
 const DataRequest = lazy(() => import("./pages/DataRequest"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
+const WelcomeBackToast = lazy(() => import("./components/ui/welcome-back-toast"));
 
 
 const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));

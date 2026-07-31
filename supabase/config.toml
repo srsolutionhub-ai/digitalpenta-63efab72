@@ -46,3 +46,5 @@ verify_jwt = false
 
 
 
+[functions.track-visitor]
+verify_jwt = false
