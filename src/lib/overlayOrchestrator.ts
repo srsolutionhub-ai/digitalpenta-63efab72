@@ -6,6 +6,7 @@ export type OverlayId =
   | "penta-ai-chat"
   | "exit-intent"
   | "lead-capture"
+  | "welcome-back"
   | "live-activity"
   | "smart-cta";
 
@@ -14,9 +15,11 @@ const PRIORITY: Record<OverlayId, number> = {
   "penta-ai-chat": 95,
   "exit-intent": 90,
   "lead-capture": 70,
+  "welcome-back": 60,
   "live-activity": 40,
   "smart-cta": 30,
 };
+
 
 type Listener = () => void;
 
