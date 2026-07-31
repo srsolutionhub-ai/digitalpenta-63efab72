@@ -15,6 +15,7 @@ import SEOHead, {
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
+import CitySeoContent from "@/components/seo/CitySeoContent";
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
 import { LOCATION_REVIEWS } from "@/data/customerReviews";
 
@@ -439,6 +440,14 @@ export default function LocationPage() {
           </div>
         </div>
       </section>
+
+      <CitySeoContent
+        city={data.city}
+        citySlug={data.slug}
+        country={data.country}
+        industries={data.industries}
+        services={data.services}
+      />
 
       {/* Map */}
       <section className="pb-20">
