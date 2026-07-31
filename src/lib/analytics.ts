@@ -71,12 +71,22 @@ export function trackEvent(eventName: string, params: GA4Params = {}): void {
     window.gtag("event", eventName, enriched);
   }
 
+  // First-party audience store (consent-gated inside visitorTracking)
+  queueVisitorEvent(eventName, {
+    data: enriched as Record<string, unknown>,
+    label: typeof params.cta_text === "string" ? params.cta_text : String(enriched.page_path),
+    value: typeof params.percent === "number" ? params.percent
+      : typeof params.event_value === "number" ? params.event_value
+      : undefined,
+  });
+
   // Dev visibility
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
     console.info("[analytics]", eventName, enriched);
   }
 }
+
 
 /** Convenience wrappers for the events called out in the SEO master plan. */
 export const track = {
