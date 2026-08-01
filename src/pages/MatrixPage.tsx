@@ -293,7 +293,17 @@ export default function MatrixPage() {
         </div>
       </section>
 
+      {/* City keyword-depth block (local SERP + AEO) */}
+      <CitySeoContent
+        city={cty.city}
+        citySlug={cty.slug}
+        country={cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "UAE" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city}
+        industries={cty.industries ?? []}
+        services={[svc.name, "SEO", "Google Ads", "Social Media Marketing", "Web Development", "AI Automation"]}
+      />
+
       {/* Related links */}
+
       {nearby.length > 0 && (
         <RelatedLinks
           kicker="Nearby markets"
