@@ -13,6 +13,7 @@ import SEOHead, {
 } from "@/components/seo/SEOHead";
 
 import RelatedLinks from "@/components/seo/RelatedLinks";
+import CitySeoContent from "@/components/seo/CitySeoContent";
 import { getMatrixPage } from "@/data/matrixData";
 import { getIntentDef, intentAppliesToService } from "@/data/matrixIntents";
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
@@ -293,7 +294,17 @@ export default function MatrixPage() {
         </div>
       </section>
 
+      {/* City keyword-depth block (local SERP + AEO) */}
+      <CitySeoContent
+        city={cty.city}
+        citySlug={cty.slug}
+        country={cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "UAE" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city}
+        industries={cty.industries ?? []}
+        services={[svc.name, "SEO", "Google Ads", "Social Media Marketing", "Web Development", "AI Automation"]}
+      />
+
       {/* Related links */}
+
       {nearby.length > 0 && (
         <RelatedLinks
           kicker="Nearby markets"
