@@ -14,7 +14,8 @@
     "seo:qa": "node scripts/seo-qa.mjs",
     "seo:sitemap": "node scripts/generate-sitemap.mjs",
     "validate:schema": "node scripts/validate-schema.mjs",
-    "prebuild": "node scripts/validate-schema.mjs"
+    "prebuild": "node scripts/validate-schema.mjs",
+    "crawl:links": "node scripts/crawl-internal-links.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

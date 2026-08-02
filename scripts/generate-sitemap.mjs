@@ -16,7 +16,6 @@ import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
 const SITE = "https://digitalpenta.com";
-const TODAY = new Date().toISOString().slice(0, 10);
 
 // --- Lightweight TS source loader ---------------------------------------
 // We import the matrix data files directly. To avoid pulling in a TS toolchain
@@ -65,7 +64,9 @@ for (const block of intentBlocks) {
 // --- URL plan -----------------------------------------------------------
 const urls = [];
 function add(loc, priority = "0.6", changefreq = "weekly") {
-  urls.push({ loc: `${SITE}${loc}`, priority, changefreq, lastmod: TODAY });
+  // No <lastmod>: we have no authoritative per-page change timestamp, and a
+  // build-time date would be a false signal that Google learns to ignore.
+  urls.push({ loc: `${SITE}${loc}`, priority, changefreq });
 }
 
 // Static
@@ -162,7 +163,7 @@ const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...urls.map(u =>
-    `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+    `  <url><loc>${u.loc}</loc><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
   ),
   "</urlset>",
   "",
