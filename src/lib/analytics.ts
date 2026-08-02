@@ -24,6 +24,7 @@
  */
 
 import { queueVisitorEvent, trackPagePath } from "./visitorTracking";
+import { forwardToGa4, initGa4ConsentDefaults } from "./ga4";
 
 type GA4Params = Record<string, string | number | boolean | undefined>;
 
@@ -68,10 +69,8 @@ export function trackEvent(eventName: string, params: GA4Params = {}): void {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: eventName, ...enriched });
 
-  // gtag fallback (when GA4 loaded directly)
-  if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, enriched);
-  }
+  // GA4 (consent-gated inside ga4.ts — no-op until analytics consent granted)
+  forwardToGa4(eventName, enriched as Record<string, unknown>);
 
   // First-party audience store (consent-gated inside visitorTracking)
   queueVisitorEvent(eventName, {
@@ -222,6 +221,7 @@ export function trackPageView(path: string): void {
 
 /** One-shot bootstrap used by App. */
 export function initAnalytics(): void {
+  initGa4ConsentDefaults();
   attachAutoTrackers();
 }
 
