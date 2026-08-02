@@ -15,6 +15,7 @@
   <url><loc>https://digitalpenta.com/resources</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://digitalpenta.com/pricing-calculator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://digitalpenta.com/tools</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://digitalpenta.com/proposal-builder</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://digitalpenta.com/tools/seo-audit</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://digitalpenta.com/tools/growth-score</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://digitalpenta.com/tools/ad-copy</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
@@ -227,6 +228,42 @@
   <url><loc>https://digitalpenta.com/industries/finance</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://digitalpenta.com/industries/hospitality</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://digitalpenta.com/industries/saas</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/seo</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/ppc</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/social-media</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/content</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/email</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/influencer</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/video</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/digital-marketing/performance</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/media-relations</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/brand-reputation</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/crisis</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/digital-pr</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/press-release</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/thought-leadership</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/public-relations/event-pr</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/website</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/mobile-app</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/ecommerce</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/web-app</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/cms</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/api</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/development/ui-ux</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/strategy</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/chatbot</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/content-gen</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/predictive</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/computer-vision</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/nlp</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/ai-solutions/marketing</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/marketing</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/workflow</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/crm</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/sales</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/social</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/reporting</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://digitalpenta.com/services/automation/whatsapp</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://digitalpenta.com/lp/seo-agency-bangalore</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://digitalpenta.com/lp/google-ads-agency-delhi</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://digitalpenta.com/lp/whatsapp-marketing-india</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>

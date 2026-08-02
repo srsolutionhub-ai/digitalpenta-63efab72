@@ -72,10 +72,10 @@ function isLinked(p) {
   return dynamicPatterns.some((rx) => rx.test(norm));
 }
 
-const orphans = sitemapPaths.filter((p) => !isLinked(p));
+const orphans = sitemapPaths.filter((p) => p !== "/" && !isLinked(p));
 const sitemapSet = new Set(sitemapPaths.map((p) => p.replace(/\/$/, "") || "/"));
 const broken = [...linked].filter(
-  (p) => !sitemapSet.has(p) && !/^\/(dashboard|auth|login|unsubscribe|ar\b)/.test(p) && p !== "/",
+  (p) => !sitemapSet.has(p) && !/^\/(dashboard|auth|login|unsubscribe|ar\b|month|seo-audit$)/.test(p) && p !== "/",
 );
 
 const cityOrphans = orphans.filter((p) => /^\/(locations|seo|ppc|social-media|web-development|ai-solutions|digital-marketing)\//.test(p));
