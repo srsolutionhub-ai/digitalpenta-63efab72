@@ -1373,50 +1373,103 @@ export type Database = {
           },
         ]
       }
+      newsletter_campaign_recipients: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          email: string
+          error: string | null
+          id: string
+          name: string | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          email: string
+          error?: string | null
+          id?: string
+          name?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          email?: string
+          error?: string | null
+          id?: string
+          name?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_campaign_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_campaigns: {
         Row: {
           audience_filter: Json
+          audience_snapshot: Json
+          audience_type: string
           body_html: string
           body_text: string | null
           created_at: string
           created_by: string | null
           failed_count: number
           id: string
+          metadata: Json
           recipient_count: number
           sent_at: string | null
           sent_count: number
           status: string
           subject: string
+          test_sends: Json
           updated_at: string
         }
         Insert: {
           audience_filter?: Json
+          audience_snapshot?: Json
+          audience_type?: string
           body_html: string
           body_text?: string | null
           created_at?: string
           created_by?: string | null
           failed_count?: number
           id?: string
+          metadata?: Json
           recipient_count?: number
           sent_at?: string | null
           sent_count?: number
           status?: string
           subject: string
+          test_sends?: Json
           updated_at?: string
         }
         Update: {
           audience_filter?: Json
+          audience_snapshot?: Json
+          audience_type?: string
           body_html?: string
           body_text?: string | null
           created_at?: string
           created_by?: string | null
           failed_count?: number
           id?: string
+          metadata?: Json
           recipient_count?: number
           sent_at?: string | null
           sent_count?: number
           status?: string
           subject?: string
+          test_sends?: Json
           updated_at?: string
         }
         Relationships: []
