@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Cookie, Shield } from "lucide-react";
 import { useOverlaySlot } from "@/hooks/useOverlaySlot";
 import { setTrackingConsent } from "@/lib/visitorTracking";
+import { setGa4Consent } from "@/lib/ga4";
 
 const STORAGE_KEY = "cookie_consent_v1";
 
@@ -19,7 +20,8 @@ function getStored(): Prefs | null {
 
 export function applyConsent(prefs: Prefs) {
   (window as any).__consent = prefs;
-  if (prefs.analytics && (window as any).gtag) (window as any).gtag("consent", "update", { analytics_storage: "granted" });
+  // GA4 Consent Mode v2 — loads/blocks the tag to match the visitor's choice
+  setGa4Consent(!!prefs.analytics, !!prefs.marketing);
   // Enables/discards the first-party audience pipeline (visitor_profiles + analytics_events)
   setTrackingConsent(!!prefs.analytics);
 }

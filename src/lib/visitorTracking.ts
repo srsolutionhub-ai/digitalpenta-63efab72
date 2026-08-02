@@ -68,7 +68,7 @@ export function getVisitorId(): string {
   return id;
 }
 
-function getSessionId(): string {
+export function getSessionId(): string {
   try {
     let s = sessionStorage.getItem(SESSION_KEY);
     if (!s) { s = uuid(); sessionStorage.setItem(SESSION_KEY, s); }

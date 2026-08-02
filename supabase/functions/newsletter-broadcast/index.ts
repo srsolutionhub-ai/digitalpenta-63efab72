@@ -33,7 +33,8 @@ Deno.serve(async (req) => {
     const allowed = (roles ?? []).some((r: any) => r.role === "super_admin" || r.role === "content_writer");
     if (!allowed) return json({ error: "forbidden" }, 403);
 
-    const { subject, bodyHtml, audience } = await req.json().catch(() => ({}));
+    const { subject, bodyHtml, audience, audienceSnapshot, metadata, campaignId } =
+      await req.json().catch(() => ({}));
     if (!subject || !bodyHtml) return json({ error: "subject + bodyHtml required" }, 400);
 
     let subQ = admin.from("newsletter_subscribers").select("email,name,unsub_token").is("unsubscribed_at", null);
@@ -42,20 +43,63 @@ Deno.serve(async (req) => {
     if (subErr) return json({ error: subErr.message }, 500);
     const recipients = subs ?? [];
 
-    // Create campaign row
-    const { data: campaign } = await admin
-      .from("newsletter_campaigns")
-      .insert({
-        subject, body_html: bodyHtml,
-        audience_filter: { type: audience },
-        status: "sending",
-        recipient_count: recipients.length,
-        created_by: userData.user.id,
-      })
-      .select().single();
+    // Campaign row — either promote an existing draft or create a new record,
+    // always persisting the audience selection + metadata for later auditing.
+    const campaignFields = {
+      subject,
+      body_html: bodyHtml,
+      audience_filter: { type: audience, ...(audienceSnapshot ?? {}) },
+      audience_type: audience ?? "all",
+      audience_snapshot: {
+        type: audience ?? "all",
+        selected_at: new Date().toISOString(),
+        selected_count: recipients.length,
+        ...(audienceSnapshot ?? {}),
+      },
+      metadata: { ...(metadata ?? {}), sent_by: userData.user.email ?? userData.user.id },
+      status: "sending",
+      recipient_count: recipients.length,
+      created_by: userData.user.id,
+    };
+
+    let campaign: { id: string } | null = null;
+    if (campaignId) {
+      const { data } = await admin
+        .from("newsletter_campaigns")
+        .update(campaignFields)
+        .eq("id", campaignId)
+        .select("id")
+        .single();
+      campaign = data;
+    }
+    if (!campaign) {
+      const { data } = await admin
+        .from("newsletter_campaigns")
+        .insert(campaignFields)
+        .select("id")
+        .single();
+      campaign = data;
+    }
+
+    // Per-recipient audit trail
+    if (campaign?.id && recipients.length) {
+      const rows = recipients.map((r: any) => ({
+        campaign_id: campaign!.id,
+        email: r.email,
+        name: r.name ?? null,
+        status: "queued",
+      }));
+      for (let i = 0; i < rows.length; i += 500) {
+        const { error: rErr } = await admin
+          .from("newsletter_campaign_recipients")
+          .insert(rows.slice(i, i + 500));
+        if (rErr) console.error("recipient log insert", rErr.message);
+      }
+    }
 
     let sent = 0, failed = 0;
     for (const r of recipients) {
+      let ok = false, errText: string | null = null;
       try {
         const resp = await admin.functions.invoke("send-email", {
           body: {
@@ -69,10 +113,24 @@ Deno.serve(async (req) => {
             },
           },
         });
-        if (resp.error) failed++; else sent++;
+        if (resp.error) { failed++; errText = String(resp.error.message ?? resp.error); }
+        else { sent++; ok = true; }
       } catch (e) {
         console.error("send failed", r.email, e);
         failed++;
+        errText = e instanceof Error ? e.message : "send failed";
+      }
+
+      if (campaign?.id) {
+        await admin
+          .from("newsletter_campaign_recipients")
+          .update({
+            status: ok ? "sent" : "failed",
+            error: errText,
+            sent_at: new Date().toISOString(),
+          })
+          .eq("campaign_id", campaign.id)
+          .eq("email", r.email);
       }
     }
 
@@ -81,7 +139,7 @@ Deno.serve(async (req) => {
       .update({ status: "sent", sent_count: sent, failed_count: failed, sent_at: new Date().toISOString() })
       .eq("id", campaign?.id);
 
-    return json({ ok: true, sent, failed, total: recipients.length });
+    return json({ ok: true, campaignId: campaign?.id ?? null, sent, failed, total: recipients.length });
   } catch (e) {
     console.error("newsletter-broadcast error", e);
     return json({ error: e instanceof Error ? e.message : "internal error" }, 500);

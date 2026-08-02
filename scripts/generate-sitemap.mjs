@@ -16,7 +16,6 @@ import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
 const SITE = "https://digitalpenta.com";
-const TODAY = new Date().toISOString().slice(0, 10);
 
 // --- Lightweight TS source loader ---------------------------------------
 // We import the matrix data files directly. To avoid pulling in a TS toolchain
@@ -65,7 +64,9 @@ for (const block of intentBlocks) {
 // --- URL plan -----------------------------------------------------------
 const urls = [];
 function add(loc, priority = "0.6", changefreq = "weekly") {
-  urls.push({ loc: `${SITE}${loc}`, priority, changefreq, lastmod: TODAY });
+  // No <lastmod>: we have no authoritative per-page change timestamp, and a
+  // build-time date would be a false signal that Google learns to ignore.
+  urls.push({ loc: `${SITE}${loc}`, priority, changefreq });
 }
 
 // Static
@@ -85,6 +86,7 @@ function add(loc, priority = "0.6", changefreq = "weekly") {
   ["/resources", "0.7"],
   ["/pricing-calculator", "0.8"],
   ["/tools", "0.8"],
+  ["/proposal-builder", "0.8"],
   ["/tools/seo-audit", "0.8"],
   ["/tools/growth-score", "0.8"],
   ["/tools/ad-copy", "0.8"],
@@ -138,12 +140,9 @@ for (const slug of industrySlugs) add(`/industries/${slug}`, "0.75");
 // Sub-service pages — /services/:category/:subService
 const subSrc = path.join(ROOT, "src/data/subServiceData.ts");
 const subText = fs.readFileSync(subSrc, "utf8");
-const subBlocks = subText.split(/\{\s*slug:\s*"/).slice(1);
-for (const block of subBlocks) {
-  const slugMatch = block.match(/^([a-z0-9-]+)"/);
-  const catMatch = block.match(/category:\s*"([a-z-]+)"/);
-  if (slugMatch && catMatch) add(`/services/${catMatch[1]}/${slugMatch[1]}`, "0.75");
-}
+// Records are shaped `{ category: "…", slug: "…" }` — pair them in order.
+const subPairs = [...subText.matchAll(/category:\s*"([a-z-]+)",\s*\n\s*slug:\s*"([a-z0-9-]+)"/g)];
+for (const [, cat, slug] of subPairs) add(`/services/${cat}/${slug}`, "0.75");
 
 // Keyword landing pages — /lp/:keyword
 const kwSrc = path.join(ROOT, "src/data/keywordLandingData.ts");
@@ -162,7 +161,7 @@ const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...urls.map(u =>
-    `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+    `  <url><loc>${u.loc}</loc><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
   ),
   "</urlset>",
   "",
