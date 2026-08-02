@@ -48,12 +48,17 @@ const dynamicPatterns = [];
 
 for (const file of files) {
   const src = fs.readFileSync(file, "utf8");
-  for (const m of src.matchAll(/(?:to|href)=(?:"|'|\{")(\/[^"'`{}\s]*)(?:"|')/g)) {
+
+  // Plain internal paths in JSX props, data files and link arrays:
+  //   to="/about"   href: "/seo/delhi"   url: "/locations/pune"
+  for (const m of src.matchAll(/["'](\/[a-z0-9][a-z0-9\-/]*)["']/gi)) {
     linked.add(m[1].split("#")[0].replace(/\/$/, "") || "/");
   }
-  // Template-literal routes: `/${x}/${y}` or `/locations/${slug}`
-  for (const m of src.matchAll(/(?:to|href)=\{`(\/[^`]*)`\}/g)) {
+
+  // Template-literal routes: `/${svc.slug}/${city.slug}` → pattern match
+  for (const m of src.matchAll(/`(\/[^`]*\$\{[^`]*)`/g)) {
     const tpl = m[1];
+    if (/\s/.test(tpl)) continue;
     const rx = new RegExp(
       "^" + tpl.replace(/\$\{[^}]+\}/g, "[^/]+").replace(/\//g, "\\/") + "$",
     );
