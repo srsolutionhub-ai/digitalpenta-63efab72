@@ -3,7 +3,7 @@
  * Streams replies via the `penta-ai-chat` edge function.
  * Persists session_id in localStorage so a returning visitor resumes the same thread.
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MessageCircle, X, Send, Sparkles, Loader2, Volume2, Square } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
@@ -257,6 +257,13 @@ export default function PentaAiChat() {
       setPlayingIdx(null);
     }
   }, [playingIdx]);
+  const activeOverlay = useSyncExternalStore(
+    (cb) => overlayBus.subscribe(cb),
+    () => overlayBus.active(),
+    () => null,
+  );
+  const cookieBannerActive = activeOverlay === "cookie-consent";
+
 
   return (
     <>
@@ -269,7 +276,8 @@ export default function PentaAiChat() {
         }}
         aria-label={open ? "Close Penta AI chat" : "Open Penta AI chat"}
         aria-expanded={open}
-        className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] lg:bottom-6 right-4 lg:right-5 z-[60] flex items-center gap-2 rounded-full pl-3 pr-4 py-3 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[0_20px_60px_-15px_hsl(256_90%_45%/0.7)] hover:shadow-[0_24px_70px_-12px_hsl(256_90%_45%/0.9)] hover:scale-[1.03] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] lg:bottom-6 right-4 lg:right-5 z-[60] flex items-center gap-2 rounded-full pl-3 pr-4 py-3 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[0_20px_60px_-15px_hsl(256_90%_45%/0.7)] hover:shadow-[0_24px_70px_-12px_hsl(256_90%_45%/0.9)] hover:scale-[1.03] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[suppressed=true]:pointer-events-none data-[suppressed=true]:opacity-0 data-[suppressed=true]:translate-y-3"
+        data-suppressed={!open && cookieBannerActive}
       >
         {open ? (
           <X className="w-5 h-5" aria-hidden />
