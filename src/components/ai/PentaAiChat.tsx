@@ -257,6 +257,8 @@ export default function PentaAiChat() {
       setPlayingIdx(null);
     }
   }, [playingIdx]);
+  const cookieBannerActive = !overlayBus.isCookieResolved() && overlayBus.isActive("cookie-consent");
+
 
   return (
     <>
