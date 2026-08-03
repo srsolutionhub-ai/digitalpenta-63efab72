@@ -3,7 +3,7 @@
  * Streams replies via the `penta-ai-chat` edge function.
  * Persists session_id in localStorage so a returning visitor resumes the same thread.
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MessageCircle, X, Send, Sparkles, Loader2, Volume2, Square } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
