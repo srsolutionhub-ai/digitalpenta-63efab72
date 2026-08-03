@@ -61,7 +61,7 @@ export default function CookiePreferenceModal() {
     <>
       {bannerVisible && (
         <div
-          className="fixed z-[60] bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-[640px] motion-safe:animate-[slideUpFade_.5s_cubic-bezier(.16,1,.3,1)_both]"
+          className="fixed z-[80] bottom-[calc(68px+env(safe-area-inset-bottom))] lg:bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-[640px] motion-safe:animate-[slideUpFade_.5s_cubic-bezier(.16,1,.3,1)_both]"
           role="dialog"
           aria-label="Cookie preferences"
         >
