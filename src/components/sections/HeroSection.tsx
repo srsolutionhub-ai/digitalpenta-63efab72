@@ -154,7 +154,14 @@ export default function HeroSection() {
           >
             <span className="block text-foreground">{hero.h1Top}</span>
             <span className="block text-gradient-hero">{hero.h1Bottom}</span>
+            <span
+              className="block mt-3 font-display font-semibold tracking-tight text-muted-foreground"
+              style={{ fontSize: "clamp(0.95rem, 1.9vw, 1.5rem)" }}
+            >
+              Digital Marketing Agency in Delhi, India
+            </span>
           </motion.h1>
+
 
           {/* Sub-headline */}
           <motion.p
