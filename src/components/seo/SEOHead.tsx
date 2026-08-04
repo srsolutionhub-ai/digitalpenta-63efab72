@@ -13,6 +13,15 @@ export interface HreflangAlternate {
   href: string;              // absolute URL
 }
 
+export interface GeoTags {
+  /** ISO 3166-2 region code, e.g. "IN-DL", "AE-DU" */
+  region: string;
+  /** Human-readable place, e.g. "New Delhi" */
+  placename: string;
+  latitude: string;
+  longitude: string;
+}
+
 export interface SEOHeadProps {
   title: string;             // <60 chars
   description: string;       // <160 chars
@@ -24,7 +33,10 @@ export interface SEOHeadProps {
   schemas?: Record<string, unknown>[];      // JSON-LD blocks
   arabicTitle?: string;     // optional bilingual title for MENA pages
   arabicDescription?: string;
+  /** Local-SEO geo meta tags (geo.region / geo.placename / geo.position / ICBM) */
+  geo?: GeoTags;
 }
+
 
 const SEO_MARKER = "data-seo";
 
@@ -65,7 +77,9 @@ export default function SEOHead({
   schemas,
   arabicTitle,
   arabicDescription,
+  geo,
 }: SEOHeadProps) {
+
   useEffect(() => {
     // Title
     document.title = title;
@@ -100,8 +114,30 @@ export default function SEOHead({
       setMeta('meta[name="description:ar"]', "name", "description:ar", arabicDescription);
     }
 
+    // Local-SEO geo meta — helps Google/Bing tie a city page to its physical area
+    // for "<service> in <city>" and IP/region-based local queries.
+    document.head
+      .querySelectorAll(`meta[${SEO_MARKER}="geo"]`)
+      .forEach((n) => n.remove());
+    if (geo) {
+      const geoTags: [string, string][] = [
+        ["geo.region", geo.region],
+        ["geo.placename", geo.placename],
+        ["geo.position", `${geo.latitude};${geo.longitude}`],
+        ["ICBM", `${geo.latitude}, ${geo.longitude}`],
+      ];
+      geoTags.forEach(([name, content]) => {
+        const el = document.createElement("meta");
+        el.setAttribute("name", name);
+        el.setAttribute("content", content);
+        el.setAttribute(SEO_MARKER, "geo");
+        document.head.appendChild(el);
+      });
+    }
+
     // Canonical
     setLink("canonical", canonical);
+
 
     // Hreflang alternates — clear old then re-add to prevent stale entries
     document.head.querySelectorAll(`link[rel="alternate"][hreflang][${SEO_MARKER}]`).forEach(n => n.remove());
@@ -122,15 +158,17 @@ export default function SEOHead({
     }
 
     return () => {
-      // Cleanup page-scoped schemas + hreflang alternates on unmount.
+      // Cleanup page-scoped schemas, hreflang alternates and geo meta on unmount.
       document.head.querySelectorAll(`script[type="application/ld+json"][${SEO_MARKER}="page"]`).forEach(n => n.remove());
       document.head.querySelectorAll(`link[rel="alternate"][hreflang][${SEO_MARKER}]`).forEach(n => n.remove());
+      document.head.querySelectorAll(`meta[${SEO_MARKER}="geo"]`).forEach(n => n.remove());
     };
   }, [
     title, description, canonical, ogImage, ogType, noindex,
     JSON.stringify(hreflangs), JSON.stringify(schemas),
-    arabicTitle, arabicDescription,
+    arabicTitle, arabicDescription, JSON.stringify(geo),
   ]);
+
 
   return null;
 }
@@ -785,3 +823,118 @@ export function serviceOfferCatalogSchema(opts: {
 
 
 
+/* ────────────── Local SERP + AI Overview (AEO/GEO) helpers ────────────── */
+
+/**
+ * Place schema with a geo service radius. Google uses `areaServed` +
+ * `GeoCircle` to decide whether a page qualifies for city-level and
+ * IP/region-based local queries such as "digital marketing agency near me"
+ * or "SEO company in <city>".
+ */
+export function cityPlaceSchema(opts: {
+  city: string;
+  country: string;
+  url: string;
+  latitude: string;
+  longitude: string;
+  /** service radius in metres — defaults to 50 km metro coverage */
+  radius?: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    "@id": `${opts.url}#place`,
+    name: `${opts.city}, ${opts.country}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: opts.city,
+      addressCountry: opts.country,
+    },
+    geo: {
+      "@type": "GeoCircle",
+      geoMidpoint: {
+        "@type": "GeoCoordinates",
+        latitude: opts.latitude,
+        longitude: opts.longitude,
+      },
+      geoRadius: String(opts.radius ?? 50000),
+    },
+    containedInPlace: { "@type": "Country", name: opts.country },
+  };
+}
+
+/**
+ * WebPage schema with `speakable` + `primaryImageOfPage` + `about` entity ref.
+ * This is the block AI Overviews, ChatGPT Search, Perplexity and voice
+ * assistants read to extract a direct answer and attribute it to the brand.
+ */
+export function answerPageSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  /** short, factual answer sentence — what AI engines quote */
+  answer: string;
+  about?: string;
+  inLanguage?: string;
+  datePublished?: string;
+  dateModified?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${opts.url}#webpage`,
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    inLanguage: opts.inLanguage ?? "en",
+    isPartOf: { "@id": "https://digitalpenta.com/#organization" },
+    about: {
+      "@type": "Thing",
+      name: opts.about ?? "Digital Marketing Agency Services",
+    },
+    publisher: { "@id": "https://digitalpenta.com/#organization" },
+    datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
+    mainEntity: {
+      "@type": "Question",
+      name: opts.name,
+      acceptedAnswer: { "@type": "Answer", text: opts.answer },
+    },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "[data-speakable]"],
+    },
+  };
+}
+
+/**
+ * CollectionPage + ItemList for hub pages (e.g. /locations). Gives Google a
+ * single crawlable index of every city page, which is what makes individual
+ * city URLs surface for "<service> in <city>" queries instead of the homepage.
+ */
+export function collectionPageSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  items: { name: string; url: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${opts.url}#collection`,
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    isPartOf: { "@id": "https://digitalpenta.com/#organization" },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: opts.items.length,
+      itemListElement: opts.items.map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: it.name,
+        url: it.url,
+      })),
+    },
+  };
+}

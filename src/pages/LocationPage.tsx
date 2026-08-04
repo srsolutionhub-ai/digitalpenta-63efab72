@@ -11,13 +11,15 @@ import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
   breadcrumbSchema, faqPageSchema, localBusinessSchema, reviewedItemSchema,
-  serviceWithAreaSchema,
+  serviceWithAreaSchema, cityPlaceSchema, answerPageSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import CitySeoContent from "@/components/seo/CitySeoContent";
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
 import { LOCATION_REVIEWS } from "@/data/customerReviews";
+import { getGeoRegion } from "@/data/geoRegions";
+
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -81,10 +83,27 @@ export default function LocationPage() {
     }),
     breadcrumbSchema([
       { name: "Home", url: "https://digitalpenta.com/" },
-      { name: "Locations", url: "https://digitalpenta.com/#locations" },
-      { name: data.city, url: canonical },
+      { name: "Locations", url: "https://digitalpenta.com/locations" },
+      { name: `Digital Marketing Agency in ${data.city}`, url: canonical },
     ]),
+    cityPlaceSchema({
+      city: data.city,
+      country: data.country,
+      url: canonical,
+      latitude: data.schema.latitude,
+      longitude: data.schema.longitude,
+    }),
+    answerPageSchema({
+      name: `Which is the best digital marketing agency in ${data.city}?`,
+      description: data.metaDescription,
+      url: canonical,
+      answer: `Digital Penta is a digital marketing agency serving ${data.city}, ${data.country}, offering ${data.services
+        .slice(0, 5)
+        .join(", ")}. The ${data.city} team runs local keyword research, Google Business Profile optimisation and competitor tracking, and can be reached on ${data.phone}.`,
+      about: `Digital marketing agency in ${data.city}`,
+    }),
   ];
+
   // Service+areaServed — required for local SERP ranking on "<service> in <city>" queries.
   schemas.push(
     serviceWithAreaSchema({
@@ -125,6 +144,12 @@ export default function LocationPage() {
         schemas={schemas}
         arabicTitle={data.metaTitleAr}
         arabicDescription={data.metaDescriptionAr}
+        geo={{
+          region: getGeoRegion(data.slug, data.country),
+          placename: data.city,
+          latitude: data.schema.latitude,
+          longitude: data.schema.longitude,
+        }}
       />
 
       {/* Breadcrumb */}
@@ -135,11 +160,12 @@ export default function LocationPage() {
             aria-label="Breadcrumb"
           >
             <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-muted-foreground">Locations</span>
-            <ChevronRight className="w-3 h-3" />
+            <ChevronRight className="w-3 h-3" aria-hidden="true" />
+            <Link to="/locations" className="hover:text-foreground transition-colors">Locations</Link>
+            <ChevronRight className="w-3 h-3" aria-hidden="true" />
             <span className="text-foreground">{data.city}</span>
           </nav>
+
         </div>
       </div>
 
@@ -183,9 +209,24 @@ export default function LocationPage() {
               {data.tagline}
             </p>
 
+            {/* Direct-answer block: first 40-60 words answer the local query in
+                plain text so AI Overviews, ChatGPT Search and voice assistants can
+                quote it and attribute it to this city URL. */}
+            <p
+              data-speakable
+              className="text-foreground/90 text-lg leading-relaxed max-w-2xl mb-5 border-l-2 border-primary/40 pl-4"
+            >
+              Digital Penta is a digital marketing agency serving {data.city}, {data.country}.
+              We deliver {data.services.slice(0, 4).join(", ")} for {data.industries.slice(0, 3).join(", ")}{" "}
+              businesses across {data.city} — with local keyword research, Google Business Profile
+              optimisation and transparent monthly reporting. Call {data.phone} for a free {data.city} audit.
+            </p>
+
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mb-8">
               {data.description}
             </p>
+
+
 
 
             <div className="flex flex-wrap gap-3">

@@ -122,9 +122,12 @@ const locationSlugs = [...locationText.matchAll(/slug:\s*"([a-z-]+)"/g)]
   .map(m => m[1])
   // dedupe (multiple slug:"..." per record, we want unique top-level entries)
   .filter((v, i, arr) => arr.indexOf(v) === i);
+// Locations hub — the crawlable index that links every city page.
+add(`/locations`, "0.9");
 for (const slug of locationSlugs) {
   add(`/locations/${slug}`, "0.85");
 }
+
 // Arabic mirrors for Middle-East cities
 for (const slug of ["dubai", "abu-dhabi", "riyadh", "doha", "bahrain"]) {
   add(`/ar/locations/${slug}`, "0.7");

@@ -24,7 +24,9 @@ const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 const IndustryPage = lazy(() => import("./pages/IndustryPage"));
 const LocationPage = lazy(() => import("./pages/LocationPage"));
+const LocationsHub = lazy(() => import("./pages/LocationsHub"));
 const LocationPageAr = lazy(() => import("./pages/LocationPageAr"));
+
 const KeywordLandingPage = lazy(() => import("./pages/KeywordLandingPage"));
 const MatrixPage = lazy(() => import("./pages/MatrixPage"));
 const HomeAr = lazy(() => import("./pages/HomeAr"));
@@ -128,7 +130,9 @@ function AnimatedRoutes() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/industries/:industry" element={<IndustryPage />} />
+            <Route path="/locations" element={<LocationsHub />} />
             <Route path="/locations/:location" element={<LocationPage />} />
+
             <Route path="/ar" element={<HomeAr />} />
             <Route path="/ar/locations/:location" element={<LocationPageAr />} />
             <Route path="/lp/:keyword" element={<KeywordLandingPage />} />
