@@ -317,8 +317,12 @@ export default function ServiceCategory() {
             </nav>
             <span className={`text-xs font-mono uppercase tracking-widest ${data.accentClass}`}>{data.title}</span>
             <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-foreground mt-4 mb-6">
-              {data.tagline.split(".")[0]}. <span className="text-gradient">{data.tagline.split(".")[1]?.trim() || ""}</span>
+              {data.title} Services
+              <span className="block text-gradient text-2xl md:text-3xl lg:text-4xl mt-3 font-semibold">
+                {data.tagline}
+              </span>
             </h1>
+
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">{data.description}</p>
             <div className="mt-6">
               <VoicePlayerButton
