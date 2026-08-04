@@ -118,14 +118,27 @@ export default function Portfolio() {
       </section>
 
       {/* ── Portfolio Grid ── */}
-      <section className="pb-24">
+      <section className="pb-24" aria-labelledby="project-showcase-heading">
         <div className="container mx-auto px-4">
+          <h2
+            id="project-showcase-heading"
+            className="font-display font-bold text-2xl md:text-3xl text-foreground mb-3"
+          >
+            Client Project Showcase — Marketing, PR, Development, AI &amp; Automation
+          </h2>
+          <p className="text-muted-foreground text-sm max-w-2xl mb-8">
+            Filter our case studies by discipline to see the campaigns, builds and automations
+            behind each result.
+          </p>
           <div className="flex items-center justify-between mb-10">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter case studies by service category">
               {categories.map((c) => (
                 <button
                   key={c}
+                  type="button"
                   onClick={() => setActive(c)}
+                  aria-pressed={active === c}
+                  aria-label={c === "All" ? "Show all case studies" : `Show ${c} case studies`}
                   className={`px-5 py-2 rounded-full text-sm font-display font-medium transition-all border ${
                     active === c
                       ? "bg-primary/10 border-primary/30 text-foreground"
@@ -137,15 +150,16 @@ export default function Portfolio() {
               ))}
             </div>
             {/* View toggle */}
-            <div className="hidden md:flex items-center gap-1 p-1 rounded-lg bg-secondary/30 border border-border/30">
-              <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-primary/10 text-foreground" : "text-muted-foreground"}`}>
-                <LayoutGrid className="w-4 h-4" />
+            <div className="hidden md:flex items-center gap-1 p-1 rounded-lg bg-secondary/30 border border-border/30" role="group" aria-label="Change portfolio layout">
+              <button type="button" onClick={() => setViewMode("grid")} aria-label="Grid view" aria-pressed={viewMode === "grid"} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-primary/10 text-foreground" : "text-muted-foreground"}`}>
+                <LayoutGrid className="w-4 h-4" aria-hidden="true" />
               </button>
-              <button onClick={() => setViewMode("gallery")} className={`p-1.5 rounded ${viewMode === "gallery" ? "bg-primary/10 text-foreground" : "text-muted-foreground"}`}>
-                <GalleryHorizontal className="w-4 h-4" />
+              <button type="button" onClick={() => setViewMode("gallery")} aria-label="Gallery view" aria-pressed={viewMode === "gallery"} className={`p-1.5 rounded ${viewMode === "gallery" ? "bg-primary/10 text-foreground" : "text-muted-foreground"}`}>
+                <GalleryHorizontal className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
           </div>
+
 
           {viewMode === "gallery" ? (
             /* Gallery: horizontal scroll */

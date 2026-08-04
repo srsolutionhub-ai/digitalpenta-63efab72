@@ -1,9 +1,22 @@
 import Layout from "@/components/layout/Layout";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 export default function Terms() {
   return (
     <Layout>
+      <SEOHead
+        title="Terms of Service | Digital Penta"
+        description="The terms governing Digital Penta engagements — services, payment terms, intellectual property, confidentiality, liability limits and governing law in India."
+        canonical="https://digitalpenta.com/terms"
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Terms of Service", url: "https://digitalpenta.com/terms" },
+          ]),
+        ]}
+      />
       <section className="pt-32 pb-20">
+
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h1 className="font-display font-extrabold text-4xl md:text-5xl text-foreground mb-8">

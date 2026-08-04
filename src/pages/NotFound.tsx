@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Search, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import SEOHead from "@/components/seo/SEOHead";
+
 
 const popularLinks = [
   { label: "Digital Marketing", href: "/services/digital-marketing" },
@@ -21,8 +23,15 @@ const NotFound = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title="Page Not Found (404) | Digital Penta"
+        description="This Digital Penta page doesn't exist or has moved. Jump to our digital marketing, AI, PR and development services, portfolio or contact page instead."
+        canonical="https://digitalpenta.com/404"
+        noindex
+      />
       <section className="pt-32 pb-20 min-h-[80vh] flex items-center relative">
         <div className="absolute inset-0 mesh-gradient opacity-40" />
+
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1
             className="font-display font-extrabold text-gradient leading-none mb-6"

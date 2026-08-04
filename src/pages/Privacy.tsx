@@ -1,9 +1,22 @@
 import Layout from "@/components/layout/Layout";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 export default function Privacy() {
   return (
     <Layout>
+      <SEOHead
+        title="Privacy Policy | Digital Penta"
+        description="How Digital Penta collects, uses, stores and protects your personal data — cookies, marketing consent, and your GDPR & India DPDP Act rights explained."
+        canonical="https://digitalpenta.com/privacy"
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Privacy Policy", url: "https://digitalpenta.com/privacy" },
+          ]),
+        ]}
+      />
       <section className="pt-32 pb-20">
+
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h1 className="font-display font-extrabold text-4xl md:text-5xl text-foreground mb-8">

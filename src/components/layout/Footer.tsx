@@ -258,7 +258,15 @@ export default function Footer() {
                 {c.label}
               </Link>
             ))}
+            <Link
+              to="/locations"
+              className="text-primary hover:text-foreground transition-colors truncate font-medium"
+              title="All Digital Penta agency locations"
+            >
+              All locations →
+            </Link>
           </div>
+
         </div>
       </div>
 

@@ -11,9 +11,10 @@ import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/
 
 const offices = [
   { city: "Delhi, India (HQ)", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇮🇳" },
-  { city: "Dubai, UAE", phone: "+971 4 567 8901", email: "dubai@digitalpenta.com", flag: "🇦🇪" },
-  { city: "Riyadh, KSA", phone: "+966 11 567 8902", email: "ksa@digitalpenta.com", flag: "🇸🇦" },
+  { city: "Dubai, UAE", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇦🇪" },
+  { city: "Riyadh, KSA", phone: "+91-88601-00039", email: "support@digitalpenta.com", flag: "🇸🇦" },
 ];
+
 
 const services = [
   "Digital Marketing",
