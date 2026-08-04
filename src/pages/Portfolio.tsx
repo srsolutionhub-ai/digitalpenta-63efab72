@@ -107,8 +107,9 @@ export default function Portfolio() {
           >
             <span className="text-xs font-mono text-primary uppercase tracking-widest">Portfolio</span>
             <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mt-4 mb-4">
-              Our <span className="text-gradient">Work</span>
+              Portfolio &amp; <span className="text-gradient">Case Studies</span> of Digital Penta
             </h1>
+
             <p className="text-muted-foreground text-lg max-w-xl">
               Real results for real brands. Explore how we've driven growth across industries and markets in India & Middle East.
             </p>
