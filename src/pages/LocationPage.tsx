@@ -16,6 +16,8 @@ import SEOHead, {
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import CitySeoContent from "@/components/seo/CitySeoContent";
+import CityDepthSection from "@/components/seo/CityDepthSection";
+
 import { getNearbyLocations, getLocationFeaturedServices } from "@/data/internalLinks";
 import { LOCATION_REVIEWS } from "@/data/customerReviews";
 import { getGeoRegion } from "@/data/geoRegions";
@@ -489,6 +491,9 @@ export default function LocationPage() {
         industries={data.industries}
         services={data.services}
       />
+
+      <CityDepthSection citySlug={data.slug} city={data.city} />
+
 
       {/* Map */}
       <section className="pb-20">

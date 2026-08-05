@@ -102,16 +102,16 @@ function add(loc, priority = "0.6", changefreq = "weekly") {
 ["digital-marketing", "public-relations", "development", "ai-solutions", "automation"]
   .forEach(s => add(`/services/${s}`, "0.9"));
 
-// City × Service matrix
+// City × Service matrix.
+// Intent-tier URLs (/:service/:city/:intent) are intentionally excluded: they
+// canonicalise to the parent city page, so advertising them here would ask
+// Google to crawl ~150 URLs that consolidate elsewhere.
 for (const svc of services) {
   for (const city of cities) {
     add(`/${svc}/${city}`, "0.8");
-    for (const it of intents) {
-      if (it.appliesTo && !it.appliesTo.includes(svc)) continue;
-      add(`/${svc}/${city}/${it.slug}`, "0.7");
-    }
   }
 }
+
 
 // Locations — read full set directly from locationData.ts so we include
 // every location page (not only the 5 in the matrix). Without this the

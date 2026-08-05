@@ -54,16 +54,19 @@ const industries: { label: string; href: string }[] = [
   { label: "Hospitality", href: "/industries/hospitality" },
 ];
 
+// Keyword-anchored links to the priority (highest-impression) city pages —
+// concentrates homepage authority on the URLs we're trying to move up in SERP.
 const featured: { label: string; href: string; sub: string }[] = [
-  { label: "SEO Agency in Bangalore", sub: "Drive organic growth", href: "/lp/seo-agency-bangalore" },
-  { label: "Google Ads Agency Delhi", sub: "Lower CPL, higher ROAS", href: "/lp/google-ads-agency-delhi" },
-  { label: "WhatsApp Marketing India", sub: "Conversational commerce", href: "/lp/whatsapp-marketing-india" },
-  { label: "SEO Agency Dubai", sub: "Rank in UAE & GCC", href: "/lp/seo-agency-dubai" },
-  { label: "SEO × Delhi", sub: "Local SEO matrix", href: "/seo/delhi" },
-  { label: "PPC × Mumbai", sub: "Mumbai paid search", href: "/ppc/mumbai" },
-  { label: "Social Media × Bangalore", sub: "Bangalore social", href: "/social-media/bangalore" },
-  { label: "B2B SaaS Marketing", sub: "Pipeline-led SaaS growth", href: "/lp/b2b-saas-marketing-agency-india" },
+  { label: "Digital Marketing Agency in Mumbai", sub: "BFSI, D2C & real estate", href: "/locations/mumbai" },
+  { label: "Digital Marketing Agency in Bangalore", sub: "B2B SaaS & tech pipeline", href: "/locations/bangalore" },
+  { label: "Digital Marketing Agency in Lucknow", sub: "Local-pack led growth", href: "/locations/lucknow" },
+  { label: "Digital Marketing Agency in Gurgaon", sub: "GCCs & premium property", href: "/locations/gurgaon" },
+  { label: "Digital Marketing Agency in Abu Dhabi", sub: "Bilingual EN + AR", href: "/locations/abu-dhabi" },
+  { label: "Digital Marketing Agency in Hyderabad", sub: "Pharma & tech corridor", href: "/locations/hyderabad" },
+  { label: "PPC Company in Mumbai", sub: "Mumbai paid search", href: "/ppc/mumbai" },
+  { label: "SEO Company in Delhi", sub: "NCR local SEO", href: "/seo/delhi" },
 ];
+
 
 function Column({
   icon: Icon,
