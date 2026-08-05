@@ -72,9 +72,14 @@ export default function MatrixPage() {
   const { service: svc, city: cty, faqs: baseFaqs } = basePage;
 
   // Compose intent-aware content. Falls back to base copy when no intent.
-  const canonical = intent
-    ? `https://digitalpenta.com/${svc.slug}/${cty.slug}/${intent.slug}`
-    : basePage.canonical;
+  //
+  // Authority consolidation (GSC recovery): the intent tier
+  // (/:service/:city/:intent) earned impressions but almost no clicks and split
+  // link equity across ~150 near-duplicate URLs. Intent pages stay live and
+  // useful for visitors, but they now canonicalise to — and are indexed as —
+  // the parent city page so all ranking signals land on one strong URL.
+  const parentUrl = basePage.canonical;
+  const canonical = parentUrl;
   const metaTitle = intent
     ? `${svc.name} ${intent.label} in ${cty.city} | Digital Penta`
     : basePage.metaTitle;
@@ -87,6 +92,7 @@ export default function MatrixPage() {
   const heroSubhead = intent
     ? `${svc.longName} for the ${cty.city} ${intent.intentNoun} market. ${intent.angle} ${cty.marketAngle}`
     : basePage.heroSubhead;
+  const depthFaqs = intent ? [] : (getCityDepth(cty.slug)?.faqs ?? []);
   const faqs = intent
     ? [
         {
@@ -95,7 +101,8 @@ export default function MatrixPage() {
         },
         ...baseFaqs,
       ]
-    : baseFaqs;
+    : [...baseFaqs, ...depthFaqs];
+
 
   const hreflangs: HreflangAlternate[] = [
     { hreflang: "x-default", href: canonical },
