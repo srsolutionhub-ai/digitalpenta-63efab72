@@ -303,6 +303,10 @@ export default function MatrixPage() {
         services={[svc.name, "SEO", "Google Ads", "Social Media Marketing", "Web Development", "AI Automation"]}
       />
 
+      {/* Hand-written market depth for priority (high-impression) cities */}
+      {!intent && <CityDepthSection citySlug={cty.slug} city={cty.city} />}
+
+
       {/* Related links */}
 
       {nearby.length > 0 && (
