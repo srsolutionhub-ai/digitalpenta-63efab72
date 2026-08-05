@@ -490,6 +490,9 @@ export default function LocationPage() {
         services={data.services}
       />
 
+      <CityDepthSection citySlug={data.slug} city={data.city} />
+
+
       {/* Map */}
       <section className="pb-20">
         <div className="container mx-auto px-4">
