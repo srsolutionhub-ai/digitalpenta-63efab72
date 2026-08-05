@@ -15,6 +15,8 @@ import SEOHead, {
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import CitySeoContent from "@/components/seo/CitySeoContent";
 import CityDepthSection from "@/components/seo/CityDepthSection";
+import { getCityDepth } from "@/data/cityDepth";
+
 
 import { getMatrixPage } from "@/data/matrixData";
 import { getIntentDef, intentAppliesToService } from "@/data/matrixIntents";
