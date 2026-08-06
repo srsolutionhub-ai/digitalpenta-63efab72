@@ -50,7 +50,7 @@ export default function useSmoothScroll() {
     return () => {
       disposed = true;
       if (rafId) cancelAnimationFrame(rafId);
-      if ("cancelIdleCallback" in window) (window as any).cancelIdleCallback(handle);
+      if (typeof w.cancelIdleCallback === "function") w.cancelIdleCallback(handle);
       else clearTimeout(handle);
       lenisInstance?.destroy();
       lenisInstance = null;
