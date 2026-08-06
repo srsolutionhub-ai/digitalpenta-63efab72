@@ -10,8 +10,8 @@ import Index from "./pages/Index";
 import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { initAnalytics, trackPageView } from "@/lib/analytics";
-import { initVisitorTracking } from "@/lib/visitorTracking";
+// Analytics + first-party tracking are dynamically imported (see AppShell) so
+// they stay out of the main bundle and off the critical rendering path.
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
