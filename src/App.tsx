@@ -9,7 +9,9 @@ import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
 import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
+// Lazy: pulls useAuth → the Supabase client. Keeping it out of the eager
+// graph means marketing pages never download auth/realtime code.
+const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
 // Analytics + first-party tracking are dynamically imported (see AppShell) so
 // they stay out of the main bundle and off the critical rendering path.
 
