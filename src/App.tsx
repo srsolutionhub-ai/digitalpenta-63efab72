@@ -111,7 +111,7 @@ function AnimatedRoutes() {
 
   // SPA route-change page_view event — keeps GA4 in sync per locale.
   useEffect(() => {
-    trackPageView(location.pathname);
+    import("@/lib/analytics").then((m) => m.trackPageView(location.pathname));
   }, [location.pathname]);
 
   return (
