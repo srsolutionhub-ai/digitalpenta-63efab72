@@ -24,6 +24,7 @@ export default function HomepageLeadCaptureSection() {
     if (!email.includes("@") || !name) return;
     setSubmitting(true);
     try {
+      const { supabase } = await import("@/integrations/supabase/client");
       const { error } = await supabase.from("contacts").insert({
         name,
         email,
