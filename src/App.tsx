@@ -233,10 +233,22 @@ function AnimatedRoutes() {
 function AppShell() {
   useSmoothScroll();
   // Auto-attach GA4-compatible click / submit / scroll trackers once,
-  // plus the consent-gated first-party audience pipeline.
+  // plus the consent-gated first-party audience pipeline. Both are loaded on
+  // idle so they never compete with first paint.
   useEffect(() => {
-    initAnalytics();
-    initVisitorTracking();
+    const w = window as any;
+    const run = () => {
+      import("@/lib/analytics").then((m) => m.initAnalytics());
+      import("@/lib/visitorTracking").then((m) => m.initVisitorTracking());
+    };
+    const handle =
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(run, { timeout: 3000 })
+        : w.setTimeout(run, 1500);
+    return () => {
+      if (typeof w.cancelIdleCallback === "function") w.cancelIdleCallback(handle);
+      else clearTimeout(handle);
+    };
   }, []);
   return (
     <>
