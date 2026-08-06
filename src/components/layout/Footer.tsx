@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { supabase } from "@/integrations/supabase/client";
+// Supabase client is imported on submit only — keeps ~50KB gz of auth/realtime
+// code off the site's critical rendering path.
 import BookingCalendar from "@/components/booking/BookingCalendar";
 
 const footerSections = [
