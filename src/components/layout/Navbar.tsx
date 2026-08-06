@@ -351,14 +351,9 @@ export default function Navbar() {
               <span dir="ltr" style={{ unicodeBidi: "isolate" }}>+91-88601-00039</span>
             </a>
             <div className="w-px h-5 bg-border/50" aria-hidden />
-            <BookingCalendar
-              source="navbar"
-              trigger={
-                <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
-                  Book Free Call
-                </Button>
-              }
-            />
+            <Suspense fallback={<NavBookCallButton />}>
+              <BookingCalendar source="navbar" trigger={<NavBookCallButton />} />
+            </Suspense>
             <Link to="/get-proposal">
               <Button size="sm" className="rounded-full font-display font-bold text-xs px-5 h-8">
                 Get Proposal →
