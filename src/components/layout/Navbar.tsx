@@ -19,7 +19,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
-import BookingCalendar from "@/components/booking/BookingCalendar";
+// BookingCalendar drags in the Supabase client; code-split so the nav never
+// puts auth/realtime JS on the critical path.
+const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
 import logo from "@/assets/digital-penta-logo.png";
 
 const services = [
