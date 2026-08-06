@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
+// Supabase client is imported on submit only (see `submit` below) so the
+// homepage critical path stays free of auth/realtime bundle weight.
 import { toast } from "sonner";
 
 /**
