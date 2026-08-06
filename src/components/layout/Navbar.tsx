@@ -22,6 +22,15 @@ import AnnounceBar from "@/components/ui/announce-bar";
 // BookingCalendar drags in the Supabase client; code-split so the nav never
 // puts auth/realtime JS on the critical path.
 const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
+
+/** Nav CTA — rendered as both the Suspense placeholder and the real trigger. */
+function NavBookCallButton() {
+  return (
+    <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
+      Book Free Call
+    </Button>
+  );
+}
 import logo from "@/assets/digital-penta-logo.png";
 
 const services = [
