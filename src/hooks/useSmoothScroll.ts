@@ -40,10 +40,11 @@ export default function useSmoothScroll() {
 
     // Wait for the browser to go idle so the main thread stays free during
     // first paint / hydration.
+    const w = window as any;
     const idle = (cb: () => void) =>
-      "requestIdleCallback" in window
-        ? (window as any).requestIdleCallback(cb, { timeout: 2000 })
-        : window.setTimeout(cb, 1200);
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(cb, { timeout: 2000 })
+        : w.setTimeout(cb, 1200);
     const handle = idle(() => void start());
 
     return () => {
