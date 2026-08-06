@@ -58,6 +58,7 @@ export default function Footer() {
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.includes("@")) {
+      const { supabase } = await import("@/integrations/supabase/client");
       await supabase.from("newsletter_subscribers").insert({ email, source: "Footer" });
       setSubscribed(true);
       setEmail("");
