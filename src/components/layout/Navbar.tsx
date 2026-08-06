@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, lazy, Suspense, KeyboardEvent } from "react";
+import { useState, useEffect, useCallback, useRef, lazy, Suspense, forwardRef, KeyboardEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Menu,
@@ -23,14 +23,22 @@ import AnnounceBar from "@/components/ui/announce-bar";
 // puts auth/realtime JS on the critical path.
 const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
 
-/** Nav CTA — rendered as both the Suspense placeholder and the real trigger. */
-function NavBookCallButton() {
-  return (
-    <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
+/** Nav CTA — rendered as both the Suspense placeholder and the real trigger.
+ *  forwardRef so Radix's `asChild` trigger can attach its ref. */
+const NavBookCallButton = forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof Button>>(
+  (props, ref) => (
+    <Button
+      ref={ref}
+      variant="outline"
+      size="sm"
+      className="rounded-full font-display font-semibold text-xs px-5 h-8"
+      {...props}
+    >
       Book Free Call
     </Button>
-  );
-}
+  ),
+);
+NavBookCallButton.displayName = "NavBookCallButton";
 import logo from "@/assets/digital-penta-logo.png";
 
 const services = [

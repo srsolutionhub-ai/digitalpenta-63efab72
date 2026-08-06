@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Linkedin, Twitter, Instagram, Youtube, Facebook, MapPin, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, forwardRef, useState } from "react";
 import { motion } from "motion/react";
 // Supabase client is imported on submit only — keeps ~50KB gz of auth/realtime
 // code off the site's critical rendering path.
@@ -10,18 +10,21 @@ import { motion } from "motion/react";
 // the fold so it is code-split and streamed in behind a matching placeholder.
 const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
 
-/** Shared CTA button — used both as the Suspense placeholder and the real trigger. */
-function BookCallButton() {
-  return (
+/** Shared CTA button — used both as the Suspense placeholder and the real
+ *  trigger. forwardRef so Radix's `asChild` trigger can attach its ref. */
+const BookCallButton = forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof Button>>(
+  (props, ref) => (
     <Button
+      ref={ref}
       size="lg"
       className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
       style={{ boxShadow: "0 20px 60px -10px rgba(0,0,0,0.5), 0 0 40px -8px hsl(256 100% 70% / 0.7)" }}
     >
       📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />
     </Button>
-  );
-}
+  ),
+);
+BookCallButton.displayName = "BookCallButton";
 
 const footerSections = [
   {
