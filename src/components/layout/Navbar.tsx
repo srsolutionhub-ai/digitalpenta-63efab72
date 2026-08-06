@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, KeyboardEvent } from "react";
+import { useState, useEffect, useCallback, useRef, lazy, Suspense, forwardRef, KeyboardEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Menu,
@@ -19,7 +19,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import AnnounceBar from "@/components/ui/announce-bar";
-import BookingCalendar from "@/components/booking/BookingCalendar";
+// BookingCalendar drags in the Supabase client; code-split so the nav never
+// puts auth/realtime JS on the critical path.
+const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
+
+/** Nav CTA — rendered as both the Suspense placeholder and the real trigger.
+ *  forwardRef so Radix's `asChild` trigger can attach its ref. */
+const NavBookCallButton = forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof Button>>(
+  (props, ref) => (
+    <Button
+      ref={ref}
+      variant="outline"
+      size="sm"
+      className="rounded-full font-display font-semibold text-xs px-5 h-8"
+      {...props}
+    >
+      Book Free Call
+    </Button>
+  ),
+);
+NavBookCallButton.displayName = "NavBookCallButton";
 import logo from "@/assets/digital-penta-logo.png";
 
 const services = [
@@ -349,14 +368,9 @@ export default function Navbar() {
               <span dir="ltr" style={{ unicodeBidi: "isolate" }}>+91-88601-00039</span>
             </a>
             <div className="w-px h-5 bg-border/50" aria-hidden />
-            <BookingCalendar
-              source="navbar"
-              trigger={
-                <Button variant="outline" size="sm" className="rounded-full font-display font-semibold text-xs px-5 h-8">
-                  Book Free Call
-                </Button>
-              }
-            />
+            <Suspense fallback={<NavBookCallButton />}>
+              <BookingCalendar source="navbar" trigger={<NavBookCallButton />} />
+            </Suspense>
             <Link to="/get-proposal">
               <Button size="sm" className="rounded-full font-display font-bold text-xs px-5 h-8">
                 Get Proposal →

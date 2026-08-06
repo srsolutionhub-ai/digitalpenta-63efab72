@@ -9,9 +9,11 @@ import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
 import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { initAnalytics, trackPageView } from "@/lib/analytics";
-import { initVisitorTracking } from "@/lib/visitorTracking";
+// Lazy: pulls useAuth → the Supabase client. Keeping it out of the eager
+// graph means marketing pages never download auth/realtime code.
+const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
+// Analytics + first-party tracking are dynamically imported (see AppShell) so
+// they stay out of the main bundle and off the critical rendering path.
 
 // Lazy load non-critical routes
 const About = lazy(() => import("./pages/About"));
@@ -111,7 +113,7 @@ function AnimatedRoutes() {
 
   // SPA route-change page_view event — keeps GA4 in sync per locale.
   useEffect(() => {
-    trackPageView(location.pathname);
+    import("@/lib/analytics").then((m) => m.trackPageView(location.pathname));
   }, [location.pathname]);
 
   return (
@@ -233,10 +235,22 @@ function AnimatedRoutes() {
 function AppShell() {
   useSmoothScroll();
   // Auto-attach GA4-compatible click / submit / scroll trackers once,
-  // plus the consent-gated first-party audience pipeline.
+  // plus the consent-gated first-party audience pipeline. Both are loaded on
+  // idle so they never compete with first paint.
   useEffect(() => {
-    initAnalytics();
-    initVisitorTracking();
+    const w = window as any;
+    const run = () => {
+      import("@/lib/analytics").then((m) => m.initAnalytics());
+      import("@/lib/visitorTracking").then((m) => m.initVisitorTracking());
+    };
+    const handle =
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(run, { timeout: 3000 })
+        : w.setTimeout(run, 1500);
+    return () => {
+      if (typeof w.cancelIdleCallback === "function") w.cancelIdleCallback(handle);
+      else clearTimeout(handle);
+    };
   }, []);
   return (
     <>
