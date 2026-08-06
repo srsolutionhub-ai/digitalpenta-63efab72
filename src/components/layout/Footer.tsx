@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Linkedin, Twitter, Instagram, Youtube, Facebook, MapPin, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { motion } from "motion/react";
 // Supabase client is imported on submit only — keeps ~50KB gz of auth/realtime
 // code off the site's critical rendering path.
-import BookingCalendar from "@/components/booking/BookingCalendar";
+// BookingCalendar pulls the Supabase client + date pickers; it sits far below
+// the fold so it is code-split and streamed in behind a matching placeholder.
+const BookingCalendar = lazy(() => import("@/components/booking/BookingCalendar"));
 
 const footerSections = [
   {
