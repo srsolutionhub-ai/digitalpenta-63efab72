@@ -22,13 +22,17 @@ export default defineConfig(({ mode }) => ({
         // (and route changes) hit cache instead of re-downloading React etc.
         manualChunks(id: string) {
           if (!id.includes("node_modules")) return;
-          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/.test(id))
+          const pkg = (name: string) =>
+            new RegExp(`[\\\\/]node_modules[\\\\/]${name}[\\\\/]`).test(id);
+          if (pkg("react") || pkg("react-dom") || pkg("react-router") || pkg("react-router-dom") || pkg("scheduler"))
             return "vendor-react";
-          if (id.includes("motion") || id.includes("framer-motion")) return "vendor-motion";
+          if (pkg("motion") || pkg("motion-dom") || pkg("motion-utils") || pkg("framer-motion"))
+            return "vendor-motion";
           if (id.includes("@supabase")) return "vendor-supabase";
           if (id.includes("@radix-ui")) return "vendor-radix";
-          if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
-          if (id.includes("lucide-react")) return "vendor-icons";
+          if (pkg("lucide-react")) return "vendor-icons";
+          // recharts / d3 are left to automatic per-route splitting: they are
+          // only reached from lazy dashboard + tool routes.
         },
       },
     },
