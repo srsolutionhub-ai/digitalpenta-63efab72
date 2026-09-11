@@ -20,6 +20,15 @@ export interface KeywordLandingData {
   serviceCategory: string;      // For schema serviceType
   relatedServiceHref: string;   // Internal link back to canonical hub
   cta: string;
+  /**
+   * 40–60 word factual answer to the page's core query. Rendered above the
+   * fold and mirrored into WebPage/Question schema so the page is eligible
+   * for featured snippets and AI Overview citation, and so visitors get the
+   * answer immediately instead of bouncing.
+   */
+  directAnswer?: string;
+  /** ISO date of the last substantive content review (freshness signal). */
+  lastUpdated?: string;
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
@@ -570,6 +579,143 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "B2B SaaS Marketing",
     relatedServiceHref: "/services/digital-marketing/seo",
     cta: "Get Your SaaS Growth Plan",
+    directAnswer:
+      "A B2B SaaS marketing agency in India runs the acquisition motion your in-house team can't staff alone: product-led SEO, ABM, demand gen and lifecycle. Retainers typically run ₹75,000–₹6,00,000/month depending on stage, and the honest first milestone is qualified pipeline within 90 days.",
+    lastUpdated: "2026-09-11",
+  },
+
+  /* ── Growth hacking cluster ───────────────────────────────────────────
+     Added after keyword validation: "growth hacking agency" 170/mo at KD29
+     (easy), "growth hacking services" 30/mo, plus city-level demand around
+     Bangalore and Delhi. No existing page covered this intent, so these are
+     net-new coverage rather than cannibalisation of the city matrix.        */
+  {
+    slug: "growth-hacking-agency",
+    primaryKeyword: "growth hacking agency",
+    metaTitle: "Growth Hacking Agency | Experiment-Led Growth | Digital Penta",
+    metaDescription:
+      "Growth hacking agency running weekly acquisition, activation and retention experiments across paid, SEO, lifecycle and product. See the experiment log before you commit.",
+    h1: "Growth Hacking Agency — Weekly Experiments, Not Annual Retainers",
+    heroSubhead:
+      "We run a documented experiment loop across acquisition, activation, retention and referral. Every sprint ships testable changes, every result is logged, and losing tests get killed instead of quietly re-run.",
+    directAnswer:
+      "A growth hacking agency runs rapid, measurable experiments across the full funnel — acquisition, activation, retention, referral and revenue — instead of managing a single channel. Engagements usually start at ₹75,000/month, run in two-week sprints, and are judged on validated learnings and CAC movement rather than impressions.",
+    bullets: [
+      { title: "AARRR Funnel Audit First", desc: "We instrument the whole funnel before touching spend, so experiments target the stage that's actually leaking — usually activation, not traffic." },
+      { title: "Two-Week Experiment Sprints", desc: "Each sprint carries a hypothesis, a success metric, a sample-size threshold and a kill rule agreed with you upfront." },
+      { title: "Channel-Agnostic Acquisition Tests", desc: "Paid search, Meta, LinkedIn, SEO, WhatsApp, communities, partnerships and cold outbound — tested cheaply before anything gets scaled." },
+      { title: "Retention & Referral Loops", desc: "Onboarding sequences, lifecycle triggers, referral incentives and win-back flows, because cheaper retention beats cheaper clicks." },
+      { title: "Analytics That Can Prove It", desc: "GA4 + server-side events, cohort views and CAC/LTV reporting so a win is defensible in your board deck." },
+      { title: "Public Experiment Log", desc: "You see every hypothesis, result and decision in a shared board — including the tests that failed." },
+    ],
+    proofPoints: [
+      { value: "2 weeks", label: "Experiment sprint cycle" },
+      { value: "AARRR", label: "Full-funnel coverage" },
+      { value: "30 days", label: "Rolling contract after onboarding" },
+      { value: "100%", label: "Experiments logged and shared" },
+    ],
+    whyUs: [
+      "Experiment-led engagement model — you fund a testing cadence, not a fixed deliverable list",
+      "One team across paid, SEO, lifecycle and CRO, so tests aren't blocked by channel silos",
+      "Every result is documented with the metric, sample size and decision taken",
+      "No long lock-ins: rolling monthly after the 30-day instrumentation phase",
+    ],
+    faqs: [
+      { q: "What does a growth hacking agency actually do?", a: "It designs and runs prioritised experiments across your whole funnel — acquisition channels, onboarding, pricing pages, lifecycle messaging and referral loops — then scales only what proves out. The output is validated learnings plus the compounding wins, not a fixed monthly deliverable list." },
+      { q: "How is growth hacking different from digital marketing?", a: "Digital marketing usually optimises a channel you've already chosen. Growth hacking questions the channel itself and works on activation and retention too, where most SMB and SaaS funnels lose the most money." },
+      { q: "How much does growth hacking cost in India?", a: "Realistically ₹75,000–₹3,00,000/month for the experiment team, plus media budget. Below roughly ₹50,000/month there isn't enough sprint capacity to reach statistical confidence on anything meaningful." },
+      { q: "How soon do experiments produce results?", a: "You get instrumentation and the first sprint results inside 30 days. Compounding effects on CAC and retention typically become clear across sprints three to six — anyone promising a transformation in week one is guessing." },
+      { q: "Do you need product or engineering access?", a: "For activation and retention experiments, yes — ideally staging access or a developer contact. Acquisition and landing-page tests we can run entirely on our own stack." },
+    ],
+    serviceCategory: "Growth Marketing",
+    relatedServiceHref: "/services/digital-marketing/ppc",
+    cta: "Get Your Free Growth Audit",
+    lastUpdated: "2026-09-11",
+  },
+  {
+    slug: "growth-hacking-services-india",
+    primaryKeyword: "growth hacking services India",
+    metaTitle: "Growth Hacking Services in India | Digital Penta",
+    metaDescription:
+      "Growth hacking services for Indian startups and D2C brands: funnel instrumentation, acquisition experiments, activation and retention loops. Rolling monthly engagement.",
+    h1: "Growth Hacking Services in India, Priced for Indian Unit Economics",
+    heroSubhead:
+      "Indian CACs, Indian payment drop-offs, Indian channel mix — WhatsApp, UPI checkout friction, vernacular creative and Tier-2 buying behaviour all change which experiments are worth running first.",
+    directAnswer:
+      "Growth hacking services in India cover funnel instrumentation, acquisition experiments, activation fixes and retention loops, adapted to local realities like WhatsApp-first communication, UPI checkout drop-off and Tier-2 price sensitivity. Typical engagements run ₹75,000–₹2,50,000/month on a rolling monthly basis.",
+    bullets: [
+      { title: "WhatsApp-First Lifecycle", desc: "In India, WhatsApp outperforms email for onboarding and win-back — we build and test those flows properly, with opt-in hygiene." },
+      { title: "Checkout & Payment Recovery", desc: "UPI failures, COD abandonment and OTP drop-offs are measurable leaks; recovering them is usually cheaper than buying more traffic." },
+      { title: "Tier-1 vs Tier-2 Split Testing", desc: "Separate creative, pricing framing and offers for metro and non-metro cohorts, because one national campaign hides both." },
+      { title: "Vernacular Creative Experiments", desc: "Hindi and regional-language ad and landing variants tested against English control, not assumed to win." },
+      { title: "Community & Partnership Loops", desc: "Low-cost distribution tests via niche communities, creators and complementary brands before scaling paid." },
+      { title: "CAC / LTV Reporting", desc: "Cohort-level payback tracking so you know which experiment actually improved unit economics." },
+    ],
+    proofPoints: [
+      { value: "₹75K", label: "Typical entry retainer/mo" },
+      { value: "30 days", label: "To first sprint results" },
+      { value: "Tier 1+2", label: "Cohorts tested separately" },
+      { value: "Monthly", label: "Rolling, no annual lock-in" },
+    ],
+    whyUs: [
+      "India-native channel mix: WhatsApp, UPI checkout, vernacular creative and marketplace behaviour",
+      "Experiments prioritised by expected impact on CAC payback, not by what's fashionable",
+      "Direct access to the people running the tests — no account-manager relay",
+      "Full data handover: dashboards, event schema and experiment log stay yours",
+    ],
+    faqs: [
+      { q: "Are growth hacking services worth it for an early-stage Indian startup?", a: "If you have some traffic and a live product, yes — the fastest wins are usually activation and checkout, which cost nothing in media. Pre-launch with no traffic, a positioning and distribution sprint is a better use of the same money." },
+      { q: "Which channels work best for growth in India right now?", a: "It depends on price point, but WhatsApp for lifecycle, Google Search for high-intent categories, Meta for D2C discovery and communities or creators for niche B2B consistently earn their place. We test rather than assume." },
+      { q: "Do you work with D2C brands as well as SaaS?", a: "Yes. D2C work leans toward creative volume, checkout recovery and repeat-purchase loops; SaaS work leans toward onboarding activation and product-led SEO." },
+      { q: "What do you need from us to start?", a: "Analytics and ad account access, one product or growth stakeholder for weekly sprint reviews, and permission to change landing pages. That's enough for the first 30 days." },
+    ],
+    serviceCategory: "Growth Marketing",
+    relatedServiceHref: "/services/digital-marketing/ppc",
+    cta: "Get Your India Growth Plan",
+    lastUpdated: "2026-09-11",
+  },
+  {
+    slug: "growth-hacking-agency-bangalore",
+    primaryKeyword: "growth hacking agency Bangalore",
+    city: "Bangalore",
+    metaTitle: "Growth Hacking Agency in Bangalore | Digital Penta",
+    metaDescription:
+      "Growth hackers for Bangalore SaaS and D2C teams: product-led acquisition, activation experiments and retention loops, run in two-week sprints alongside your growth team.",
+    h1: "Growth Hacking Agency in Bangalore for Product-Led Teams",
+    heroSubhead:
+      "Bangalore's growth problem is rarely traffic — it's activation, trial-to-paid and CAC payback in a market where every competitor bids on the same keywords and hires from the same talent pool.",
+    directAnswer:
+      "A growth hacking agency in Bangalore runs full-funnel experiments for product-led SaaS and D2C teams: PLG SEO, trial-to-paid activation, onboarding and referral loops. Local retainers generally run ₹1,00,000–₹3,00,000/month, and work is normally structured as two-week sprints alongside an in-house growth lead.",
+    bullets: [
+      { title: "PLG Acquisition Experiments", desc: "Alternatives, comparison and integration pages tested for trial starts, not just sessions — the pattern that works for Bangalore SaaS." },
+      { title: "Trial-to-Paid Activation", desc: "Onboarding checklists, empty-state fixes, in-app nudges and PQL scoring, prioritised by where trials actually stall." },
+      { title: "Auction Escape Routes", desc: "Bangalore search auctions for tech terms are crowded, so we test communities, creators, review sites and partnerships in parallel." },
+      { title: "Works With Your Growth Team", desc: "We slot in beside an existing in-house growth lead or PMM rather than replacing them — most Bangalore teams already have one." },
+      { title: "Micro-Market Local Tests", desc: "Koramangala, Indiranagar, HSR, Whitefield and Electronic City behave differently for local-intent and offline-tied offers." },
+      { title: "Cohort Payback Reporting", desc: "CAC payback by cohort and channel, reported in the format your investors already ask for." },
+    ],
+    proofPoints: [
+      { value: "2 weeks", label: "Sprint cycle" },
+      { value: "PLG", label: "Primary motion supported" },
+      { value: "5", label: "Bangalore micro-markets covered" },
+      { value: "Monthly", label: "Rolling engagement" },
+    ],
+    whyUs: [
+      "Comfortable working inside a product-led funnel, not just an ad account",
+      "On-site sprint reviews across Koramangala, HSR, Indiranagar and Whitefield when useful",
+      "Experiment log shared with your growth and product team in real time",
+      "We say no to experiments that can't reach significance with your traffic volume",
+    ],
+    faqs: [
+      { q: "How much does a growth hacking agency in Bangalore cost?", a: "Most Bangalore engagements land between ₹1,00,000 and ₹3,00,000/month for the experiment team, plus media. Tech-sector salaries and auction competition here push costs above the national average." },
+      { q: "Can you work alongside our in-house growth lead?", a: "That's the usual setup. Your growth lead owns strategy and roadmap priority; we supply sprint execution capacity across paid, SEO, CRO and lifecycle." },
+      { q: "Do you meet clients in person in Bangalore?", a: "Yes — strategy and sprint reviews can run on-site across Koramangala, Indiranagar, HSR Layout, Whitefield and Electronic City, with day-to-day execution handled remotely." },
+      { q: "Which Bangalore verticals do you work with most?", a: "B2B SaaS and dev-tools, followed by D2C and marketplace brands. Those funnels reward activation and retention experiments more than extra ad spend." },
+    ],
+    serviceCategory: "Growth Marketing",
+    relatedServiceHref: "/services/digital-marketing/ppc",
+    cta: "Get Your Bangalore Growth Audit",
+    lastUpdated: "2026-09-11",
   },
 ];
 
