@@ -60,6 +60,17 @@ export default function KeywordLandingPage() {
             { name: data.primaryKeyword, url: canonical },
           ]),
           faqPageSchema(data.faqs),
+          /* Direct-answer WebPage: makes the page quotable in featured
+             snippets and AI Overviews, and carries the freshness date. */
+          answerPageSchema({
+            name: data.h1,
+            description: data.metaDescription,
+            url: canonical,
+            answer: data.directAnswer ?? data.heroSubhead,
+            about: data.serviceCategory,
+            inLanguage: "en-IN",
+            dateModified: data.lastUpdated,
+          }),
         ]}
       />
 
@@ -113,6 +124,47 @@ export default function KeywordLandingPage() {
               </Link>
             </div>
           </motion.div>
+
+          {/* Direct answer — snippet/AEO target and the anti-bounce block:
+              the visitor's core question is answered before any scrolling. */}
+          <div className="max-w-3xl mt-10 rounded-2xl glass border border-border/25 p-6 md:p-7">
+            <p className="type-label font-mono text-primary mb-3">Short answer</p>
+            <p
+              data-speakable
+              className="text-foreground text-[15px] md:text-base leading-relaxed"
+            >
+              {data.directAnswer ?? data.heroSubhead}
+            </p>
+
+            {/* Jump links: earn SERP sitelinks and cut scroll-fatigue exits. */}
+            <nav aria-label="On this page" className="mt-6 flex flex-wrap gap-2">
+              {[
+                { href: "#what-you-get", label: "What you get" },
+                { href: "#why-us", label: "Why Digital Penta" },
+                { href: "#faqs", label: "FAQs" },
+                { href: "#talk-to-us", label: "Talk to us" },
+              ].map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-xs font-mono px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+
+            {data.lastUpdated && (
+              <p className="mt-5 text-xs text-muted-foreground font-mono">
+                Last reviewed{" "}
+                <time dateTime={data.lastUpdated}>
+                  {new Date(data.lastUpdated).toLocaleDateString("en-IN", {
+                    day: "numeric", month: "long", year: "numeric",
+                  })}
+                </time>
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
