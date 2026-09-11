@@ -7,7 +7,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import SEOHead, {
-  breadcrumbSchema, faqPageSchema, serviceSchema, organizationSchema,
+  breadcrumbSchema, faqPageSchema, serviceSchema, organizationSchema, answerPageSchema,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getKeywordLanding } from "@/data/keywordLandingData";
