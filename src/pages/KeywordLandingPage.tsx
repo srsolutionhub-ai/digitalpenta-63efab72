@@ -183,7 +183,8 @@ export default function KeywordLandingPage() {
       </section>
 
       {/* Bullets */}
-      <section className="py-20">
+      <section id="what-you-get" className="py-20 scroll-mt-24">
+
         <div className="container mx-auto px-4">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-10">
             What You Get With Our <span className="text-gradient">{data.serviceCategory}</span>
@@ -207,7 +208,7 @@ export default function KeywordLandingPage() {
       </section>
 
       {/* Why us */}
-      <section className="py-16 bg-card/20 border-y border-border/30">
+      <section id="why-us" className="py-16 bg-card/20 border-y border-border/30 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="font-display font-bold text-2xl text-foreground mb-6 text-center">
             Why Brands Choose <span className="text-gradient">Digital Penta</span>
@@ -224,7 +225,7 @@ export default function KeywordLandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
+      <section id="faqs" className="py-20 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-2xl">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-10 text-center">
             Frequently Asked <span className="text-gradient">Questions</span>
@@ -261,7 +262,7 @@ export default function KeywordLandingPage() {
       })()}
 
       {/* CTA */}
-      <section className="py-20 relative overflow-hidden">
+      <section id="talk-to-us" className="py-20 relative overflow-hidden scroll-mt-24">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">

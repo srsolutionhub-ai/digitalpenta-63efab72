@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import SEOHead, { breadcrumbSchema, itemListSchema } from "@/components/seo/SEOHead";
 import { MATRIX_SERVICES, MATRIX_CITIES } from "@/data/matrixData";
 import { iterateMatrixIntentTuples } from "@/data/matrixIntents";
+import { getAllKeywordLandings } from "@/data/keywordLandingData";
 
 /**
  * Phase 1 audit upgrade — HTML sitemap.
@@ -34,6 +35,13 @@ const SERVICE_HUBS = [
 
 export default function SitemapPage() {
   const intentTuples = iterateMatrixIntentTuples();
+  /* Keyword landing pages were only reachable through contextual cross-links,
+     which left them several clicks deep. Listing them here gives every /lp/
+     URL a direct crawl path from an indexable hub. */
+  const landingPages = getAllKeywordLandings().map(lp => ({
+    name: lp.primaryKeyword,
+    url: `/lp/${lp.slug}`,
+  }));
 
   return (
     <Layout>
@@ -73,6 +81,7 @@ export default function SitemapPage() {
         <div className="container mx-auto px-4 max-w-5xl space-y-12">
           <SitemapBlock title="Core pages" items={STATIC_PAGES} />
           <SitemapBlock title="Service hubs" items={SERVICE_HUBS} />
+          <SitemapBlock title="Specialist service &amp; keyword pages" items={landingPages} />
 
           <div>
             <h2 className="font-display font-bold text-2xl text-foreground mb-4">City &amp; service combinations</h2>

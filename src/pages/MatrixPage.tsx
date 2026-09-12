@@ -9,6 +9,7 @@ import SEOHead, {
   serviceSchema,
   serviceWithAreaSchema,
   aggregateRatingSchema,
+  answerPageSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 
@@ -106,6 +107,10 @@ export default function MatrixPage() {
     : [...baseFaqs, ...depthFaqs];
 
 
+  /* 40-60 word factual answer to the query behind this page. Composed from the
+     same source data as the rest of the page, so it never contradicts it. */
+  const directAnswer = `${svc.longName} in ${cty.city} typically runs from ${cty.budgetMin} to ${cty.budgetMax} per month, depending on competition and scope. ${cty.marketAngle} Digital Penta scopes ${cty.city} engagements around ${svc.bullets[0].title.toLowerCase()} and ${svc.bullets[1].title.toLowerCase()}, with the first measurable reporting cycle inside 30 days.`;
+
   const hreflangs: HreflangAlternate[] = [
     { hreflang: "x-default", href: canonical },
     { hreflang: "en", href: canonical },
@@ -139,6 +144,18 @@ export default function MatrixPage() {
     aggregateRatingSchema({
       itemName: intent ? `${svc.name} ${intent.label} in ${cty.city}` : `${svc.name} Agency in ${cty.city}`,
       itemUrl: canonical,
+    }),
+    /* Direct-answer WebPage: gives Google and AI answer engines one short,
+       quotable paragraph per city × service page. These pages already earn
+       impressions at position 40-90; a snippet-shaped answer plus a visible
+       above-the-fold answer block is what lifts CTR and cuts pogo-sticking. */
+    answerPageSchema({
+      name: `How much does ${svc.name.toLowerCase()} cost in ${cty.city}?`,
+      description: metaDescription,
+      url: canonical,
+      answer: directAnswer,
+      about: `${svc.name} in ${cty.city}`,
+      inLanguage: cty.region === "india" ? "en-IN" : `en-${cty.countryCode}`,
     }),
   ];
 
@@ -225,6 +242,33 @@ export default function MatrixPage() {
               <span className="ml-1">4.9 / 5 from 87+ verified reviews</span>
             </div>
           </motion.div>
+
+          {/* Short answer + jump nav: answers the pricing/scope question that
+              drives these queries before any scrolling (bounce reduction) and
+              gives Google a snippet-shaped block plus sitelink anchors. */}
+          <div className="max-w-3xl mt-10 rounded-2xl glass border border-border/25 p-6 md:p-7">
+            <p className="type-label font-mono text-primary mb-3">
+              Short answer — {svc.name.toLowerCase()} in {cty.city}
+            </p>
+            <p data-speakable className="text-foreground text-[15px] md:text-base leading-relaxed">
+              {directAnswer}
+            </p>
+            <nav aria-label="On this page" className="mt-6 flex flex-wrap gap-2">
+              {[
+                { href: "#whats-included", label: "What's included" },
+                { href: "#local-market", label: `${cty.city} market` },
+                { href: "#faqs", label: "Pricing & FAQs" },
+              ].map(l => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-xs font-mono px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
       </section>
 
@@ -249,7 +293,7 @@ export default function MatrixPage() {
           </div>
         </section>
       )}
-      <section className="py-20 border-t border-border/30">
+      <section id="whats-included" className="py-20 border-t border-border/30 scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mb-10">
             <p className="type-label text-primary mb-3 font-mono">What's included</p>
@@ -289,7 +333,7 @@ export default function MatrixPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
+      <section id="faqs" className="py-20 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="font-display font-bold text-3xl text-foreground mb-10 text-center">
             {svc.name} in {cty.city} — Frequently Asked Questions
@@ -306,6 +350,7 @@ export default function MatrixPage() {
       </section>
 
       {/* City keyword-depth block (local SERP + AEO) */}
+      <div id="local-market" className="scroll-mt-24" />
       <CitySeoContent
         city={cty.city}
         citySlug={cty.slug}

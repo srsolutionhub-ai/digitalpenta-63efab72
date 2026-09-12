@@ -27,6 +27,10 @@ const services: { label: string; href: string }[] = [
   { label: "WhatsApp Marketing", href: "/services/automation/whatsapp" },
   { label: "Public Relations", href: "/services/public-relations" },
   { label: "Digital PR", href: "/services/public-relations/digital-pr" },
+  // Growth hacking cluster — new keyword coverage, linked from the homepage
+  // so it starts accumulating authority immediately.
+  { label: "Growth Hacking Agency", href: "/lp/growth-hacking-agency" },
+  { label: "Growth Hacking Services India", href: "/lp/growth-hacking-services-india" },
 ];
 
 const cities: { label: string; href: string; flag?: string }[] = [
