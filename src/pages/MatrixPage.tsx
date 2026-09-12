@@ -242,6 +242,33 @@ export default function MatrixPage() {
               <span className="ml-1">4.9 / 5 from 87+ verified reviews</span>
             </div>
           </motion.div>
+
+          {/* Short answer + jump nav: answers the pricing/scope question that
+              drives these queries before any scrolling (bounce reduction) and
+              gives Google a snippet-shaped block plus sitelink anchors. */}
+          <div className="max-w-3xl mt-10 rounded-2xl glass border border-border/25 p-6 md:p-7">
+            <p className="type-label font-mono text-primary mb-3">
+              Short answer — {svc.name.toLowerCase()} in {cty.city}
+            </p>
+            <p data-speakable className="text-foreground text-[15px] md:text-base leading-relaxed">
+              {directAnswer}
+            </p>
+            <nav aria-label="On this page" className="mt-6 flex flex-wrap gap-2">
+              {[
+                { href: "#whats-included", label: "What's included" },
+                { href: "#local-market", label: `${cty.city} market` },
+                { href: "#faqs", label: "Pricing & FAQs" },
+              ].map(l => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-xs font-mono px-3 py-2 rounded-full border border-border/30 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
       </section>
 
