@@ -350,6 +350,7 @@ export default function MatrixPage() {
       </section>
 
       {/* City keyword-depth block (local SERP + AEO) */}
+      <div id="local-market" className="scroll-mt-24" />
       <CitySeoContent
         city={cty.city}
         citySlug={cty.slug}
