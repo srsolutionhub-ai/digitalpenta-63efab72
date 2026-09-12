@@ -293,7 +293,7 @@ export default function MatrixPage() {
           </div>
         </section>
       )}
-      <section className="py-20 border-t border-border/30">
+      <section id="whats-included" className="py-20 border-t border-border/30 scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mb-10">
             <p className="type-label text-primary mb-3 font-mono">What's included</p>
@@ -333,7 +333,7 @@ export default function MatrixPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20">
+      <section id="faqs" className="py-20 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="font-display font-bold text-3xl text-foreground mb-10 text-center">
             {svc.name} in {cty.city} — Frequently Asked Questions
