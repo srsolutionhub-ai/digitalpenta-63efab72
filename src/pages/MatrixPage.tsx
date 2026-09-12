@@ -141,6 +141,18 @@ export default function MatrixPage() {
       itemName: intent ? `${svc.name} ${intent.label} in ${cty.city}` : `${svc.name} Agency in ${cty.city}`,
       itemUrl: canonical,
     }),
+    /* Direct-answer WebPage: gives Google and AI answer engines one short,
+       quotable paragraph per city × service page. These pages already earn
+       impressions at position 40-90; a snippet-shaped answer plus a visible
+       above-the-fold answer block is what lifts CTR and cuts pogo-sticking. */
+    answerPageSchema({
+      name: `How much does ${svc.name.toLowerCase()} cost in ${cty.city}?`,
+      description: metaDescription,
+      url: canonical,
+      answer: directAnswer,
+      about: `${svc.name} in ${cty.city}`,
+      inLanguage: cty.region === "india" ? "en-IN" : `en-${cty.countryCode}`,
+    }),
   ];
 
 
