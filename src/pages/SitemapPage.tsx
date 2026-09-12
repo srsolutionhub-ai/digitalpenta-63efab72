@@ -81,6 +81,7 @@ export default function SitemapPage() {
         <div className="container mx-auto px-4 max-w-5xl space-y-12">
           <SitemapBlock title="Core pages" items={STATIC_PAGES} />
           <SitemapBlock title="Service hubs" items={SERVICE_HUBS} />
+          <SitemapBlock title="Specialist service &amp; keyword pages" items={landingPages} />
 
           <div>
             <h2 className="font-display font-bold text-2xl text-foreground mb-4">City &amp; service combinations</h2>
