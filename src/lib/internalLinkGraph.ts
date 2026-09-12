@@ -39,6 +39,8 @@ const SERVICE_NAME_TO_SLUG: Record<string, string> = {
   "google ads agency": "ppc",
   ppc: "ppc",
   "performance marketing": "ppc",
+  "growth marketing": "ppc",
+  "growth hacking": "ppc",
   "social media": "social-media",
   "social media marketing": "social-media",
   "web development": "web-development",
