@@ -107,6 +107,10 @@ export default function MatrixPage() {
     : [...baseFaqs, ...depthFaqs];
 
 
+  /* 40-60 word factual answer to the query behind this page. Composed from the
+     same source data as the rest of the page, so it never contradicts it. */
+  const directAnswer = `${svc.longName} in ${cty.city} typically runs from ${cty.budgetMin} to ${cty.budgetMax} per month, depending on competition and scope. ${cty.marketAngle} Digital Penta scopes ${cty.city} engagements around ${svc.bullets[0].title.toLowerCase()} and ${svc.bullets[1].title.toLowerCase()}, with the first measurable reporting cycle inside 30 days.`;
+
   const hreflangs: HreflangAlternate[] = [
     { hreflang: "x-default", href: canonical },
     { hreflang: "en", href: canonical },
