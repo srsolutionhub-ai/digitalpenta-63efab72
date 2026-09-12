@@ -9,6 +9,7 @@ import SEOHead, {
   serviceSchema,
   serviceWithAreaSchema,
   aggregateRatingSchema,
+  answerPageSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
 
