@@ -126,7 +126,7 @@ export default function MatrixPage() {
     }),
     serviceWithAreaSchema({
       city: cty.city,
-      country: cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "United Arab Emirates" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city,
+      country: cty.countryName,
 
       url: canonical,
       services: [svc.name, "SEO", "Google Ads", "Social Media", "Web Development", "AI Automation"],
@@ -210,7 +210,7 @@ export default function MatrixPage() {
             <div className="flex items-center gap-2 mb-4">
               <MapPin className="w-5 h-5 text-primary" />
               <span className="text-xs text-primary uppercase tracking-widest font-mono">
-                {svc.name} • {cty.city}, {cty.region === "india" ? "India" : "Middle East"}
+                {svc.name} • {cty.city}, {cty.regionLabel}
               </span>
             </div>
 
@@ -354,7 +354,7 @@ export default function MatrixPage() {
       <CitySeoContent
         city={cty.city}
         citySlug={cty.slug}
-        country={cty.countryCode === "IN" ? "India" : cty.countryCode === "AE" ? "UAE" : cty.countryCode === "SA" ? "Saudi Arabia" : cty.city}
+        country={cty.countryName}
         industries={cty.industries ?? []}
         services={[svc.name, "SEO", "Google Ads", "Social Media Marketing", "Web Development", "AI Automation"]}
       />

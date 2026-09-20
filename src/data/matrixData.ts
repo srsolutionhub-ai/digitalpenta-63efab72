@@ -204,8 +204,6 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
   },
 ];
 
-export const MATRIX_CITIES_END_MARKER = true;
-
 export interface MatrixPageData {
   service: MatrixServiceDef;
   city: MatrixCityDef;
