@@ -24,6 +24,8 @@ const CITIES = [
   { slug: "riyadh", name: "Riyadh" },
   { slug: "doha", name: "Doha" },
   { slug: "manama", name: "Manama" },
+  { slug: "new-york", name: "New York" },
+  { slug: "london", name: "London" },
 ];
 const SERVICE_LABELS: Record<string, string> = {
   seo: "SEO",
