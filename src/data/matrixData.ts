@@ -21,8 +21,10 @@ export interface MatrixServiceDef {
 export interface MatrixCityDef {
   slug: string;
   city: string;
-  region: "india" | "middle-east";
-  countryCode: "IN" | "AE" | "SA";
+  region: "india" | "middle-east" | "north-america" | "europe";
+  countryCode: "IN" | "AE" | "SA" | "US" | "GB";
+  countryName: string;            // Full country name for schema + copy
+  regionLabel: string;            // Human region label used in the hero eyebrow
   currency: string;              // For pricing answers
   budgetMin: string;             // Minimum monthly retainer
   budgetMax: string;             // Mid-tier monthly retainer
@@ -114,6 +116,8 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
     city: "Delhi",
     region: "india",
     countryCode: "IN",
+    countryName: "India",
+    regionLabel: "India",
     currency: "₹",
     budgetMin: "₹35,000",
     budgetMax: "₹3,00,000",
@@ -125,6 +129,8 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
     city: "Mumbai",
     region: "india",
     countryCode: "IN",
+    countryName: "India",
+    regionLabel: "India",
     currency: "₹",
     budgetMin: "₹40,000",
     budgetMax: "₹3,50,000",
@@ -136,6 +142,8 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
     city: "Bangalore",
     region: "india",
     countryCode: "IN",
+    countryName: "India",
+    regionLabel: "India",
     currency: "₹",
     budgetMin: "₹35,000",
     budgetMax: "₹3,00,000",
@@ -147,6 +155,8 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
     city: "Dubai",
     region: "middle-east",
     countryCode: "AE",
+    countryName: "United Arab Emirates",
+    regionLabel: "Middle East",
     currency: "AED ",
     budgetMin: "AED 4,500",
     budgetMax: "AED 25,000",
@@ -158,13 +168,43 @@ export const MATRIX_CITIES: MatrixCityDef[] = [
     city: "Riyadh",
     region: "middle-east",
     countryCode: "SA",
+    countryName: "Saudi Arabia",
+    regionLabel: "Middle East",
     currency: "SAR ",
     budgetMin: "SAR 9,000",
     budgetMax: "SAR 60,000",
     industries: ["Government", "Banking & Finance", "Tourism", "Logistics", "F&B"],
     marketAngle: "Vision 2030's epicentre — Arabic-first content, Snapchat + TikTok-led paid social and giga-project adjacencies.",
   },
+  {
+    slug: "new-york",
+    city: "New York",
+    region: "north-america",
+    countryCode: "US",
+    countryName: "United States",
+    regionLabel: "United States",
+    currency: "$",
+    budgetMin: "$2,500",
+    budgetMax: "$15,000",
+    industries: ["B2B SaaS", "Professional Services", "E-commerce & DTC", "Fintech", "Real Estate"],
+    marketAngle: "The most expensive attention market in the world — agency shortlists are decided on measurable pipeline, not brand decks.",
+  },
+  {
+    slug: "london",
+    city: "London",
+    region: "europe",
+    countryCode: "GB",
+    countryName: "United Kingdom",
+    regionLabel: "United Kingdom",
+    currency: "£",
+    budgetMin: "£2,000",
+    budgetMax: "£12,000",
+    industries: ["Fintech", "B2B SaaS", "Retail & DTC", "Legal & Consulting", "Property"],
+    marketAngle: "A mature, heavily contested market where GDPR-safe measurement and genuine editorial content beat volume tactics.",
+  },
 ];
+
+export const MATRIX_CITIES_END_MARKER = true;
 
 export interface MatrixPageData {
   service: MatrixServiceDef;
@@ -217,7 +257,9 @@ export function getMatrixPage(serviceSlug: string, citySlug: string): MatrixPage
       q: `Do you offer in-person reviews in ${cityName}?`,
       a: city.region === "india"
         ? `Yes — for ${cityName} clients on retainer, we offer monthly in-person strategy reviews plus weekly remote sprint check-ins.`
-        : `Yes — our regional team services ${cityName} clients with quarterly in-person reviews and weekly remote sprint check-ins. Bilingual (English + Arabic) reporting included.`,
+        : city.region === "middle-east"
+        ? `Yes — our regional team services ${cityName} clients with quarterly in-person reviews and weekly remote sprint check-ins. Bilingual (English + Arabic) reporting included.`
+        : `We run ${cityName} accounts remote-first with a guaranteed overlap window in your local business hours, a named strategist on every call, and recorded weekly sprint reviews you can share internally.`,
     },
   ];
 
