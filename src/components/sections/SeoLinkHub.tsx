@@ -46,6 +46,8 @@ const cities: { label: string; href: string; flag?: string }[] = [
   { label: "Abu Dhabi", href: "/locations/abu-dhabi", flag: "🇦🇪" },
   { label: "Riyadh", href: "/locations/riyadh", flag: "🇸🇦" },
   { label: "Doha", href: "/locations/doha", flag: "🇶🇦" },
+  { label: "New York", href: "/seo/new-york", flag: "🇺🇸" },
+  { label: "London", href: "/seo/london", flag: "🇬🇧" },
 ];
 
 const industries: { label: string; href: string }[] = [
@@ -69,6 +71,8 @@ const featured: { label: string; href: string; sub: string }[] = [
   { label: "Digital Marketing Agency in Hyderabad", sub: "Pharma & tech corridor", href: "/locations/hyderabad" },
   { label: "PPC Company in Mumbai", sub: "Mumbai paid search", href: "/ppc/mumbai" },
   { label: "SEO Company in Delhi", sub: "NCR local SEO", href: "/seo/delhi" },
+  { label: "SEO Agency in New York", sub: "US B2B & DTC pipeline", href: "/seo/new-york" },
+  { label: "SEO Agency in London", sub: "UK fintech & retail", href: "/seo/london" },
 ];
 
 
