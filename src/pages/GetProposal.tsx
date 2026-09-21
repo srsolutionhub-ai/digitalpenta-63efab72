@@ -7,6 +7,7 @@ import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles, RotateCcw, X, TrendingUp
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
 const steps = ["About You", "Services", "Goals", "Budget", "Review"];
 
@@ -255,6 +256,12 @@ export default function GetProposal() {
 
     return (
       <Layout>
+        <SEOHead
+          title="Proposal Request Received | Digital Penta"
+          description="Your Digital Penta growth proposal request has been received. Our strategy team will review your goals and respond within 48 hours."
+          canonical="https://digitalpenta.com/get-proposal"
+          noindex
+        />
         <section className="pt-32 pb-20 min-h-screen flex items-center relative overflow-hidden">
           {Array.from({ length: 30 }).map((_, i) => (
             <div
@@ -294,6 +301,17 @@ export default function GetProposal() {
 
   return (
     <Layout>
+      <SEOHead
+        title="Get a Free Digital Marketing Proposal | Digital Penta"
+        description="Request a tailored SEO, paid media, web, AI or automation growth plan from Digital Penta. Complete the brief in under three minutes."
+        canonical="https://digitalpenta.com/get-proposal"
+        schemas={[
+          breadcrumbSchema([
+            { name: "Home", url: "https://digitalpenta.com/" },
+            { name: "Get a Proposal", url: "https://digitalpenta.com/get-proposal" },
+          ]),
+        ]}
+      />
       <section className="pt-32 pb-20 relative">
         <div className="absolute inset-0 mesh-gradient" />
         {/* Honeypot */}

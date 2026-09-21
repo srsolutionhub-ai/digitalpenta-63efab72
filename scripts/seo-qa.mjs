@@ -3,7 +3,7 @@
  * SEO Quality Check
  * ─────────────────
  * Validates:
- *   1. sitemap.xml — well-formed, every URL has lastmod + priority
+ *   1. sitemap.xml — well-formed, every URL has priority; lastmod is optional
  *   2. coverage   — every static route, matrix page, location, industry,
  *                   sub-service is present in the sitemap
  *   3. canonicals — every page component sets a canonical absolute URL
@@ -34,8 +34,9 @@ else ok(`sitemap has ${urls.length} URLs`);
 
 const blocks = sitemap.split(/<url>/).slice(1);
 const missingLastmod = blocks.filter((b) => !b.includes("<lastmod>")).length;
-if (missingLastmod) err(`${missingLastmod} entries missing <lastmod>`);
-else ok("every entry has <lastmod>");
+if (missingLastmod === blocks.length) ok("lastmod omitted consistently (no authoritative per-page dates)");
+else if (missingLastmod) warn(`${missingLastmod} entries omit <lastmod>; use it only where dates are authoritative`);
+else ok("every entry has an authoritative <lastmod>");
 
 /* ─── 2. Coverage ─── */
 console.log("\n[2/5] coverage");
