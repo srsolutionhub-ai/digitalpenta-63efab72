@@ -265,7 +265,7 @@ export default function Footer() {
               <Link
                 key={c.slug}
                 to={`/locations/${c.slug}`}
-                className="text-muted-foreground hover:text-primary transition-colors truncate"
+                className="text-muted-foreground hover:text-primary transition-colors break-words"
                 title={`Digital marketing agency in ${c.label}`}
               >
                 {c.label}
@@ -273,7 +273,7 @@ export default function Footer() {
             ))}
             <Link
               to="/locations"
-              className="text-primary hover:text-foreground transition-colors truncate font-medium"
+              className="text-primary hover:text-foreground transition-colors font-medium"
               title="All Digital Penta agency locations"
             >
               All locations →

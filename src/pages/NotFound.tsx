@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { Search, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import SEOHead from "@/components/seo/SEOHead";
 
@@ -45,17 +45,6 @@ const NotFound = () => {
           <p className="text-muted-foreground mb-10 max-w-md mx-auto">
             The page you're looking for doesn't exist or has been moved. Let's get you back on track.
           </p>
-
-          <div className="max-w-md mx-auto mb-12">
-            <div className="flex items-center gap-2 rounded-full glass border border-border/30 px-5 py-3">
-              <Search className="w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search for a service, page, or topic..."
-                className="bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none flex-1"
-              />
-            </div>
-          </div>
 
           <div>
             <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-4">Popular Pages</p>
