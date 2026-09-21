@@ -6,7 +6,7 @@ import SEOHead, { breadcrumbSchema, softwareApplicationSchema } from "@/componen
 import AiToolRunner from "@/components/tools/AiToolRunner";
 
 // Dashboard + charts lazy-loaded so the tool landing page stays light.
-const CompetitorXrayDashboard = lazy(() => import("@/components/tools/CompetitorXrayDashboard"));
+const CompetitorXrayDashboard = lazyRetry(() => import("@/components/tools/CompetitorXrayDashboard"));
 
 interface Result {
   summary: string;

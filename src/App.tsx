@@ -11,91 +11,91 @@ import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 // Lazy: pulls useAuth → the Supabase client. Keeping it out of the eager
 // graph means marketing pages never download auth/realtime code.
-const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
+const ProtectedRoute = lazyRetry(() => import("@/components/auth/ProtectedRoute"));
 // Analytics + first-party tracking are dynamically imported (see AppShell) so
 // they stay out of the main bundle and off the critical rendering path.
 
 // Lazy load non-critical routes
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const GetProposal = lazy(() => import("./pages/GetProposal"));
-const ServiceCategory = lazy(() => import("./pages/ServiceCategory"));
-const SubServicePage = lazy(() => import("./pages/SubServicePage"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogArticle = lazy(() => import("./pages/BlogArticle"));
-const IndustryPage = lazy(() => import("./pages/IndustryPage"));
-const LocationPage = lazy(() => import("./pages/LocationPage"));
-const LocationsHub = lazy(() => import("./pages/LocationsHub"));
-const LocationPageAr = lazy(() => import("./pages/LocationPageAr"));
+const About = lazyRetry(() => import("./pages/About"));
+const Contact = lazyRetry(() => import("./pages/Contact"));
+const GetProposal = lazyRetry(() => import("./pages/GetProposal"));
+const ServiceCategory = lazyRetry(() => import("./pages/ServiceCategory"));
+const SubServicePage = lazyRetry(() => import("./pages/SubServicePage"));
+const Portfolio = lazyRetry(() => import("./pages/Portfolio"));
+const Blog = lazyRetry(() => import("./pages/Blog"));
+const BlogArticle = lazyRetry(() => import("./pages/BlogArticle"));
+const IndustryPage = lazyRetry(() => import("./pages/IndustryPage"));
+const LocationPage = lazyRetry(() => import("./pages/LocationPage"));
+const LocationsHub = lazyRetry(() => import("./pages/LocationsHub"));
+const LocationPageAr = lazyRetry(() => import("./pages/LocationPageAr"));
 
-const KeywordLandingPage = lazy(() => import("./pages/KeywordLandingPage"));
-const MatrixPage = lazy(() => import("./pages/MatrixPage"));
-const HomeAr = lazy(() => import("./pages/HomeAr"));
-const Privacy = lazy(() => import("./pages/Privacy"));
-const Terms = lazy(() => import("./pages/Terms"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const SeoAuditTool = lazy(() => import("./pages/SeoAuditTool"));
-const SitemapPage = lazy(() => import("./pages/SitemapPage"));
-const Manifesto = lazy(() => import("./pages/Manifesto"));
-const Trust = lazy(() => import("./pages/Trust"));
-const Roadmap = lazy(() => import("./pages/Roadmap"));
-const Resources = lazy(() => import("./pages/Resources"));
-const PricingCalculator = lazy(() => import("./pages/PricingCalculator"));
-const ToolsIndex = lazy(() => import("./pages/tools/ToolsIndex"));
-const GrowthScoreTool = lazy(() => import("./pages/tools/GrowthScoreTool"));
-const AdCopyTool = lazy(() => import("./pages/tools/AdCopyTool"));
-const MetaTagsTool = lazy(() => import("./pages/tools/MetaTagsTool"));
-const BlogOutlineTool = lazy(() => import("./pages/tools/BlogOutlineTool"));
-const CompetitorXrayTool = lazy(() => import("./pages/tools/CompetitorXrayTool"));
-const RoiPredictorTool = lazy(() => import("./pages/tools/RoiPredictorTool"));
+const KeywordLandingPage = lazyRetry(() => import("./pages/KeywordLandingPage"));
+const MatrixPage = lazyRetry(() => import("./pages/MatrixPage"));
+const HomeAr = lazyRetry(() => import("./pages/HomeAr"));
+const Privacy = lazyRetry(() => import("./pages/Privacy"));
+const Terms = lazyRetry(() => import("./pages/Terms"));
+const NotFound = lazyRetry(() => import("./pages/NotFound"));
+const SeoAuditTool = lazyRetry(() => import("./pages/SeoAuditTool"));
+const SitemapPage = lazyRetry(() => import("./pages/SitemapPage"));
+const Manifesto = lazyRetry(() => import("./pages/Manifesto"));
+const Trust = lazyRetry(() => import("./pages/Trust"));
+const Roadmap = lazyRetry(() => import("./pages/Roadmap"));
+const Resources = lazyRetry(() => import("./pages/Resources"));
+const PricingCalculator = lazyRetry(() => import("./pages/PricingCalculator"));
+const ToolsIndex = lazyRetry(() => import("./pages/tools/ToolsIndex"));
+const GrowthScoreTool = lazyRetry(() => import("./pages/tools/GrowthScoreTool"));
+const AdCopyTool = lazyRetry(() => import("./pages/tools/AdCopyTool"));
+const MetaTagsTool = lazyRetry(() => import("./pages/tools/MetaTagsTool"));
+const BlogOutlineTool = lazyRetry(() => import("./pages/tools/BlogOutlineTool"));
+const CompetitorXrayTool = lazyRetry(() => import("./pages/tools/CompetitorXrayTool"));
+const RoiPredictorTool = lazyRetry(() => import("./pages/tools/RoiPredictorTool"));
 
 // Auth pages
-const Login = lazy(() => import("./pages/auth/Login"));
-const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
-const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
-const InviteAccept = lazy(() => import("./pages/auth/InviteAccept"));
+const Login = lazyRetry(() => import("./pages/auth/Login"));
+const ForgotPassword = lazyRetry(() => import("./pages/auth/ForgotPassword"));
+const ResetPassword = lazyRetry(() => import("./pages/auth/ResetPassword"));
+const InviteAccept = lazyRetry(() => import("./pages/auth/InviteAccept"));
 
 // Dashboard pages
-const AdminLayout = lazy(() => import("./pages/dashboard/admin/AdminLayout"));
-const DashboardHome = lazy(() => import("./pages/dashboard/admin/DashboardHome"));
-const Leads = lazy(() => import("./pages/dashboard/admin/Leads"));
-const Billing = lazy(() => import("./pages/dashboard/admin/Billing"));
-const BlogManager = lazy(() => import("./pages/dashboard/admin/BlogManager"));
-const SettingsPage = lazy(() => import("./pages/dashboard/admin/SettingsPage"));
-const AdminAudits = lazy(() => import("./pages/dashboard/admin/Audits"));
-const AuditDetail = lazy(() => import("./pages/dashboard/admin/AuditDetail"));
-const WhatsAppHub = lazy(() => import("./pages/dashboard/admin/WhatsAppHub"));
-const WhatsAppSetup = lazy(() => import("./pages/dashboard/admin/WhatsAppSetup"));
-const CrmPipeline = lazy(() => import("./pages/dashboard/admin/CrmPipeline"));
-const Quotations = lazy(() => import("./pages/dashboard/admin/Quotations"));
-const Invoices = lazy(() => import("./pages/dashboard/admin/Invoices"));
-const Projects = lazy(() => import("./pages/dashboard/admin/Projects"));
-const TimeTracking = lazy(() => import("./pages/dashboard/admin/TimeTracking"));
-const Bookings = lazy(() => import("./pages/dashboard/admin/Bookings"));
-const ToolRuns = lazy(() => import("./pages/dashboard/admin/ToolRuns"));
-const FunnelAnalytics = lazy(() => import("./pages/dashboard/admin/FunnelAnalytics"));
-const SeoRankTracker = lazy(() => import("./pages/dashboard/admin/SeoRankTracker"));
-const VoiceStudio = lazy(() => import("./pages/dashboard/admin/VoiceStudio"));
-const EmailLog = lazy(() => import("./pages/dashboard/admin/EmailLog"));
-const NewsletterComposer = lazy(() => import("./pages/dashboard/admin/NewsletterComposer"));
-const DataRequest = lazy(() => import("./pages/DataRequest"));
-const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
-const CookiePreferenceModal = lazy(() => import("./components/compliance/CookiePreferenceModal"));
-const WelcomeBackToast = lazy(() => import("./components/ui/welcome-back-toast"));
+const AdminLayout = lazyRetry(() => import("./pages/dashboard/admin/AdminLayout"));
+const DashboardHome = lazyRetry(() => import("./pages/dashboard/admin/DashboardHome"));
+const Leads = lazyRetry(() => import("./pages/dashboard/admin/Leads"));
+const Billing = lazyRetry(() => import("./pages/dashboard/admin/Billing"));
+const BlogManager = lazyRetry(() => import("./pages/dashboard/admin/BlogManager"));
+const SettingsPage = lazyRetry(() => import("./pages/dashboard/admin/SettingsPage"));
+const AdminAudits = lazyRetry(() => import("./pages/dashboard/admin/Audits"));
+const AuditDetail = lazyRetry(() => import("./pages/dashboard/admin/AuditDetail"));
+const WhatsAppHub = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppHub"));
+const WhatsAppSetup = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppSetup"));
+const CrmPipeline = lazyRetry(() => import("./pages/dashboard/admin/CrmPipeline"));
+const Quotations = lazyRetry(() => import("./pages/dashboard/admin/Quotations"));
+const Invoices = lazyRetry(() => import("./pages/dashboard/admin/Invoices"));
+const Projects = lazyRetry(() => import("./pages/dashboard/admin/Projects"));
+const TimeTracking = lazyRetry(() => import("./pages/dashboard/admin/TimeTracking"));
+const Bookings = lazyRetry(() => import("./pages/dashboard/admin/Bookings"));
+const ToolRuns = lazyRetry(() => import("./pages/dashboard/admin/ToolRuns"));
+const FunnelAnalytics = lazyRetry(() => import("./pages/dashboard/admin/FunnelAnalytics"));
+const SeoRankTracker = lazyRetry(() => import("./pages/dashboard/admin/SeoRankTracker"));
+const VoiceStudio = lazyRetry(() => import("./pages/dashboard/admin/VoiceStudio"));
+const EmailLog = lazyRetry(() => import("./pages/dashboard/admin/EmailLog"));
+const NewsletterComposer = lazyRetry(() => import("./pages/dashboard/admin/NewsletterComposer"));
+const DataRequest = lazyRetry(() => import("./pages/DataRequest"));
+const Unsubscribe = lazyRetry(() => import("./pages/Unsubscribe"));
+const CookiePreferenceModal = lazyRetry(() => import("./components/compliance/CookiePreferenceModal"));
+const WelcomeBackToast = lazyRetry(() => import("./components/ui/welcome-back-toast"));
 
 
-const ClientLayout = lazy(() => import("./pages/dashboard/client/ClientLayout"));
-const ClientHome = lazy(() => import("./pages/dashboard/client/ClientHome"));
-const ClientInvoices = lazy(() => import("./pages/dashboard/client/ClientInvoices"));
-const ClientSupport = lazy(() => import("./pages/dashboard/client/ClientSupport"));
-const ClientFiles = lazy(() => import("./pages/dashboard/client/ClientFiles"));
-const ClientKnowledge = lazy(() => import("./pages/dashboard/client/ClientKnowledge"));
+const ClientLayout = lazyRetry(() => import("./pages/dashboard/client/ClientLayout"));
+const ClientHome = lazyRetry(() => import("./pages/dashboard/client/ClientHome"));
+const ClientInvoices = lazyRetry(() => import("./pages/dashboard/client/ClientInvoices"));
+const ClientSupport = lazyRetry(() => import("./pages/dashboard/client/ClientSupport"));
+const ClientFiles = lazyRetry(() => import("./pages/dashboard/client/ClientFiles"));
+const ClientKnowledge = lazyRetry(() => import("./pages/dashboard/client/ClientKnowledge"));
 
-const BookACall = lazy(() => import("./pages/BookACall"));
-const ProposalBuilder = lazy(() => import("./pages/ProposalBuilder"));
-const CommandPalette = lazy(() => import("./components/ui/CommandPalette"));
-const PentaAiChat = lazy(() => import("./components/ai/PentaAiChat"));
+const BookACall = lazyRetry(() => import("./pages/BookACall"));
+const ProposalBuilder = lazyRetry(() => import("./pages/ProposalBuilder"));
+const CommandPalette = lazyRetry(() => import("./components/ui/CommandPalette"));
+const PentaAiChat = lazyRetry(() => import("./components/ai/PentaAiChat"));
 
 const queryClient = new QueryClient();
 

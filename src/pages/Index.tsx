@@ -22,26 +22,26 @@ const HOME_SECTIONS = [
 ];
 
 /* Below-the-fold: code-split to keep initial JS small and improve LCP/TBT */
-const PartnersSection = lazy(() => import("@/components/sections/PartnersSection"));
-const StatsSection = lazy(() => import("@/components/sections/StatsSection"));
-const ServicesSection = lazy(() => import("@/components/sections/ServicesSection"));
-const WhyUsSection = lazy(() => import("@/components/sections/WhyUsSection"));
-const ProcessSection = lazy(() => import("@/components/sections/ProcessSection"));
-const CaseStudiesSection = lazy(() => import("@/components/sections/CaseStudiesSection"));
-const IndustriesSection = lazy(() => import("@/components/sections/IndustriesSection"));
-const TestimonialsSection = lazy(() => import("@/components/sections/TestimonialsSection"));
-const PricingSection = lazy(() => import("@/components/sections/PricingSection"));
-const FAQSection = lazy(() => import("@/components/sections/FAQSection"));
-const BlogPreviewSection = lazy(() => import("@/components/sections/BlogPreviewSection"));
-const WebsiteAuditSection = lazy(() => import("@/components/sections/WebsiteAuditSection"));
-const ResultsReelSection = lazy(() => import("@/components/sections/ResultsReelSection"));
-const DashboardPreviewSection = lazy(() => import("@/components/sections/DashboardPreviewSection"));
-const SignatureCtaSection = lazy(() => import("@/components/sections/SignatureCtaSection"));
-const SeoLinkHub = lazy(() => import("@/components/sections/SeoLinkHub"));
-const RoiCalculatorSection = lazy(() => import("@/components/sections/RoiCalculatorSection"));
-const ClientTrustWallSection = lazy(() => import("@/components/sections/ClientTrustWallSection"));
-const LiveGrowthScoreSection = lazy(() => import("@/components/sections/LiveGrowthScoreSection"));
-const NewsletterSection = lazy(() => import("@/components/sections/NewsletterSection"));
+const PartnersSection = lazyRetry(() => import("@/components/sections/PartnersSection"));
+const StatsSection = lazyRetry(() => import("@/components/sections/StatsSection"));
+const ServicesSection = lazyRetry(() => import("@/components/sections/ServicesSection"));
+const WhyUsSection = lazyRetry(() => import("@/components/sections/WhyUsSection"));
+const ProcessSection = lazyRetry(() => import("@/components/sections/ProcessSection"));
+const CaseStudiesSection = lazyRetry(() => import("@/components/sections/CaseStudiesSection"));
+const IndustriesSection = lazyRetry(() => import("@/components/sections/IndustriesSection"));
+const TestimonialsSection = lazyRetry(() => import("@/components/sections/TestimonialsSection"));
+const PricingSection = lazyRetry(() => import("@/components/sections/PricingSection"));
+const FAQSection = lazyRetry(() => import("@/components/sections/FAQSection"));
+const BlogPreviewSection = lazyRetry(() => import("@/components/sections/BlogPreviewSection"));
+const WebsiteAuditSection = lazyRetry(() => import("@/components/sections/WebsiteAuditSection"));
+const ResultsReelSection = lazyRetry(() => import("@/components/sections/ResultsReelSection"));
+const DashboardPreviewSection = lazyRetry(() => import("@/components/sections/DashboardPreviewSection"));
+const SignatureCtaSection = lazyRetry(() => import("@/components/sections/SignatureCtaSection"));
+const SeoLinkHub = lazyRetry(() => import("@/components/sections/SeoLinkHub"));
+const RoiCalculatorSection = lazyRetry(() => import("@/components/sections/RoiCalculatorSection"));
+const ClientTrustWallSection = lazyRetry(() => import("@/components/sections/ClientTrustWallSection"));
+const LiveGrowthScoreSection = lazyRetry(() => import("@/components/sections/LiveGrowthScoreSection"));
+const NewsletterSection = lazyRetry(() => import("@/components/sections/NewsletterSection"));
 
 
 /** Skeleton placeholder that reserves vertical space to minimize CLS during chunk load. */
