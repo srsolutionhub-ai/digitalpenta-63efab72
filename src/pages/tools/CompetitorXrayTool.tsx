@@ -1,4 +1,5 @@
-import { lazy, Suspense, useState } from "react";
+import { Suspense, useState } from "react";
+import { lazyRetry } from "@/lib/lazyRetry";
 import Layout from "@/components/layout/Layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,7 +7,7 @@ import SEOHead, { breadcrumbSchema, softwareApplicationSchema } from "@/componen
 import AiToolRunner from "@/components/tools/AiToolRunner";
 
 // Dashboard + charts lazy-loaded so the tool landing page stays light.
-const CompetitorXrayDashboard = lazy(() => import("@/components/tools/CompetitorXrayDashboard"));
+const CompetitorXrayDashboard = lazyRetry(() => import("@/components/tools/CompetitorXrayDashboard"));
 
 interface Result {
   summary: string;
