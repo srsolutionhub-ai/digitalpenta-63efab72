@@ -425,7 +425,7 @@ export default function About() {
             Book a FREE 30-minute strategy call with our growth experts. No commitment. No fluff. Just a plan.
           </p>
           <Link to="/contact">
-            <Button size="lg" className="rounded-full px-10 py-6 font-display font-bold text-base bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
+            <Button size="lg" className="max-w-full whitespace-normal rounded-full px-6 sm:px-10 py-5 sm:py-6 font-display font-bold text-sm sm:text-base bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
               📅 Book Free Strategy Call
             </Button>
           </Link>

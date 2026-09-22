@@ -81,11 +81,11 @@ export default function PricingCalculator() {
       </section>
 
       <section className="pb-24">
-        <div className="container mx-auto px-4 max-w-5xl grid lg:grid-cols-2 gap-6">
+        <div className="container mx-auto px-4 max-w-5xl grid md:grid-cols-2 gap-6">
           <div className="card-premium p-6 space-y-5">
             <div>
               <Label className="text-xs">Region</Label>
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2">
                 {(["india", "gcc"] as const).map(r => (
                   <button key={r} type="button" onClick={() => setRegion(r)}
                     className={`px-3 py-1.5 text-xs font-mono rounded-full border ${region === r ? "bg-primary text-primary-foreground border-primary" : "border-border/40 text-foreground/70"}`}>
@@ -115,7 +115,7 @@ export default function PricingCalculator() {
             </div>
             <div>
               <Label className="text-xs">Scope tier</Label>
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2">
                 {(["starter", "growth", "scale"] as const).map(s => (
                   <button key={s} type="button" onClick={() => setScope(s)}
                     className={`px-3 py-1.5 text-xs font-mono rounded-full border capitalize ${scope === s ? "bg-primary text-primary-foreground border-primary" : "border-border/40 text-foreground/70"}`}>
@@ -144,11 +144,11 @@ export default function PricingCalculator() {
             <p className="type-label text-primary mb-3 font-mono">Indicative pricing</p>
             <div className="flex-1 flex flex-col justify-center text-center">
               <div className="text-muted-foreground text-xs mb-1">Monthly retainer</div>
-              <div className="font-display font-extrabold text-5xl text-foreground mb-3">{currency}{monthly.toLocaleString()}</div>
+              <div className="font-display font-extrabold text-[clamp(2rem,9vw,3rem)] leading-tight text-foreground mb-3 break-words tabular-nums">{currency}{monthly.toLocaleString()}</div>
               {oneTime > 0 && (
                 <>
                   <div className="text-muted-foreground text-xs mb-1">+ one-time build</div>
-                  <div className="font-display font-bold text-2xl text-foreground/80 mb-3">{currency}{oneTime.toLocaleString()}</div>
+                  <div className="font-display font-bold text-xl sm:text-2xl text-foreground/80 mb-3 break-words tabular-nums">{currency}{oneTime.toLocaleString()}</div>
                 </>
               )}
               <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
@@ -156,7 +156,7 @@ export default function PricingCalculator() {
               </p>
             </div>
             <Link to="/get-proposal">
-              <Button className="w-full rounded-full mt-4 font-display font-semibold">Lock this quote — request proposal</Button>
+              <Button className="w-full h-auto min-h-11 whitespace-normal rounded-full mt-4 px-4 py-3 font-display font-semibold leading-snug">Lock this quote — request proposal</Button>
             </Link>
           </div>
         </div>
