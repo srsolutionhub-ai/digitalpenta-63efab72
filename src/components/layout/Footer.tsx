@@ -17,7 +17,7 @@ const BookCallButton = forwardRef<HTMLButtonElement, React.ComponentPropsWithout
     <Button
       ref={ref}
       size="lg"
-      className="rounded-full px-10 py-6 font-display font-bold text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
+      className="max-w-full whitespace-normal rounded-full px-6 sm:px-10 py-5 sm:py-6 font-display font-bold text-sm sm:text-base gap-2 bg-white text-background hover:bg-white/95 shadow-2xl transition-all hover:scale-[1.03]"
       style={{ boxShadow: "0 20px 60px -10px rgba(0,0,0,0.5), 0 0 40px -8px hsl(256 100% 70% / 0.7)" }}
     >
       📅 Book Free Strategy Call <ArrowRight className="w-4 h-4" />

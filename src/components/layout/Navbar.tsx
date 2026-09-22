@@ -238,7 +238,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-0.5" aria-label="Primary">
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Primary">
             <div
               ref={megaContainerRef}
               className="relative"
@@ -353,7 +353,7 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop right cluster */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden xl:flex items-center gap-3">
             <Link
               to={location.pathname.startsWith("/ar") ? "/" : "/ar"}
               hrefLang={location.pathname.startsWith("/ar") ? "en" : "ar"}
@@ -382,7 +382,7 @@ export default function Navbar() {
           <button
             ref={menuButtonRef}
             type="button"
-            className="lg:hidden p-2 text-foreground relative z-50 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="xl:hidden p-2 text-foreground relative z-50 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
@@ -411,7 +411,7 @@ export default function Navbar() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22 }}
-                className="lg:hidden fixed inset-0 top-16 bg-background/70 backdrop-blur-md z-30"
+                className="xl:hidden fixed inset-0 top-16 bg-background/70 backdrop-blur-md z-30"
                 onClick={() => setMobileOpen(false)}
                 aria-hidden
               />
@@ -425,7 +425,7 @@ export default function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="lg:hidden fixed top-16 bottom-0 right-0 z-40 w-[92vw] max-w-sm bg-background/95 backdrop-blur-3xl border-l border-white/[0.06] flex flex-col"
+                className="xl:hidden fixed top-16 bottom-0 right-0 z-40 w-[92vw] max-w-sm bg-background/95 backdrop-blur-3xl border-l border-white/[0.06] flex flex-col"
                 style={{
                   boxShadow: "-30px 0 80px -20px hsl(256 90% 30% / 0.5)",
                 }}

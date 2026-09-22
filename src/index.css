@@ -85,8 +85,37 @@
     line-height: 1.8;
   }
 
+  /* Defined with plain CSS (not @apply) because the markup lives in index.html,
+     which Tailwind does not scan — an @apply rule here gets purged. */
   .skip-to-content {
-    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary focus:text-primary-foreground focus:font-display focus:font-bold focus:text-sm;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .skip-to-content:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 9999;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    font-size: 0.875rem;
   }
 
   :focus-visible {
