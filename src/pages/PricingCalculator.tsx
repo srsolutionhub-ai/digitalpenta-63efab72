@@ -41,7 +41,8 @@ export default function PricingCalculator() {
 
   const toggle = (k: ServiceKey) => setSelected(s => {
     const next = new Set(s);
-    next.has(k) ? next.delete(k) : next.add(k);
+    if (next.has(k)) next.delete(k);
+    else next.add(k);
     return next;
   });
 
