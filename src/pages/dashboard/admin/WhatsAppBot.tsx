@@ -60,6 +60,16 @@ export default function WhatsAppBot() {
   });
   const refresh = () => qc.invalidateQueries({ queryKey: ["wa-bot-rules"] });
 
+  const seedDefaults = async () => {
+    const existingNames = new Set((rules || []).map((r: any) => r.name));
+    const toInsert = DEFAULT_RULES.filter((r) => !existingNames.has(r.name));
+    if (!toInsert.length) return toast.info("Default rules already exist");
+    const { error } = await db.from("wa_bot_rules").insert(toInsert);
+    if (error) return toast.error(error.message);
+    toast.success(`Added ${toInsert.length} default rule(s)`);
+    refresh();
+  };
+
   const startEdit = (r: any) => {
     setEditingId(r.id);
     setF({ name: r.name, keywords: (r.keywords || []).join(", "), reply: r.reply_text, handover: r.handover, priority: r.priority });
@@ -83,9 +93,12 @@ export default function WhatsAppBot() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">WhatsApp auto-replies</h1>
-        <p className="text-sm text-muted-foreground">When an incoming message contains a keyword, the matching reply is sent. Hand-over rules stop the bot and flag the chat for your team.</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">WhatsApp auto-replies</h1>
+          <p className="text-sm text-muted-foreground">Keyword rules answer common questions. An "away" rule covers out-of-hours messages and a "fallback" rule replies when nothing matches, so no message ever goes silent.</p>
+        </div>
+        <Button size="sm" variant="outline" onClick={seedDefaults}>Add default reply pack</Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -117,8 +130,15 @@ export default function WhatsAppBot() {
           <li key={r.id} className="p-3 flex items-start gap-3">
             <Switch checked={r.is_active} onCheckedChange={async (c) => { await db.from("wa_bot_rules").update({ is_active: c }).eq("id", r.id); refresh(); }} aria-label={`Turn ${r.name} on or off`} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground">{r.name}{r.handover && <span className="ml-2 text-xs text-primary">hand-over</span>}</p>
-              <p className="text-xs text-muted-foreground">Keywords: {r.keywords.join(", ")} · priority {r.priority}</p>
+              <p className="text-sm font-medium text-foreground">
+                {r.name}
+                {r.match_type === "away" && <span className="ml-2 text-xs text-amber-500">away / out-of-hours</span>}
+                {r.match_type === "fallback" && <span className="ml-2 text-xs text-sky-500">fallback</span>}
+                {r.handover && <span className="ml-2 text-xs text-primary">hand-over</span>}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {r.match_type === "away" ? `Hours config: ${(r.keywords || []).join(", ") || "not set"}` : `Keywords: ${(r.keywords || []).join(", ") || "—"}`} · priority {r.priority}
+              </p>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap mt-1">{r.reply_text}</p>
             </div>
             <button aria-label={`Edit ${r.name}`} onClick={() => startEdit(r)} className="text-muted-foreground hover:text-foreground"><Pencil className="w-4 h-4" /></button>

@@ -54,3 +54,6 @@ verify_jwt = false
 
 [functions.newsletter-unsubscribe]
 verify_jwt = false
+
+[functions.invoice-reminders]
+verify_jwt = false

@@ -12,18 +12,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { QuotationActivityLog } from "@/components/dashboard/QuotationActivityLog";
-import { Briefcase, Plus, Trash2, Send, CheckCircle2, History } from "lucide-react";
+import { DocumentPrintView } from "@/components/dashboard/DocumentPrintView";
+import { Briefcase, Plus, Trash2, Send, CheckCircle2, History, XCircle, Printer, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { PLACE_OF_SUPPLY_OPTIONS, calcGstSplit, formatCurrency, isMissingColumnError } from "@/lib/billingUtils";
 
 interface LineItem { description: string; quantity: number; unit_price: number; }
 
-const STATUS: Record<string, any> = { draft: "default", sent: "info", accepted: "success", rejected: "danger", expired: "warning" };
+const STATUS: Record<string, any> = { draft: "default", sent: "info", viewed: "info", accepted: "success", declined: "danger", rejected: "danger", expired: "warning" };
 
 export default function Quotations() {
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [activityFor, setActivityFor] = useState<{ id: string; quote_number: string; client_name: string } | null>(null);
-  const [form, setForm] = useState<any>({ client_name: "", client_email: "", validity_date: "", tax_rate: 18, currency: "INR", notes: "", items: [{ description: "", quantity: 1, unit_price: 0 }] });
+  const [printFor, setPrintFor] = useState<any>(null);
+  const [declineFor, setDeclineFor] = useState<any>(null);
+  const [declineReason, setDeclineReason] = useState("");
+  const [form, setForm] = useState<any>({ client_name: "", client_email: "", client_gstin: "", place_of_supply: "", validity_date: "", tax_rate: 18, currency: "INR", notes: "", items: [{ description: "", quantity: 1, unit_price: 0, hsn_sac: "998314", discount_percent: 0 }] });
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ["quotations"],
@@ -35,10 +40,11 @@ export default function Quotations() {
 
   const create = useMutation({
     mutationFn: async () => {
-      const subtotal = (form.items as LineItem[]).reduce((s, i) => s + i.quantity * i.unit_price, 0);
-      const tax_amount = subtotal * (Number(form.tax_rate) / 100);
+      const subtotal = (form.items as LineItem[]).reduce((s, i) => s + i.quantity * i.unit_price * (1 - (i.discount_percent || 0) / 100), 0);
+      const gst = calcGstSplit(subtotal, Number(form.tax_rate), form.place_of_supply);
+      const tax_amount = gst.totalTax;
       const total = subtotal + tax_amount;
-      const { error } = await supabase.from("quotations").insert({
+      const base: any = {
         client_name: form.client_name,
         client_email: form.client_email,
         items: form.items,
@@ -51,7 +57,13 @@ export default function Quotations() {
         validity_date: form.validity_date || null,
         status: "draft",
         quote_number: "DRAFT",
-      });
+      };
+      const extended = { ...base, client_gstin: form.client_gstin || null, place_of_supply: form.place_of_supply || null, cgst_amount: gst.cgst, sgst_amount: gst.sgst, igst_amount: gst.igst };
+      let { error } = await supabase.from("quotations").insert(extended);
+      if (error && isMissingColumnError(error)) {
+        // DB not yet upgraded with GST columns — fall back to base fields only.
+        ({ error } = await supabase.from("quotations").insert(base));
+      }
       if (error) throw error;
     },
     onSuccess: () => {
@@ -78,16 +90,17 @@ export default function Quotations() {
     onError: (e: any) => toast.error(e.message),
   });
 
-  const addItem = () => setForm({ ...form, items: [...form.items, { description: "", quantity: 1, unit_price: 0 }] });
+  const addItem = () => setForm({ ...form, items: [...form.items, { description: "", quantity: 1, unit_price: 0, hsn_sac: "998314", discount_percent: 0 }] });
   const removeItem = (i: number) => setForm({ ...form, items: form.items.filter((_: any, idx: number) => idx !== i) });
   const updateItem = (i: number, key: string, val: any) => {
     const next = [...form.items];
-    next[i] = { ...next[i], [key]: key === "description" ? val : Number(val) };
+    next[i] = { ...next[i], [key]: key === "description" || key === "hsn_sac" ? val : Number(val) };
     setForm({ ...form, items: next });
   };
 
-  const previewSubtotal = (form.items as LineItem[]).reduce((s, i) => s + (i.quantity || 0) * (i.unit_price || 0), 0);
-  const previewTotal = previewSubtotal * (1 + Number(form.tax_rate) / 100);
+  const previewSubtotal = (form.items as LineItem[]).reduce((s, i: any) => s + (i.quantity || 0) * (i.unit_price || 0) * (1 - (i.discount_percent || 0) / 100), 0);
+  const previewGst = calcGstSplit(previewSubtotal, Number(form.tax_rate), form.place_of_supply);
+  const previewTotal = previewSubtotal + previewGst.totalTax;
 
   return (
     <div className="space-y-6">
