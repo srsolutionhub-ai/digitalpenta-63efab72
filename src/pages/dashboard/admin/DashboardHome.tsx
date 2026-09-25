@@ -3,25 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Users, DollarSign, TrendingUp, FileText, Clock, Send,
-  Plus, Receipt, PenLine
+  Users, Kanban, CheckSquare, MessageCircle, Mail, FileSearch, CalendarDays,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar
-} from "recharts";
 
-// Lazy-loaded — does its own data fetching, so initial render stays snappy.
+const db = supabase as any;
+
 const LiveActivityTicker = lazy(() => import("@/components/dashboard/LiveActivityTicker"));
 
-const COLORS = ["hsl(256,90%,62%)", "hsl(162,100%,44%)", "hsl(18,100%,60%)", "hsl(45,100%,50%)", "hsl(210,100%,50%)"];
-
-function KPICard({ icon: Icon, label, value, loading }: { icon: any; label: string; value: string | number; loading: boolean }) {
+function KPICard({ icon: Icon, label, value, sub, to, loading }: { icon: any; label: string; value: string | number; sub?: string; to: string; loading: boolean }) {
   if (loading) return <Skeleton className="h-28 rounded-2xl" />;
   return (
-    <div className="card-surface rounded-2xl p-5 hover-lift">
+    <Link to={to} className="card-surface rounded-2xl p-5 hover-lift block">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
           <Icon className="w-4 h-4 text-primary" />
@@ -29,115 +22,183 @@ function KPICard({ icon: Icon, label, value, loading }: { icon: any; label: stri
         <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{label}</span>
       </div>
       <p className="font-display font-bold text-2xl text-foreground">{value}</p>
-    </div>
+      {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
+    </Link>
   );
 }
 
+const formatCurrency = (v: number) => {
+  if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
+  if (v >= 1000) return `₹${(v / 1000).toFixed(0)}K`;
+  return `₹${v}`;
+};
+
 export default function DashboardHome() {
-  const { data: contactStats, isLoading: loadingContacts } = useQuery({
-    queryKey: ["admin-contact-stats"],
+  const now = new Date();
+  const iso7d = new Date(now.getTime() - 7 * 86400000).toISOString();
+  const iso30d = new Date(now.getTime() - 30 * 86400000).toISOString();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().slice(0, 10);
+
+  const { data: leadStats, isLoading: loadingLeads } = useQuery({
+    queryKey: ["admin-leads-kpi"],
     queryFn: async () => {
-      const { data } = await supabase.rpc("get_contact_stats");
-      return data?.[0] ?? null;
+      const [c7, c30] = await Promise.all([
+        db.from("leads").select("*", { count: "exact", head: true }).gte("created_at", iso7d),
+        db.from("leads").select("*", { count: "exact", head: true }).gte("created_at", iso30d),
+      ]);
+      return { last7: c7.count ?? 0, last30: c30.count ?? 0 };
     },
     refetchInterval: 60000,
   });
 
-  const { data: leadsData, isLoading: loadingLeads } = useQuery({
-    queryKey: ["admin-leads-count"],
+  const { data: dealStats, isLoading: loadingDeals } = useQuery({
+    queryKey: ["admin-open-deals-kpi"],
     queryFn: async () => {
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { count } = await supabase.from("leads").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
+      const { data } = await db.from("crm_deals").select("value").is("closed_at", null);
+      const rows = data ?? [];
+      return { count: rows.length, value: rows.reduce((s: number, d: any) => s + Number(d.value ?? 0), 0) };
+    },
+    refetchInterval: 60000,
+  });
+
+  const { data: taskStats, isLoading: loadingTasks } = useQuery({
+    queryKey: ["admin-tasks-kpi"],
+    queryFn: async () => {
+      const { data } = await db.from("crm_tasks").select("due_at").neq("status", "done");
+      const rows = data ?? [];
+      const dueToday = rows.filter((t: any) => t.due_at && t.due_at >= todayStart && t.due_at < todayEnd).length;
+      const overdue = rows.filter((t: any) => t.due_at && t.due_at < todayStart).length;
+      return { dueToday, overdue };
+    },
+    refetchInterval: 60000,
+  });
+
+  const { data: unreadWhatsapp, isLoading: loadingWa } = useQuery({
+    queryKey: ["admin-whatsapp-kpi"],
+    queryFn: async () => {
+      const { data } = await db.from("whatsapp_conversations").select("unread_count");
+      return (data ?? []).reduce((s: number, c: any) => s + Number(c.unread_count ?? 0), 0);
+    },
+    refetchInterval: 60000,
+  });
+
+  const { data: emailsSent30d, isLoading: loadingEmails } = useQuery({
+    queryKey: ["admin-emails-kpi"],
+    queryFn: async () => {
+      const { count } = await db.from("email_send_log").select("*", { count: "exact", head: true }).gte("created_at", iso30d);
       return count ?? 0;
     },
     refetchInterval: 60000,
   });
 
-  const { data: invoiceStats, isLoading: loadingInvoices } = useQuery({
-    queryKey: ["admin-invoice-stats"],
+  const { data: audits30d, isLoading: loadingAudits } = useQuery({
+    queryKey: ["admin-audits-kpi"],
     queryFn: async () => {
-      const { data: invoices } = await supabase.from("invoices").select("total, status, paid_at, created_at");
-      if (!invoices) return { revenue: 0, openCount: 0, openTotal: 0 };
-
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const revenue = invoices
-        .filter((i) => i.paid_at && i.paid_at >= startOfMonth)
-        .reduce((s, i) => s + Number(i.total), 0);
-      const open = invoices.filter((i) => i.status === "sent");
-      return { revenue, openCount: open.length, openTotal: open.reduce((s, i) => s + Number(i.total), 0) };
-    },
-    refetchInterval: 60000,
-  });
-
-  const { data: quotationCount, isLoading: loadingQuotations } = useQuery({
-    queryKey: ["admin-quotation-count"],
-    queryFn: async () => {
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { count } = await supabase.from("quotations").select("*", { count: "exact", head: true }).gte("created_at", startOfMonth);
+      const { count } = await db.from("audits").select("*", { count: "exact", head: true }).gte("created_at", iso30d);
       return count ?? 0;
     },
     refetchInterval: 60000,
   });
 
-  // Revenue trend (mock since we may not have 12 months data)
-  const { data: revenueTrend } = useQuery({
-    queryKey: ["admin-revenue-trend"],
+  const { data: bookingsUpcoming, isLoading: loadingBookings } = useQuery({
+    queryKey: ["admin-bookings-kpi"],
     queryFn: async () => {
-      const { data: invoices } = await supabase.from("invoices").select("total, status, paid_at, created_at");
-      const months = Array.from({ length: 12 }, (_, i) => {
-        const d = new Date();
-        d.setMonth(d.getMonth() - (11 - i));
-        return { month: d.toLocaleString("default", { month: "short" }), invoiced: 0, collected: 0 };
-      });
-
-      invoices?.forEach((inv) => {
-        const created = new Date(inv.created_at);
-        const mIdx = months.findIndex((m) =>
-          m.month === created.toLocaleString("default", { month: "short" })
-        );
-        if (mIdx >= 0) {
-          months[mIdx].invoiced += Number(inv.total);
-          if (inv.paid_at) months[mIdx].collected += Number(inv.total);
-        }
-      });
-
-      return months;
+      const { count } = await db.from("strategy_call_bookings").select("*", { count: "exact", head: true }).gte("preferred_date", todayDate);
+      return count ?? 0;
     },
+    refetchInterval: 60000,
   });
 
-  // Lead sources
-  const { data: leadSources } = useQuery({
-    queryKey: ["admin-lead-sources"],
+  const { data: recentLeads, isLoading: loadingRecent } = useQuery({
+    queryKey: ["admin-recent-leads"],
     queryFn: async () => {
-      const { data: contacts } = await supabase.from("contacts").select("source");
-      const sourceCounts: Record<string, number> = {};
-      contacts?.forEach((c) => {
-        const src = c.source || "Direct";
-        sourceCounts[src] = (sourceCounts[src] || 0) + 1;
-      });
-      return Object.entries(sourceCounts).map(([name, value]) => ({ name, value }));
+      const { data } = await db
+        .from("leads")
+        .select("id, name, email, company, service, created_at")
+        .not("email", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(8);
+      return data ?? [];
     },
+    refetchInterval: 60000,
   });
 
-  const formatCurrency = (v: number) => {
-    if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
-    if (v >= 1000) return `₹${(v / 1000).toFixed(0)}K`;
-    return `₹${v}`;
-  };
+  const { data: topPages, isLoading: loadingTopPages } = useQuery({
+    queryKey: ["admin-top-lead-pages"],
+    queryFn: async () => {
+      const { data } = await db.from("leads").select("first_touch").gte("created_at", iso30d);
+      const counts: Record<string, number> = {};
+      (data ?? []).forEach((l: any) => {
+        const ft = l.first_touch;
+        const page = ft?.landing_page || ft?.page || ft?.path;
+        if (page) counts[page] = (counts[page] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8)
+        .map(([page, count]) => ({ page, count }));
+    },
+    refetchInterval: 60000,
+  });
 
   return (
     <div className="space-y-6">
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        <KPICard icon={Users} label="Total Contacts" value={contactStats?.total_contacts ?? 0} loading={loadingContacts} />
-        <KPICard icon={DollarSign} label="Monthly Revenue" value={formatCurrency(invoiceStats?.revenue ?? 0)} loading={loadingInvoices} />
-        <KPICard icon={TrendingUp} label="New Leads (Month)" value={leadsData ?? 0} loading={loadingLeads} />
-        <KPICard icon={Clock} label="This Week" value={contactStats?.this_week_contacts ?? 0} loading={loadingContacts} />
-        <KPICard icon={FileText} label="Open Invoices" value={`${invoiceStats?.openCount ?? 0} (${formatCurrency(invoiceStats?.openTotal ?? 0)})`} loading={loadingInvoices} />
-        <KPICard icon={Send} label="Proposals Sent" value={quotationCount ?? 0} loading={loadingQuotations} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <KPICard
+          icon={Users}
+          label="New Leads"
+          value={leadStats?.last7 ?? 0}
+          sub={`${leadStats?.last30 ?? 0} in 30 days`}
+          to="/dashboard/admin/leads"
+          loading={loadingLeads}
+        />
+        <KPICard
+          icon={Kanban}
+          label="Open Deals"
+          value={dealStats?.count ?? 0}
+          sub={formatCurrency(dealStats?.value ?? 0)}
+          to="/dashboard/admin/crm"
+          loading={loadingDeals}
+        />
+        <KPICard
+          icon={CheckSquare}
+          label="Tasks Due Today"
+          value={taskStats?.dueToday ?? 0}
+          sub={`${taskStats?.overdue ?? 0} overdue`}
+          to="/dashboard/admin/tasks"
+          loading={loadingTasks}
+        />
+        <KPICard
+          icon={MessageCircle}
+          label="Unread WhatsApp"
+          value={unreadWhatsapp ?? 0}
+          to="/dashboard/admin/whatsapp"
+          loading={loadingWa}
+        />
+        <KPICard
+          icon={Mail}
+          label="Emails Sent (30d)"
+          value={emailsSent30d ?? 0}
+          to="/dashboard/admin/email-log"
+          loading={loadingEmails}
+        />
+        <KPICard
+          icon={FileSearch}
+          label="Audits (30d)"
+          value={audits30d ?? 0}
+          to="/dashboard/admin/audits"
+          loading={loadingAudits}
+        />
+        <KPICard
+          icon={CalendarDays}
+          label="Upcoming Bookings"
+          value={bookingsUpcoming ?? 0}
+          to="/dashboard/admin/bookings"
+          loading={loadingBookings}
+        />
       </div>
 
       {/* Live Bloomberg-style activity ticker */}
@@ -145,51 +206,56 @@ export default function DashboardHome() {
         <LiveActivityTicker />
       </Suspense>
 
-      {/* Quick Actions */}
-      <div className="flex flex-wrap gap-3">
-        <Link to="/dashboard/admin/leads">
-          <Button size="sm" className="font-display"><Plus className="w-3 h-3 mr-1" /> Add Lead</Button>
-        </Link>
-        <Link to="/dashboard/admin/billing">
-          <Button size="sm" variant="outline" className="font-display"><Receipt className="w-3 h-3 mr-1" /> Create Invoice</Button>
-        </Link>
-        <Link to="/dashboard/admin/blog">
-          <Button size="sm" variant="outline" className="font-display"><PenLine className="w-3 h-3 mr-1" /> Write Blog Post</Button>
-        </Link>
-      </div>
-
-      {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Revenue Trend */}
+        {/* Recent leads */}
         <div className="card-surface rounded-2xl p-5">
-          <h3 className="font-display font-semibold text-sm text-foreground mb-4">Revenue Trend</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={revenueTrend ?? []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(220,15%,55%)" }} />
-              <YAxis tick={{ fontSize: 11, fill: "hsl(220,15%,55%)" }} />
-              <Tooltip
-                contentStyle={{ background: "hsl(240,12%,8%)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, fontSize: 12 }}
-              />
-              <Line type="monotone" dataKey="invoiced" stroke="hsl(256,90%,62%)" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="collected" stroke="hsl(162,100%,44%)" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+          <h3 className="font-display font-semibold text-sm text-foreground mb-4">Recent Leads</h3>
+          {loadingRecent ? (
+            <div className="space-y-2">
+              {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10 rounded-lg" />)}
+            </div>
+          ) : (recentLeads ?? []).length === 0 ? (
+            <p className="text-sm text-muted-foreground">No leads yet.</p>
+          ) : (
+            <div className="divide-y divide-border/10">
+              {(recentLeads ?? []).map((l: any) => (
+                <Link
+                  key={l.id}
+                  to={`/dashboard/admin/contacts/${encodeURIComponent(l.email)}`}
+                  className="flex items-center justify-between py-2.5 hover:bg-muted/20 rounded-lg px-2 -mx-2 transition-colors"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm text-foreground font-medium truncate">{l.name || l.email}</p>
+                    <p className="text-xs text-muted-foreground truncate">{l.company || l.email} {l.service ? `· ${l.service}` : ""}</p>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground whitespace-nowrap ml-3">
+                    {new Date(l.created_at).toLocaleDateString()}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Lead Sources */}
+        {/* Top lead pages */}
         <div className="card-surface rounded-2xl p-5">
-          <h3 className="font-display font-semibold text-sm text-foreground mb-4">Lead Sources</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={leadSources ?? []} cx="50%" cy="50%" innerRadius={60} outerRadius={90} dataKey="value" nameKey="name" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                {(leadSources ?? []).map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ background: "hsl(240,12%,8%)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, fontSize: 12 }} />
-            </PieChart>
-          </ResponsiveContainer>
+          <h3 className="font-display font-semibold text-sm text-foreground mb-4">Top Lead Pages (30d)</h3>
+          {loadingTopPages ? (
+            <div className="space-y-2">
+              {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-8 rounded-lg" />)}
+            </div>
+          ) : (topPages ?? []).length === 0 ? (
+            <p className="text-sm text-muted-foreground">No landing page data captured yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {(topPages ?? []).map((p) => (
+                <div key={p.page} className="flex items-center justify-between text-sm">
+                  <span className="text-foreground truncate max-w-[70%]" title={p.page}>{p.page}</span>
+                  <span className="text-muted-foreground font-mono text-xs">{p.count}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

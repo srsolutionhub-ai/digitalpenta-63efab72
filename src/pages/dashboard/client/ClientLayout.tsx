@@ -4,13 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, FileText, MessageCircle, LogOut, Calendar, Phone,
-  FolderOpen, BookOpen, Bell,
+  FolderOpen, BookOpen, Bell, FolderKanban, ClipboardCheck, BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const navItems = [
-  { label: "Campaign", icon: LayoutDashboard, path: "/dashboard/client" },
+  { label: "Home", icon: LayoutDashboard, path: "/dashboard/client" },
+  { label: "Projects", icon: FolderKanban, path: "/dashboard/client/projects" },
+  { label: "Approvals", icon: ClipboardCheck, path: "/dashboard/client/approvals" },
+  { label: "Reports", icon: BarChart3, path: "/dashboard/client/reports" },
   { label: "Files", icon: FolderOpen, path: "/dashboard/client/files" },
   { label: "Invoices", icon: FileText, path: "/dashboard/client/invoices" },
   { label: "Knowledge", icon: BookOpen, path: "/dashboard/client/knowledge" },

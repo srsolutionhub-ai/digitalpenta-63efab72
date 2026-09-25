@@ -196,6 +196,44 @@ Deno.serve(async (req) => {
       body: score.summary, type: "lead", link: "/dashboard/admin/leads", related_entity_type: "lead", related_entity_id: row.id,
     }));
   }
+  // Auto-enroll into active "lead_submitted" sequences (best effort, ignore duplicates)
+  tasks.push((async () => {
+    try {
+      const { data: sequences } = await supabase
+        .from("email_sequences")
+        .select("id")
+        .eq("trigger_event", "lead_submitted")
+        .eq("is_active", true);
+      for (const seq of sequences ?? []) {
+        const { data: firstStep } = await supabase
+          .from("email_sequence_steps")
+          .select("step_order, delay_days")
+          .eq("sequence_id", seq.id)
+          .order("step_order", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (!firstStep) continue;
+        const { data: existingEnrollment } = await supabase
+          .from("email_sequence_enrollments")
+          .select("id")
+          .eq("sequence_id", seq.id)
+          .eq("email", lead.email)
+          .maybeSingle();
+        if (existingEnrollment) continue;
+        await supabase.from("email_sequence_enrollments").insert({
+          sequence_id: seq.id,
+          email: lead.email,
+          name: lead.name,
+          current_step: firstStep.step_order,
+          next_send_at: new Date(Date.now() + (firstStep.delay_days ?? 0) * 86_400_000).toISOString(),
+          status: "active",
+        });
+      }
+    } catch (e) {
+      console.error("sequence auto-enroll failed", e);
+    }
+  })());
+
   // @ts-ignore EdgeRuntime is provided by Supabase
   (globalThis.EdgeRuntime?.waitUntil ?? ((p: Promise<unknown>) => p))(Promise.allSettled(tasks));
 
