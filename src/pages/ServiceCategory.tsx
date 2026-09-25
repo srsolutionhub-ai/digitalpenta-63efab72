@@ -1,5 +1,6 @@
 import Layout from "@/components/layout/Layout";
 import { Link, useParams } from "react-router-dom";
+import { getIntentCta } from "@/data/ctaMap";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -221,6 +222,7 @@ const categoryData: Record<string, {
 export default function ServiceCategory() {
   const { category } = useParams<{ category: string }>();
   const data = categoryData[category || ""];
+  const cta = getIntentCta(category);
   const heroRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, { once: true });
   const statsRef = useRef<HTMLDivElement>(null);
@@ -332,13 +334,13 @@ export default function ServiceCategory() {
               />
             </div>
             <div className="mt-8 flex gap-3">
-              <Link to="/get-proposal">
-                <Button size="lg" className="rounded-full px-8 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
-                  Get A Proposal →
+              <Link to={cta.href}>
+                <Button size="lg" data-cta className="rounded-full px-8 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
+                  {cta.primary} →
                 </Button>
               </Link>
               <Link to="/contact">
-                <Button variant="outline" size="lg" className="rounded-full px-8 font-display font-semibold border-border/60">Talk to an Expert</Button>
+                <Button variant="outline" size="lg" className="rounded-full px-8 font-display font-semibold border-border/60">{cta.secondary}</Button>
               </Link>
             </div>
           </motion.div>
@@ -577,7 +579,7 @@ export default function ServiceCategory() {
       >
         <Link to="/get-proposal">
           <Button className="rounded-full px-6 font-display font-bold shadow-2xl shadow-primary/20 bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white hover:opacity-90">
-            Start with {data.title} →
+            {cta.primary} →
           </Button>
         </Link>
       </motion.div>
@@ -594,14 +596,14 @@ export default function ServiceCategory() {
             transition={{ duration: 0.7 }}
           >
             <h2 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mb-4">
-              Ready to Get Started with <span className="text-gradient">{data.title}</span>?
+              Ready to grow with <span className="text-gradient">{data.title}</span>?
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
               Let's build a custom strategy tailored to your business goals and market.
             </p>
-            <Link to="/get-proposal">
-              <Button size="lg" className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
-                Get Your Free Proposal →
+            <Link to={cta.href}>
+              <Button size="lg" data-cta className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] hover:opacity-90 text-white shadow-lg shadow-orange-500/20">
+                {cta.primary} →
               </Button>
             </Link>
             <div className="flex flex-wrap justify-center gap-6 mt-6 text-xs text-muted-foreground">

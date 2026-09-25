@@ -29,7 +29,7 @@
     --secondary-foreground: 220 20% 85%;
 
     --muted: 240 10% 14%;
-    --muted-foreground: 220 15% 55%;
+    --muted-foreground: 220 15% 64%;
 
     --accent: 162 100% 44%;
     --accent-foreground: 240 20% 5%;
@@ -570,3 +570,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* WCAG AA: brand purple as *text* on the dark surface needs a lighter tint
+   (base --primary is 3.7:1 on bg; this tint is ~7:1). Buttons/fills keep --primary. */
+.text-primary { color: hsl(256 100% 78%); }

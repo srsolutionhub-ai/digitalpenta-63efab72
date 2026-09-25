@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { submitLead } from "@/lib/submitLead";
 import SEOHead from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,15 +43,14 @@ export default function DataRequest() {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.from("contacts").insert({
+      await submitLead({
+        form: "data_request",
         name: parsed.data.name,
         email: parsed.data.email,
-        message: `[DSR/${parsed.data.request_type}] ${parsed.data.details || "(no additional details)"}`,
         service: "Data Subject Request",
-        source: "dsr_form",
-        urgency: "high",
+        timeline: "high",
+        message: `[DSR/${parsed.data.request_type}] ${parsed.data.details || "(no additional details)"}`,
       });
-      if (error) throw error;
       setSubmitted(true);
     } catch (e: any) {
       toast.error("Failed to submit. Email support@digitalpenta.com");

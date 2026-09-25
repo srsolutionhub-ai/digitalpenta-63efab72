@@ -3,7 +3,8 @@ import { motion, AnimatePresence, useInView } from "motion/react";
 import { Search, Globe, CheckCircle2, AlertTriangle, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
+import { submitLead as sendLead } from "@/lib/submitLead";
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 
@@ -110,11 +111,15 @@ export default function WebsiteAuditSection() {
     if (!parsed.success) return;
     setSubmitting(true);
     try {
-      await supabase.from("contacts").insert({
-        name: parsed.data.name, email: parsed.data.email, phone: parsed.data.whatsapp,
-        message: `Website Audit Request: ${url}`, source: "Website Audit Tool", service: "SEO Services",
+      await sendLead({
+        form: "audit", name: parsed.data.name, email: parsed.data.email, phone: parsed.data.whatsapp,
+        website: url, service: "SEO Services", message: `Website audit request: ${url}`,
       });
-    } catch {}
+    } catch (err) {
+      setSubmitting(false);
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      return;
+    }
     setLeadSubmitted(true);
     setSubmitting(false);
   };

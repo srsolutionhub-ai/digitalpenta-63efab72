@@ -180,7 +180,8 @@ function handleSubmit(ev: SubmitEvent): void {
   const formId = form.id || form.getAttribute("name") || form.getAttribute("data-form") || "unknown_form";
   const service =
     (form.querySelector('[name="service"]') as HTMLInputElement | null)?.value || undefined;
-  track.generateLead(formId, service);
+  // Attempt only — server-confirmed leads fire `generate_lead` via submitLead().
+  trackEvent("form_submit_attempt", { form_id: formId, service });
 }
 
 let scrollMarks = new Set<number>();

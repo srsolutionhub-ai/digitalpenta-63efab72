@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Mail, Phone, MapPin, MessageCircle, Calendar, Clock, CheckCircle2, Send } from "lucide-react";
 import { useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { supabase } from "@/integrations/supabase/client";
+import { submitLead, LeadError } from "@/lib/submitLead";
 import { toast } from "sonner";
 import contactBanner from "@/assets/contact-banner-graphic.jpg";
 import SEOHead, { breadcrumbSchema, organizationSchema } from "@/components/seo/SEOHead";
@@ -50,6 +50,7 @@ export default function Contact() {
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLDivElement>(null);
+  const startedAt = useRef(Date.now());
   const formInView = useInView(formRef, { once: true });
 
   const validate = () => {
@@ -65,8 +66,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const hp = form.querySelector<HTMLInputElement>('[name="website_url"]');
-    if (hp && hp.value) return;
+    const hp = form.querySelector<HTMLInputElement>('[name="website_url"]')?.value ?? "";
 
     if (!validate()) {
       toast.error("Please fill in all required fields");
@@ -75,46 +75,22 @@ export default function Contact() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("contacts").insert({
+      await submitLead({
+        form: "contact",
         name: formData.name.trim(),
         email: formData.email.trim(),
-        phone: formData.phone.trim() || null,
-        company: formData.company.trim() || null,
+        phone: formData.phone.trim(),
+        company: formData.company.trim(),
         service: formData.service,
-        budget_range: formData.budget || null,
+        budget: formData.budget,
         message: formData.message.trim(),
-        source: "Website Contact Form",
+        hp,
+        startedAt: startedAt.current,
       });
-      if (error) throw error;
-
-      // Send prospect confirmation + team notification (fire-and-forget)
-      supabase.functions.invoke("send-email", {
-        body: {
-          template: "contact-received",
-          to: formData.email.trim(),
-          data: { name: formData.name.trim(), service: formData.service },
-        },
-      }).catch(() => {});
-      supabase.functions.invoke("send-email", {
-        body: {
-          template: "contact-notify-team",
-          to: "support@digitalpenta.com",
-          data: {
-            name: formData.name.trim(),
-            email: formData.email.trim(),
-            phone: formData.phone.trim(),
-            service: formData.service,
-            message: formData.message.trim(),
-            source: "Website Contact Form",
-          },
-        },
-      }).catch(() => {});
-
-
       setSubmitted(true);
       toast.success("Message sent successfully!");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error(err instanceof LeadError ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -152,7 +128,7 @@ export default function Contact() {
         <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <span className="text-xs font-mono text-primary uppercase tracking-widest">Contact Us</span>
+            <span className="text-xs font-mono text-primary uppercase tracking-widest">Request Your Growth Strategy</span>
             <h1 className="font-display font-extrabold text-4xl md:text-5xl text-foreground mt-4 mb-4">
               Contact Digital Penta — Book a <span className="text-gradient">Free Strategy Call</span>
             </h1>
@@ -264,14 +240,14 @@ export default function Contact() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Service Interested In *</label>
-                      <select required value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex min-h-[52px] w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
+                      <select required aria-label="Service interested in" value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex min-h-[52px] w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
                         <option value="">Select a service</option>
                         {services.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Monthly Budget</label>
-                      <select value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      <select aria-label="Monthly budget" value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <option value="">Select budget range</option>
                         {budgets.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>

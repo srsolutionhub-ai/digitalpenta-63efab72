@@ -9,19 +9,19 @@ const plans = [
     name: "Starter", price: "₹9,999", annual: "₹7,999", period: "/month",
     desc: "Perfect for small businesses & startups getting started with digital marketing.",
     features: ["SEO (On-page + Off-page)", "Social Media (2 platforms)", "Monthly Performance Report", "Dedicated Account Manager", "Email Support"],
-    cta: "Get Started", featured: false,
+    cta: "Start My Growth Plan", featured: false,
   },
   {
     name: "Growth", price: "₹24,999", annual: "₹19,999", period: "/month",
     desc: "For scaling brands that want full-funnel marketing with measurable ROI.",
     features: ["Full SEO Suite", "Social Media (3 platforms)", "Google & Meta Ads Management", "Bi-weekly Strategy Calls", "Content Marketing (4 blogs/mo)", "Monthly Analytics Dashboard", "Priority Support"],
-    cta: "Get Started", featured: true, badge: "Most Popular",
+    cta: "Scale With Growth Plan", featured: true, badge: "Most Popular",
   },
   {
     name: "Enterprise", price: "Custom", annual: "Custom", period: "",
     desc: "Full-service, dedicated team with custom strategy for large brands & enterprises.",
     features: ["All Growth Features", "Dedicated Cross-functional Team", "Custom AI & Automation", "PR & Reputation Management", "Weekly Strategy Meetings", "Custom Development", "24/7 Priority Support"],
-    cta: "Contact Us", featured: false,
+    cta: "Request Enterprise Proposal", featured: false,
   },
 ];
 
@@ -56,6 +56,9 @@ export default function PricingSection() {
           <span className={`text-sm font-display font-medium transition-colors ${!annual ? "text-foreground" : "text-muted-foreground"}`}>Monthly</span>
           <button
             onClick={() => setAnnual(!annual)}
+            role="switch"
+            aria-checked={annual}
+            aria-label="Bill annually"
             className="relative w-12 h-6 rounded-full transition-all"
             style={annual
               ? { background: "linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%))", boxShadow: "0 0 16px -2px hsl(256 90% 62% / 0.6)" }

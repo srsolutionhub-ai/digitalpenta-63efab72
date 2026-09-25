@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles, RotateCcw, X, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
+import { submitLead } from "@/lib/submitLead";
 import { toast } from "sonner";
 import SEOHead, { breadcrumbSchema } from "@/components/seo/SEOHead";
 
@@ -220,32 +221,25 @@ export default function GetProposal() {
       const roiNote = roiContext
         ? ` [ROI: channel=${roiContext.channel}, budget=₹${roiContext.budget.toLocaleString("en-IN")}/mo, projRev=₹${Math.round(roiContext.projectedRevenue).toLocaleString("en-IN")}/mo, projLeads=${Math.round(roiContext.projectedLeads)}/mo]`
         : "";
-      const { data: contact, error: contactErr } = await supabase.from("contacts").insert({
+      await submitLead({
+        form: "proposal",
         name: data.name.trim(),
         email: data.email.trim(),
-        phone: data.phone.trim() || null,
-        company: data.company.trim() || null,
-        service: data.services.join(", ") || "Multiple Services",
-        budget_range: data.budget,
-        message: `Goals: ${data.goals.join(", ")}. Timeline: ${data.timeline}. ${data.message}${roiNote}`.trim(),
-        source: roiContext ? "ROI Calculator → Proposal" : "Website Proposal Form",
-      }).select("id").single();
-
-      if (contactErr) throw contactErr;
-
-      await supabase.from("leads").insert({
-        contact_id: contact?.id || null,
+        phone: data.phone.trim(),
+        company: data.company.trim(),
         service: data.services.join(", ") || "Multiple Services",
         budget: data.budget,
         timeline: data.timeline,
+        message: `Goals: ${data.goals.join(", ")}. ${data.message}${roiNote}`.trim(),
+        extra: { goals: data.goals, services: data.services, roi: roiContext ?? null, source: roiContext ? "roi_calculator" : "proposal_form" },
       });
 
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
 
       setSubmitted(true);
       toast.success("Proposal request submitted!");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
