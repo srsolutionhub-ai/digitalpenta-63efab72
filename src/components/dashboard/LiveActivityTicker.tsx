@@ -42,7 +42,7 @@ export default function LiveActivityTicker() {
         supabase.from("contacts").select("id,name,source,service,created_at").order("created_at", { ascending: false }).limit(8),
         supabase.from("ai_chat_sessions").select("id,summary,lead_qualified,created_at").order("created_at", { ascending: false }).limit(8),
         supabase.from("quotations").select("id,quote_number,client_name,total,created_at,source").order("created_at", { ascending: false }).limit(6),
-        supabase.from("audits").select("id,website_url,overall_score,created_at").order("created_at", { ascending: false }).limit(6),
+        supabase.from("audits").select("id,url,overall_score,created_at").order("created_at", { ascending: false }).limit(6),
       ]);
 
       const merged: Event[] = [
@@ -70,7 +70,7 @@ export default function LiveActivityTicker() {
         ...(audits.data ?? []).map((a: any) => ({
           id: `audit-${a.id}`,
           kind: "audit" as const,
-          label: `SEO audit · ${a.website_url?.replace(/^https?:\/\//, "").slice(0, 30)}`,
+          label: `SEO audit · ${a.url?.replace(/^https?:\/\//, "").slice(0, 30)}`,
           meta: a.overall_score != null ? `score ${a.overall_score}` : undefined,
           ts: a.created_at,
         })),

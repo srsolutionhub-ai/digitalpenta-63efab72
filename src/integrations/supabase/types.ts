@@ -3277,6 +3277,7 @@ export type Database = {
         }[]
       }
       task_logged_hours: { Args: { p_task_id: string }; Returns: number }
+      unsubscribe_newsletter: { Args: { _token: string }; Returns: boolean }
       verify_cron_token: { Args: { _token: string }; Returns: boolean }
     }
     Enums: {
