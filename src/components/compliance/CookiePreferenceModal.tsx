@@ -8,6 +8,7 @@ import { useOverlaySlot } from "@/hooks/useOverlaySlot";
 import { setTrackingConsent } from "@/lib/visitorTracking";
 import { setGa4Consent } from "@/lib/ga4";
 import { setMarketingConsent } from "@/lib/marketingTags";
+import { initTrackingIntegrations } from "@/lib/trackingIntegrations";
 
 const STORAGE_KEY = "cookie_consent_v1";
 
@@ -40,6 +41,7 @@ export default function CookiePreferenceModal() {
     if (stored) { setPrefs(stored); applyConsent(stored); }
     else setShowBanner(true);
     (window as any).openCookiePreferences = () => setShowModal(true);
+    initTrackingIntegrations();
   }, []);
 
   const persist = async (next: Prefs) => {

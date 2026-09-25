@@ -17,9 +17,15 @@ declare global {
   }
 }
 
-const GTM_ID = (import.meta.env.VITE_GTM_ID as string | undefined)?.trim() || "";
-const PIXEL_ID = (import.meta.env.VITE_META_PIXEL_ID as string | undefined)?.trim() || "";
-const LI_ID = (import.meta.env.VITE_LINKEDIN_PARTNER_ID as string | undefined)?.trim() || "";
+const ENV_GTM_ID = (import.meta.env.VITE_GTM_ID as string | undefined)?.trim() || "";
+const ENV_PIXEL_ID = (import.meta.env.VITE_META_PIXEL_ID as string | undefined)?.trim() || "";
+const ENV_LI_ID = (import.meta.env.VITE_LINKEDIN_PARTNER_ID as string | undefined)?.trim() || "";
+let dynamicGtmId = "";
+let dynamicPixelId = "";
+let dynamicLiId = "";
+function GTM_ID_(): string { return ENV_GTM_ID || dynamicGtmId; }
+function PIXEL_ID_(): string { return ENV_PIXEL_ID || dynamicPixelId; }
+function LI_ID_(): string { return ENV_LI_ID || dynamicLiId; }
 
 let marketingGranted = false;
 const loaded = { gtm: false, pixel: false, li: false };
@@ -32,36 +38,44 @@ function inject(src: string) {
 }
 
 function loadGtm() {
-  if (loaded.gtm || !/^GTM-[A-Z0-9]+$/.test(GTM_ID)) return;
+  const id = GTM_ID_();
+  if (loaded.gtm || !/^GTM-[A-Z0-9]+$/.test(id)) return;
   loaded.gtm = true;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-  inject(`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`);
+  inject(`https://www.googletagmanager.com/gtm.js?id=${id}`);
 }
 
 function loadPixel() {
-  if (loaded.pixel || !/^\d+$/.test(PIXEL_ID)) return;
+  const id = PIXEL_ID_();
+  if (loaded.pixel || !/^\d+$/.test(id)) return;
   loaded.pixel = true;
   const q: unknown[] = [];
   const fbq = ((...a: unknown[]) => { q.push(a); }) as NonNullable<Window["fbq"]>;
   fbq.queue = q; fbq.loaded = true; fbq.version = "2.0";
   window.fbq = fbq; window._fbq = fbq;
   inject("https://connect.facebook.net/en_US/fbevents.js");
-  fbq("init", PIXEL_ID);
+  fbq("init", id);
   fbq("track", "PageView");
 }
 
 function loadLinkedIn() {
-  if (loaded.li || !/^\d+$/.test(LI_ID)) return;
+  const id = LI_ID_();
+  if (loaded.li || !/^\d+$/.test(id)) return;
   loaded.li = true;
-  window._linkedin_partner_id = LI_ID;
-  window._linkedin_data_partner_ids = [...(window._linkedin_data_partner_ids ?? []), LI_ID];
+  window._linkedin_partner_id = id;
+  window._linkedin_data_partner_ids = [...(window._linkedin_data_partner_ids ?? []), id];
   const q: unknown[] = [];
   const l = ((...a: unknown[]) => { q.push(a); }) as NonNullable<Window["lintrk"]>;
   l.q = q;
   window.lintrk = l;
   inject("https://snap.licdn.com/li.lms-analytics/insight.min.js");
 }
+
+/** Applies IDs discovered via integration_settings (DB-configured tags). Env vars always win. */
+export function setGtmId(id: string): void { if (!ENV_GTM_ID && id) { dynamicGtmId = id; if (marketingGranted) loadGtm(); } }
+export function setPixelId(id: string): void { if (!ENV_PIXEL_ID && id) { dynamicPixelId = id; if (marketingGranted) loadPixel(); } }
+export function setLinkedInId(id: string): void { if (!ENV_LI_ID && id) { dynamicLiId = id; if (marketingGranted) loadLinkedIn(); } }
 
 /** Called from the cookie banner when marketing consent changes. */
 export function setMarketingConsent(granted: boolean): void {
@@ -86,4 +100,4 @@ export function forwardConversionToAds(name: string, params: Record<string, unkn
   }
 }
 
-export const marketingTagsConfigured = { gtm: !!GTM_ID, pixel: !!PIXEL_ID, linkedin: !!LI_ID };
+export const marketingTagsConfigured = { gtm: !!GTM_ID_(), pixel: !!PIXEL_ID_(), linkedin: !!LI_ID_() };
