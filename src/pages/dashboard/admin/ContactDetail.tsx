@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, FileSearch, Sparkles, CalendarDays, Mail, MessageSquare, StickyNote, UserPlus, CheckSquare } from "lucide-react";
+import { ArrowLeft, FileSearch, Sparkles, CalendarDays, Mail, MessageSquare, StickyNote, UserPlus, CheckSquare, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 const db = supabase as any;
@@ -32,6 +32,39 @@ export default function ContactDetail() {
         db.from("crm_deals").select("id,title,value,currency,created_at,closed_at"),
       ]);
       const lead = leads.data?.[0];
+
+      // ── Website visits: resolve visitor_id(s) linked to this email via leads.meta_data ──
+      const visitorIds: string[] = Array.from(new Set(
+        (leads.data ?? []).map((l: any) => l?.meta_data?.visitor_id).filter(Boolean),
+      ));
+      let visits: any[] = [];
+      let sessions: { sessionId: string; start: string; source: string; device: string; pages: { url: string; at: string }[] }[] = [];
+      if (visitorIds.length) {
+        const { data: interactions } = await db
+          .from("visitor_interactions")
+          .select("visitor_id, action, page_url, data, timestamp, session_id")
+          .in("visitor_id", visitorIds)
+          .order("timestamp", { ascending: false })
+          .limit(300);
+        visits = interactions ?? [];
+        const bySession = new Map<string, typeof visits>();
+        visits.forEach((v) => {
+          const key = v.session_id ?? `no-session-${v.visitor_id}`;
+          if (!bySession.has(key)) bySession.set(key, []);
+          bySession.get(key)!.push(v);
+        });
+        sessions = Array.from(bySession.entries()).map(([sessionId, rows]) => {
+          const sorted = [...rows].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+          const first = sorted[0];
+          return {
+            sessionId,
+            start: first.timestamp,
+            source: first.data?.utm_source || first.data?.referrer || "direct",
+            device: first.data?.device_type || first.data?.deviceType || "—",
+            pages: sorted.filter((r) => r.page_url).map((r) => ({ url: r.page_url, at: r.timestamp })),
+          };
+        }).sort((a, b) => b.start.localeCompare(a.start));
+      }
       const items: Item[] = [];
       (leads.data ?? []).forEach((l: any) => items.push({ at: l.created_at, kind: "lead", icon: UserPlus, title: `Enquiry: ${l.service ?? "general"}`, detail: [l.notes, l.source && `Source: ${l.source}`, l.utm_campaign && `Campaign: ${l.utm_campaign}`].filter(Boolean).join(" · ") }));
       (audits.data ?? []).forEach((a: any) => items.push({ at: a.created_at, kind: "audit", icon: FileSearch, title: `SEO audit of ${a.url}`, detail: a.overall_score != null ? `Score ${a.overall_score}` : a.status, link: `/dashboard/admin/audits/${a.id}` }));
@@ -39,11 +72,15 @@ export default function ContactDetail() {
       (bookings.data ?? []).forEach((b: any) => items.push({ at: b.created_at, kind: "booking", icon: CalendarDays, title: `Booked a call for ${b.preferred_date} (${b.preferred_slot})`, detail: b.status }));
       (emails.data ?? []).forEach((e: any) => items.push({ at: e.created_at, kind: "email", icon: Mail, title: `Email: ${e.subject ?? e.template}`, detail: e.status }));
       (notes.data ?? []).forEach((n: any) => items.push({ at: n.created_at, kind: "note", icon: StickyNote, title: "Note", detail: n.body }));
+      visits.forEach((v: any) => {
+        if (!v.page_url) return;
+        items.push({ at: v.timestamp, kind: "visit", icon: Globe, title: `Viewed ${v.page_url.replace(/^https?:\/\/[^/]+/, "") || "/"}`, detail: v.action !== "page_view" ? v.action : undefined });
+      });
       items.sort((a, b) => b.at.localeCompare(a.at));
       const a0 = audits.data?.[0];
       return {
         profile: { name: lead?.name ?? a0?.visitor_name, company: lead?.company ?? a0?.visitor_company, phone: lead?.phone ?? a0?.visitor_phone, website: lead?.website, score: lead?.lead_score, status: lead?.status, summary: lead?.ai_summary, firstTouch: lead?.first_touch, utm: lead?.utm },
-        items, tasks: tasks.data ?? [], phone: lead?.phone ?? a0?.visitor_phone,
+        items, tasks: tasks.data ?? [], phone: lead?.phone ?? a0?.visitor_phone, sessions,
       };
     },
   });
@@ -88,6 +125,30 @@ export default function ContactDetail() {
           <div className="rounded-xl border border-border/30 bg-card p-4 space-y-2">
             <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a note about this contact…" rows={2} />
             <Button size="sm" onClick={addNote} disabled={!note.trim()}>Save note</Button>
+          </div>
+          <div className="rounded-xl border border-border/30 bg-card p-4">
+            <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2"><Globe className="w-4 h-4 text-primary" />Website visits</h2>
+            {!isLoading && !data?.sessions?.length && <p className="text-sm text-muted-foreground">No tracked website visits linked to this contact yet.</p>}
+            {!!data?.sessions?.length && (
+              <div className="space-y-3 mb-2">
+                {data.sessions.map((s) => (
+                  <div key={s.sessionId} className="rounded-lg border border-border/20 p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground mb-1.5">
+                      <span>{new Date(s.start).toLocaleString()}</span>
+                      <span className="font-mono">{s.source} · {s.device} · {s.pages.length} page{s.pages.length === 1 ? "" : "s"}</span>
+                    </div>
+                    <ul className="text-sm text-foreground space-y-0.5">
+                      {s.pages.map((pg, i) => (
+                        <li key={i} className="flex justify-between gap-3">
+                          <span className="truncate">{pg.url.replace(/^https?:\/\/[^/]+/, "") || "/"}</span>
+                          <span className="text-[11px] text-muted-foreground/70 flex-shrink-0">{new Date(pg.at).toLocaleTimeString()}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="rounded-xl border border-border/30 bg-card p-4">
             <h2 className="font-semibold text-foreground mb-3">Activity timeline</h2>

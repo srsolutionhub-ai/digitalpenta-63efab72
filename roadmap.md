@@ -1,12 +1,13 @@
 # Roadmap — Sprint 9 (Agency CRM)
 
-- [x] CRM core: Contacts (merged by email), contact profile + timeline, notes, Tasks page
-- [x] Tracking integrations page (GA4 / GTM / Meta Pixel / LinkedIn slots — IDs on hold)
-- [x] WhatsApp auto-reply rules + delivery receipts + 30-day delivery stats
-- [ ] Visitor journey per contact (link anonymous visits on form submit)
-- [ ] Email sequences (day 0/3/7) with open/click tracking
-- [ ] WhatsApp broadcasts to segments, template approval view
-- [ ] Client portal: projects, approvals, monthly reports, manager messages
-- [ ] Admin home real KPIs, global search, team & roles page
-- [ ] Full signed-in QA (admin + client)
-- Blocked: WhatsApp needs WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user
+- [x] CRM core: Contacts, contact profile + timeline, notes, Tasks
+- [x] Tracking integrations page + consent-gated tag loading
+- [x] WhatsApp auto-replies, delivery receipts, inbox upgrade, templates sync, broadcasts
+- [x] Visitor journey per contact + Audience analytics page
+- [x] Email sequences with open/click tracking, auto-enroll on lead submit
+- [x] Client portal: projects, approvals, reports; staff Client Deliverables page
+- [x] Admin home real KPIs, global search (Ctrl/Cmd+K), Team & Roles
+- [ ] Signed-in QA (admin + client) — needs user to sign in (external Supabase, agent can't mint session)
+- [ ] Scheduled sequence sending (cron) — currently "Run now" button
+- [ ] Unsubscribe link inside sequence emails
+- Blocked: WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user

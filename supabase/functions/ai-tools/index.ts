@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { tool, inputs, email, name, company, phone, utm } = body ?? {};
+    const { tool, inputs, email, name, company, phone, utm, visitorId } = body ?? {};
 
     if (!tool || !VALID_TOOLS.has(tool)) {
       return new Response(JSON.stringify({ error: "Invalid tool" }), {
@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
       name: name ?? null,
       company: company ?? null,
       phone: phone ?? null,
-      inputs,
+      inputs: typeof visitorId === "string" && visitorId ? { ...inputs, visitor_id: visitorId.slice(0, 64) } : inputs,
       output,
       ip_hash: ipHash,
       user_agent: userAgent,

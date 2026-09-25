@@ -26,6 +26,7 @@ const Body = z.object({
   utm: z.record(z.string().max(200)).optional(),
   first_touch: z.record(z.string().max(500)).optional(),
   extra: z.record(z.unknown()).optional(),
+  visitor_id: z.string().trim().max(64).optional(),
   // spam signals
   hp: z.string().max(200).optional(),          // honeypot, must be empty
   started_at: z.number().optional(),           // ms timestamp form was rendered
@@ -172,7 +173,7 @@ Deno.serve(async (req) => {
     status: "new", assigned_to, dedupe_key,
     utm: lead.utm ?? null, first_touch: lead.first_touch ?? null,
     utm_source: lead.utm?.utm_source ?? null, utm_medium: lead.utm?.utm_medium ?? null, utm_campaign: lead.utm?.utm_campaign ?? null,
-    meta_data: { page: lead.page, extra: lead.extra ?? null },
+    meta_data: { page: lead.page, extra: lead.extra ?? null, visitor_id: lead.visitor_id ?? null },
   }).select("id").single();
   if (error) {
     console.error("lead insert failed", error);
@@ -196,6 +197,44 @@ Deno.serve(async (req) => {
       body: score.summary, type: "lead", link: "/dashboard/admin/leads", related_entity_type: "lead", related_entity_id: row.id,
     }));
   }
+  // Auto-enroll into active "lead_submitted" sequences (best effort, ignore duplicates)
+  tasks.push((async () => {
+    try {
+      const { data: sequences } = await supabase
+        .from("email_sequences")
+        .select("id")
+        .eq("trigger_event", "lead_submitted")
+        .eq("is_active", true);
+      for (const seq of sequences ?? []) {
+        const { data: firstStep } = await supabase
+          .from("email_sequence_steps")
+          .select("step_order, delay_days")
+          .eq("sequence_id", seq.id)
+          .order("step_order", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (!firstStep) continue;
+        const { data: existingEnrollment } = await supabase
+          .from("email_sequence_enrollments")
+          .select("id")
+          .eq("sequence_id", seq.id)
+          .eq("email", lead.email)
+          .maybeSingle();
+        if (existingEnrollment) continue;
+        await supabase.from("email_sequence_enrollments").insert({
+          sequence_id: seq.id,
+          email: lead.email,
+          name: lead.name,
+          current_step: firstStep.step_order,
+          next_send_at: new Date(Date.now() + (firstStep.delay_days ?? 0) * 86_400_000).toISOString(),
+          status: "active",
+        });
+      }
+    } catch (e) {
+      console.error("sequence auto-enroll failed", e);
+    }
+  })());
+
   // @ts-ignore EdgeRuntime is provided by Supabase
   (globalThis.EdgeRuntime?.waitUntil ?? ((p: Promise<unknown>) => p))(Promise.allSettled(tasks));
 

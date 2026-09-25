@@ -65,6 +65,15 @@ const ContactDetail = lazyRetry(() => import("./pages/dashboard/admin/ContactDet
 const CrmTasks = lazyRetry(() => import("./pages/dashboard/admin/Tasks"));
 const Integrations = lazyRetry(() => import("./pages/dashboard/admin/Integrations"));
 const WhatsAppBot = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppBot"));
+const EmailSequences = lazyRetry(() => import("./pages/dashboard/admin/EmailSequences"));
+const TeamRoles = lazyRetry(() => import("./pages/dashboard/admin/TeamRoles"));
+const WhatsAppTemplates = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppTemplates"));
+const WhatsAppBroadcasts = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppBroadcasts"));
+const AudienceAnalytics = lazyRetry(() => import("./pages/dashboard/admin/AudienceAnalytics"));
+const ClientDeliverables = lazyRetry(() => import("./pages/dashboard/admin/ClientDeliverables"));
+const ClientProjects = lazyRetry(() => import("./pages/dashboard/client/ClientProjects"));
+const ClientApprovals = lazyRetry(() => import("./pages/dashboard/client/ClientApprovals"));
+const ClientReports = lazyRetry(() => import("./pages/dashboard/client/ClientReports"));
 const Billing = lazyRetry(() => import("./pages/dashboard/admin/Billing"));
 const BlogManager = lazyRetry(() => import("./pages/dashboard/admin/BlogManager"));
 const SettingsPage = lazyRetry(() => import("./pages/dashboard/admin/SettingsPage"));
@@ -196,6 +205,12 @@ function AnimatedRoutes() {
               <Route path="tasks" element={<CrmTasks />} />
               <Route path="integrations" element={<Integrations />} />
               <Route path="whatsapp/bot" element={<WhatsAppBot />} />
+              <Route path="whatsapp/templates" element={<WhatsAppTemplates />} />
+              <Route path="whatsapp/broadcasts" element={<WhatsAppBroadcasts />} />
+              <Route path="sequences" element={<EmailSequences />} />
+              <Route path="team" element={<TeamRoles />} />
+              <Route path="audience" element={<AudienceAnalytics />} />
+              <Route path="deliverables" element={<ClientDeliverables />} />
               <Route path="billing" element={<Billing />} />
               <Route path="blog" element={<BlogManager />} />
               <Route path="settings" element={<SettingsPage />} />
@@ -228,6 +243,9 @@ function AnimatedRoutes() {
             >
               <Route index element={<ClientHome />} />
               <Route path="invoices" element={<ClientInvoices />} />
+              <Route path="projects" element={<ClientProjects />} />
+              <Route path="approvals" element={<ClientApprovals />} />
+              <Route path="reports" element={<ClientReports />} />
               <Route path="support" element={<ClientSupport />} />
               <Route path="files" element={<ClientFiles />} />
               <Route path="knowledge" element={<ClientKnowledge />} />
