@@ -18,7 +18,8 @@
     "crawl:links": "node scripts/crawl-internal-links.mjs",
     "budget": "node scripts/check-bundle-budget.mjs",
     "postbuild": "node scripts/check-bundle-budget.mjs",
-    "verify": "npm run lint && npm run validate:schema && npm run seo:qa && npm run build && npm run test"
+    "verify": "npm run lint && npm run validate:schema && npm run seo:qa && npm run build && npm run test",
+    "a11y": "python3 scripts/a11y-scan.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
