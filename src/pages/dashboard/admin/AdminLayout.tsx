@@ -7,9 +7,10 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
-  Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot, Plug,
+  Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot, Plug, Search,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import GlobalSearch from "@/components/admin/GlobalSearch";
 
 const navGroups = [
   {
@@ -61,10 +62,22 @@ export default function AdminLayout() {
   const { user, role, signOut } = useAuth();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem("admin_sidebar_collapsed") === "true");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("admin_sidebar_collapsed", String(collapsed));
   }, [collapsed]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications", user?.id],
@@ -147,6 +160,14 @@ export default function AdminLayout() {
         <header className="h-16 border-b border-border/20 flex items-center justify-between px-6 sticky top-0 bg-background/80 backdrop-blur-md z-20">
           <h2 className="font-display font-semibold text-foreground text-sm">Agency OS</h2>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border/30 hover:bg-muted/40 transition-colors"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Search…</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-muted/50 px-1.5 py-0.5 rounded">⌘K</kbd>
+            </button>
             <Popover>
               <PopoverTrigger asChild>
                 <button className="relative text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted/40 transition-colors">
@@ -198,6 +219,8 @@ export default function AdminLayout() {
         <main className="p-6">
           <Outlet />
         </main>
+
+        <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
       </div>
     </div>
   );
