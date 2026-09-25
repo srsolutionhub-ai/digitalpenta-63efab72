@@ -201,12 +201,18 @@ export default function TestimonialsSection() {
               <button
                 key={i}
                 onClick={() => emblaApi?.scrollTo(i)}
-                className={`h-1.5 rounded-full transition-all ${i === selectedIndex ? "w-7" : "w-1.5"}`}
-                style={i === selectedIndex
-                  ? { background: "linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%))", boxShadow: "0 0 8px hsl(256 90% 62% / 0.7)" }
-                  : { background: "rgba(255,255,255,0.18)" }}
+                className="min-h-6 min-w-6 inline-flex items-center justify-center"
                 aria-label={`Go to slide ${i + 1}`}
-              />
+                aria-current={i === selectedIndex ? "true" : undefined}
+              >
+                <span
+                  aria-hidden
+                  className={`block h-1.5 rounded-full transition-all ${i === selectedIndex ? "w-7" : "w-1.5"}`}
+                  style={i === selectedIndex
+                    ? { background: "linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%))", boxShadow: "0 0 8px hsl(256 90% 62% / 0.7)" }
+                    : { background: "rgba(255,255,255,0.18)" }}
+                />
+              </button>
             ))}
           </div>
         </div>
