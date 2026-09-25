@@ -13,13 +13,8 @@ export default function Unsubscribe() {
   useEffect(() => {
     (async () => {
       if (!token) { setState("error"); return; }
-      const { error, data } = await supabase
-        .from("newsletter_subscribers")
-        .update({ unsubscribed_at: new Date().toISOString(), status: "unsubscribed" as any })
-        .eq("unsub_token", token)
-        .select("id")
-        .maybeSingle();
-      if (error || !data) setState("error");
+      const { error, data } = await supabase.functions.invoke("newsletter-unsubscribe", { body: { token } });
+      if (error || !data?.ok) setState("error");
       else setState("ok");
     })();
   }, [token]);

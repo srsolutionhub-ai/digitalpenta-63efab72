@@ -30,10 +30,10 @@ Deno.serve(async (req) => {
     if (!allowed) return json({ error: "Forbidden" }, 403);
 
     const { data: settings } = await supa.from("whatsapp_settings").select("*").maybeSingle();
-    if (!settings?.business_account_id) return json({ error: "WhatsApp Business Account ID not configured. Finish setup first." }, 400);
-
     const accessToken = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-    if (!accessToken) return json({ error: "WHATSAPP_ACCESS_TOKEN secret not set" }, 400);
+    if (!settings?.business_account_id || !accessToken) {
+      return json({ error: "WhatsApp not connected yet", code: "whatsapp_not_connected" }, 400);
+    }
 
     const url = `https://graph.facebook.com/v20.0/${settings.business_account_id}/message_templates?fields=name,category,language,status,components,id&limit=250`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });

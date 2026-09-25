@@ -150,8 +150,9 @@ Deno.serve(async (req) => {
     if (!broadcast_id) return json({ error: "broadcast_id required" }, 400);
 
     const { data: settings } = await supa.from("whatsapp_settings").select("phone_number_id").maybeSingle();
-    if (!settings?.phone_number_id) return json({ error: "WhatsApp not configured" }, 400);
-    if (!Deno.env.get("WHATSAPP_ACCESS_TOKEN")) return json({ error: "WHATSAPP_ACCESS_TOKEN secret not set" }, 400);
+    if (!settings?.phone_number_id || !Deno.env.get("WHATSAPP_ACCESS_TOKEN")) {
+      return json({ error: "WhatsApp not connected yet", code: "whatsapp_not_connected" }, 400);
+    }
 
     // Run in the background so large broadcasts don't hit the request timeout;
     // progress is tracked via wa_broadcasts.sent_count/failed_count/status.

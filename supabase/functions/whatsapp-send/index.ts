@@ -40,13 +40,9 @@ Deno.serve(async (req) => {
     }
 
     const { data: settings } = await supa.from("whatsapp_settings").select("*").maybeSingle();
-    if (!settings || settings.status !== "verified") {
-      return new Response(JSON.stringify({ error: "WhatsApp not configured" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
     const accessToken = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-    if (!accessToken) {
-      return new Response(JSON.stringify({ error: "WHATSAPP_ACCESS_TOKEN secret not set" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!settings || !settings.phone_number_id || settings.status !== "verified" || !accessToken) {
+      return new Response(JSON.stringify({ error: "WhatsApp not connected yet", code: "whatsapp_not_connected" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: conv } = await supa.from("whatsapp_conversations").select("phone_number").eq("id", conversation_id).single();
