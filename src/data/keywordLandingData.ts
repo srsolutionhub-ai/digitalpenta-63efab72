@@ -36,7 +36,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     slug: "seo-agency-bangalore",
     primaryKeyword: "SEO agency Bangalore",
     city: "Bangalore",
-    metaTitle: "SEO Agency Bangalore | Rank #1 on Google | Digital Penta",
+    metaTitle: "SEO Agency Bangalore | Rank Higher on Google | Digital Penta",
     metaDescription:
       "Bangalore's top SEO agency. Technical SEO, content & link building for SaaS, tech & e-commerce brands. 300%+ organic growth. Free audit.",
     h1: "SEO Agency in Bangalore That Actually Ranks You #1",
@@ -146,7 +146,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     slug: "seo-company-mumbai",
     primaryKeyword: "SEO company Mumbai",
     city: "Mumbai",
-    metaTitle: "SEO Company Mumbai | Rank #1 on Google | Digital Penta",
+    metaTitle: "SEO Company Mumbai | Rank Higher on Google | Digital Penta",
     metaDescription:
       "Mumbai's leading SEO company. Technical SEO, content & DR70+ links for BFSI, e-commerce & D2C brands. 4x organic traffic in 6 months. Free audit.",
     h1: "SEO Company in Mumbai That Drives Revenue, Not Just Rankings",
@@ -479,7 +479,7 @@ const keywordLandingPages: KeywordLandingData[] = [
       "Dubai's bilingual (English + Arabic) SEO agency. Technical SEO, Arabic content, GCC link building. 5x organic growth for Dubai brands. Free audit.",
     h1: "SEO Agency in Dubai That Wins Google in English & Arabic",
     heroSubhead:
-      "We help Dubai real estate, hospitality, e-commerce and luxury brands rank #1 on Google in both English and Arabic — through bilingual content engines, technical SEO and GCC-grade digital PR.",
+      "We help Dubai real estate, hospitality, e-commerce and luxury brands rank higher on Google in both English and Arabic — through bilingual content engines, technical SEO and GCC-grade digital PR.",
     bullets: [
       { title: "Bilingual SEO Strategy", desc: "Parallel English + Arabic content stacks with proper hreflang, RTL UX and Arabic keyword research." },
       { title: "Dubai-Specific Technical SEO", desc: "Schema, Core Web Vitals and crawl architecture engineered for the Dubai SERP — including local entity signals." },

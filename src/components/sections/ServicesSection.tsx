@@ -12,7 +12,7 @@ import iconBrand from "@/assets/icon-brand.png";
 const pillars = [
   {
     title: "SEO & Content Marketing",
-    desc: "Rank #1 on Google and drive organic traffic that converts. Local SEO, technical audits & content strategies tailored for Indian markets.",
+    desc: "Rank higher on Google and drive organic traffic that converts. Local SEO, technical audits & content strategies tailored for Indian markets.",
     href: "/services/digital-marketing/seo",
     icon: iconSeo,
     accent: "from-violet-500/20 to-cyan-500/10",

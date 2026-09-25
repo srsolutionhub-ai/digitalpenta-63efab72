@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import NotFound from "@/pages/NotFound";
 import { Link, useParams } from "react-router-dom";
 import { CheckCircle2, ArrowRight, ChevronRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,16 +23,7 @@ export default function KeywordLandingPage() {
   const data = getKeywordLanding(keyword || "");
 
   if (!data) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Page not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
 
   const canonical = `https://digitalpenta.com/lp/${data.slug}`;

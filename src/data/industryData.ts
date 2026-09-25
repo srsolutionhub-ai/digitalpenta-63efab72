@@ -16,7 +16,7 @@ export const industryData: Record<string, IndustryData> = {
     description: "From lead generation to virtual tours and CRM automation — we help real estate developers and agencies dominate their market digitally.",
     challenges: ["High competition for leads", "Long sales cycles", "Poor lead quality from generic campaigns", "Lack of digital presence in MENA markets", "Inefficient manual follow-up processes"],
     services: [
-      { title: "SEO & Local Search", desc: "Rank #1 for property searches in your target cities", href: "/services/digital-marketing/seo" },
+      { title: "SEO & Local Search", desc: "Rank higher for property searches in your target cities", href: "/services/digital-marketing/seo" },
       { title: "PPC for Real Estate", desc: "High-intent lead generation via Google & Meta Ads", href: "/services/digital-marketing/ppc" },
       { title: "Website Development", desc: "Property listing platforms with IDX integration", href: "/services/development/website" },
       { title: "CRM Automation", desc: "Automated lead nurturing and follow-up sequences", href: "/services/automation/crm" },

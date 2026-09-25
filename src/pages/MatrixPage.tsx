@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import NotFound from "@/pages/NotFound";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { CheckCircle2, MapPin, Star, ArrowRight, Building2 } from "lucide-react";
@@ -14,8 +15,6 @@ import SEOHead, {
 } from "@/components/seo/SEOHead";
 
 import RelatedLinks from "@/components/seo/RelatedLinks";
-import CitySeoContent from "@/components/seo/CitySeoContent";
-import CityDepthSection from "@/components/seo/CityDepthSection";
 import { getCityDepth } from "@/data/cityDepth";
 
 
@@ -46,30 +45,10 @@ export default function MatrixPage() {
   // 404 if base combo missing OR if an intent slug was supplied that's invalid /
   // doesn't apply to this service (e.g. /seo/delhi/for-saas where SaaS isn't allowed).
   if (!basePage) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Page not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
   if (params.intent && (!intent || !intentAppliesToService(intent, basePage.service.slug))) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Page not found</h1>
-            <Link to={`/${basePage.service.slug}/${basePage.city.slug}`} className="text-primary text-sm mt-4 inline-block">
-              ← Back to {basePage.service.name} in {basePage.city.city}
-            </Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
 
   const { service: svc, city: cty, faqs: baseFaqs } = basePage;
@@ -95,7 +74,9 @@ export default function MatrixPage() {
   const heroSubhead = intent
     ? `${svc.longName} for the ${cty.city} ${intent.intentNoun} market. ${intent.angle} ${cty.marketAngle}`
     : basePage.heroSubhead;
-  const depthFaqs = intent ? [] : (getCityDepth(cty.slug)?.faqs ?? []);
+  const depth = getCityDepth(cty.slug);
+  const budgetRow = depth?.budgets.find(b => svc.channelMatch.test(b.channel));
+  const approach = svc.approach.map(a => ({ ...a, desc: a.desc.split("{city}").join(cty.city) }));
   const faqs = intent
     ? [
         {
@@ -104,7 +85,7 @@ export default function MatrixPage() {
         },
         ...baseFaqs,
       ]
-    : [...baseFaqs, ...depthFaqs];
+    : baseFaqs;
 
 
   /* 40-60 word factual answer to the query behind this page. Composed from the
@@ -256,6 +237,7 @@ export default function MatrixPage() {
             <nav aria-label="On this page" className="mt-6 flex flex-wrap gap-2">
               {[
                 { href: "#whats-included", label: "What's included" },
+                { href: "#plan", label: "90-day plan" },
                 { href: "#local-market", label: `${cty.city} market` },
                 { href: "#faqs", label: "Pricing & FAQs" },
               ].map(l => (
@@ -315,6 +297,27 @@ export default function MatrixPage() {
         </div>
       </section>
 
+      {/* Service-specific 90-day plan */}
+      <section id="plan" className="py-20 border-t border-border/30 scroll-mt-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mb-10">
+            <p className="type-label text-primary mb-3 font-mono">How we work</p>
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground">
+              Your first 90 days of {svc.name} in {cty.city}
+            </h2>
+          </div>
+          <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {approach.map(a => (
+              <li key={a.title} className="card-premium p-6">
+                <p className="text-xs font-mono text-primary mb-2">{a.phase}</p>
+                <h3 className="font-display font-semibold text-foreground mb-2">{a.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* Industries */}
       <section className="py-16 bg-card/20 border-y border-border/30">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -349,19 +352,35 @@ export default function MatrixPage() {
         </div>
       </section>
 
-      {/* City keyword-depth block (local SERP + AEO) */}
-      <div id="local-market" className="scroll-mt-24" />
-      <CitySeoContent
-        city={cty.city}
-        citySlug={cty.slug}
-        country={cty.countryName}
-        industries={cty.industries ?? []}
-        services={[svc.name, "SEO", "Google Ads", "Social Media Marketing", "Web Development", "AI Automation"]}
-      />
-
-      {/* Hand-written market depth for priority (high-impression) cities */}
-      {!intent && <CityDepthSection citySlug={cty.slug} city={cty.city} />}
-
+      {/* Local market summary — kept short and service-specific on purpose.
+          The full city guide lives on /locations/:city; repeating it here made
+          the five service pages for one city ~65% identical. */}
+      <section id="local-market" className="py-16 border-t border-border/20 scroll-mt-24">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-4">
+            {svc.name} in the {cty.city} market
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-6">{cty.marketAngle}</p>
+          {budgetRow && (
+            <div className="card-premium p-5 mb-6">
+              <p className="type-label font-mono text-primary mb-1">Typical {budgetRow.channel} budget in {cty.city}</p>
+              <p className="font-display font-semibold text-foreground">{budgetRow.range}</p>
+              <p className="text-sm text-muted-foreground mt-1">{budgetRow.note}</p>
+            </div>
+          )}
+          {svc.slug === "seo" && depth?.serpReality && (
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{depth.serpReality}</p>
+          )}
+          {depth && depth.districts.length > 0 && (
+            <p className="text-sm text-muted-foreground mb-6">
+              Areas we serve: {depth.districts.join(", ")}.
+            </p>
+          )}
+          <Link to={`/locations/${cty.slug}`} className="inline-flex items-center gap-1 text-primary text-sm font-medium">
+            Full guide: digital marketing agency in {cty.city} <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
 
       {/* Related links */}
 

@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import NotFound from "@/pages/NotFound";
 import { Link, useParams } from "react-router-dom";
 import { getIntentCta } from "@/data/ctaMap";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
@@ -231,20 +232,11 @@ export default function ServiceCategory() {
   const processInView = useInView(processRef, { once: true });
 
   if (!data) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Service not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
 
   const canonical = `https://digitalpenta.com/services/${category}`;
-  const title = `${data.title} Services in India | Delhi Agency | Digital Penta`;
+  const title = `${data.title} Services in India & Dubai | Digital Penta`;
   const description = data.description.length > 155
     ? `${data.description.slice(0, 152).trim()}...`
     : data.description;
@@ -270,7 +262,7 @@ export default function ServiceCategory() {
             url: canonical,
             serviceType: data.title,
             category: "Digital Marketing",
-            areaServed: ["India", "United Arab Emirates", "Saudi Arabia", "Qatar", "Bahrain"],
+            areaServed: ["India", "United Arab Emirates", "Saudi Arabia", "Qatar", "Bahrain", "United States", "United Kingdom"],
             offers: data.subServices.map((s) => ({
               name: s.title,
               description: s.desc,
@@ -320,10 +312,10 @@ export default function ServiceCategory() {
             <span className={`text-xs font-mono uppercase tracking-widest ${data.accentClass}`}>{data.title}</span>
             <h1 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-foreground mt-4 mb-6">
               {data.title} Services
-              <span className="block text-gradient text-2xl md:text-3xl lg:text-4xl mt-3 font-semibold">
-                {data.tagline}
-              </span>
             </h1>
+            <p className="text-gradient text-2xl md:text-3xl lg:text-4xl -mt-3 mb-6 font-display font-semibold">
+              {data.tagline}
+            </p>
 
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">{data.description}</p>
             <div className="mt-6">

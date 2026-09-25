@@ -23,7 +23,7 @@ const subServices: SubServiceData[] = [
     title: "SEO Services",
     metaTitle: "SEO Agency in Delhi, Mumbai, India | Digital Penta",
     metaDescription: "Top-rated SEO agency in India. Technical SEO, content strategy & link building that delivers 300%+ organic growth. Trusted by 500+ brands. Free audit.",
-    heroTagline: "Rank #1 on Google. Own Your Market.",
+    heroTagline: "Rank Higher on Google. Own Your Market.",
     heroDescription: "We build search dominance for ambitious brands — combining technical precision, content authority, and high-quality link acquisition to drive organic traffic that converts into real revenue.",
     benefits: [
       { title: "Technical SEO Foundation", desc: "Core Web Vitals, crawl optimisation, schema markup, and site architecture rebuilt for maximum Google trust and indexability." },
