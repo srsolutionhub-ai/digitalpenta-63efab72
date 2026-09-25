@@ -115,7 +115,6 @@ const DEPTH: Record<string, CategoryDepth> = {
       "Coverage report with links and reach",
     ],
     faqs: [
-      { q: "Can you guarantee coverage in a specific publication?", a: "No. Editors decide what they publish, and paid placements aren't real PR. We commit to the pitching work and report every outcome honestly." },
       { q: "How long does PR take to show results?", a: "A first story can land within weeks, but steady coverage usually builds over three to six months of consistent pitching." },
       { q: "Do you handle crisis communication?", a: "Yes — holding statements, media responses and a plan for search results and reviews after an incident." },
     ],
