@@ -7,10 +7,12 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
-  breadcrumbSchema, serviceSchema,
+  breadcrumbSchema, serviceSchema, faqPageSchema,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
 import { getRelatedIndustries } from "@/data/internalLinks";
+import { getIndustryDepth } from "@/data/industryDepth";
+import NotFound from "@/pages/NotFound";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -20,19 +22,9 @@ export default function IndustryPage() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
-  if (!data) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Industry not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
-          </div>
-        </section>
-      </Layout>
-    );
-  }
+  if (!data) return <NotFound />;
 
+  const depth = getIndustryDepth(industry || "");
   const canonical = `https://digitalpenta.com/industries/${industry}`;
   const title = `Digital Marketing for ${data.title} in India | Digital Penta`;
 
@@ -55,6 +47,7 @@ export default function IndustryPage() {
             url: canonical,
             serviceType: `${data.title} Marketing`,
           }),
+          ...(depth ? [faqPageSchema(depth.faqs)] : []),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "Industries", url: "https://digitalpenta.com/#industries" },
@@ -186,6 +179,38 @@ export default function IndustryPage() {
           </motion.div>
         </div>
       </section>
+
+      {depth && (
+        <section className="py-20 border-t border-border/30">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-6">
+              Marketing for <span className="text-gradient">{data.title.toLowerCase()}</span> businesses
+            </h2>
+            <div className="space-y-4 max-w-3xl mb-10">
+              {depth.overview.map(p => <p key={p} className="text-muted-foreground leading-relaxed">{p}</p>)}
+            </div>
+            <div className="grid md:grid-cols-3 gap-4 mb-16">
+              {depth.priorities.map(p => (
+                <div key={p.title} className="card-premium p-6">
+                  <h3 className="font-display font-semibold text-foreground mb-2">{p.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                </div>
+              ))}
+            </div>
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-6">
+              {data.title} marketing — common questions
+            </h2>
+            <div className="space-y-4 max-w-3xl">
+              {depth.faqs.map(f => (
+                <div key={f.q} className="card-premium p-6">
+                  <h3 className="font-display font-semibold text-foreground mb-2">{f.q}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Related industries — internal linking matrix */}
       {getRelatedIndustries(industry || "").length > 0 && (
