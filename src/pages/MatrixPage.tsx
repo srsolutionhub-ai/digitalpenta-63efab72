@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import NotFound from "@/pages/NotFound";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { CheckCircle2, MapPin, Star, ArrowRight, Building2 } from "lucide-react";
@@ -46,30 +47,10 @@ export default function MatrixPage() {
   // 404 if base combo missing OR if an intent slug was supplied that's invalid /
   // doesn't apply to this service (e.g. /seo/delhi/for-saas where SaaS isn't allowed).
   if (!basePage) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Page not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
   if (params.intent && (!intent || !intentAppliesToService(intent, basePage.service.slug))) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Page not found</h1>
-            <Link to={`/${basePage.service.slug}/${basePage.city.slug}`} className="text-primary text-sm mt-4 inline-block">
-              ← Back to {basePage.service.name} in {basePage.city.city}
-            </Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
 
   const { service: svc, city: cty, faqs: baseFaqs } = basePage;

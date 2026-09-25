@@ -39,7 +39,7 @@ export const MATRIX_SERVICES: MatrixServiceDef[] = [
     longName: "Search Engine Optimization",
     serviceType: "Search Engine Optimization",
     hubHref: "/services/digital-marketing/seo",
-    metaIntent: "rank #1 on Google",
+    metaIntent: "rank higher on Google",
     iconAccent: "text-emerald-400",
     bullets: [
       { title: "Technical SEO Audit & Fix", desc: "Core Web Vitals, schema, crawl architecture and indexation hygiene engineered for sustained ranking gains." },

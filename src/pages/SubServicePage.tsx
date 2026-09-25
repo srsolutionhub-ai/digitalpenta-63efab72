@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import NotFound from "@/pages/NotFound";
 import { Link, useParams } from "react-router-dom";
 import { CheckCircle2, ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,16 +16,7 @@ export default function SubServicePage() {
   const data = getSubServiceData(category || "", subService || "");
 
   if (!data) {
-    return (
-      <Layout>
-        <section className="pt-32 pb-20 text-center">
-          <div className="container mx-auto px-4">
-            <h1 className="font-display font-bold text-3xl text-foreground">Service not found</h1>
-            <Link to={`/services/${category}`} className="text-primary text-sm mt-4 inline-block">← Back to Category</Link>
-          </div>
-        </section>
-      </Layout>
-    );
+    return <NotFound />;
   }
 
   const canonical = `https://digitalpenta.com/services/${category}/${subService}`;
