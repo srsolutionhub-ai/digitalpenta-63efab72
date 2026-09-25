@@ -105,8 +105,44 @@ Deno.serve(async (req) => {
             meta_message_id: msg.id,
             status: "received",
           });
+
+          // Auto-reply rules (skipped once a conversation is handed to a person)
+          const { data: conv } = await supa.from("whatsapp_conversations").select("status").eq("id", convId).maybeSingle();
+          const text = (msg.text?.body || "").toLowerCase();
+          if (text && conv?.status !== "handover") {
+            const { data: rules } = await supa.from("wa_bot_rules").select("*").eq("is_active", true).order("priority", { ascending: false });
+            const words = text.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+            const rule = (rules || []).find((r: any) => r.keywords.some((k: string) => k.includes(" ") ? text.includes(k) : words.includes(k)));
+            const token = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
+            const { data: settings } = await supa.from("whatsapp_settings").select("phone_number_id").limit(1).maybeSingle();
+            if (rule && token && settings?.phone_number_id) {
+              const res = await fetch(`https://graph.facebook.com/v20.0/${settings.phone_number_id}/messages`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ messaging_product: "whatsapp", to: phone, type: "text", text: { body: rule.reply_text } }),
+              });
+              const out = await res.json().catch(() => ({}));
+              if (!res.ok) console.error(`Bot reply failed [${res.status}]`, JSON.stringify(out));
+              await supa.from("whatsapp_messages_v2").insert({
+                conversation_id: convId, direction: "outbound", body: rule.reply_text,
+                meta_message_id: out?.messages?.[0]?.id ?? null,
+                status: res.ok ? "sent" : "failed", error_message: res.ok ? null : JSON.stringify(out).slice(0, 500),
+              });
+              if (rule.handover) await supa.from("whatsapp_conversations").update({ status: "handover" }).eq("id", convId);
+            }
+          }
         }
       }
+
+      // Delivery receipts: sent → delivered → read / failed
+      for (const st of change?.statuses || []) {
+        if (!st.id || !st.status) continue;
+        await supa.from("whatsapp_messages_v2").update({
+          status: st.status,
+          error_message: st.errors?.[0]?.title ?? null,
+        }).eq("meta_message_id", st.id);
+      }
+
 
       return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     } catch (e: any) {
