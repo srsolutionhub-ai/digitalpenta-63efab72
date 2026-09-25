@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const { conversation_id, body } = await req.json();
+    const { conversation_id, body, template_id } = await req.json();
     if (!conversation_id || !body) {
       return new Response(JSON.stringify({ error: "conversation_id and body required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -71,6 +71,7 @@ Deno.serve(async (req) => {
       status: res.ok ? "sent" : "failed",
       error_message: res.ok ? null : JSON.stringify(result),
       sent_at: new Date().toISOString(),
+      template_id: template_id || null,
     });
 
     await supa.from("whatsapp_conversations").update({
