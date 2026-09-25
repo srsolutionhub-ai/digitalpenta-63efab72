@@ -664,6 +664,66 @@ export type Database = {
         }
         Relationships: []
       }
+      client_approvals: {
+        Row: {
+          account_id: string
+          client_comment: string | null
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          decided_by: string | null
+          description: string | null
+          file_url: string | null
+          id: string
+          project_id: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          account_id: string
+          client_comment?: string | null
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          project_id?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          account_id?: string
+          client_comment?: string | null
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          project_id?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_approvals_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_approvals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_campaigns: {
         Row: {
           client_id: string
@@ -699,6 +759,53 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      client_reports: {
+        Row: {
+          account_id: string
+          created_at: string
+          created_by: string | null
+          file_url: string | null
+          id: string
+          metrics: Json
+          period_month: string
+          published: boolean
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          account_id: string
+          created_at?: string
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          metrics?: Json
+          period_month: string
+          published?: boolean
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          account_id?: string
+          created_at?: string
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          metrics?: Json
+          period_month?: string
+          published?: boolean
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_reports_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contacts: {
         Row: {
@@ -1260,6 +1367,121 @@ export type Database = {
           subject?: string | null
           template?: string
           to_email?: string
+        }
+        Relationships: []
+      }
+      email_sequence_enrollments: {
+        Row: {
+          clicks: number
+          current_step: number
+          email: string
+          enrolled_at: string
+          id: string
+          name: string | null
+          next_send_at: string | null
+          opens: number
+          sequence_id: string
+          status: string
+        }
+        Insert: {
+          clicks?: number
+          current_step?: number
+          email: string
+          enrolled_at?: string
+          id?: string
+          name?: string | null
+          next_send_at?: string | null
+          opens?: number
+          sequence_id: string
+          status?: string
+        }
+        Update: {
+          clicks?: number
+          current_step?: number
+          email?: string
+          enrolled_at?: string
+          id?: string
+          name?: string | null
+          next_send_at?: string | null
+          opens?: number
+          sequence_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_sequence_enrollments_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "email_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_sequence_steps: {
+        Row: {
+          body_html: string
+          created_at: string
+          delay_days: number
+          id: string
+          sequence_id: string
+          step_order: number
+          subject: string
+        }
+        Insert: {
+          body_html: string
+          created_at?: string
+          delay_days?: number
+          id?: string
+          sequence_id: string
+          step_order?: number
+          subject: string
+        }
+        Update: {
+          body_html?: string
+          created_at?: string
+          delay_days?: number
+          id?: string
+          sequence_id?: string
+          step_order?: number
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_sequence_steps_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "email_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_sequences: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          name: string
+          trigger_event: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          trigger_event?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          trigger_event?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -2587,6 +2809,56 @@ export type Database = {
         }
         Relationships: []
       }
+      wa_broadcasts: {
+        Row: {
+          audience_filter: Json
+          created_at: string
+          created_by: string | null
+          failed_count: number
+          id: string
+          name: string
+          recipient_count: number
+          sent_at: string | null
+          sent_count: number
+          status: string
+          template_id: string | null
+        }
+        Insert: {
+          audience_filter?: Json
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          name: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          template_id?: string | null
+        }
+        Update: {
+          audience_filter?: Json
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          name?: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_broadcasts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       webhooks: {
         Row: {
           created_at: string | null
@@ -2987,6 +3259,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_account_member: {
+        Args: { _account: string; _uid: string }
+        Returns: boolean
+      }
+      is_staff: { Args: { _uid: string }; Returns: boolean }
       project_billing_summary: {
         Args: { p_account_id?: string }
         Returns: {
