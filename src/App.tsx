@@ -60,6 +60,11 @@ const InviteAccept = lazyRetry(() => import("./pages/auth/InviteAccept"));
 const AdminLayout = lazyRetry(() => import("./pages/dashboard/admin/AdminLayout"));
 const DashboardHome = lazyRetry(() => import("./pages/dashboard/admin/DashboardHome"));
 const Leads = lazyRetry(() => import("./pages/dashboard/admin/Leads"));
+const Contacts = lazyRetry(() => import("./pages/dashboard/admin/Contacts"));
+const ContactDetail = lazyRetry(() => import("./pages/dashboard/admin/ContactDetail"));
+const CrmTasks = lazyRetry(() => import("./pages/dashboard/admin/Tasks"));
+const Integrations = lazyRetry(() => import("./pages/dashboard/admin/Integrations"));
+const WhatsAppBot = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppBot"));
 const Billing = lazyRetry(() => import("./pages/dashboard/admin/Billing"));
 const BlogManager = lazyRetry(() => import("./pages/dashboard/admin/BlogManager"));
 const SettingsPage = lazyRetry(() => import("./pages/dashboard/admin/SettingsPage"));
@@ -186,6 +191,11 @@ function AnimatedRoutes() {
             >
               <Route index element={<DashboardHome />} />
               <Route path="leads" element={<Leads />} />
+              <Route path="contacts" element={<Contacts />} />
+              <Route path="contacts/:email" element={<ContactDetail />} />
+              <Route path="tasks" element={<CrmTasks />} />
+              <Route path="integrations" element={<Integrations />} />
+              <Route path="whatsapp/bot" element={<WhatsAppBot />} />
               <Route path="billing" element={<Billing />} />
               <Route path="blog" element={<BlogManager />} />
               <Route path="settings" element={<SettingsPage />} />

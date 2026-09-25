@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
-  Sparkles, Activity, TrendingUp, Mic, Mail, Send,
+  Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot, Plug,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -24,7 +24,9 @@ const navGroups = [
     label: "Sales",
     items: [
       { label: "Pipeline", icon: Kanban, path: "/dashboard/admin/crm" },
+      { label: "Contacts", icon: Contact, path: "/dashboard/admin/contacts" },
       { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
+      { label: "Tasks", icon: CheckSquare, path: "/dashboard/admin/tasks" },
       { label: "Bookings", icon: CalendarDays, path: "/dashboard/admin/bookings" },
       { label: "Quotations", icon: Briefcase, path: "/dashboard/admin/quotations" },
       { label: "Invoices", icon: Receipt, path: "/dashboard/admin/invoices" },
@@ -38,6 +40,7 @@ const navGroups = [
       { label: "SEO Audits", icon: FileSearch, path: "/dashboard/admin/audits" },
       { label: "SEO Ranks", icon: TrendingUp, path: "/dashboard/admin/seo-ranks" },
       { label: "WhatsApp Hub", icon: MessageCircle, path: "/dashboard/admin/whatsapp" },
+      { label: "WhatsApp Bot", icon: Bot, path: "/dashboard/admin/whatsapp/bot" },
     ],
   },
   {
@@ -48,6 +51,7 @@ const navGroups = [
       { label: "Newsletter", icon: Send, path: "/dashboard/admin/newsletter" },
       { label: "Email Log", icon: Mail, path: "/dashboard/admin/email-log" },
       { label: "Finance", icon: Wallet, path: "/dashboard/admin/billing" },
+      { label: "Integrations", icon: Plug, path: "/dashboard/admin/integrations" },
       { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
     ],
   },
@@ -107,7 +111,7 @@ export default function AdminLayout() {
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const active = location.pathname === item.path ||
-                    (item.path !== "/dashboard/admin" && location.pathname.startsWith(item.path));
+                    (item.path !== "/dashboard/admin" && item.path !== "/dashboard/admin/whatsapp" && location.pathname.startsWith(item.path));
                   return (
                     <Link
                       key={item.path}
