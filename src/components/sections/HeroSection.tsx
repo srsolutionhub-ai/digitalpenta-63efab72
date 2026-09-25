@@ -227,7 +227,7 @@ export default function HeroSection() {
                 ))}
               </div>
               <span className="font-mono">
-                <span className="text-foreground font-bold">4.9</span> · 500+ brands · ₹10Cr+ revenue generated
+                <span className="text-foreground font-bold">4.9</span> · 500+ clients · ₹10Cr+ ad budget managed
               </span>
             </div>
             <div className="flex items-center justify-center gap-x-10 gap-y-3 flex-wrap opacity-60">
