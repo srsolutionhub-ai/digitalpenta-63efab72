@@ -247,7 +247,7 @@ function AdminLayoutInner() {
         </SheetContent>
       </Sheet>
 
-      <div className={`flex-1 min-w-0 transition-all duration-300 md:${collapsed ? "ml-16" : "ml-60"}`}>
+      <div className={`flex-1 min-w-0 transition-all duration-300 ${collapsed ? "md:ml-16" : "md:ml-60"}`}>
         <header className="h-16 border-b border-border/20 flex items-center justify-between gap-3 px-4 sm:px-6 sticky top-0 bg-background/80 backdrop-blur-md z-20">
           <div className="flex items-center gap-3 min-w-0">
             <button
