@@ -6,7 +6,6 @@ import HeroFeatureCardsSection from "@/components/sections/HeroFeatureCardsSecti
 import HomepageLeadCaptureSection from "@/components/sections/HomepageLeadCaptureSection";
 import HomeIntroSection from "@/components/sections/HomeIntroSection";
 import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
-import UrgencyStrip from "@/components/ui/urgency-strip";
 import SectionDivider from "@/components/ui/section-divider";
 import FloatingShapes from "@/components/ui/floating-shapes";
 import ScrollNavDots from "@/components/ui/scroll-nav-dots";
@@ -41,7 +40,6 @@ const SignatureCtaSection = lazyRetry(() => import("@/components/sections/Signat
 const SeoLinkHub = lazyRetry(() => import("@/components/sections/SeoLinkHub"));
 const RoiCalculatorSection = lazyRetry(() => import("@/components/sections/RoiCalculatorSection"));
 const ClientTrustWallSection = lazyRetry(() => import("@/components/sections/ClientTrustWallSection"));
-const LiveGrowthScoreSection = lazyRetry(() => import("@/components/sections/LiveGrowthScoreSection"));
 const NewsletterSection = lazyRetry(() => import("@/components/sections/NewsletterSection"));
 
 
@@ -191,7 +189,6 @@ const Index = () => {
         <HeroSection />
         <FloatingShapes className="z-[1]" />
       </div>
-      <UrgencyStrip />
       <TrustStrip />
       <HeroFeatureCardsSection />
       <PressAwardsStrip />
@@ -210,7 +207,6 @@ const Index = () => {
         <WebsiteAuditSection />
       </Suspense>
       <Suspense fallback={<SectionFallback minH="min-h-[520px]" />}>
-        <LiveGrowthScoreSection />
       </Suspense>
       <SectionDivider variant="spark" />
       <div data-scroll-section="results">

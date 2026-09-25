@@ -8,7 +8,6 @@ import { lazyRetry } from "@/lib/lazyRetry";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "@/components/layout/PageTransition";
 import Index from "./pages/Index";
-import PremiumCursor from "@/components/ui/premium-cursor";
 import useSmoothScroll from "@/hooks/useSmoothScroll";
 // Lazy: pulls useAuth → the Supabase client. Keeping it out of the eager
 // graph means marketing pages never download auth/realtime code.
@@ -83,7 +82,6 @@ const NewsletterComposer = lazyRetry(() => import("./pages/dashboard/admin/Newsl
 const DataRequest = lazyRetry(() => import("./pages/DataRequest"));
 const Unsubscribe = lazyRetry(() => import("./pages/Unsubscribe"));
 const CookiePreferenceModal = lazyRetry(() => import("./components/compliance/CookiePreferenceModal"));
-const WelcomeBackToast = lazyRetry(() => import("./components/ui/welcome-back-toast"));
 
 
 const ClientLayout = lazyRetry(() => import("./pages/dashboard/client/ClientLayout"));
@@ -255,7 +253,6 @@ function AppShell() {
   }, []);
   return (
     <>
-      <PremiumCursor />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -270,7 +267,6 @@ function AppShell() {
           <PentaAiChat />
         </Suspense>
         <Suspense fallback={null}>
-          <WelcomeBackToast />
         </Suspense>
       </BrowserRouter>
     </>
