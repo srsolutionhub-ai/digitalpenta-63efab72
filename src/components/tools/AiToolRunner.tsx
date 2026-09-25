@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Mail } from "lucide-react";
 import { trackFunnel, getAttribution } from "@/lib/funnel";
+import { getVisitorId } from "@/lib/visitorTracking";
 
 /**
  * Shared runner for every AI tool. Renders the tool-specific input fields
@@ -48,7 +49,7 @@ export default function AiToolRunner<T = unknown>({
     trackFunnel({ stage: "tool_submit", tool: toolSlug, source: "tool_page" });
     try {
       const { data, error } = await supabase.functions.invoke("ai-tools", {
-        body: { tool: toolSlug, inputs, email, name, company, utm: getAttribution() },
+        body: { tool: toolSlug, inputs, email, name, company, utm: getAttribution(), visitorId: getVisitorId() },
       });
       if (error) throw error;
       const payload = (data as { result: T })?.result;

@@ -5,6 +5,7 @@
  * Supabase SDK stays off the homepage critical path.
  */
 import { trackConversion } from "@/lib/events";
+import { getVisitorId } from "@/lib/visitorTracking";
 
 export type LeadForm = "contact" | "homepage" | "audit" | "proposal" | "data_request" | "tool";
 
@@ -77,6 +78,7 @@ export async function submitLead(p: LeadPayload): Promise<{ leadId?: string; dup
       page: window.location.pathname,
       utm: readUtm(),
       first_touch: readFirstTouch(),
+      visitor_id: getVisitorId(),
     }),
   });
   const body = await res.json().catch(() => ({}));

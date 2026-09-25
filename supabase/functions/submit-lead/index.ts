@@ -26,6 +26,7 @@ const Body = z.object({
   utm: z.record(z.string().max(200)).optional(),
   first_touch: z.record(z.string().max(500)).optional(),
   extra: z.record(z.unknown()).optional(),
+  visitor_id: z.string().trim().max(64).optional(),
   // spam signals
   hp: z.string().max(200).optional(),          // honeypot, must be empty
   started_at: z.number().optional(),           // ms timestamp form was rendered
@@ -172,7 +173,7 @@ Deno.serve(async (req) => {
     status: "new", assigned_to, dedupe_key,
     utm: lead.utm ?? null, first_touch: lead.first_touch ?? null,
     utm_source: lead.utm?.utm_source ?? null, utm_medium: lead.utm?.utm_medium ?? null, utm_campaign: lead.utm?.utm_campaign ?? null,
-    meta_data: { page: lead.page, extra: lead.extra ?? null },
+    meta_data: { page: lead.page, extra: lead.extra ?? null, visitor_id: lead.visitor_id ?? null },
   }).select("id").single();
   if (error) {
     console.error("lead insert failed", error);
