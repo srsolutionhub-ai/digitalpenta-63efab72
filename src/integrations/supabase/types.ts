@@ -2859,6 +2859,33 @@ export type Database = {
           },
         ]
       }
+      wa_quick_replies: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          shortcut: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       webhooks: {
         Row: {
           created_at: string | null

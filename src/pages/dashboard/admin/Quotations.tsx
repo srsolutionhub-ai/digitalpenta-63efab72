@@ -90,6 +90,46 @@ export default function Quotations() {
     onError: (e: any) => toast.error(e.message),
   });
 
+  const decline = useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
+      const base: any = { status: "declined" };
+      let { error } = await supabase.from("quotations").update({ ...base, decline_reason: reason || null }).eq("id", id);
+      if (error && isMissingColumnError(error)) {
+        ({ error } = await supabase.from("quotations").update(base).eq("id", id));
+      }
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["quotations"] });
+      qc.invalidateQueries({ queryKey: ["quotation-activity"] });
+      toast.success("Quote declined");
+      setDeclineFor(null);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const sendEmail = useMutation({
+    mutationFn: async (r: any) => {
+      const { error } = await supabase.functions.invoke("send-email", {
+        body: {
+          template: "quotation-sent",
+          to: r.client_email,
+          data: {
+            name: r.client_name,
+            quoteNumber: r.quote_number,
+            total: formatCurrency(Number(r.total), r.currency),
+            validityDate: r.validity_date,
+            viewUrl: `${window.location.origin}/dashboard/client/quotations`,
+          },
+        },
+      });
+      if (error) throw error;
+      if (r.status === "draft") await supabase.from("quotations").update({ status: "sent" }).eq("id", r.id);
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["quotations"] }); toast.success("Quotation emailed to client"); },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const addItem = () => setForm({ ...form, items: [...form.items, { description: "", quantity: 1, unit_price: 0, hsn_sac: "998314", discount_percent: 0 }] });
   const removeItem = (i: number) => setForm({ ...form, items: form.items.filter((_: any, idx: number) => idx !== i) });
   const updateItem = (i: number, key: string, val: any) => {
@@ -138,7 +178,7 @@ export default function Quotations() {
                       <Send className="w-3 h-3" />
                     </Button>
                   )}
-                  {(r.status === "sent" || r.status === "draft") && (
+                  {(r.status === "sent" || r.status === "draft" || r.status === "viewed") && (
                     <Button
                       size="sm"
                       variant="ghost"
@@ -149,6 +189,17 @@ export default function Quotations() {
                       <CheckCircle2 className="w-3 h-3 mr-1" /> Accept
                     </Button>
                   )}
+                  {(r.status === "sent" || r.status === "draft" || r.status === "viewed") && (
+                    <Button size="sm" variant="ghost" className="text-rose-400 hover:text-rose-300" onClick={() => { setDeclineFor(r); setDeclineReason(""); }} title="Decline">
+                      <XCircle className="w-3 h-3" />
+                    </Button>
+                  )}
+                  <Button size="sm" variant="ghost" onClick={() => setPrintFor(r)} title="Print / Download PDF">
+                    <Printer className="w-3 h-3" />
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => sendEmail.mutate(r)} title="Email to client">
+                    <Mail className="w-3 h-3" />
+                  </Button>
                 </div>
               ),
             },
