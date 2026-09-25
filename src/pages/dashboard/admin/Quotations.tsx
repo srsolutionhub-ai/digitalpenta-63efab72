@@ -214,16 +214,32 @@ export default function Quotations() {
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Client Name</Label><Input value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} /></div>
               <div><Label>Client Email</Label><Input type="email" value={form.client_email} onChange={(e) => setForm({ ...form, client_email: e.target.value })} /></div>
+              <div><Label>Client GSTIN (optional)</Label><Input value={form.client_gstin} onChange={(e) => setForm({ ...form, client_gstin: e.target.value })} /></div>
+              <div>
+                <Label>Place of Supply</Label>
+                <select className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm" value={form.place_of_supply} onChange={(e) => setForm({ ...form, place_of_supply: e.target.value })}>
+                  <option value="">Select…</option>
+                  {PLACE_OF_SUPPLY_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
               <div><Label>Validity Date</Label><Input type="date" value={form.validity_date} onChange={(e) => setForm({ ...form, validity_date: e.target.value })} /></div>
               <div><Label>Tax Rate (%)</Label><Input type="number" value={form.tax_rate} onChange={(e) => setForm({ ...form, tax_rate: e.target.value })} /></div>
+              <div>
+                <Label>Currency</Label>
+                <select className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm" value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}>
+                  {["INR", "USD", "AED", "GBP", "EUR"].map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Line Items</Label>
-              {form.items.map((it: LineItem, i: number) => (
+              {form.items.map((it: any, i: number) => (
                 <div key={i} className="grid grid-cols-12 gap-2">
-                  <Input className="col-span-6" placeholder="Description" value={it.description} onChange={(e) => updateItem(i, "description", e.target.value)} />
-                  <Input className="col-span-2" type="number" placeholder="Qty" value={it.quantity} onChange={(e) => updateItem(i, "quantity", e.target.value)} />
-                  <Input className="col-span-3" type="number" placeholder="Price" value={it.unit_price} onChange={(e) => updateItem(i, "unit_price", e.target.value)} />
+                  <Input className="col-span-4" placeholder="Description" value={it.description} onChange={(e) => updateItem(i, "description", e.target.value)} />
+                  <Input className="col-span-2" placeholder="SAC" value={it.hsn_sac || ""} onChange={(e) => updateItem(i, "hsn_sac", e.target.value)} />
+                  <Input className="col-span-1" type="number" placeholder="Qty" value={it.quantity} onChange={(e) => updateItem(i, "quantity", e.target.value)} />
+                  <Input className="col-span-2" type="number" placeholder="Price" value={it.unit_price} onChange={(e) => updateItem(i, "unit_price", e.target.value)} />
+                  <Input className="col-span-2" type="number" placeholder="Disc %" value={it.discount_percent || 0} onChange={(e) => updateItem(i, "discount_percent", e.target.value)} />
                   <Button type="button" variant="ghost" size="icon" className="col-span-1" onClick={() => removeItem(i)}><Trash2 className="w-3.5 h-3.5" /></Button>
                 </div>
               ))}
@@ -252,6 +268,37 @@ export default function Quotations() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {printFor && (
+        <DocumentPrintView
+          open={!!printFor}
+          onOpenChange={(v) => { if (!v) setPrintFor(null); }}
+          kind="Quotation"
+          number={printFor.quote_number}
+          date={new Date(printFor.created_at).toLocaleDateString("en-IN")}
+          validityOrDueLabel="Valid Till"
+          validityOrDueValue={printFor.validity_date}
+          clientName={printFor.client_name}
+          clientEmail={printFor.client_email}
+          clientGstin={printFor.client_gstin}
+          placeOfSupply={printFor.place_of_supply}
+          items={printFor.items || []}
+          taxRate={Number(printFor.tax_rate) || 18}
+          currency={printFor.currency}
+          notes={printFor.notes}
+          status={printFor.status}
+        />
+      )}
+
+      <Dialog open={!!declineFor} onOpenChange={(v) => { if (!v) setDeclineFor(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle className="font-display">Decline {declineFor?.quote_number}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div><Label>Reason (optional)</Label><Textarea rows={3} value={declineReason} onChange={(e) => setDeclineReason(e.target.value)} /></div>
+            <Button variant="destructive" className="w-full" onClick={() => decline.mutate({ id: declineFor.id, reason: declineReason })} disabled={decline.isPending}>Confirm Decline</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
