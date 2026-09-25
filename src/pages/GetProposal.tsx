@@ -246,7 +246,6 @@ export default function GetProposal() {
   };
 
   if (submitted) {
-    const confettiColors = ["hsl(256,90%,60%)", "hsl(162,100%,42%)", "hsl(20,90%,50%)", "hsl(160,84%,39%)", "hsl(30,100%,50%)"];
 
     return (
       <Layout>

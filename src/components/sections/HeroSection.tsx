@@ -9,7 +9,6 @@ import heroMeshAvif from "@/assets/hero-mesh-gradient.avif";
 import heroOrb from "@/assets/hero-orb.png";
 import heroOrbWebp from "@/assets/hero-orb.webp";
 import heroOrbAvif from "@/assets/hero-orb.avif";
-import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
 import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 import { heroNarration } from "@/lib/narration";
@@ -213,7 +212,6 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Live KPI scoreboard */}
-          <HeroKpiTicker />
 
           {/* Social proof row */}
           <motion.div
