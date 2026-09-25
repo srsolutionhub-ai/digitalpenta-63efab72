@@ -680,7 +680,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     city: "Bangalore",
     metaTitle: "Growth Hacking Agency in Bangalore | Digital Penta",
     metaDescription:
-      "Growth hackers for Bangalore SaaS and D2C teams: product-led acquisition, activation experiments and retention loops, run in two-week sprints alongside your .",
+      "Growth hackers for Bangalore SaaS and D2C teams: product-led acquisition, activation experiments and retention loops, run in two-week sprints.",
     h1: "Growth Hacking Agency in Bangalore for Product-Led Teams",
     heroSubhead:
       "Bangalore's growth problem is rarely traffic — it's activation, trial-to-paid and CAC payback in a market where every competitor bids on the same keywords and hires from the same talent pool.",
