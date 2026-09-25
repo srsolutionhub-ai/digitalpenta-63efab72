@@ -12,16 +12,30 @@ const db = supabase as any;
 
 const EMPTY_FORM = { name: "", keywords: "", reply: "", handover: false, priority: 0 };
 
+const BOOK_CALL_URL = "https://digitalpenta.com/book-call";
+
+const DEFAULT_RULES = [
+  { name: "Greeting", match_type: "keyword", keywords: ["hi", "hello", "hey", "good morning", "good afternoon"], reply_text: "👋 Hi! Thanks for messaging Digital Penta. How can we help — pricing, services, or book a call?", handover: false, priority: 10 },
+  { name: "Pricing & services", match_type: "keyword", keywords: ["price", "pricing", "cost", "quote", "services", "seo", "packages"], reply_text: `Our packages are tailored to your goals — SEO, web design, ads and more. Book a free strategy call and we'll send a custom quote: ${BOOK_CALL_URL}`, handover: false, priority: 8 },
+  { name: "Office hours", match_type: "keyword", keywords: ["hours", "open", "office hours", "when are you open"], reply_text: "We're online Mon–Fri, 9:00–18:00 (UK time). Outside those hours we'll reply as soon as we're back!", handover: false, priority: 6 },
+  { name: "Talk to a human", match_type: "keyword", keywords: ["human", "agent", "talk to someone", "representative", "support"], reply_text: "Sure — connecting you with our team now. Someone will reply here shortly.", handover: true, priority: 20 },
+  { name: "Book a call", match_type: "keyword", keywords: ["book", "call", "meeting", "schedule", "demo"], reply_text: `You can grab a slot that suits you here: ${BOOK_CALL_URL}`, handover: false, priority: 8 },
+  { name: "Away / out of hours", match_type: "away", keywords: ["days=1,2,3,4,5", "start=09:00", "end=18:00", "tz=Europe/London"], reply_text: "Thanks for reaching out! We're outside office hours right now (Mon–Fri, 9:00–18:00 UK time) — we'll get back to you first thing. For urgent matters, book a call: " + BOOK_CALL_URL, handover: false, priority: 0 },
+  { name: "Fallback (no keyword matched)", match_type: "fallback", keywords: [], reply_text: `Thanks for your message! A team member will get back to you shortly. Meanwhile, you can check our services or book a call: ${BOOK_CALL_URL}`, handover: false, priority: 0 },
+];
+
 // Mirrors the matching logic used by supabase/functions/whatsapp-webhook so the
 // preview here is a faithful (but pure client-side / no-send) simulation.
 function findMatchingRule(rules: any[], message: string) {
   const text = message.toLowerCase();
   if (!text) return null;
   const words = text.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-  const active = (rules || []).filter((r: any) => r.is_active);
-  return active.find((r: any) =>
+  const active = (rules || []).filter((r: any) => r.is_active && (r.match_type || "keyword") === "keyword");
+  const hit = active.find((r: any) =>
     (r.keywords || []).some((k: string) => (k.includes(" ") ? text.includes(k) : words.includes(k)))
-  ) || null;
+  );
+  if (hit) return hit;
+  return (rules || []).find((r: any) => r.is_active && r.match_type === "fallback") || null;
 }
 
 export default function WhatsAppBot() {

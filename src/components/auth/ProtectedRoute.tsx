@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, signOut } = useAuth();
 
   if (loading) {
     return (
@@ -21,24 +21,35 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   }
 
   if (!user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (!role) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="card-surface rounded-2xl p-10 max-w-md text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
-            <span className="text-2xl">🚫</span>
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <span className="text-2xl">⏳</span>
           </div>
-          <h2 className="font-display font-bold text-xl text-foreground">No Role Assigned</h2>
-          <p className="text-muted-foreground text-sm">Contact your administrator to get access to the dashboard.</p>
-          <button
-            onClick={() => window.location.href = "/"}
-            className="text-primary text-sm hover:underline"
-          >
-            ← Back to Website
-          </button>
+          <h2 className="font-display font-bold text-xl text-foreground">Your account is awaiting access</h2>
+          <p className="text-muted-foreground text-sm">
+            You're signed in as <strong className="text-foreground">{user.email}</strong>, but no role has been
+            assigned to your account yet. Please reach out to your administrator to get access to the dashboard.
+          </p>
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <button
+              onClick={() => window.location.href = "/contact"}
+              className="text-primary text-sm hover:underline"
+            >
+              Contact us
+            </button>
+            <button
+              onClick={() => signOut().then(() => (window.location.href = "/login"))}
+              className="text-muted-foreground text-sm hover:text-foreground"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -46,7 +57,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
 
   if (!allowedRoles.includes(role)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="card-surface rounded-2xl p-10 max-w-md text-center space-y-4">
           <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
             <span className="text-2xl">⛔</span>

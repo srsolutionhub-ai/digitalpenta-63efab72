@@ -68,10 +68,10 @@ export default function InviteAccept() {
       } else if (role) {
         navigate("/dashboard/admin");
       } else {
-        navigate("/auth/login");
+        navigate("/login");
       }
     } else {
-      navigate("/auth/login");
+      navigate("/login");
     }
 
     setLoading(false);
@@ -94,7 +94,7 @@ export default function InviteAccept() {
             <p className="text-muted-foreground text-sm">
               This invite link is invalid or has expired. Please request a new invitation from your administrator.
             </p>
-            <Link to="/auth/login" className="text-primary text-sm hover:underline inline-block">
+            <Link to="/login" className="text-primary text-sm hover:underline inline-block">
               ← Go to Login
             </Link>
           </div>

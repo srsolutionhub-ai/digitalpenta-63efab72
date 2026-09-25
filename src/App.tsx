@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -52,6 +52,7 @@ const RoiPredictorTool = lazyRetry(() => import("./pages/tools/RoiPredictorTool"
 
 // Auth pages
 const Login = lazyRetry(() => import("./pages/auth/Login"));
+const Signup = lazyRetry(() => import("./pages/auth/Signup"));
 const ForgotPassword = lazyRetry(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazyRetry(() => import("./pages/auth/ResetPassword"));
 const InviteAccept = lazyRetry(() => import("./pages/auth/InviteAccept"));
@@ -186,11 +187,18 @@ function AnimatedRoutes() {
             <Route path="/unsubscribe" element={<Unsubscribe />} />
 
 
-            {/* Auth routes */}
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-            <Route path="/auth/reset-password" element={<ResetPassword />} />
+            {/* Auth routes (canonical short paths) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/invite-accept" element={<InviteAccept />} />
+
+            {/* Legacy /auth/* aliases kept for old emails/bookmarks */}
+            <Route path="/auth/login" element={<Navigate to="/login" replace />} />
+            <Route path="/auth/signup" element={<Navigate to="/signup" replace />} />
+            <Route path="/auth/forgot-password" element={<Navigate to="/forgot-password" replace />} />
+            <Route path="/auth/reset-password" element={<Navigate to={{ pathname: "/reset-password", search: window.location.search, hash: window.location.hash }} replace />} />
 
             {/* Admin dashboard */}
             <Route
