@@ -38,7 +38,7 @@ const guarantees = [
   {
     icon: Clock,
     title: "Reply within 4 working hours",
-    body: "Real humans, no chatbots. Average response time across 2024 was 1h 47m.",
+    body: "Real humans, no chatbots. We reply within 24 hours.",
     glow: "hsl(192 95% 70%)",
   },
   {
