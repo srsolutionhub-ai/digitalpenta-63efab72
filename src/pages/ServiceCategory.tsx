@@ -10,6 +10,7 @@ import { useRef, useEffect, useState } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import serviceBanner from "@/assets/service-banner-graphic.jpg";
 import SEOHead, { breadcrumbSchema, faqPageSchema, serviceSchema, serviceOfferCatalogSchema, organizationSchema, ceoPersonSchema } from "@/components/seo/SEOHead";
+import { getCategoryDepth } from "@/data/serviceCategoryDepth";
 import ServiceAreaGrid from "@/components/seo/ServiceAreaGrid";
 import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 
@@ -235,6 +236,8 @@ export default function ServiceCategory() {
     return <NotFound />;
   }
 
+  const depth = getCategoryDepth(category || "");
+  const allFaqs = [...data.faqs, ...(depth?.faqs ?? [])];
   const canonical = `https://digitalpenta.com/services/${category}`;
   const title = `${data.title} Services in India & Dubai | Digital Penta`;
   const description = data.description.length > 155
@@ -280,7 +283,7 @@ export default function ServiceCategory() {
             { name: "Services", url: "https://digitalpenta.com/#services" },
             { name: data.title, url: canonical },
           ]),
-          ...(data.faqs?.length ? [faqPageSchema(data.faqs)] : []),
+          ...(allFaqs.length ? [faqPageSchema(allFaqs)] : []),
         ]}
       />
       {/* ── Hero ── */}
@@ -540,6 +543,40 @@ export default function ServiceCategory() {
         </div>
       </section>
 
+      {/* ── Overview / who it's for / deliverables ── */}
+      {depth && (
+        <section className="py-20 border-t border-border/30">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-6">
+              How our {data.title.toLowerCase()} services work
+            </h2>
+            <div className="space-y-4 max-w-3xl mb-12">
+              {depth.overview.map(p => (
+                <p key={p} className="text-muted-foreground leading-relaxed">{p}</p>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="card-premium p-6">
+                <h3 className="font-display font-semibold text-foreground mb-4">Who it's for</h3>
+                <ul className="space-y-3">
+                  {depth.whoFor.map(w => (
+                    <li key={w} className="flex gap-2 text-sm text-muted-foreground"><CheckCircle2 className={`w-4 h-4 mt-0.5 shrink-0 ${data.accentClass}`} />{w}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="card-premium p-6">
+                <h3 className="font-display font-semibold text-foreground mb-4">What you get</h3>
+                <ul className="space-y-3">
+                  {depth.deliverables.map(d => (
+                    <li key={d} className="flex gap-2 text-sm text-muted-foreground"><CheckCircle2 className={`w-4 h-4 mt-0.5 shrink-0 ${data.accentClass}`} />{d}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── FAQ ── */}
       <section className="py-24 bg-card/20">
         <div className="container mx-auto px-4 max-w-2xl">
@@ -547,7 +584,7 @@ export default function ServiceCategory() {
             Frequently Asked <span className="text-gradient">Questions</span>
           </h2>
           <Accordion type="single" collapsible>
-            {data.faqs.map((faq, i) => (
+            {allFaqs.map((faq, i) => (
               <AccordionItem key={i} value={`faq-${i}`} className="border-border/50 group">
                 <AccordionTrigger className="font-display text-foreground text-left hover:text-primary transition-colors">
                   <span className="flex items-center gap-3">
