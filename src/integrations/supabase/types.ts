@@ -3276,8 +3276,6 @@ export type Database = {
           project_name: string
         }[]
       }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
       task_logged_hours: { Args: { p_task_id: string }; Returns: number }
       verify_cron_token: { Args: { _token: string }; Returns: boolean }
     }
