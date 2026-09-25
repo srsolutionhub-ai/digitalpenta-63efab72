@@ -73,7 +73,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     slug: "google-ads-agency-delhi",
     primaryKeyword: "Google Ads agency Delhi",
     city: "Delhi",
-    metaTitle: "Google Ads Agency Delhi | Certified PPC Experts | Digital Penta",
+    metaTitle: "Google Ads Agency in Delhi | Search & Shopping | Digital Penta",
     metaDescription:
       "Delhi's #1 Google Ads agency. Search, Shopping, YouTube & Performance Max campaigns. 8x avg ROAS. Google Premier Partner. Free strategy call.",
     h1: "Google Ads Agency in Delhi — Every Rupee Optimised for ROAS",
@@ -109,7 +109,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   {
     slug: "whatsapp-marketing-india",
     primaryKeyword: "WhatsApp marketing service India",
-    metaTitle: "WhatsApp Marketing India | Business API Experts | Digital Penta",
+    metaTitle: "WhatsApp Marketing Agency India | Digital Penta",
     metaDescription:
       "WhatsApp Business API setup, broadcasts, chatbots & catalog commerce for Indian brands. 60%+ open rates. Meta Tech Partner. Get started.",
     h1: "WhatsApp Marketing Service for Indian Brands That Actually Sells",
@@ -400,7 +400,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   {
     slug: "shopify-development-agency-india",
     primaryKeyword: "Shopify development agency India",
-    metaTitle: "Shopify Development Agency India | Plus Partners | Digital Penta",
+    metaTitle: "Shopify Development Agency in India | Digital Penta",
     metaDescription:
       "India's certified Shopify Plus development agency. Theme builds, headless commerce, app dev, migrations & CRO. 80+ stores launched. Free consult.",
     h1: "Shopify Development Agency in India — Build, Migrate, Scale",
@@ -437,7 +437,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     slug: "google-ads-agency-mumbai",
     primaryKeyword: "Google Ads agency Mumbai",
     city: "Mumbai",
-    metaTitle: "Google Ads Agency Mumbai | Premier Partner | Digital Penta",
+    metaTitle: "Google Ads Agency in Mumbai | Digital Penta",
     metaDescription:
       "Mumbai's certified Google Ads agency. Search, Shopping, YouTube & Performance Max. 7.5x avg ROAS. ₹12Cr+ ad spend managed. Free strategy call.",
     h1: "Google Ads Agency in Mumbai That Scales Spend Profitably",
@@ -511,7 +511,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     slug: "digital-marketing-agency-riyadh",
     primaryKeyword: "digital marketing agency Riyadh",
     city: "Riyadh",
-    metaTitle: "Digital Marketing Agency Riyadh | Vision 2030 Ready | Digital Penta",
+    metaTitle: "Digital Marketing Agency in Riyadh | Digital Penta",
     metaDescription:
       "Riyadh's full-service digital marketing agency. Arabic-first SEO, Google Ads, social, web & AI for KSA brands. Vision 2030-aligned. Free consult.",
     h1: "Digital Marketing Agency in Riyadh — Built for KSA's Vision 2030 Economy",
@@ -547,7 +547,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   {
     slug: "b2b-saas-marketing-agency-india",
     primaryKeyword: "B2B SaaS marketing agency India",
-    metaTitle: "B2B SaaS Marketing Agency India | PLG, ABM, Content | Digital Penta",
+    metaTitle: "B2B SaaS Marketing Agency in India | Digital Penta",
     metaDescription:
       "India's specialist B2B SaaS marketing agency. PLG, ABM, content, SEO & paid for SaaS startups and Series A-D. 60+ SaaS clients. Free audit.",
     h1: "B2B SaaS Marketing Agency in India — PLG, ABM and Content That Compound",
@@ -594,7 +594,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     primaryKeyword: "growth hacking agency",
     metaTitle: "Growth Hacking Agency | Experiment-Led Growth | Digital Penta",
     metaDescription:
-      "Growth hacking agency running weekly acquisition, activation and retention experiments across paid, SEO, lifecycle and product. See the experiment log before you commit.",
+      "Growth hacking agency running weekly acquisition, activation and retention experiments across paid, SEO, lifecycle and product.",
     h1: "Growth Hacking Agency — Weekly Experiments, Not Annual Retainers",
     heroSubhead:
       "We run a documented experiment loop across acquisition, activation, retention and referral. Every sprint ships testable changes, every result is logged, and losing tests get killed instead of quietly re-run.",
@@ -637,7 +637,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     primaryKeyword: "growth hacking services India",
     metaTitle: "Growth Hacking Services in India | Digital Penta",
     metaDescription:
-      "Growth hacking services for Indian startups and D2C brands: funnel instrumentation, acquisition experiments, activation and retention loops. Rolling monthly engagement.",
+      "Growth hacking services for Indian startups and D2C brands: funnel instrumentation, acquisition experiments, activation and retention loops.",
     h1: "Growth Hacking Services in India, Priced for Indian Unit Economics",
     heroSubhead:
       "Indian CACs, Indian payment drop-offs, Indian channel mix — WhatsApp, UPI checkout friction, vernacular creative and Tier-2 buying behaviour all change which experiments are worth running first.",
@@ -680,7 +680,7 @@ const keywordLandingPages: KeywordLandingData[] = [
     city: "Bangalore",
     metaTitle: "Growth Hacking Agency in Bangalore | Digital Penta",
     metaDescription:
-      "Growth hackers for Bangalore SaaS and D2C teams: product-led acquisition, activation experiments and retention loops, run in two-week sprints alongside your growth team.",
+      "Growth hackers for Bangalore SaaS and D2C teams: product-led acquisition, activation experiments and retention loops, run in two-week sprints.",
     h1: "Growth Hacking Agency in Bangalore for Product-Led Teams",
     heroSubhead:
       "Bangalore's growth problem is rarely traffic — it's activation, trial-to-paid and CAC payback in a market where every competitor bids on the same keywords and hires from the same talent pool.",
