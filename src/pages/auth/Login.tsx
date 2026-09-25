@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import { friendlyAuthError } from "@/lib/authErrors";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,28 +22,32 @@ export default function Login() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(friendlyAuthError(error));
       setLoading(false);
       return;
     }
 
     if (data.user) {
-      const { data: roleData } = await supabase.rpc("get_user_role", {
-        _user_id: data.user.id,
-      });
+      try {
+        const { data: roleData, error: roleError } = await supabase.rpc("get_user_role", {
+          _user_id: data.user.id,
+        });
 
-      const role = roleData as string | null;
+        if (roleError) throw roleError;
 
-      if (!role) {
-        toast.error("No role assigned. Contact your administrator.");
-        setLoading(false);
-        return;
-      }
+        const role = roleData as string | null;
 
-      if (role === "client") {
-        navigate("/dashboard/client");
-      } else {
-        navigate("/dashboard/admin");
+        if (!role) {
+          // Signed in successfully but no dashboard access yet — send them to
+          // a friendly "awaiting access" screen instead of a dead end.
+          navigate("/dashboard/client");
+        } else if (role === "client") {
+          navigate("/dashboard/client");
+        } else {
+          navigate("/dashboard/admin");
+        }
+      } catch {
+        toast.error("Signed in, but we couldn't verify your access level. Please try again.");
       }
     }
 
@@ -68,6 +73,7 @@ export default function Login() {
               id="email"
               type="email"
               inputMode="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@company.com"
@@ -79,7 +85,7 @@ export default function Login() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link to="/auth/forgot-password" className="text-xs text-primary hover:underline">
+              <Link to="/forgot-password" className="text-xs text-primary hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -87,6 +93,7 @@ export default function Login() {
               <Input
                 id="password"
                 type={showPass ? "text" : "password"}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -96,6 +103,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
+                aria-label={showPass ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -115,8 +123,8 @@ export default function Login() {
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Don't have an account?{" "}
-          <Link to="/contact" className="text-primary hover:underline">Contact us</Link>
+          Don't have a client account?{" "}
+          <Link to="/signup" className="text-primary hover:underline">Sign up</Link>
         </p>
       </div>
     </div>

@@ -61,6 +61,7 @@ const AdminLayout = lazyRetry(() => import("./pages/dashboard/admin/AdminLayout"
 const DashboardHome = lazyRetry(() => import("./pages/dashboard/admin/DashboardHome"));
 const Leads = lazyRetry(() => import("./pages/dashboard/admin/Leads"));
 const Contacts = lazyRetry(() => import("./pages/dashboard/admin/Contacts"));
+const Companies = lazyRetry(() => import("./pages/dashboard/admin/Companies"));
 const ContactDetail = lazyRetry(() => import("./pages/dashboard/admin/ContactDetail"));
 const CrmTasks = lazyRetry(() => import("./pages/dashboard/admin/Tasks"));
 const Integrations = lazyRetry(() => import("./pages/dashboard/admin/Integrations"));
@@ -104,6 +105,8 @@ const ClientInvoices = lazyRetry(() => import("./pages/dashboard/client/ClientIn
 const ClientSupport = lazyRetry(() => import("./pages/dashboard/client/ClientSupport"));
 const ClientFiles = lazyRetry(() => import("./pages/dashboard/client/ClientFiles"));
 const ClientKnowledge = lazyRetry(() => import("./pages/dashboard/client/ClientKnowledge"));
+const ClientQuotations = lazyRetry(() => import("./pages/dashboard/client/ClientQuotations"));
+const ClientProfile = lazyRetry(() => import("./pages/dashboard/client/ClientProfile"));
 
 const BookACall = lazyRetry(() => import("./pages/BookACall"));
 const ProposalBuilder = lazyRetry(() => import("./pages/ProposalBuilder"));
@@ -201,6 +204,7 @@ function AnimatedRoutes() {
               <Route index element={<DashboardHome />} />
               <Route path="leads" element={<Leads />} />
               <Route path="contacts" element={<Contacts />} />
+              <Route path="companies" element={<Companies />} />
               <Route path="contacts/:email" element={<ContactDetail />} />
               <Route path="tasks" element={<CrmTasks />} />
               <Route path="integrations" element={<Integrations />} />
@@ -249,6 +253,8 @@ function AnimatedRoutes() {
               <Route path="support" element={<ClientSupport />} />
               <Route path="files" element={<ClientFiles />} />
               <Route path="knowledge" element={<ClientKnowledge />} />
+              <Route path="quotations" element={<ClientQuotations />} />
+              <Route path="profile" element={<ClientProfile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

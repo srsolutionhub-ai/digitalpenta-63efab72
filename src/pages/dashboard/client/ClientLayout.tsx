@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, FileText, MessageCircle, LogOut, Calendar, Phone,
-  FolderOpen, BookOpen, Bell, FolderKanban, ClipboardCheck, BarChart3,
+  FolderOpen, BookOpen, Bell, FolderKanban, ClipboardCheck, BarChart3, Receipt, UserCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -16,8 +16,10 @@ const navItems = [
   { label: "Reports", icon: BarChart3, path: "/dashboard/client/reports" },
   { label: "Files", icon: FolderOpen, path: "/dashboard/client/files" },
   { label: "Invoices", icon: FileText, path: "/dashboard/client/invoices" },
+  { label: "Quotations", icon: Receipt, path: "/dashboard/client/quotations" },
   { label: "Knowledge", icon: BookOpen, path: "/dashboard/client/knowledge" },
   { label: "Support", icon: MessageCircle, path: "/dashboard/client/support" },
+  { label: "Profile", icon: UserCircle, path: "/dashboard/client/profile" },
 ];
 
 export default function ClientLayout() {

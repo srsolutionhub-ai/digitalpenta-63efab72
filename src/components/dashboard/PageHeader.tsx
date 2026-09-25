@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { usePublishDashboardTitle } from "@/components/dashboard/ui/dashboard-title-context";
 
 interface PageHeaderProps {
   title: string;
@@ -8,6 +9,9 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ title, description, actions, breadcrumbs }: PageHeaderProps) {
+  // Publishes this page's title into the sticky dashboard top bar, if inside one.
+  usePublishDashboardTitle(title, description);
+
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
