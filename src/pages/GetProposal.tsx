@@ -257,18 +257,6 @@ export default function GetProposal() {
           noindex
         />
         <section className="pt-32 pb-20 min-h-screen flex items-center relative overflow-hidden">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <div
-              key={i}
-              className="confetti-piece rounded-sm"
-              style={{
-                left: `${Math.random() * 100}%`,
-                backgroundColor: confettiColors[i % confettiColors.length],
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-              }}
-            />
-          ))}
           <div className="container mx-auto px-4 text-center">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
