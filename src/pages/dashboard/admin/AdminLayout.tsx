@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Receipt, PenLine, Settings, LogOut,
   ChevronLeft, ChevronRight, UserCircle, Bell, FileSearch,
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
-  Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot, Plug, Search,
+  Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot, Plug, Megaphone, FileText, ShieldCheck, BarChart3, ListOrdered, Search,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import GlobalSearch from "@/components/admin/GlobalSearch";
@@ -18,6 +18,7 @@ const navGroups = [
     items: [
       { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard/admin" },
       { label: "Funnel", icon: Activity, path: "/dashboard/admin/funnel" },
+      { label: "Audience", icon: BarChart3, path: "/dashboard/admin/audience" },
       { label: "AI Tool Leads", icon: Sparkles, path: "/dashboard/admin/tool-runs" },
     ],
   },
@@ -42,6 +43,9 @@ const navGroups = [
       { label: "SEO Ranks", icon: TrendingUp, path: "/dashboard/admin/seo-ranks" },
       { label: "WhatsApp Hub", icon: MessageCircle, path: "/dashboard/admin/whatsapp" },
       { label: "WhatsApp Bot", icon: Bot, path: "/dashboard/admin/whatsapp/bot" },
+      { label: "WA Templates", icon: FileText, path: "/dashboard/admin/whatsapp/templates" },
+      { label: "WA Broadcasts", icon: Megaphone, path: "/dashboard/admin/whatsapp/broadcasts" },
+      { label: "Client Deliverables", icon: FolderKanban, path: "/dashboard/admin/deliverables" },
     ],
   },
   {
@@ -50,8 +54,10 @@ const navGroups = [
       { label: "Blog", icon: PenLine, path: "/dashboard/admin/blog" },
       { label: "Voice Studio", icon: Mic, path: "/dashboard/admin/voice-studio" },
       { label: "Newsletter", icon: Send, path: "/dashboard/admin/newsletter" },
+      { label: "Email Sequences", icon: ListOrdered, path: "/dashboard/admin/sequences" },
       { label: "Email Log", icon: Mail, path: "/dashboard/admin/email-log" },
       { label: "Finance", icon: Wallet, path: "/dashboard/admin/billing" },
+      { label: "Team & Roles", icon: ShieldCheck, path: "/dashboard/admin/team" },
       { label: "Integrations", icon: Plug, path: "/dashboard/admin/integrations" },
       { label: "Settings", icon: Settings, path: "/dashboard/admin/settings" },
     ],
