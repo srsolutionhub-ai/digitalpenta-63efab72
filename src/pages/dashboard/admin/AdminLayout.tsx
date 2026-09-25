@@ -9,7 +9,7 @@ import {
   MessageCircle, Kanban, Briefcase, Wallet, FolderKanban, Clock, CalendarDays,
   Sparkles, Activity, TrendingUp, Mic, Mail, Send, Contact, CheckSquare, Bot,
   Plug, Megaphone, FileText, ShieldCheck, BarChart3, ListOrdered, Search,
-  ChevronDown,
+  ChevronDown, LineChart,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -67,6 +67,7 @@ const navGroups = [
       { label: "WhatsApp Bot", icon: Bot, path: "/dashboard/admin/whatsapp/bot" },
       { label: "WA Templates", icon: FileText, path: "/dashboard/admin/whatsapp/templates" },
       { label: "WA Broadcasts", icon: Megaphone, path: "/dashboard/admin/whatsapp/broadcasts" },
+      { label: "WA Analytics", icon: LineChart, path: "/dashboard/admin/whatsapp/analytics" },
     ],
   },
   {

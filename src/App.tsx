@@ -82,6 +82,7 @@ const SettingsPage = lazyRetry(() => import("./pages/dashboard/admin/SettingsPag
 const AdminAudits = lazyRetry(() => import("./pages/dashboard/admin/Audits"));
 const AuditDetail = lazyRetry(() => import("./pages/dashboard/admin/AuditDetail"));
 const WhatsAppHub = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppHub"));
+const WhatsAppAnalytics = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppAnalytics"));
 const WhatsAppSetup = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppSetup"));
 const CrmPipeline = lazyRetry(() => import("./pages/dashboard/admin/CrmPipeline"));
 const Quotations = lazyRetry(() => import("./pages/dashboard/admin/Quotations"));
@@ -230,6 +231,7 @@ function AnimatedRoutes() {
               <Route path="audits/:id" element={<AuditDetail />} />
               <Route path="whatsapp" element={<WhatsAppHub />} />
               <Route path="whatsapp/setup" element={<WhatsAppSetup />} />
+              <Route path="whatsapp/analytics" element={<WhatsAppAnalytics />} />
               <Route path="crm" element={<CrmPipeline />} />
               <Route path="quotations" element={<Quotations />} />
               <Route path="invoices" element={<Invoices />} />
