@@ -240,14 +240,14 @@ export default function Contact() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Service Interested In *</label>
-                      <select required value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex min-h-[52px] w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
+                      <select required aria-label="Service interested in" value={formData.service} onChange={e => { setFormData({...formData, service: e.target.value}); setErrors({...errors, service: false}); }} className={`flex min-h-[52px] w-full rounded-md border px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${inputClass("service")}`}>
                         <option value="">Select a service</option>
                         {services.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-xs font-display font-medium text-foreground mb-1.5 block">Monthly Budget</label>
-                      <select value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      <select aria-label="Monthly budget" value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} className="flex h-10 w-full rounded-md border border-border/50 bg-secondary/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <option value="">Select budget range</option>
                         {budgets.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>

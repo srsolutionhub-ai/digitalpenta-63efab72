@@ -56,6 +56,9 @@ export default function PricingSection() {
           <span className={`text-sm font-display font-medium transition-colors ${!annual ? "text-foreground" : "text-muted-foreground"}`}>Monthly</span>
           <button
             onClick={() => setAnnual(!annual)}
+            role="switch"
+            aria-checked={annual}
+            aria-label="Bill annually"
             className="relative w-12 h-6 rounded-full transition-all"
             style={annual
               ? { background: "linear-gradient(90deg, hsl(256 90% 62%), hsl(192 95% 56%))", boxShadow: "0 0 16px -2px hsl(256 90% 62% / 0.6)" }
