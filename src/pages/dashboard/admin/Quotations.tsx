@@ -17,7 +17,7 @@ import { Briefcase, Plus, Trash2, Send, CheckCircle2, History, XCircle, Printer,
 import { toast } from "sonner";
 import { PLACE_OF_SUPPLY_OPTIONS, calcGstSplit, formatCurrency, isMissingColumnError } from "@/lib/billingUtils";
 
-interface LineItem { description: string; quantity: number; unit_price: number; }
+interface LineItem { description: string; quantity: number; unit_price: number; hsn_sac?: string; discount_percent?: number; }
 
 const STATUS: Record<string, any> = { draft: "default", sent: "info", viewed: "info", accepted: "success", declined: "danger", rejected: "danger", expired: "warning" };
 
