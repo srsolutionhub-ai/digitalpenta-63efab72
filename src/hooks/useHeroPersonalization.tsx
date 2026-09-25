@@ -35,7 +35,7 @@ const STORAGE_KEY = "dp_hero_variant_v1";
 
 const VARIANTS: Record<HeroVariant, Omit<HeroCopy, "variant">> = {
   default: {
-    badge: "India's #1 AI-Powered Growth Studio · 2025",
+    badge: "AI-Powered Growth Studio · Delhi",
     h1Top: "Marketing that",
     h1Bottom: "moves needles.",
     sub: (
@@ -44,7 +44,7 @@ const VARIANTS: Record<HeroVariant, Omit<HeroCopy, "variant">> = {
         <span className="text-foreground font-semibold">
           SEO, performance ads, social, and AI automation
         </span>{" "}
-        to grow brands 10× faster — across India and the Middle East.
+        to grow brands across India and the Middle East.
       </>
     ),
     ctaPrimary: { label: "Get Free Strategy Audit", to: "/contact" },

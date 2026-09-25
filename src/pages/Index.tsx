@@ -57,7 +57,7 @@ function TrustStrip() {
   const items = [
     { label: "★★★★★ 4.9 Google Rating", accent: "hsl(48 100% 65%)" },
     { label: "100+ Clients Served", accent: "hsl(256 90% 75%)" },
-    { label: "₹10Cr+ Revenue Generated", accent: "hsl(162 100% 50%)" },
+    { label: "₹10Cr+ Ad Budget Managed", accent: "hsl(162 100% 50%)" },
     { label: "Google Partner", accent: "hsl(192 95% 70%)" },
     { label: "Delhi Based, Globally Trusted", accent: "hsl(322 90% 75%)" },
   ];
@@ -88,7 +88,7 @@ const Index = () => {
     <Layout>
       <SEOHead
         title="Digital Marketing Agency in Delhi | Digital Penta"
-        description="Delhi's #1 digital marketing agency. SEO, Google Ads, social media & AI automation. 500+ brands, 4.9★, ₹10Cr+ revenue generated. Free audit."
+        description="Digital marketing agency in Delhi. SEO, Google Ads, social media & AI automation. 500+ clients, 4.9★, ₹10Cr+ ad budget managed. Free audit."
         canonical="https://digitalpenta.com/"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/" },
