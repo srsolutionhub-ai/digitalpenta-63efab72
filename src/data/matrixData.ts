@@ -13,7 +13,7 @@ export interface MatrixServiceDef {
   longName: string;              // Full noun phrase e.g. "Search Engine Optimization"
   serviceType: string;           // For schema.org/Service
   hubHref: string;               // Canonical service hub for back-link
-  metaIntent: string;            // Buyer intent verb e.g. "rank #1 on Google"
+  metaIntent: string;            // Buyer intent verb e.g. "rank higher on Google"
   iconAccent: string;            // Tailwind text-* color
   bullets: { title: string; desc: string }[];
 }

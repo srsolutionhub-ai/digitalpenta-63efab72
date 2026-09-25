@@ -34,7 +34,7 @@ export interface IndustryLink {
 /* ────────────── Service catalog (used to resolve related services) ────────────── */
 const SERVICE_CATALOG: ServiceLink[] = [
   // Digital Marketing
-  { category: "digital-marketing", slug: "seo", title: "SEO Services", desc: "Rank #1 on Google with technical SEO, content & link building." },
+  { category: "digital-marketing", slug: "seo", title: "SEO Services", desc: "Rank higher on Google with technical SEO, content & link building." },
   { category: "digital-marketing", slug: "ppc", title: "PPC & Google Ads", desc: "Maximise ROAS across Google, Meta & LinkedIn campaigns." },
   { category: "digital-marketing", slug: "social-media", title: "Social Media Marketing", desc: "Instagram, LinkedIn & Facebook strategy that converts." },
   { category: "digital-marketing", slug: "content", title: "Content Marketing", desc: "SEO-driven content engines that build topical authority." },

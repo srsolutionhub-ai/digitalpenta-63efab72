@@ -20,7 +20,7 @@ export default function SubServicePage() {
   }
 
   const canonical = `https://digitalpenta.com/services/${category}/${subService}`;
-  const title = `${data.title} Agency in Delhi | Digital Penta | 2026`;
+  const title = `${data.title} Agency in Delhi | Digital Penta`;
   const description = data.heroDescription.length > 155
     ? `${data.heroDescription.slice(0, 152).trim()}...`
     : data.heroDescription;
