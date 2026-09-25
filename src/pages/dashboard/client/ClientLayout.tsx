@@ -1,30 +1,76 @@
+import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, FileText, MessageCircle, LogOut, Calendar, Phone,
-  FolderOpen, BookOpen, Bell, FolderKanban, ClipboardCheck, BarChart3, Receipt, UserCircle,
+  FolderOpen, BookOpen, Bell, FolderKanban, ClipboardCheck, BarChart3,
+  Menu, ChevronDown, Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { DashboardTitleProvider, useDashboardTitle } from "@/components/dashboard/ui/dashboard-title-context";
 
-const navItems = [
-  { label: "Home", icon: LayoutDashboard, path: "/dashboard/client" },
-  { label: "Projects", icon: FolderKanban, path: "/dashboard/client/projects" },
-  { label: "Approvals", icon: ClipboardCheck, path: "/dashboard/client/approvals" },
-  { label: "Reports", icon: BarChart3, path: "/dashboard/client/reports" },
-  { label: "Files", icon: FolderOpen, path: "/dashboard/client/files" },
-  { label: "Invoices", icon: FileText, path: "/dashboard/client/invoices" },
-  { label: "Quotations", icon: Receipt, path: "/dashboard/client/quotations" },
-  { label: "Knowledge", icon: BookOpen, path: "/dashboard/client/knowledge" },
-  { label: "Support", icon: MessageCircle, path: "/dashboard/client/support" },
-  { label: "Profile", icon: UserCircle, path: "/dashboard/client/profile" },
+// Data-driven nav: add new items/groups here without touching layout markup.
+// Other agents may append entries to any group's `items` array safely.
+const navGroups = [
+  {
+    label: "Overview",
+    items: [
+      { label: "Home", icon: LayoutDashboard, path: "/dashboard/client" },
+      { label: "Reports", icon: BarChart3, path: "/dashboard/client/reports" },
+    ],
+  },
+  {
+    label: "Work",
+    items: [
+      { label: "Projects", icon: FolderKanban, path: "/dashboard/client/projects" },
+      { label: "Approvals", icon: ClipboardCheck, path: "/dashboard/client/approvals" },
+      { label: "Files", icon: FolderOpen, path: "/dashboard/client/files" },
+    ],
+  },
+  {
+    label: "Finance",
+    items: [
+      { label: "Invoices", icon: FileText, path: "/dashboard/client/invoices" },
+    ],
+  },
+  {
+    label: "Support",
+    items: [
+      { label: "Knowledge", icon: BookOpen, path: "/dashboard/client/knowledge" },
+      { label: "Support", icon: MessageCircle, path: "/dashboard/client/support" },
+    ],
+  },
 ];
 
-export default function ClientLayout() {
+const flatNavItems = navGroups.flatMap((g) => g.items);
+
+function isActive(pathname: string, path: string) {
+  return pathname === path;
+}
+
+function TopBarTitle() {
+  const { title, description } = useDashboardTitle();
+  return (
+    <div className="min-w-0 hidden lg:block">
+      <h2 className="font-display font-semibold text-foreground text-sm truncate">{title || "Client Portal"}</h2>
+      {description && <p className="text-[11px] text-muted-foreground truncate">{description}</p>}
+    </div>
+  );
+}
+
+function ClientLayoutInner() {
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["client-notifications", user?.id],
@@ -43,24 +89,33 @@ export default function ClientLayout() {
   });
 
   const unread = notifications.filter((n: any) => !n.read).length;
+  const initials = (user?.email?.[0] ?? "C").toUpperCase();
 
   return (
     <div className="min-h-screen bg-background">
       <header className="h-16 border-b border-border/20 sticky top-0 bg-background/80 backdrop-blur-md z-30">
-        <div className="container mx-auto h-full flex items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link to="/" className="font-display font-bold text-foreground text-sm">
+        <div className="container mx-auto h-full flex items-center justify-between gap-3 px-4">
+          <div className="flex items-center gap-4 sm:gap-6 min-w-0">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden text-muted-foreground hover:text-foreground p-1.5 -ml-1.5 rounded-lg hover:bg-muted/40 transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <Link to="/" className="font-display font-bold text-foreground text-sm flex-shrink-0">
               Digital<span className="text-gradient">Penta</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => {
-                const active = location.pathname === item.path;
+            <TopBarTitle />
+            <nav className="hidden lg:flex items-center gap-1">
+              {flatNavItems.map((item) => {
+                const active = isActive(location.pathname, item.path);
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground"
+                      active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     }`}
                   >
                     <item.icon className="w-4 h-4" />
@@ -99,11 +154,83 @@ export default function ClientLayout() {
                 </div>
               </PopoverContent>
             </Popover>
-            <span className="text-xs text-muted-foreground hidden md:block">{user?.email}</span>
-            <Button size="sm" variant="ghost" onClick={signOut}><LogOut className="w-4 h-4" /></Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 rounded-lg px-1.5 py-1 hover:bg-muted/40 transition-colors">
+                  <Avatar className="w-8 h-8">
+                    <AvatarFallback className="bg-primary/20 text-primary text-xs font-semibold">{initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="hidden md:block text-xs text-muted-foreground max-w-[160px] truncate">{user?.email}</span>
+                  <ChevronDown className="hidden md:block w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="font-normal">
+                  <p className="text-xs font-medium text-foreground truncate">{user?.email}</p>
+                  <p className="text-[10px] text-muted-foreground">Client</p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard/client/support" className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" /> Account & Support
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
+                  <LogOut className="w-4 h-4 mr-2" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
+
+      {/* Mobile drawer */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="w-72 p-0 flex flex-col bg-card border-border/20">
+          <div className="h-16 flex items-center px-4 border-b border-border/20">
+            <Link to="/" className="font-display font-bold text-foreground text-sm">
+              Digital<span className="text-gradient">Penta</span>
+            </Link>
+          </div>
+          <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+            {navGroups.map((group) => (
+              <div key={group.label}>
+                <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                  {group.label}
+                </p>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => {
+                    const active = isActive(location.pathname, item.path);
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                          active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        }`}
+                      >
+                        <item.icon className="w-4 h-4 flex-shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </nav>
+          <div className="p-3 border-t border-border/20">
+            <button
+              onClick={signOut}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full transition-colors"
+            >
+              <LogOut className="w-4 h-4 flex-shrink-0" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <main className="container mx-auto px-4 py-8">
         <Outlet />
@@ -118,5 +245,13 @@ export default function ClientLayout() {
         </a>
       </aside>
     </div>
+  );
+}
+
+export default function ClientLayout() {
+  return (
+    <DashboardTitleProvider fallback="Client Portal">
+      <ClientLayoutInner />
+    </DashboardTitleProvider>
   );
 }
