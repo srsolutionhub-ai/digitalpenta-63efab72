@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,25 +18,24 @@ export default function HomepageLeadCaptureSection() {
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const startedAt = useRef(Date.now());
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@") || !name) return;
     setSubmitting(true);
     try {
-      const { supabase } = await import("@/integrations/supabase/client");
-      const { error } = await supabase.from("contacts").insert({
-        name,
-        email,
-        phone: phone || null,
-        message: "Homepage premium lead widget — requested free 30-min strategy call.",
-        source: "homepage-lead-widget",
+      const { submitLead } = await import("@/lib/submitLead");
+      const hp = (e.target as HTMLFormElement).querySelector<HTMLInputElement>('[name="company_site"]')?.value ?? "";
+      await submitLead({
+        form: "homepage", name, email, phone,
+        message: "Homepage lead widget — requested free 30-min strategy call.",
+        hp, startedAt: startedAt.current,
       });
-      if (error) throw error;
       setDone(true);
       toast.success("We'll reach out within 1 business hour.");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -121,6 +120,7 @@ export default function HomepageLeadCaptureSection() {
                   onSubmit={submit}
                   className="rounded-2xl border border-white/10 bg-background/60 backdrop-blur-xl p-5 md:p-6 space-y-3"
                 >
+                  <input type="text" name="company_site" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
                   <Input
                     placeholder="Your name *"
                     value={name}

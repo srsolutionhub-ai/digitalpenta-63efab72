@@ -147,8 +147,16 @@ export default function SEOHead({
 
     // JSON-LD schemas — wipe any prior SEOHead schemas, re-inject
     document.head.querySelectorAll(`script[type="application/ld+json"][${SEO_MARKER}="page"]`).forEach(n => n.remove());
-    if (schemas && schemas.length) {
-      schemas.forEach(s => {
+    // Every indexable page gets a WebPage node tied into the site entity graph,
+    // unless the page already supplies its own WebPage/CollectionPage.
+    const hasPageNode = (schemas ?? []).some((s) => {
+      const t = (s as { "@type"?: string | string[] })["@type"];
+      return [t].flat().some((x) => x === "WebPage" || x === "CollectionPage" || x === "AboutPage" || x === "ContactPage");
+    });
+    const allSchemas = [...(schemas ?? [])];
+    if (!noindex && !hasPageNode) allSchemas.push(webPageSchema({ url: canonical, name: title, description }));
+    if (allSchemas.length) {
+      allSchemas.forEach(s => {
         const script = document.createElement("script");
         script.type = "application/ld+json";
         script.setAttribute(SEO_MARKER, "page");
@@ -174,6 +182,23 @@ export default function SEOHead({
 }
 
 /* ────────────── Schema builder helpers ────────────── */
+
+/** Generic WebPage node — auto-injected by SEOHead on indexable routes. */
+export function webPageSchema(opts: { url: string; name: string; description: string }) {
+  const lang = opts.url.includes("/ar") ? "ar" : "en";
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${opts.url.split("#")[0]}#webpage`,
+    url: opts.url,
+    name: opts.name,
+    description: opts.description,
+    inLanguage: lang,
+    isPartOf: { "@type": "WebSite", "@id": "https://digitalpenta.com/#website", url: "https://digitalpenta.com/", name: "Digital Penta" },
+    about: { "@id": "https://digitalpenta.com/#organization" },
+    publisher: { "@id": "https://digitalpenta.com/#organization" },
+  };
+}
 
 export function breadcrumbSchema(items: { name: string; url: string }[]) {
   return {

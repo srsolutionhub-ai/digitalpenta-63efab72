@@ -21,9 +21,28 @@ const checks = [
   ["Service provider link", /provider:\s*\{[\s\S]{0,200}(name|@id)/],
   ["ceoPersonSchema helper", /export function ceoPersonSchema/],
   ["CEO @id anchor", /#harish-kumar/],
+  ["webPageSchema helper", /export function webPageSchema/],
+  ["WebPage auto-injected per route", /allSchemas\.push\(webPageSchema/],
+  ["WebSite entity anchor", /#website/],
+  ["ProfessionalService type", /"ProfessionalService"/],
+  ["softwareApplicationSchema helper", /export function softwareApplicationSchema/],
+  ["breadcrumbSchema helper", /export function breadcrumbSchema/],
+  ["faqPageSchema helper", /export function faqPageSchema/],
+  ["articleSchema helper", /export function articleSchema/],
 ];
 
-const errors = checks.filter(([, re]) => !re.test(src)).map(([label]) => label);
+// Every free AI tool page must declare SoftwareApplication schema.
+import { readdirSync } from "node:fs";
+const toolDir = join(__dirname, "..", "src/pages/tools");
+for (const f of readdirSync(toolDir)) {
+  if (!f.endsWith("Tool.tsx")) continue;
+  const body = readFileSync(join(toolDir, f), "utf8");
+  checks.push([`SoftwareApplication on tools/${f}`, /softwareApplicationSchema\(/, body]);
+}
+const home = readFileSync(join(__dirname, "..", "src/pages/Index.tsx"), "utf8");
+checks.push(["Homepage WebSite + SearchAction", /"SearchAction"/, home]);
+
+const errors = checks.filter(([, re, body]) => !re.test(body ?? src)).map(([label]) => label);
 
 if (errors.length) {
   console.error("❌ Schema validation failed:");

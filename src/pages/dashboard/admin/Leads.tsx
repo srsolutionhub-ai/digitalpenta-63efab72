@@ -22,8 +22,12 @@ const STATUS_COLORS: Record<string, string> = {
   lost: "bg-red-500/20 text-red-400",
 };
 
+const INTENTS = ["seo", "ads", "social", "web_dev", "app_dev", "ai", "automation", "branding", "pr", "other"];
+
+/** Scores are 0–100 (AI pipeline); legacy rows used 0–10. */
 function LeadScoreDot({ score }: { score: number }) {
-  const color = score >= 7 ? "bg-green-500" : score >= 4 ? "bg-yellow-500" : "bg-red-500";
+  const s = score <= 10 ? score * 10 : score;
+  const color = s >= 70 ? "bg-green-500" : s >= 40 ? "bg-yellow-500" : "bg-red-500";
   return <div className={`w-2.5 h-2.5 rounded-full ${color}`} title={`Score: ${score}`} />;
 }
 
@@ -31,19 +35,25 @@ export default function Leads() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [intentFilter, setIntentFilter] = useState("all");
+  const [hotOnly, setHotOnly] = useState(false);
   const [page, setPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState<any>(null);
   const perPage = 50;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-leads", search, statusFilter, page],
+    queryKey: ["admin-leads", search, statusFilter, intentFilter, hotOnly, page],
     queryFn: async () => {
       let query = supabase.from("leads").select("*", { count: "exact" }).order("created_at", { ascending: false }).range(page * perPage, (page + 1) * perPage - 1);
 
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,company.ilike.%${search}%`);
+      // Strip PostgREST filter syntax characters so search input can't alter the query.
+      const q = search.replace(/[,()*%\\]/g, " ").trim();
+      if (q) {
+        query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,company.ilike.%${q}%`);
       }
+      if (intentFilter !== "all") query = query.eq("intent", intentFilter);
+      if (hotOnly) query = query.gte("lead_score", 70);
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
       }
@@ -112,9 +122,15 @@ export default function Leads() {
 
   const exportCSV = () => {
     if (!data?.leads.length) return;
-    const headers = ["Name", "Email", "Phone", "Company", "Source", "Score", "Status", "Created"];
-    const rows = data.leads.map((l: any) => [l.name, l.email, l.phone, l.company, l.source, l.lead_score, l.status, l.created_at]);
-    const csv = [headers.join(","), ...rows.map((r: any[]) => r.map((c: any) => `"${c ?? ""}"`).join(","))].join("\n");
+    const headers = ["Name", "Email", "Phone", "Company", "Source", "UTM Source", "Intent", "Budget Band", "Score", "AI Summary", "Status", "Created"];
+    const rows = data.leads.map((l: any) => [l.name, l.email, l.phone, l.company, l.source, l.utm_source, l.intent, l.budget_band, l.lead_score, l.ai_summary, l.status, l.created_at]);
+    // Escape quotes and neutralise spreadsheet formula injection (=,+,-,@).
+    const cell = (c: any) => {
+      let v = String(c ?? "");
+      if (/^[=+\-@]/.test(v)) v = `'${v}`;
+      return `"${v.replace(/"/g, '""')}"`;
+    };
+    const csv = [headers.join(","), ...rows.map((r: any[]) => r.map(cell).join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -146,6 +162,16 @@ export default function Leads() {
             {STATUSES.map((s) => <SelectItem key={s} value={s}>{s.replace(/_/g, " ")}</SelectItem>)}
           </SelectContent>
         </Select>
+        <Select value={intentFilter} onValueChange={(v) => { setIntentFilter(v); setPage(0); }}>
+          <SelectTrigger className="w-40" aria-label="Filter by intent"><SelectValue placeholder="All intents" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Intents</SelectItem>
+            {INTENTS.map((s) => <SelectItem key={s} value={s}>{s.replace(/_/g, " ")}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Button size="sm" variant={hotOnly ? "default" : "outline"} className="min-h-[40px]" aria-pressed={hotOnly} onClick={() => { setHotOnly(!hotOnly); setPage(0); }}>
+          Hot leads (70+)
+        </Button>
       </div>
 
       {/* Table */}
@@ -158,6 +184,7 @@ export default function Leads() {
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Company</th>
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Email</th>
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Source</th>
+                <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Intent</th>
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Score</th>
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Status</th>
                 <th className="text-left p-3 text-xs text-muted-foreground font-mono uppercase">Created</th>
@@ -166,10 +193,10 @@ export default function Leads() {
             <tbody>
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i}><td colSpan={7} className="p-3"><Skeleton className="h-8" /></td></tr>
+                  <tr key={i}><td colSpan={8} className="p-3"><Skeleton className="h-8" /></td></tr>
                 ))
               ) : data?.leads.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No leads found</td></tr>
+                <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">No leads found</td></tr>
               ) : (
                 data?.leads.map((lead: any) => (
                   <tr
@@ -180,8 +207,15 @@ export default function Leads() {
                     <td className="p-3 font-medium text-foreground">{lead.name || "—"}</td>
                     <td className="p-3 text-muted-foreground">{lead.company || "—"}</td>
                     <td className="p-3 text-muted-foreground">{lead.email || "—"}</td>
-                    <td className="p-3 text-muted-foreground">{lead.source || "—"}</td>
-                    <td className="p-3"><div className="flex items-center gap-2"><LeadScoreDot score={lead.lead_score} />{lead.lead_score}</div></td>
+                    <td className="p-3 text-muted-foreground">
+                      {lead.source || "—"}
+                      {lead.utm_source && <span className="block text-[10px] font-mono text-muted-foreground/70">via {lead.utm_source}</span>}
+                    </td>
+                    <td className="p-3 text-muted-foreground capitalize">
+                      {(lead.intent || "—").replace(/_/g, " ")}
+                      {lead.budget_band && lead.budget_band !== "unknown" && <span className="block text-[10px] font-mono">{lead.budget_band}</span>}
+                    </td>
+                    <td className="p-3" title={lead.ai_summary || undefined}><div className="flex items-center gap-2"><LeadScoreDot score={lead.lead_score} />{lead.lead_score}</div></td>
                     <td className="p-3">
                       <span className={`text-xs px-2 py-1 rounded-full capitalize ${STATUS_COLORS[lead.status] || "bg-muted text-muted-foreground"}`}>
                         {(lead.status || "new").replace(/_/g, " ")}

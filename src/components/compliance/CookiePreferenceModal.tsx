@@ -7,6 +7,7 @@ import { Cookie, Shield } from "lucide-react";
 import { useOverlaySlot } from "@/hooks/useOverlaySlot";
 import { setTrackingConsent } from "@/lib/visitorTracking";
 import { setGa4Consent } from "@/lib/ga4";
+import { setMarketingConsent } from "@/lib/marketingTags";
 
 const STORAGE_KEY = "cookie_consent_v1";
 
@@ -22,6 +23,8 @@ export function applyConsent(prefs: Prefs) {
   (window as any).__consent = prefs;
   // GA4 Consent Mode v2 — loads/blocks the tag to match the visitor's choice
   setGa4Consent(!!prefs.analytics, !!prefs.marketing);
+  // GTM / Meta Pixel / LinkedIn Insight — marketing consent only
+  setMarketingConsent(!!prefs.marketing);
   // Enables/discards the first-party audience pipeline (visitor_profiles + analytics_events)
   setTrackingConsent(!!prefs.analytics);
 }

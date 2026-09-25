@@ -269,7 +269,7 @@ export default function SubServicePage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">
-              Ready to Get Started?
+              Ready to see results?
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
               Let's build a custom {data.title.toLowerCase()} strategy tailored to your business goals.

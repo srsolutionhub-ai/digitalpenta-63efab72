@@ -39,7 +39,10 @@ const articles = [
 
 export default function Blog() {
   const [active, setActive] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+  // Initialise from ?q= so the WebSite SearchAction schema resolves to real results.
+  const [searchQuery, setSearchQuery] = useState(() =>
+    typeof window === "undefined" ? "" : (new URLSearchParams(window.location.search).get("q") ?? "").slice(0, 100),
+  );
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
   const featured = articles.find((a) => a.featured);

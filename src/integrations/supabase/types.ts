@@ -1284,18 +1284,41 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_rate_limits: {
+        Row: {
+          bucket: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          bucket: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
+          ai_summary: string | null
           assigned_to: string | null
           budget: string | null
+          budget_band: string | null
           closing_date: string | null
           company: string | null
           contact_id: string | null
           conversion_probability: number | null
           created_at: string | null
+          dedupe_key: string | null
           email: string | null
           estimated_value: number | null
+          first_touch: Json | null
           id: string
+          intent: string | null
           lead_score: number
           meta_data: Json | null
           name: string | null
@@ -1306,22 +1329,28 @@ export type Database = {
           status: string | null
           timeline: string | null
           updated_at: string | null
+          utm: Json | null
           utm_campaign: string | null
           utm_medium: string | null
           utm_source: string | null
           website: string | null
         }
         Insert: {
+          ai_summary?: string | null
           assigned_to?: string | null
           budget?: string | null
+          budget_band?: string | null
           closing_date?: string | null
           company?: string | null
           contact_id?: string | null
           conversion_probability?: number | null
           created_at?: string | null
+          dedupe_key?: string | null
           email?: string | null
           estimated_value?: number | null
+          first_touch?: Json | null
           id?: string
+          intent?: string | null
           lead_score?: number
           meta_data?: Json | null
           name?: string | null
@@ -1332,22 +1361,28 @@ export type Database = {
           status?: string | null
           timeline?: string | null
           updated_at?: string | null
+          utm?: Json | null
           utm_campaign?: string | null
           utm_medium?: string | null
           utm_source?: string | null
           website?: string | null
         }
         Update: {
+          ai_summary?: string | null
           assigned_to?: string | null
           budget?: string | null
+          budget_band?: string | null
           closing_date?: string | null
           company?: string | null
           contact_id?: string | null
           conversion_probability?: number | null
           created_at?: string | null
+          dedupe_key?: string | null
           email?: string | null
           estimated_value?: number | null
+          first_touch?: Json | null
           id?: string
+          intent?: string | null
           lead_score?: number
           meta_data?: Json | null
           name?: string | null
@@ -1358,6 +1393,7 @@ export type Database = {
           status?: string | null
           timeline?: string | null
           updated_at?: string | null
+          utm?: Json | null
           utm_campaign?: string | null
           utm_medium?: string | null
           utm_source?: string | null

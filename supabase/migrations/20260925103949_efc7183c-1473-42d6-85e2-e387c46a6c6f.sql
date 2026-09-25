@@ -1,0 +1,2 @@
+GRANT SELECT ON public.lead_rate_limits TO authenticated;
+CREATE POLICY "Super admins read rate limits" ON public.lead_rate_limits FOR SELECT TO authenticated USING (public.has_role(auth.uid(),'super_admin'));

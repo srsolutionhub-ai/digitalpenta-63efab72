@@ -10,7 +10,7 @@ const popularLinks = [
   { label: "AI Solutions", href: "/services/ai-solutions" },
   { label: "Development", href: "/services/development" },
   { label: "Portfolio", href: "/portfolio" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Talk to a Strategist", href: "/contact" },
   { label: "Get a Proposal", href: "/get-proposal" },
 ];
 
