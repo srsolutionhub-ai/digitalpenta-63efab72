@@ -68,6 +68,7 @@ Deno.serve(async (req) => {
       error_message: res.ok ? null : JSON.stringify(result),
       sent_at: new Date().toISOString(),
       template_id: template_id || null,
+      sent_by: user.id,
     });
 
     await supa.from("whatsapp_conversations").update({

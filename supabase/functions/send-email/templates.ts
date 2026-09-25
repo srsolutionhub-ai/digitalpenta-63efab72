@@ -274,6 +274,89 @@ export function renderNewsletterBroadcast(data: {
   return { subject: data.subject, html, text };
 }
 
+
+export function renderQuotationSent(data: { name?: string; quoteNumber: string; total: string; validityDate?: string; viewUrl: string }): TemplateResult {
+  const name = data.name || "there";
+  const html = shell({
+    preheader: `Your quotation ${data.quoteNumber} is ready to review.`,
+    bodyHtml: `
+      ${h1("Your quotation is ready 📄")}
+      ${p(`Hi ${name},`)}
+      ${p(`Please find your quotation <strong>${data.quoteNumber}</strong> for <strong>${data.total}</strong> attached below.`)}
+      ${data.validityDate ? muted(`This quote is valid until ${data.validityDate}.`) : ""}
+      ${btn("Review & Accept", data.viewUrl)}
+      ${divider()}
+      ${muted("You can accept or decline this quotation directly from the link above.")}
+    `,
+  });
+  return {
+    subject: `Quotation ${data.quoteNumber} from Digital Penta — ${data.total}`,
+    html,
+    text: `Hi ${name},\n\nYour quotation ${data.quoteNumber} for ${data.total} is ready.\nReview & respond: ${data.viewUrl}`,
+  };
+}
+
+export function renderQuotationDecision(data: { quoteNumber: string; clientName: string; decision: "accepted" | "declined"; reason?: string }): TemplateResult {
+  const win = data.decision === "accepted";
+  const html = shell({
+    preheader: `Quotation ${data.quoteNumber} was ${data.decision} by ${data.clientName}.`,
+    bodyHtml: `
+      ${h1(win ? "Quote accepted 🎉" : "Quote declined")}
+      ${p(`<strong>${escapeHtml(data.clientName)}</strong> has ${data.decision} quotation <strong>${data.quoteNumber}</strong>.`)}
+      ${data.reason ? p(`Reason: ${escapeHtml(data.reason)}`) : ""}
+      ${btn("Open in CRM", "https://digitalpenta.com/dashboard/admin/quotations")}
+    `,
+    footerNote: "Internal notification — Digital Penta OS",
+  });
+  return {
+    subject: `Quote ${data.quoteNumber} ${data.decision} by ${data.clientName}`,
+    html,
+    text: `${data.clientName} ${data.decision} quotation ${data.quoteNumber}.${data.reason ? " Reason: " + data.reason : ""}`,
+  };
+}
+
+export function renderInvoiceSent(data: { name?: string; invoiceNumber: string; total: string; dueDate?: string; viewUrl?: string }): TemplateResult {
+  const name = data.name || "there";
+  const html = shell({
+    preheader: `Invoice ${data.invoiceNumber} for ${data.total} — due ${data.dueDate ?? "on receipt"}.`,
+    bodyHtml: `
+      ${h1("Your invoice is here 🧾")}
+      ${p(`Hi ${name},`)}
+      ${p(`Invoice <strong>${data.invoiceNumber}</strong> for <strong>${data.total}</strong> is now due${data.dueDate ? ` on <strong>${data.dueDate}</strong>` : ""}.`)}
+      ${data.viewUrl ? btn("View & Pay Invoice", data.viewUrl) : ""}
+      ${divider()}
+      ${muted("Bank and UPI details are included on the invoice PDF. Reply to this email for any billing questions.")}
+    `,
+  });
+  return {
+    subject: `Invoice ${data.invoiceNumber} — ${data.total} due ${data.dueDate ?? "on receipt"}`,
+    html,
+    text: `Hi ${name},\n\nInvoice ${data.invoiceNumber} for ${data.total} is due ${data.dueDate ?? "on receipt"}.${data.viewUrl ? "\nView: " + data.viewUrl : ""}`,
+  };
+}
+
+export function renderInvoiceReminder(data: { name?: string; invoiceNumber: string; total: string; dueDate: string; overdue: boolean; viewUrl?: string }): TemplateResult {
+  const name = data.name || "there";
+  const html = shell({
+    preheader: data.overdue ? `Invoice ${data.invoiceNumber} is overdue.` : `Invoice ${data.invoiceNumber} is due soon.`,
+    bodyHtml: `
+      ${h1(data.overdue ? "Payment overdue ⏰" : "Payment reminder")}
+      ${p(`Hi ${name},`)}
+      ${p(data.overdue
+        ? `Invoice <strong>${data.invoiceNumber}</strong> for <strong>${data.total}</strong> was due on <strong>${data.dueDate}</strong> and is now overdue. Please arrange payment at your earliest convenience.`
+        : `A friendly reminder that invoice <strong>${data.invoiceNumber}</strong> for <strong>${data.total}</strong> is due on <strong>${data.dueDate}</strong>.`)}
+      ${data.viewUrl ? btn("View & Pay Invoice", data.viewUrl) : ""}
+      ${divider()}
+      ${muted("Already paid? Please ignore this reminder — it may cross with your payment.")}
+    `,
+  });
+  return {
+    subject: data.overdue ? `Overdue: Invoice ${data.invoiceNumber} — ${data.total}` : `Reminder: Invoice ${data.invoiceNumber} due ${data.dueDate}`,
+    html,
+    text: `Hi ${name},\n\nInvoice ${data.invoiceNumber} for ${data.total} is ${data.overdue ? "overdue" : "due on " + data.dueDate}.`,
+  };
+}
+
 // Registry
 export const templates = {
   "contact-received": renderContactReceived,
@@ -282,6 +365,10 @@ export const templates = {
   "newsletter-broadcast": renderNewsletterBroadcast,
   "audit-ready": renderAuditReady,
   "booking-confirmed": renderBookingConfirmed,
+  "quotation-sent": renderQuotationSent,
+  "quotation-decision": renderQuotationDecision,
+  "invoice-sent": renderInvoiceSent,
+  "invoice-reminder": renderInvoiceReminder,
 } as const;
 
 export type TemplateName = keyof typeof templates;

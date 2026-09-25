@@ -12,16 +12,30 @@ const db = supabase as any;
 
 const EMPTY_FORM = { name: "", keywords: "", reply: "", handover: false, priority: 0 };
 
+const BOOK_CALL_URL = "https://digitalpenta.com/book-call";
+
+const DEFAULT_RULES = [
+  { name: "Greeting", match_type: "keyword", keywords: ["hi", "hello", "hey", "good morning", "good afternoon"], reply_text: "👋 Hi! Thanks for messaging Digital Penta. How can we help — pricing, services, or book a call?", handover: false, priority: 10 },
+  { name: "Pricing & services", match_type: "keyword", keywords: ["price", "pricing", "cost", "quote", "services", "seo", "packages"], reply_text: `Our packages are tailored to your goals — SEO, web design, ads and more. Book a free strategy call and we'll send a custom quote: ${BOOK_CALL_URL}`, handover: false, priority: 8 },
+  { name: "Office hours", match_type: "keyword", keywords: ["hours", "open", "office hours", "when are you open"], reply_text: "We're online Mon–Fri, 9:00–18:00 (UK time). Outside those hours we'll reply as soon as we're back!", handover: false, priority: 6 },
+  { name: "Talk to a human", match_type: "keyword", keywords: ["human", "agent", "talk to someone", "representative", "support"], reply_text: "Sure — connecting you with our team now. Someone will reply here shortly.", handover: true, priority: 20 },
+  { name: "Book a call", match_type: "keyword", keywords: ["book", "call", "meeting", "schedule", "demo"], reply_text: `You can grab a slot that suits you here: ${BOOK_CALL_URL}`, handover: false, priority: 8 },
+  { name: "Away / out of hours", match_type: "away", keywords: ["days=1,2,3,4,5", "start=09:00", "end=18:00", "tz=Europe/London"], reply_text: "Thanks for reaching out! We're outside office hours right now (Mon–Fri, 9:00–18:00 UK time) — we'll get back to you first thing. For urgent matters, book a call: " + BOOK_CALL_URL, handover: false, priority: 0 },
+  { name: "Fallback (no keyword matched)", match_type: "fallback", keywords: [], reply_text: `Thanks for your message! A team member will get back to you shortly. Meanwhile, you can check our services or book a call: ${BOOK_CALL_URL}`, handover: false, priority: 0 },
+];
+
 // Mirrors the matching logic used by supabase/functions/whatsapp-webhook so the
 // preview here is a faithful (but pure client-side / no-send) simulation.
 function findMatchingRule(rules: any[], message: string) {
   const text = message.toLowerCase();
   if (!text) return null;
   const words = text.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-  const active = (rules || []).filter((r: any) => r.is_active);
-  return active.find((r: any) =>
+  const active = (rules || []).filter((r: any) => r.is_active && (r.match_type || "keyword") === "keyword");
+  const hit = active.find((r: any) =>
     (r.keywords || []).some((k: string) => (k.includes(" ") ? text.includes(k) : words.includes(k)))
-  ) || null;
+  );
+  if (hit) return hit;
+  return (rules || []).find((r: any) => r.is_active && r.match_type === "fallback") || null;
 }
 
 export default function WhatsAppBot() {
@@ -46,6 +60,16 @@ export default function WhatsAppBot() {
   });
   const refresh = () => qc.invalidateQueries({ queryKey: ["wa-bot-rules"] });
 
+  const seedDefaults = async () => {
+    const existingNames = new Set((rules || []).map((r: any) => r.name));
+    const toInsert = DEFAULT_RULES.filter((r) => !existingNames.has(r.name));
+    if (!toInsert.length) return toast.info("Default rules already exist");
+    const { error } = await db.from("wa_bot_rules").insert(toInsert);
+    if (error) return toast.error(error.message);
+    toast.success(`Added ${toInsert.length} default rule(s)`);
+    refresh();
+  };
+
   const startEdit = (r: any) => {
     setEditingId(r.id);
     setF({ name: r.name, keywords: (r.keywords || []).join(", "), reply: r.reply_text, handover: r.handover, priority: r.priority });
@@ -69,9 +93,12 @@ export default function WhatsAppBot() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">WhatsApp auto-replies</h1>
-        <p className="text-sm text-muted-foreground">When an incoming message contains a keyword, the matching reply is sent. Hand-over rules stop the bot and flag the chat for your team.</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">WhatsApp auto-replies</h1>
+          <p className="text-sm text-muted-foreground">Keyword rules answer common questions. An "away" rule covers out-of-hours messages and a "fallback" rule replies when nothing matches, so no message ever goes silent.</p>
+        </div>
+        <Button size="sm" variant="outline" onClick={seedDefaults}>Add default reply pack</Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -103,8 +130,15 @@ export default function WhatsAppBot() {
           <li key={r.id} className="p-3 flex items-start gap-3">
             <Switch checked={r.is_active} onCheckedChange={async (c) => { await db.from("wa_bot_rules").update({ is_active: c }).eq("id", r.id); refresh(); }} aria-label={`Turn ${r.name} on or off`} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground">{r.name}{r.handover && <span className="ml-2 text-xs text-primary">hand-over</span>}</p>
-              <p className="text-xs text-muted-foreground">Keywords: {r.keywords.join(", ")} · priority {r.priority}</p>
+              <p className="text-sm font-medium text-foreground">
+                {r.name}
+                {r.match_type === "away" && <span className="ml-2 text-xs text-amber-500">away / out-of-hours</span>}
+                {r.match_type === "fallback" && <span className="ml-2 text-xs text-sky-500">fallback</span>}
+                {r.handover && <span className="ml-2 text-xs text-primary">hand-over</span>}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {r.match_type === "away" ? `Hours config: ${(r.keywords || []).join(", ") || "not set"}` : `Keywords: ${(r.keywords || []).join(", ") || "—"}`} · priority {r.priority}
+              </p>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap mt-1">{r.reply_text}</p>
             </div>
             <button aria-label={`Edit ${r.name}`} onClick={() => startEdit(r)} className="text-muted-foreground hover:text-foreground"><Pencil className="w-4 h-4" /></button>

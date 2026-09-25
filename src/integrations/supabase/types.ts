@@ -1515,59 +1515,124 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          method: string | null
+          paid_at: string
+          recorded_by: string | null
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method?: string | null
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: string | null
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
+          amount_paid: number
+          cgst_amount: number | null
           client_email: string
+          client_gstin: string | null
           client_id: string | null
           client_name: string
           created_at: string | null
           currency: string | null
           due_date: string | null
           id: string
+          igst_amount: number | null
           invoice_number: string
+          irn: string | null
           items: Json
           paid_at: string | null
           payment_gateway: string | null
           payment_link: string | null
+          place_of_supply: string | null
           quotation_id: string | null
+          reminder_sent_at: string | null
+          sgst_amount: number | null
           status: string | null
           subtotal: number
           tax_amount: number | null
           total: number
         }
         Insert: {
+          amount_paid?: number
+          cgst_amount?: number | null
           client_email: string
+          client_gstin?: string | null
           client_id?: string | null
           client_name: string
           created_at?: string | null
           currency?: string | null
           due_date?: string | null
           id?: string
+          igst_amount?: number | null
           invoice_number: string
+          irn?: string | null
           items?: Json
           paid_at?: string | null
           payment_gateway?: string | null
           payment_link?: string | null
+          place_of_supply?: string | null
           quotation_id?: string | null
+          reminder_sent_at?: string | null
+          sgst_amount?: number | null
           status?: string | null
           subtotal: number
           tax_amount?: number | null
           total: number
         }
         Update: {
+          amount_paid?: number
+          cgst_amount?: number | null
           client_email?: string
+          client_gstin?: string | null
           client_id?: string | null
           client_name?: string
           created_at?: string | null
           currency?: string | null
           due_date?: string | null
           id?: string
+          igst_amount?: number | null
           invoice_number?: string
+          irn?: string | null
           items?: Json
           paid_at?: string | null
           payment_gateway?: string | null
           payment_link?: string | null
+          place_of_supply?: string | null
           quotation_id?: string | null
+          reminder_sent_at?: string | null
+          sgst_amount?: number | null
           status?: string | null
           subtotal?: number
           tax_amount?: number | null
@@ -2109,17 +2174,24 @@ export type Database = {
       }
       quotations: {
         Row: {
+          cgst_amount: number | null
           client_email: string
+          client_gstin: string | null
           client_id: string | null
           client_name: string
           created_at: string | null
           created_by: string | null
           currency: string | null
+          decided_at: string | null
+          decline_reason: string | null
           id: string
+          igst_amount: number | null
           items: Json
           notes: string | null
           pdf_url: string | null
+          place_of_supply: string | null
           quote_number: string
+          sgst_amount: number | null
           source: string | null
           status: string | null
           subtotal: number
@@ -2127,19 +2199,28 @@ export type Database = {
           tax_rate: number | null
           total: number
           validity_date: string | null
+          version: number
+          viewed_at: string | null
         }
         Insert: {
+          cgst_amount?: number | null
           client_email: string
+          client_gstin?: string | null
           client_id?: string | null
           client_name: string
           created_at?: string | null
           created_by?: string | null
           currency?: string | null
+          decided_at?: string | null
+          decline_reason?: string | null
           id?: string
+          igst_amount?: number | null
           items?: Json
           notes?: string | null
           pdf_url?: string | null
+          place_of_supply?: string | null
           quote_number: string
+          sgst_amount?: number | null
           source?: string | null
           status?: string | null
           subtotal?: number
@@ -2147,19 +2228,28 @@ export type Database = {
           tax_rate?: number | null
           total?: number
           validity_date?: string | null
+          version?: number
+          viewed_at?: string | null
         }
         Update: {
+          cgst_amount?: number | null
           client_email?: string
+          client_gstin?: string | null
           client_id?: string | null
           client_name?: string
           created_at?: string | null
           created_by?: string | null
           currency?: string | null
+          decided_at?: string | null
+          decline_reason?: string | null
           id?: string
+          igst_amount?: number | null
           items?: Json
           notes?: string | null
           pdf_url?: string | null
+          place_of_supply?: string | null
           quote_number?: string
+          sgst_amount?: number | null
           source?: string | null
           status?: string | null
           subtotal?: number
@@ -2167,6 +2257,8 @@ export type Database = {
           tax_rate?: number | null
           total?: number
           validity_date?: string | null
+          version?: number
+          viewed_at?: string | null
         }
         Relationships: []
       }
@@ -2858,6 +2950,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wa_quick_replies: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          shortcut: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       webhooks: {
         Row: {

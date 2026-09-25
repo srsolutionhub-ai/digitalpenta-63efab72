@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -52,6 +52,7 @@ const RoiPredictorTool = lazyRetry(() => import("./pages/tools/RoiPredictorTool"
 
 // Auth pages
 const Login = lazyRetry(() => import("./pages/auth/Login"));
+const Signup = lazyRetry(() => import("./pages/auth/Signup"));
 const ForgotPassword = lazyRetry(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazyRetry(() => import("./pages/auth/ResetPassword"));
 const InviteAccept = lazyRetry(() => import("./pages/auth/InviteAccept"));
@@ -61,6 +62,7 @@ const AdminLayout = lazyRetry(() => import("./pages/dashboard/admin/AdminLayout"
 const DashboardHome = lazyRetry(() => import("./pages/dashboard/admin/DashboardHome"));
 const Leads = lazyRetry(() => import("./pages/dashboard/admin/Leads"));
 const Contacts = lazyRetry(() => import("./pages/dashboard/admin/Contacts"));
+const Companies = lazyRetry(() => import("./pages/dashboard/admin/Companies"));
 const ContactDetail = lazyRetry(() => import("./pages/dashboard/admin/ContactDetail"));
 const CrmTasks = lazyRetry(() => import("./pages/dashboard/admin/Tasks"));
 const Integrations = lazyRetry(() => import("./pages/dashboard/admin/Integrations"));
@@ -80,6 +82,7 @@ const SettingsPage = lazyRetry(() => import("./pages/dashboard/admin/SettingsPag
 const AdminAudits = lazyRetry(() => import("./pages/dashboard/admin/Audits"));
 const AuditDetail = lazyRetry(() => import("./pages/dashboard/admin/AuditDetail"));
 const WhatsAppHub = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppHub"));
+const WhatsAppAnalytics = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppAnalytics"));
 const WhatsAppSetup = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppSetup"));
 const CrmPipeline = lazyRetry(() => import("./pages/dashboard/admin/CrmPipeline"));
 const Quotations = lazyRetry(() => import("./pages/dashboard/admin/Quotations"));
@@ -104,6 +107,8 @@ const ClientInvoices = lazyRetry(() => import("./pages/dashboard/client/ClientIn
 const ClientSupport = lazyRetry(() => import("./pages/dashboard/client/ClientSupport"));
 const ClientFiles = lazyRetry(() => import("./pages/dashboard/client/ClientFiles"));
 const ClientKnowledge = lazyRetry(() => import("./pages/dashboard/client/ClientKnowledge"));
+const ClientQuotations = lazyRetry(() => import("./pages/dashboard/client/ClientQuotations"));
+const ClientProfile = lazyRetry(() => import("./pages/dashboard/client/ClientProfile"));
 
 const BookACall = lazyRetry(() => import("./pages/BookACall"));
 const ProposalBuilder = lazyRetry(() => import("./pages/ProposalBuilder"));
@@ -183,11 +188,18 @@ function AnimatedRoutes() {
             <Route path="/unsubscribe" element={<Unsubscribe />} />
 
 
-            {/* Auth routes */}
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-            <Route path="/auth/reset-password" element={<ResetPassword />} />
+            {/* Auth routes (canonical short paths) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/invite-accept" element={<InviteAccept />} />
+
+            {/* Legacy /auth/* aliases kept for old emails/bookmarks */}
+            <Route path="/auth/login" element={<Navigate to="/login" replace />} />
+            <Route path="/auth/signup" element={<Navigate to="/signup" replace />} />
+            <Route path="/auth/forgot-password" element={<Navigate to="/forgot-password" replace />} />
+            <Route path="/auth/reset-password" element={<Navigate to={{ pathname: "/reset-password", search: window.location.search, hash: window.location.hash }} replace />} />
 
             {/* Admin dashboard */}
             <Route
@@ -201,6 +213,7 @@ function AnimatedRoutes() {
               <Route index element={<DashboardHome />} />
               <Route path="leads" element={<Leads />} />
               <Route path="contacts" element={<Contacts />} />
+              <Route path="companies" element={<Companies />} />
               <Route path="contacts/:email" element={<ContactDetail />} />
               <Route path="tasks" element={<CrmTasks />} />
               <Route path="integrations" element={<Integrations />} />
@@ -218,6 +231,7 @@ function AnimatedRoutes() {
               <Route path="audits/:id" element={<AuditDetail />} />
               <Route path="whatsapp" element={<WhatsAppHub />} />
               <Route path="whatsapp/setup" element={<WhatsAppSetup />} />
+              <Route path="whatsapp/analytics" element={<WhatsAppAnalytics />} />
               <Route path="crm" element={<CrmPipeline />} />
               <Route path="quotations" element={<Quotations />} />
               <Route path="invoices" element={<Invoices />} />
@@ -249,6 +263,8 @@ function AnimatedRoutes() {
               <Route path="support" element={<ClientSupport />} />
               <Route path="files" element={<ClientFiles />} />
               <Route path="knowledge" element={<ClientKnowledge />} />
+              <Route path="quotations" element={<ClientQuotations />} />
+              <Route path="profile" element={<ClientProfile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

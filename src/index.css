@@ -545,3 +545,16 @@
 /* WCAG AA: brand purple as *text* on the dark surface needs a lighter tint
    (base --primary is 3.7:1 on bg; this tint is ~7:1). Buttons/fills keep --primary. */
 .text-primary { color: hsl(256 100% 78%); }
+
+/* ── Print stylesheet for quotation / invoice documents ── */
+@media print {
+  body * { visibility: hidden; }
+  #print-document, #print-document * { visibility: visible; }
+  #print-document {
+    position: absolute; left: 0; top: 0; width: 100%;
+    background: #fff !important; color: #0a0a0a !important;
+    padding: 24px;
+  }
+  #print-document .no-print { display: none !important; }
+  @page { margin: 14mm; }
+}
