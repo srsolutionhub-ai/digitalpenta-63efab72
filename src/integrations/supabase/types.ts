@@ -1021,6 +1021,30 @@ export type Database = {
           },
         ]
       }
+      crm_notes: {
+        Row: {
+          author_id: string | null
+          body: string
+          contact_email: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          contact_email: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          contact_email?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       crm_pipeline_stages: {
         Row: {
           color: string | null
@@ -1050,6 +1074,62 @@ export type Database = {
           position?: number
         }
         Relationships: []
+      }
+      crm_tasks: {
+        Row: {
+          completed_at: string | null
+          contact_email: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          due_at: string | null
+          id: string
+          notes: string | null
+          owner_id: string | null
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          contact_email?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          due_at?: string | null
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          contact_email?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          due_at?: string | null
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tasks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_campaigns: {
         Row: {
@@ -1180,6 +1260,36 @@ export type Database = {
           subject?: string | null
           template?: string
           to_email?: string
+        }
+        Relationships: []
+      }
+      integration_settings: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          provider: string
+          public_id: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          provider: string
+          public_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          provider?: string
+          public_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -2435,6 +2545,45 @@ export type Database = {
           preview_url?: string | null
           updated_at?: string
           voice_id?: string
+        }
+        Relationships: []
+      }
+      wa_bot_rules: {
+        Row: {
+          created_at: string
+          handover: boolean
+          id: string
+          is_active: boolean
+          keywords: string[]
+          match_type: string
+          name: string
+          priority: number
+          reply_text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          handover?: boolean
+          id?: string
+          is_active?: boolean
+          keywords?: string[]
+          match_type?: string
+          name: string
+          priority?: number
+          reply_text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          handover?: boolean
+          id?: string
+          is_active?: boolean
+          keywords?: string[]
+          match_type?: string
+          name?: string
+          priority?: number
+          reply_text?: string
+          updated_at?: string
         }
         Relationships: []
       }
