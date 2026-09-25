@@ -4,7 +4,6 @@ export default function AnnounceBar() {
     "⭐ 4.9/5 Rating",
     "📈 3X Average ROI",
     "🏆 Award Winning Agency",
-    "🇮🇳 India's Fastest Growing Digital Agency",
   ];
   const track = items.join("  •  ") + "  •  ";
 

@@ -9,7 +9,6 @@ import heroMeshAvif from "@/assets/hero-mesh-gradient.avif";
 import heroOrb from "@/assets/hero-orb.png";
 import heroOrbWebp from "@/assets/hero-orb.webp";
 import heroOrbAvif from "@/assets/hero-orb.avif";
-import HeroKpiTicker from "@/components/ui/hero-kpi-ticker";
 import { useHeroPersonalization } from "@/hooks/useHeroPersonalization";
 import VoicePlayerButton from "@/components/voice/VoicePlayerButton";
 import { heroNarration } from "@/lib/narration";
@@ -213,7 +212,6 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Live KPI scoreboard */}
-          <HeroKpiTicker />
 
           {/* Social proof row */}
           <motion.div
@@ -229,7 +227,7 @@ export default function HeroSection() {
                 ))}
               </div>
               <span className="font-mono">
-                <span className="text-foreground font-bold">4.9</span> · 500+ brands · ₹10Cr+ revenue generated
+                <span className="text-foreground font-bold">4.9</span> · 500+ clients · ₹10Cr+ ad budget managed
               </span>
             </div>
             <div className="flex items-center justify-center gap-x-10 gap-y-3 flex-wrap opacity-60">

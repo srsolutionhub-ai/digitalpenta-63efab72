@@ -142,7 +142,7 @@ export default function Contact() {
               className="inline-flex items-center gap-2 mt-6 px-4 py-2 rounded-full card-surface"
             >
               <Clock className="w-4 h-4 text-primary" />
-              <span className="text-xs font-mono text-muted-foreground">Average response time: <span className="text-foreground font-semibold">47 minutes</span></span>
+              <span className="text-xs font-mono text-muted-foreground">We reply within <span className="text-foreground font-semibold">24 hours</span></span>
             </motion.div>
 
             {/* Quick-select intent buttons */}
