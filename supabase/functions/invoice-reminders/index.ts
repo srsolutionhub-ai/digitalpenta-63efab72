@@ -19,6 +19,12 @@ Deno.serve(async (req) => {
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
+    const token = req.headers.get("x-cron-token") ?? "";
+    const { data: ok } = token ? await sb.rpc("verify_cron_token", { _token: token }) : { data: false };
+    if (!ok) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const today = new Date().toISOString().slice(0, 10);
     const in3Days = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
 
