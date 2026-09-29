@@ -1,4 +1,5 @@
 /**
+import { captureAttribution, getLastTouch, getFirstTouchAttribution } from "./attribution";
  * submitLead — the only way public forms create enquiries.
  * Talks to the `submit-lead` server function (validation, spam checks,
  * rate limit, dedupe, AI scoring, routing, emails). Uses plain fetch so the
