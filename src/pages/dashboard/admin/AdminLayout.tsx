@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import DashboardOutlet from "@/components/dashboard/ui/DashboardOutlet";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -339,7 +340,7 @@ function AdminLayoutInner() {
         </header>
 
         <main className="p-4 sm:p-6">
-          <Outlet />
+          <DashboardOutlet />
         </main>
 
         <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />

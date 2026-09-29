@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import DashboardOutlet from "@/components/dashboard/ui/DashboardOutlet";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -233,7 +234,7 @@ function ClientLayoutInner() {
       </Sheet>
 
       <main className="container mx-auto px-4 py-8">
-        <Outlet />
+        <DashboardOutlet />
       </main>
 
       <aside className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-2">
