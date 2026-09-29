@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import DashboardOutlet from "@/components/dashboard/ui/DashboardOutlet";
 import { useAuth } from "@/hooks/useAuth";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -122,14 +123,24 @@ function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?
                   to={item.path}
                   onClick={onNavigate}
                   title={collapsed ? item.label : undefined}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  aria-current={active ? "page" : undefined}
+                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                     active
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
                   }`}
                 >
-                  <item.icon className="w-4 h-4 flex-shrink-0" />
-                  {!collapsed && <span>{item.label}</span>}
+                  {active && (
+                    <motion.span
+                      layoutId={`admin-nav-active-${collapsed ? "c" : "e"}`}
+                      className="absolute inset-0 rounded-lg bg-primary/10 ring-1 ring-primary/20 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.6)]"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                      aria-hidden
+                    />
+                  )}
+                  {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-0.5 rounded-r bg-primary" aria-hidden />}
+                  <item.icon className="relative w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                  {!collapsed && <span className="relative">{item.label}</span>}
                 </Link>
               );
             })}
