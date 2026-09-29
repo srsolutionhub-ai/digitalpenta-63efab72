@@ -2,64 +2,91 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
+/*
+ * Role lookups are shared across every component that calls useAuth()
+ * (ProtectedRoute + layout + pages). Previously each one fired its own
+ * get_user_role request, which made dashboards feel slow. We now keep one
+ * in-flight promise per user and a short sessionStorage cache so a refresh
+ * renders the dashboard instantly while the role is re-validated.
+ */
+const ROLE_CACHE_KEY = "dp_role_cache_v1";
+const rolePromises = new Map<string, Promise<string | null>>();
+
+function readCachedRole(userId: string): string | null | undefined {
+  try {
+    const raw = sessionStorage.getItem(ROLE_CACHE_KEY);
+    if (!raw) return undefined;
+    const c = JSON.parse(raw) as { uid: string; role: string | null; at: number };
+    if (c.uid !== userId || Date.now() - c.at > 10 * 60 * 1000) return undefined;
+    return c.role;
+  } catch { return undefined; }
+}
+
+function loadRole(userId: string, force = false): Promise<string | null> {
+  if (!force && rolePromises.has(userId)) return rolePromises.get(userId)!;
+  const p = (async () => {
+    const { data, error } = await supabase.rpc("get_user_role", { _user_id: userId });
+    if (error) throw error;
+    const role = (data as string | null) ?? null;
+    try { sessionStorage.setItem(ROLE_CACHE_KEY, JSON.stringify({ uid: userId, role, at: Date.now() })); } catch { /* ignore */ }
+    return role;
+  })();
+  rolePromises.set(userId, p);
+  p.catch(() => rolePromises.delete(userId));
+  return p;
+}
+
+function clearRoleCache() {
+  rolePromises.clear();
+  try { sessionStorage.removeItem(ROLE_CACHE_KEY); } catch { /* ignore */ }
+}
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  // Guards against a stale async role fetch overwriting state after the
-  // user has already signed out / switched accounts.
   const fetchToken = useRef(0);
 
   useEffect(() => {
-    const fetchRole = async (userId: string, token: number) => {
-      try {
-        const { data } = await supabase.rpc("get_user_role", { _user_id: userId });
-        if (fetchToken.current === token) setRole((data as string | null) ?? null);
-      } catch {
-        if (fetchToken.current === token) setRole(null);
-      } finally {
-        if (fetchToken.current === token) setLoading(false);
+    const applyUser = (u: User | null, force: boolean) => {
+      const token = ++fetchToken.current;
+      if (!u) {
+        setRole(null);
+        setLoading(false);
+        return;
       }
+      const cached = readCachedRole(u.id);
+      if (cached !== undefined) {
+        setRole(cached);
+        setLoading(false);
+      }
+      loadRole(u.id, force)
+        .then((r) => { if (fetchToken.current === token) setRole(r); })
+        .catch(() => { if (fetchToken.current === token && cached === undefined) setRole(null); })
+        .finally(() => { if (fetchToken.current === token) setLoading(false); });
     };
 
-    // IMPORTANT: register the listener before calling getSession(), and never
-    // call other Supabase methods synchronously inside this callback — that
-    // can deadlock the auth client. Any follow-up Supabase call is deferred
-    // with setTimeout(0) so the callback itself returns immediately.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
+    // Register listener before getSession(); defer Supabase calls out of the callback.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      if (event === "SIGNED_OUT") clearRoleCache();
+      if (event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION") return;
+      setTimeout(() => applyUser(newSession?.user ?? null, event === "SIGNED_IN" || event === "USER_UPDATED"), 0);
+    });
 
-        const token = ++fetchToken.current;
-        if (newSession?.user) {
-          setTimeout(() => fetchRole(newSession.user.id, token), 0);
-        } else {
-          setRole(null);
-          setLoading(false);
-        }
-      }
-    );
-
-    // Then hydrate from any existing session on load.
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       setSession(initialSession);
       setUser(initialSession?.user ?? null);
-
-      const token = ++fetchToken.current;
-      if (initialSession?.user) {
-        fetchRole(initialSession.user.id, token);
-      } else {
-        setRole(null);
-        setLoading(false);
-      }
+      applyUser(initialSession?.user ?? null, false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
+    clearRoleCache();
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
