@@ -15,6 +15,7 @@ import {
   Globe,
   MessageCircle,
   CalendarCheck,
+  LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
@@ -367,6 +368,13 @@ export default function Navbar() {
               <Phone className="w-3.5 h-3.5" aria-hidden />
               <span dir="ltr" style={{ unicodeBidi: "isolate" }}>+91-88601-00039</span>
             </a>
+            <Link
+              to="/login"
+              className="flex items-center gap-1.5 text-xs font-display font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="Client and team login"
+            >
+              <LogIn className="w-3.5 h-3.5" aria-hidden /> Login
+            </Link>
             <div className="w-px h-5 bg-border/50" aria-hidden />
             <Suspense fallback={<NavBookCallButton />}>
               <BookingCalendar source="navbar" trigger={<NavBookCallButton />} />
@@ -574,6 +582,12 @@ export default function Navbar() {
                       <CalendarCheck className="w-4 h-4" aria-hidden /> Book Call
                     </Link>
                   </div>
+                  <Link
+                    to="/login"
+                    className="flex items-center justify-center gap-2 rounded-full h-11 text-xs font-display font-semibold border border-white/15 bg-white/5 text-foreground hover:bg-white/10 transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" aria-hidden /> Login to Dashboard
+                  </Link>
                   <Link to="/get-proposal" className="block">
                     <Button className="w-full rounded-full font-display font-bold text-sm h-12 btn-glow">
                       Get Free Proposal →

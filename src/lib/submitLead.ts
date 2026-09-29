@@ -1,4 +1,5 @@
 /**
+import { captureAttribution, getLastTouch, getFirstTouchAttribution } from "./attribution";
  * submitLead — the only way public forms create enquiries.
  * Talks to the `submit-lead` server function (validation, spam checks,
  * rate limit, dedupe, AI scoring, routing, emails). Uses plain fetch so the
@@ -37,20 +38,15 @@ const PAGE_LOADED_AT = Date.now();
 const FIRST_TOUCH_KEY = "dp_first_touch_v1";
 
 function readUtm(): Record<string, string> {
-  const out: Record<string, string> = {};
-  try {
-    const p = new URLSearchParams(window.location.search);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid"].forEach((k) => {
-      const v = p.get(k);
-      if (v) out[k] = v.slice(0, 200);
-    });
-    if (!Object.keys(out).length) {
-      const stored = sessionStorage.getItem("dp_utm");
-      if (stored) return JSON.parse(stored);
-    } else {
-      sessionStorage.setItem("dp_utm", JSON.stringify(out));
-    }
-  } catch { /* storage blocked */ }
+  // Re-capture in case the visitor arrived with params on this exact page.
+  const fresh = captureAttribution();
+  const last = fresh ?? getLastTouch();
+  const first = getFirstTouchAttribution();
+  const out: Record<string, string> = { ...last };
+  if (first.utm_source || first.gclid || first.fbclid) {
+    out.first_source = first.utm_source || (first.gclid ? "google_ads" : first.fbclid ? "meta_ads" : "");
+    if (first.utm_campaign) out.first_campaign = first.utm_campaign;
+  }
   return out;
 }
 
