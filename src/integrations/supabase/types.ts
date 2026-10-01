@@ -2681,69 +2681,126 @@ export type Database = {
       }
       visitor_profiles: {
         Row: {
+          browser: string | null
           budget: string | null
+          city: string | null
+          click_ids: Json
           company_size: string | null
+          contact_email: string | null
+          country: string | null
           created_at: string | null
           device_type: string | null
+          geo_source: string | null
           id: string
           industry: string | null
           interests: string[] | null
+          landing_page: string | null
+          language: string | null
+          last_page: string | null
           last_visit: string | null
+          lead_id: string | null
           lead_score: number | null
           location: string | null
+          os: string | null
           page_views: number | null
           previous_services: string[] | null
           referral_source: string | null
+          screen: string | null
+          search_engine: string | null
+          search_term: string | null
+          session_count: number
+          source_channel: string | null
           time_on_site: number | null
+          timezone: string | null
           type: string
           updated_at: string | null
           utm_campaign: string | null
+          utm_content: string | null
           utm_medium: string | null
           utm_source: string | null
+          utm_term: string | null
           visitor_id: string
         }
         Insert: {
+          browser?: string | null
           budget?: string | null
+          city?: string | null
+          click_ids?: Json
           company_size?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string | null
           device_type?: string | null
+          geo_source?: string | null
           id?: string
           industry?: string | null
           interests?: string[] | null
+          landing_page?: string | null
+          language?: string | null
+          last_page?: string | null
           last_visit?: string | null
+          lead_id?: string | null
           lead_score?: number | null
           location?: string | null
+          os?: string | null
           page_views?: number | null
           previous_services?: string[] | null
           referral_source?: string | null
+          screen?: string | null
+          search_engine?: string | null
+          search_term?: string | null
+          session_count?: number
+          source_channel?: string | null
           time_on_site?: number | null
+          timezone?: string | null
           type: string
           updated_at?: string | null
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
           visitor_id: string
         }
         Update: {
+          browser?: string | null
           budget?: string | null
+          city?: string | null
+          click_ids?: Json
           company_size?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string | null
           device_type?: string | null
+          geo_source?: string | null
           id?: string
           industry?: string | null
           interests?: string[] | null
+          landing_page?: string | null
+          language?: string | null
+          last_page?: string | null
           last_visit?: string | null
+          lead_id?: string | null
           lead_score?: number | null
           location?: string | null
+          os?: string | null
           page_views?: number | null
           previous_services?: string[] | null
           referral_source?: string | null
+          screen?: string | null
+          search_engine?: string | null
+          search_term?: string | null
+          session_count?: number
+          source_channel?: string | null
           time_on_site?: number | null
+          timezone?: string | null
           type?: string
           updated_at?: string | null
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
           visitor_id?: string
         }
         Relationships: []
