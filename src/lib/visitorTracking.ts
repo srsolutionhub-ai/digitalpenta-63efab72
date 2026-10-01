@@ -13,6 +13,8 @@
  * Events fired before consent are buffered in memory and dropped on reject.
  */
 
+import { getFirstTouchAttribution, getLastTouch } from "./attribution";
+
 const VISITOR_KEY = "visitor_id";
 const VISITS_KEY = "dp_visits_v1";
 const FIRST_TOUCH_KEY = "dp_first_touch_v1";
@@ -157,6 +159,26 @@ function interestsFromPath(path: string): string[] {
   return out;
 }
 
+/** UTM term/content + ad click IDs + any search keyword visible in the referrer. */
+function attributionExtras() {
+  const first = getFirstTouchAttribution();
+  const last = getLastTouch();
+  const a = { ...first, ...last };
+  const clickIds: Record<string, string> = {};
+  ["gclid", "gbraid", "wbraid", "fbclid", "msclkid", "li_fat_id", "ttclid"].forEach((k) => { if (a[k]) clickIds[k] = a[k]; });
+  let referrerTerm: string | undefined;
+  try {
+    const ref = document.referrer ? new URL(document.referrer) : null;
+    if (ref) referrerTerm = ref.searchParams.get("q") || ref.searchParams.get("p") || ref.searchParams.get("text") || undefined;
+  } catch { /* noop */ }
+  return {
+    utmTerm: a.utm_term,
+    utmContent: a.utm_content,
+    clickIds,
+    searchTerm: (a.utm_term || referrerTerm)?.slice(0, 200),
+  };
+}
+
 /* ── queue + delivery ── */
 
 let consented = false;
@@ -183,6 +205,11 @@ function buildBody() {
       pageViews: pageViewCount,
       timeOnSite: Math.round((Date.now() - started) / 1000),
       interests: Array.from(interests),
+      landingPage: ft.landing,
+      lastPage: window.location.pathname,
+      screen: `${window.screen.width}x${window.screen.height}`,
+      visitNumber: getVisitInfo().visitCount,
+      ...attributionExtras(),
       visitorType: interests.has("high-intent") ? "b2b_client" : undefined,
     },
   });
