@@ -112,7 +112,7 @@ function classifyChannel(referrer: string | undefined, utmSource?: string, utmMe
   const engine = /google\./.test(host) ? "Google" : /bing\.com/.test(host) ? "Bing" : /duckduckgo/.test(host) ? "DuckDuckGo"
     : /yahoo\./.test(host) ? "Yahoo" : /yandex/.test(host) ? "Yandex" : /ecosia/.test(host) ? "Ecosia" : null;
   if (clickIds.gclid || clickIds.gbraid || clickIds.wbraid || clickIds.msclkid || /cpc|ppc|paid_search/.test(m)) return { channel: "paid_search", engine: engine ?? (clickIds.msclkid ? "Bing" : "Google") };
-  if (clickIds.fbclid && /paid/.test(m) || /paid_social|cpm/.test(m) || clickIds.li_fat_id || clickIds.ttclid) return { channel: "paid_social", engine: null };
+  if ((clickIds.fbclid && /paid/.test(m)) || /paid_social|cpm/.test(m) || clickIds.li_fat_id || clickIds.ttclid) return { channel: "paid_social", engine: null };
   if (/email|newsletter/.test(m) || src === "newsletter") return { channel: "email", engine: null };
   if (/whatsapp/.test(src)) return { channel: "whatsapp", engine: null };
   if (/chatgpt|openai|perplexity|gemini\.google|copilot|claude\.ai|you\.com/.test(host + src)) return { channel: "ai_assistant", engine: null };
