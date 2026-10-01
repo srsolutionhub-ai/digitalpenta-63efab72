@@ -45,6 +45,14 @@ interface Payload {
     timeOnSite?: number;
     interests?: string[];
     visitorType?: string;
+    landingPage?: string;
+    lastPage?: string;
+    screen?: string;
+    visitNumber?: number;
+    utmTerm?: string;
+    utmContent?: string;
+    clickIds?: Record<string, string>;
+    searchTerm?: string;
   };
 }
 
@@ -64,6 +72,55 @@ function parseUA(ua: string) {
     /Mac OS X/i.test(ua) ? "macOS" :
     /Linux/i.test(ua) ? "Linux" : "Other";
   return { deviceType: tablet ? "tablet" : mobile ? "mobile" : "desktop", browser, os };
+}
+
+
+/* Approximate location from the browser timezone when the network gives none.
+   No third-party IP lookup — privacy friendly. */
+const TZ_GEO: Record<string, [string, string | null]> = {
+  "Asia/Kolkata": ["India", null], "Asia/Calcutta": ["India", null],
+  "Asia/Dubai": ["United Arab Emirates", "Dubai"], "Asia/Riyadh": ["Saudi Arabia", "Riyadh"],
+  "Asia/Qatar": ["Qatar", "Doha"], "Asia/Bahrain": ["Bahrain", "Manama"], "Asia/Kuwait": ["Kuwait", "Kuwait City"],
+  "Asia/Muscat": ["Oman", "Muscat"], "Asia/Karachi": ["Pakistan", null], "Asia/Dhaka": ["Bangladesh", "Dhaka"],
+  "Asia/Kathmandu": ["Nepal", "Kathmandu"], "Asia/Colombo": ["Sri Lanka", "Colombo"], "Asia/Singapore": ["Singapore", "Singapore"],
+  "Europe/London": ["United Kingdom", "London"], "Europe/Dublin": ["Ireland", "Dublin"], "Europe/Paris": ["France", "Paris"],
+  "Europe/Berlin": ["Germany", "Berlin"], "Europe/Amsterdam": ["Netherlands", "Amsterdam"],
+  "America/New_York": ["United States", null], "America/Chicago": ["United States", null],
+  "America/Denver": ["United States", null], "America/Los_Angeles": ["United States", null],
+  "America/Toronto": ["Canada", "Toronto"], "Australia/Sydney": ["Australia", "Sydney"],
+};
+const CC: Record<string, string> = { IN: "India", AE: "United Arab Emirates", SA: "Saudi Arabia", QA: "Qatar", BH: "Bahrain", US: "United States", GB: "United Kingdom", CA: "Canada", AU: "Australia", SG: "Singapore" };
+
+function resolveGeo(req: Request, tz?: string) {
+  const hdrCountry = req.headers.get("cf-ipcountry") || req.headers.get("x-vercel-ip-country") || req.headers.get("x-country-code");
+  const hdrCity = req.headers.get("cf-ipcity") || req.headers.get("x-vercel-ip-city");
+  if (hdrCountry && hdrCountry !== "XX") {
+    return { country: CC[hdrCountry] ?? hdrCountry, city: hdrCity ? decodeURIComponent(hdrCity) : null, source: "network" };
+  }
+  const g = tz ? TZ_GEO[tz] : undefined;
+  if (g) return { country: g[0], city: g[1], source: "timezone" };
+  if (tz?.includes("/")) return { country: null, city: tz.split("/").pop()!.replace(/_/g, " "), source: "timezone" };
+  return { country: null, city: null, source: null };
+}
+
+/** Classifies how the visitor arrived: paid, organic search, AI assistant, social, email, referral, direct. */
+function classifyChannel(referrer: string | undefined, utmSource?: string, utmMedium?: string, clickIds: Record<string, string> = {}) {
+  const m = (utmMedium ?? "").toLowerCase();
+  const src = (utmSource ?? "").toLowerCase();
+  let host = "";
+  try { host = referrer && referrer !== "direct" ? new URL(referrer).hostname.replace(/^www\./, "") : ""; } catch { /* noop */ }
+  const engine = /google\./.test(host) ? "Google" : /bing\.com/.test(host) ? "Bing" : /duckduckgo/.test(host) ? "DuckDuckGo"
+    : /yahoo\./.test(host) ? "Yahoo" : /yandex/.test(host) ? "Yandex" : /ecosia/.test(host) ? "Ecosia" : null;
+  if (clickIds.gclid || clickIds.gbraid || clickIds.wbraid || clickIds.msclkid || /cpc|ppc|paid_search/.test(m)) return { channel: "paid_search", engine: engine ?? (clickIds.msclkid ? "Bing" : "Google") };
+  if ((clickIds.fbclid && /paid/.test(m)) || /paid_social|cpm/.test(m) || clickIds.li_fat_id || clickIds.ttclid) return { channel: "paid_social", engine: null };
+  if (/email|newsletter/.test(m) || src === "newsletter") return { channel: "email", engine: null };
+  if (/whatsapp/.test(src)) return { channel: "whatsapp", engine: null };
+  if (/chatgpt|openai|perplexity|gemini\.google|copilot|claude\.ai|you\.com/.test(host + src)) return { channel: "ai_assistant", engine: null };
+  if (engine) return { channel: "organic_search", engine };
+  if (/facebook|instagram|linkedin|t\.co|twitter|x\.com|youtube|reddit|pinterest|quora/.test(host + " " + src) || /social/.test(m)) return { channel: "organic_social", engine: null };
+  if (src || m) return { channel: "campaign", engine: null };
+  if (host) return { channel: "referral", engine: null };
+  return { channel: "direct", engine: null };
 }
 
 /** Cheap lead-score heuristic so the CRM can prioritise warm anonymous traffic. */
@@ -96,8 +153,11 @@ Deno.serve(async (req) => {
       req.headers.get("cf-connecting-ip") ??
       (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() ??
       null;
-    const country = req.headers.get("cf-ipcountry") ?? null;
-    const city = req.headers.get("cf-ipcity") ?? null;
+    const geo = resolveGeo(req, p.timezone);
+    const country = geo.country;
+    const city = geo.city;
+    const clickIds = (p.clickIds && typeof p.clickIds === "object") ? Object.fromEntries(Object.entries(p.clickIds).slice(0, 8).map(([k, v]) => [k.slice(0, 20), String(v).slice(0, 200)])) : {};
+    const { channel, engine } = classifyChannel(p.referrer, p.utmSource, p.utmMedium, clickIds);
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -107,7 +167,7 @@ Deno.serve(async (req) => {
     // ── visitor profile (upsert, accumulate page views + time on site) ──
     const { data: existing } = await admin
       .from("visitor_profiles")
-      .select("id, page_views, time_on_site, lead_score, interests")
+      .select("id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city")
       .eq("visitor_id", visitorId)
       .maybeSingle();
 
@@ -137,6 +197,24 @@ Deno.serve(async (req) => {
       utm_medium: p.utmMedium?.slice(0, 120) || null,
       utm_campaign: p.utmCampaign?.slice(0, 120) || null,
       device_type: p.deviceType || deviceType,
+      country: country ?? existing?.country ?? null,
+      city: city ?? existing?.city ?? null,
+      geo_source: geo.source,
+      timezone: p.timezone?.slice(0, 64) || null,
+      language: p.language?.slice(0, 20) || null,
+      browser,
+      os,
+      screen: p.screen?.slice(0, 20) || null,
+      landing_page: existing?.landing_page ?? p.landingPage?.slice(0, 300) ?? null,
+      last_page: p.lastPage?.slice(0, 300) || null,
+      // Keep the first known channel (first-touch), unless it was "direct".
+      source_channel: existing?.source_channel && existing.source_channel !== "direct" ? existing.source_channel : channel,
+      search_engine: engine,
+      search_term: existing?.search_term ?? p.searchTerm?.slice(0, 200) ?? null,
+      utm_term: p.utmTerm?.slice(0, 200) || null,
+      utm_content: p.utmContent?.slice(0, 200) || null,
+      click_ids: clickIds,
+      session_count: Math.max(p.visitNumber ?? 1, existing?.session_count ?? 1),
       updated_at: new Date().toISOString(),
     };
 
@@ -186,6 +264,9 @@ Deno.serve(async (req) => {
           utm_medium: p.utmMedium ?? null,
           utm_campaign: p.utmCampaign ?? null,
           language: p.language ?? null,
+          source_channel: channel,
+          search_engine: engine,
+          search_term: p.searchTerm ?? null,
           timezone: p.timezone ?? null,
         },
       }));
