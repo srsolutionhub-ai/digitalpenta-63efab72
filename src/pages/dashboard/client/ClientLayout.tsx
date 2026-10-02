@@ -233,7 +233,7 @@ function ClientLayoutInner() {
         </SheetContent>
       </Sheet>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="dash-main container mx-auto min-w-0 px-3 py-5 sm:px-4 sm:py-8">
         <DashboardOutlet />
       </main>
 

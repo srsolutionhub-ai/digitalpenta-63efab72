@@ -350,7 +350,7 @@ function AdminLayoutInner() {
           </div>
         </header>
 
-        <main className="p-4 sm:p-6">
+        <main className="dash-main min-w-0 p-3 sm:p-6">
           <DashboardOutlet />
         </main>
 
