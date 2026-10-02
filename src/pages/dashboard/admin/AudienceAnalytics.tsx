@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Users, Eye, Layers, Globe2 } from "lucide-react";
 
 const db = supabase as any;
+const CHANNEL_LABEL: Record<string, string> = { organic_search: "Google / search (free)", paid_search: "Search ads", paid_social: "Social ads", organic_social: "Social (free)", ai_assistant: "AI assistants (ChatGPT, Perplexity…)", email: "Email", whatsapp: "WhatsApp", campaign: "Other campaign", referral: "Other websites", direct: "Direct / typed", unknown: "Not yet classified" };
 const RANGES = [7, 30, 90] as const;
 
 function fmt(n: number) { return n.toLocaleString(); }
@@ -23,7 +24,7 @@ export default function AudienceAnalytics() {
 
       const [{ data: interactions }, { data: profiles }, { data: leads }] = await Promise.all([
         db.from("visitor_interactions").select("visitor_id, action, page_url, session_id, data, timestamp").gte("timestamp", since).limit(10000),
-        db.from("visitor_profiles").select("visitor_id, device_type, location, referral_source, utm_source, utm_medium, utm_campaign, last_visit").gte("last_visit", since).limit(5000),
+        db.from("visitor_profiles").select("visitor_id, device_type, location, country, city, browser, os, source_channel, search_engine, search_term, utm_term, landing_page, referral_source, utm_source, utm_medium, utm_campaign, last_visit, lead_id").gte("last_visit", since).limit(5000),
         db.from("leads").select("first_touch").gte("created_at", since).limit(5000),
       ]);
 
@@ -44,16 +45,29 @@ export default function AudienceAnalytics() {
       const deviceCounts: Record<string, number> = {};
       const cityCounts: Record<string, number> = {};
       const countryCounts: Record<string, number> = {};
+      const channelCounts: Record<string, number> = {};
+      const channelLeads: Record<string, number> = {};
+      const keywordCounts: Record<string, number> = {};
+      const engineCounts: Record<string, number> = {};
+      const browserCounts: Record<string, number> = {};
+      const landingCounts: Record<string, number> = {};
       (profiles ?? []).forEach((p: any) => {
         const src = p.utm_source || p.referral_source || "direct";
         sourceCounts[src] = (sourceCounts[src] || 0) + 1;
         if (p.utm_campaign) utmCampaignCounts[p.utm_campaign] = (utmCampaignCounts[p.utm_campaign] || 0) + 1;
         deviceCounts[p.device_type || "unknown"] = (deviceCounts[p.device_type || "unknown"] || 0) + 1;
-        if (p.location) {
-          const [city, country] = String(p.location).split(",").map((s: string) => s.trim());
-          if (city) cityCounts[city] = (cityCounts[city] || 0) + 1;
-          if (country) countryCounts[country] = (countryCounts[country] || 0) + 1;
-        }
+        const city = p.city, country = p.country;
+        if (city) cityCounts[city] = (cityCounts[city] || 0) + 1;
+        if (country) countryCounts[country] = (countryCounts[country] || 0) + 1;
+        const ch = p.source_channel || "unknown";
+        channelCounts[ch] = (channelCounts[ch] || 0) + 1;
+        if (p.lead_id) channelLeads[ch] = (channelLeads[ch] || 0) + 1;
+        const kw = p.search_term || p.utm_term;
+        if (kw) keywordCounts[kw] = (keywordCounts[kw] || 0) + 1;
+        if (p.search_engine) engineCounts[p.search_engine] = (engineCounts[p.search_engine] || 0) + 1;
+        const b = [p.browser, p.os].filter(Boolean).join(" · ");
+        if (b) browserCounts[b] = (browserCounts[b] || 0) + 1;
+        if (p.landing_page) landingCounts[p.landing_page] = (landingCounts[p.landing_page] || 0) + 1;
       });
 
       const leadPageCounts: Record<string, number> = {};
@@ -71,6 +85,11 @@ export default function AudienceAnalytics() {
         topCities: topN(cityCounts),
         topCountries: topN(countryCounts),
         leadPages: topN(leadPageCounts),
+        channels: topN(channelCounts, 10).map(([k, v]) => [`${CHANNEL_LABEL[k] ?? k} · ${channelLeads[k] ?? 0} leads`, v] as [string, number]),
+        keywords: topN(keywordCounts, 12),
+        engines: topN(engineCounts, 6),
+        browsers: topN(browserCounts, 8),
+        landings: topN(landingCounts),
       };
     },
   });
@@ -89,7 +108,7 @@ export default function AudienceAnalytics() {
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h1 className="font-display font-bold text-xl text-foreground">Audience Analytics</h1>
-          <p className="text-xs text-muted-foreground mt-1">Live first-party visitor data · not sampled</p>
+          <p className="text-xs text-muted-foreground mt-1">Live first-party visitor data (only visitors who accepted analytics cookies) · location is approximate</p>
         </div>
         <div className="flex gap-1">
           {RANGES.map((r) => (
@@ -108,6 +127,21 @@ export default function AudienceAnalytics() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4">
+        <Panel title="How visitors found you (channel)">
+          <List rows={data?.channels} empty="No channel data yet — new visits are classified automatically." />
+        </Panel>
+        <Panel title="Search keywords">
+          <List rows={data?.keywords} empty="No keywords yet. Google hides most search words; ad keywords (utm_term) and Bing/DuckDuckGo searches appear here. See Search Console for Google organic keywords." />
+        </Panel>
+        <Panel title="Landing pages (first page seen)">
+          <List rows={data?.landings} empty="No landing data yet." />
+        </Panel>
+        <Panel title="Search engines · Browsers">
+          <div className="grid grid-cols-2 gap-4">
+            <List rows={data?.engines} empty="None yet." compact />
+            <List rows={data?.browsers} empty="None yet." compact />
+          </div>
+        </Panel>
         <Panel title="Top pages">
           <List rows={data?.topPages} empty="No page views recorded yet." />
         </Panel>

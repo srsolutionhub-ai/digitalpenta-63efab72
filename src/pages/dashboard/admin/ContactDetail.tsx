@@ -34,9 +34,11 @@ export default function ContactDetail() {
       const lead = leads.data?.[0];
 
       // ── Website visits: resolve visitor_id(s) linked to this email via leads.meta_data ──
-      const visitorIds: string[] = Array.from(new Set(
-        (leads.data ?? []).map((l: any) => l?.meta_data?.visitor_id).filter(Boolean),
-      ));
+      const { data: linkedProfiles } = await db.from("visitor_profiles").select("visitor_id").ilike("contact_email", email);
+      const visitorIds: string[] = Array.from(new Set([
+        ...(leads.data ?? []).map((l: any) => l?.meta_data?.visitor_id),
+        ...(linkedProfiles ?? []).map((v: any) => v.visitor_id),
+      ].filter(Boolean)));
       let visits: any[] = [];
       let sessions: { sessionId: string; start: string; source: string; device: string; pages: { url: string; at: string }[] }[] = [];
       if (visitorIds.length) {
