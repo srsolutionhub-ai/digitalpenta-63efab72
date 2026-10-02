@@ -139,7 +139,7 @@ function ClientLayoutInner() {
                   )}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-0" align="end">
+              <PopoverContent className="w-[min(20rem,calc(100vw-1.5rem))] p-0" align="end">
                 <div className="px-4 py-3 border-b border-border/20">
                   <p className="font-display font-semibold text-sm">Updates</p>
                 </div>
