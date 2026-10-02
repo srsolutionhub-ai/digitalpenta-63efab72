@@ -180,6 +180,14 @@ Deno.serve(async (req) => {
     return json({ error: "We couldn't save your request. Please try again or WhatsApp us." }, 500);
   }
 
+  // Link the anonymous website visitor to this lead so the CRM shows their journey.
+  if (lead.visitor_id) {
+    const { error: linkErr } = await supabase.from("visitor_profiles")
+      .update({ lead_id: row.id, contact_email: lead.email.toLowerCase() })
+      .eq("visitor_id", lead.visitor_id);
+    if (linkErr) console.error("visitor link failed", linkErr.message);
+  }
+
   // Notifications (fire-and-forget, never block the visitor)
   const invoke = (fn: string, body: unknown) =>
     supabase.functions.invoke(fn, { body }).catch((e) => console.error(fn, e));
