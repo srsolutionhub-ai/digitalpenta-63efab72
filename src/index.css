@@ -558,3 +558,13 @@
   #print-document .no-print { display: none !important; }
   @page { margin: 14mm; }
 }
+
+/* Dashboards on phones: wide tables and tab rows scroll sideways inside their card instead of stretching the page */
+@media (max-width: 767px) {
+  .dash-main table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  .dash-main [role="tablist"] { max-width: 100%; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+  .dash-main [role="tablist"]::-webkit-scrollbar { display: none; }
+  .dash-main [role="dialog"], [role="dialog"] { max-height: 92dvh; overflow-y: auto; }
+  .dash-main pre, .dash-main code { white-space: pre-wrap; word-break: break-word; }
+  .dash-main img, .dash-main canvas, .dash-main svg.recharts-surface { max-width: 100%; }
+}

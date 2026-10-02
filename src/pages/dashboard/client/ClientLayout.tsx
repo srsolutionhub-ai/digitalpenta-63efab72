@@ -139,7 +139,7 @@ function ClientLayoutInner() {
                   )}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-0" align="end">
+              <PopoverContent className="w-[min(20rem,calc(100vw-1.5rem))] p-0" align="end">
                 <div className="px-4 py-3 border-b border-border/20">
                   <p className="font-display font-semibold text-sm">Updates</p>
                 </div>
@@ -233,7 +233,7 @@ function ClientLayoutInner() {
         </SheetContent>
       </Sheet>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="dash-main container mx-auto min-w-0 px-3 py-5 sm:px-4 sm:py-8">
         <DashboardOutlet />
       </main>
 

@@ -13,7 +13,7 @@ export function PageHeader({ title, description, actions, breadcrumbs }: PageHea
   usePublishDashboardTitle(title, description);
 
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-5 flex min-w-0 flex-col sm:mb-6 gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -31,10 +31,10 @@ export function PageHeader({ title, description, actions, breadcrumbs }: PageHea
             ))}
           </nav>
         )}
-        <h1 className="font-display text-2xl font-bold text-foreground">{title}</h1>
+        <h1 className="font-display text-xl font-bold text-foreground break-words sm:text-2xl">{title}</h1>
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2 [&>*]:shrink-0">{actions}</div>}
     </div>
   );
 }
