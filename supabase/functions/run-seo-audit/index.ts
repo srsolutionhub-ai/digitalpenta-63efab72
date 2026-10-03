@@ -1,3 +1,4 @@
+import { signAuditToken } from "../_shared/auditToken.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -866,6 +867,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         audit_id: audit.id,
+        audit_token: await signAuditToken(audit.id),
         url,
         overall,
         mobile,

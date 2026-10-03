@@ -1,3 +1,4 @@
+import { csvCell } from "@/lib/exporters";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Search, RefreshCw, Filter, Download } from "lucide-react";
@@ -66,9 +67,9 @@ export default function EmailLog() {
     const header = "Sent At,Template,To,Subject,Status,Resend ID,Error\n";
     const body = filtered
       .map((r) => [
-        r.created_at, r.template, r.to_email, `"${(r.subject ?? "").replace(/"/g, '""')}"`,
-        r.status, r.resend_id ?? "", `"${(r.error ?? "").replace(/"/g, '""')}"`,
-      ].join(","))
+        r.created_at, r.template, r.to_email, r.subject ?? "",
+        r.status, r.resend_id ?? "", r.error ?? "",
+      ].map(csvCell).join(","))
       .join("\n");
     const blob = new Blob([header + body], { type: "text/csv" });
     const url = URL.createObjectURL(blob);

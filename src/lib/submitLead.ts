@@ -6,7 +6,7 @@
  */
 import { captureAttribution, getLastTouch, getFirstTouchAttribution } from "./attribution";
 import { trackConversion } from "@/lib/events";
-import { getVisitorId } from "@/lib/visitorTracking";
+import { getVisitorId, getVisitorSig } from "@/lib/visitorTracking";
 
 export type LeadForm = "contact" | "homepage" | "audit" | "proposal" | "data_request" | "tool";
 
@@ -75,6 +75,7 @@ export async function submitLead(p: LeadPayload): Promise<{ leadId?: string; dup
       utm: readUtm(),
       first_touch: readFirstTouch(),
       visitor_id: getVisitorId(),
+      visitor_sig: getVisitorSig() ?? undefined,
     }),
   });
   const body = await res.json().catch(() => ({}));

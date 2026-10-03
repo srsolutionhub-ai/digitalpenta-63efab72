@@ -25,7 +25,34 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => null);
     const template = body?.template as TemplateName;
     const to = body?.to;
-    const templateData = body?.data ?? {};
+
+    const supaUrl = Deno.env.get("SUPABASE_URL")!;
+    const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const sb = createClient(supaUrl, service);
+
+    // --- Who is calling? Internal functions (service key) and staff may send any template.
+    const bearer = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    let trusted = bearer.length > 0 && bearer === service;
+    if (!trusted && bearer) {
+      const { data: u } = await sb.auth.getUser(bearer);
+      if (u?.user) {
+        const { data: staff } = await sb.rpc("is_staff", { _uid: u.user.id });
+        trusted = staff === true;
+      }
+    }
+    if (!trusted) {
+      // Public visitors may only trigger their own newsletter welcome email, right after subscribing.
+      if (template !== "newsletter-welcome" || typeof to !== "string") return json({ error: "Not allowed" }, 403);
+      const email = to.trim().toLowerCase();
+      const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const { data: sub } = await sb.from("newsletter_subscribers").select("id").eq("email", email).gte("created_at", since).maybeSingle();
+      if (!sub) return json({ error: "Not allowed" }, 403);
+      const { count } = await sb.from("email_send_log").select("id", { count: "exact", head: true })
+        .eq("template", "newsletter-welcome").eq("to_email", email);
+      if ((count ?? 0) > 0) return json({ ok: true, skipped: true });
+    }
+
+    const templateData = sanitizeData(body?.data ?? {}, trusted);
 
     if (!template || !(template in templates)) {
       return json({ error: `Unknown template: ${template}` }, 400);
@@ -59,9 +86,6 @@ Deno.serve(async (req) => {
 
     // Log to email_send_log (best effort)
     try {
-      const supaUrl = Deno.env.get("SUPABASE_URL")!;
-      const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-      const sb = createClient(supaUrl, service);
       await sb.from("email_send_log").insert({
         template,
         to_email: recipients.join(","),
@@ -77,13 +101,13 @@ Deno.serve(async (req) => {
 
     if (!resendRes.ok) {
       console.error("Resend failed:", resendRes.status, resendBody);
-      return json({ error: "Send failed", status: resendRes.status, details: resendBody }, resendRes.status);
+      return json({ error: "Send failed" }, 502);
     }
 
     return json({ ok: true, id: parsed?.id, subject: rendered.subject });
   } catch (e) {
     console.error("send-email error:", e);
-    return json({ error: e instanceof Error ? e.message : "internal error" }, 500);
+    return json({ error: "internal error" }, 500);
   }
 });
 
@@ -92,4 +116,34 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
+}
+
+const ALLOWED_LINK_HOSTS = ["digitalpenta.com", "www.digitalpenta.com", "digitalpenta.lovable.app", "ygoxxqkcxunuowtuwdxr.supabase.co", "cal.com", "meet.google.com", "zoom.us"];
+
+function escapeHtml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function safeLink(v: string): string | undefined {
+  try {
+    const u = new URL(v);
+    if (u.protocol !== "https:") return undefined;
+    const ok = ALLOWED_LINK_HOSTS.some((h) => u.hostname === h || u.hostname.endsWith("." + h));
+    return ok ? u.toString() : undefined;
+  } catch { return undefined; }
+}
+
+/** Escapes every text value placed into email HTML and only keeps links to our own trusted sites. */
+function sanitizeData(data: Record<string, unknown>, trusted: boolean): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(data ?? {})) {
+    if (typeof v === "string") {
+      if (k === "bodyHtml") { if (trusted) out[k] = v; continue; }
+      if (/Url$/.test(k)) { const l = safeLink(v); if (l) out[k] = l; continue; }
+      out[k] = escapeHtml(v.slice(0, 2000));
+    } else if (typeof v === "number" || typeof v === "boolean") {
+      out[k] = v;
+    }
+  }
+  return out;
 }

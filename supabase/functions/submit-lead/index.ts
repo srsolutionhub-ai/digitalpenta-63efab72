@@ -1,3 +1,4 @@
+import { verifyLink } from "../_shared/linkSign.ts";
 // submit-lead — single, hardened entry point for every public website form.
 // Validation → spam checks → rate limit → dedupe → AI scoring → routing → emails.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
@@ -27,6 +28,7 @@ const Body = z.object({
   first_touch: z.record(z.string().max(500)).optional(),
   extra: z.record(z.unknown()).optional(),
   visitor_id: z.string().trim().max(64).optional(),
+  visitor_sig: z.string().trim().max(64).optional(),
   // spam signals
   hp: z.string().max(200).optional(),          // honeypot, must be empty
   started_at: z.number().optional(),           // ms timestamp form was rendered
@@ -181,7 +183,7 @@ Deno.serve(async (req) => {
   }
 
   // Link the anonymous website visitor to this lead so the CRM shows their journey.
-  if (lead.visitor_id) {
+  if (lead.visitor_id && (await verifyLink(`visitor|${lead.visitor_id}`, lead.visitor_sig ?? null).catch(() => false))) {
     const { error: linkErr } = await supabase.from("visitor_profiles")
       .update({ lead_id: row.id, contact_email: lead.email.toLowerCase() })
       .eq("visitor_id", lead.visitor_id);

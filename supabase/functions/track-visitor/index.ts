@@ -1,3 +1,4 @@
+import { signLink, verifyLink } from "../_shared/linkSign.ts";
 // Public visitor-tracking ingest.
 // Frontend (consent-gated) posts batched events; we persist them with the
 // service role because visitor_profiles / visitor_interactions are read-only
@@ -31,6 +32,7 @@ interface IncomingEvent {
 
 interface Payload {
   visitorId?: string;
+  visitorSig?: string;
   sessionId?: string;
   events?: IncomingEvent[];
   profile?: {
@@ -171,6 +173,13 @@ Deno.serve(async (req) => {
       .eq("visitor_id", visitorId)
       .maybeSingle();
 
+    // Only the browser that created a profile (and holds its signed proof) may update it.
+    const visitorSig = typeof body.visitorSig === "string" ? body.visitorSig : null;
+    if (existing && !(await verifyLink(`visitor|${visitorId}`, visitorSig).catch(() => false))) {
+      return json({ ok: false, reset: true });
+    }
+    const issuedSig = await signLink(`visitor|${visitorId}`);
+
     const pageViews = Math.max(p.pageViews ?? 1, (existing?.page_views ?? 0));
     const leadScore = Math.max(scoreVisitor(events, pageViews), existing?.lead_score ?? 0);
     const interests = Array.from(
@@ -274,9 +283,9 @@ Deno.serve(async (req) => {
       if (aErr) console.error("analytics_events insert", aErr.message);
     }
 
-    return json({ ok: true, stored: events.length, lead_score: leadScore });
+    return json({ ok: true, stored: events.length, lead_score: leadScore, visitor_sig: issuedSig });
   } catch (e) {
     console.error("track-visitor error", e);
-    return json({ error: e instanceof Error ? e.message : "internal error" }, 500);
+    return json({ error: "internal error" }, 500);
   }
 });

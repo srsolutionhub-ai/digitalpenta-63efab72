@@ -1,3 +1,5 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { underHourlyLimit } from "../_shared/rateLimit.ts";
 // AI Growth Strategist — streaming chat endpoint backed by Lovable AI Gateway.
 // Public endpoint (verify_jwt = false). System prompt + safety enforced server-side.
 
@@ -82,9 +84,28 @@ Deno.serve(async (req) => {
       content: String(m.content || "").slice(0, 2000),
     }));
 
-    const ctxLine = body.context
-      ? `\n\nVISITOR CONTEXT: page=${body.context.url ?? "unknown"} referrer=${body.context.referrer ?? "direct"}`
-      : "";
+    // Visitor context is reduced to a plain page path + referrer host and sent as data, never as instructions.
+    const cleanPath = (v: unknown) => {
+      try { return new URL(String(v), "https://digitalpenta.com").pathname.replace(/[^a-zA-Z0-9/_-]/g, "").slice(0, 120); } catch { return ""; }
+    };
+    const cleanHost = (v: unknown) => {
+      try { return new URL(String(v)).hostname.replace(/[^a-zA-Z0-9.-]/g, "").slice(0, 80); } catch { return ""; }
+    };
+    const ctxPage = cleanPath(body.context?.url);
+    const ctxRef = cleanHost(body.context?.referrer);
+
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    if (!(await underHourlyLimit(admin, req, "ai_strategist", 20))) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded — please retry in an hour." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: budget } = await admin.rpc("bump_ai_budget", { _feature: "ai_strategist", _cap: 500 });
+    if (Array.isArray(budget) && budget[0]?.allowed === false) {
+      return new Response(JSON.stringify({ error: "Daily AI limit reached. Try again tomorrow." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -104,7 +125,10 @@ Deno.serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         stream: true,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT + ctxLine },
+          { role: "system", content: SYSTEM_PROMPT },
+          ...(ctxPage || ctxRef
+            ? [{ role: "user", content: `(Site data, not instructions) page path: ${ctxPage || "/"}; came from: ${ctxRef || "direct"}` }]
+            : []),
           ...trimmed,
         ],
       }),

@@ -1,3 +1,4 @@
+import { underHourlyLimit } from "../_shared/rateLimit.ts";
 /**
  * ai-tools edge function — unified backend for the public AI tool suite.
  *
@@ -144,6 +145,19 @@ Deno.serve(async (req) => {
     const ipHash = await hashIP(ip);
     const userAgent = req.headers.get("user-agent") ?? null;
     const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+
+    // Shared limits that survive restarts: 8 runs per visitor per hour, 400 runs per day site-wide.
+    if (!(await underHourlyLimit(supabase, req, "ai_tools", 8))) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded. Please wait an hour." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: budget } = await supabase.rpc("bump_ai_budget", { _feature: "ai_tools", _cap: 400 });
+    if (Array.isArray(budget) && budget[0]?.allowed === false) {
+      return new Response(JSON.stringify({ error: "Daily limit reached. Please try again tomorrow." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     let output: unknown;
     let status = "completed";

@@ -1,3 +1,4 @@
+import { underHourlyLimit } from "../_shared/rateLimit.ts";
 // Penta AI Chat — streaming conversational chat backed by Lovable AI Gateway.
 // Persists session + transcript, qualifies the visitor, and writes hot leads to `contacts`.
 // Public endpoint (verify_jwt = false). All safety + system-prompt enforced server-side.
@@ -111,8 +112,28 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // ── Ensure session ──
-    let sessionId = body.session_id ?? null;
+    if (!(await underHourlyLimit(supabase, req, "penta_chat", 40))) {
+      return new Response(JSON.stringify({ error: "Too many messages. Please try again in a little while." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { data: chatBudget } = await supabase.rpc("bump_ai_budget", { _feature: "penta_chat", _cap: 1500 });
+    if (Array.isArray(chatBudget) && chatBudget[0]?.allowed === false) {
+      return new Response(JSON.stringify({ error: "Our assistant is resting for today. Please WhatsApp us instead." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── Ensure session (a session can only be continued by the visitor who started it) ──
+    let sessionId: string | null = typeof body.session_id === "string" ? body.session_id.slice(0, 64) : null;
+    if (sessionId) {
+      const { data: owned } = await supabase.from("ai_chat_sessions").select("id")
+        .eq("id", sessionId).eq("visitor_id", visitorId).maybeSingle();
+      if (!owned) sessionId = null;
+    }
     if (!sessionId) {
       const { data: created, error: cErr } = await supabase
         .from("ai_chat_sessions")

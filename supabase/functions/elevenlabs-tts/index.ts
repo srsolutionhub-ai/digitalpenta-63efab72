@@ -1,3 +1,4 @@
+import { underHourlyLimit } from "../_shared/rateLimit.ts";
 // Penta AI TTS — proxies ElevenLabs Text-to-Speech.
 // Returns audio/mpeg bytes. Lightweight, no DB. Rate-limited via daily budget.
 //
@@ -30,9 +31,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => null);
     const text = typeof body?.text === "string" ? body.text.trim() : "";
-    const voiceId = typeof body?.voiceId === "string" && body.voiceId.length > 0
-      ? body.voiceId
-      : DEFAULT_VOICE;
+    const requestedVoice = typeof body?.voiceId === "string" ? body.voiceId.trim() : "";
 
     if (!text) {
       return new Response(JSON.stringify({ error: "text required" }), {
@@ -51,6 +50,20 @@ Deno.serve(async (req) => {
     const supaUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supaUrl, serviceKey);
+    // Only voices your team has approved in Voice Studio (or the default) can be used.
+    let voiceId = DEFAULT_VOICE;
+    if (requestedVoice && /^[A-Za-z0-9]{10,40}$/.test(requestedVoice)) {
+      const { data: allowedVoice } = await supabase.from("voice_settings").select("id")
+        .eq("voice_id", requestedVoice).limit(1).maybeSingle();
+      if (allowedVoice) voiceId = requestedVoice;
+    }
+
+    if (!(await underHourlyLimit(supabase, req, "tts", 30))) {
+      return new Response(JSON.stringify({ error: "Too many voice requests. Please try again later." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: budget } = await supabase.rpc("bump_ai_budget", {
       _feature: "elevenlabs_tts",
       _cap: 200,

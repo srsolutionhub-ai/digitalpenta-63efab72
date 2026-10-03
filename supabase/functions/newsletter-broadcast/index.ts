@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
         if (resp.error) { failed++; errText = String(resp.error.message ?? resp.error); }
         else { sent++; ok = true; }
       } catch (e) {
-        console.error("send failed", r.email, e);
+        console.error("newsletter recipient send failed", (e as Error)?.message ?? "unknown error");
         failed++;
         errText = e instanceof Error ? e.message : "send failed";
       }

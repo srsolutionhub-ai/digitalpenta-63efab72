@@ -1,3 +1,5 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { underHourlyLimit } from "../_shared/rateLimit.ts";
 // Lightweight preflight check: verifies that we can reach the URL and that
 // Google PageSpeed Insights is responsive before kicking off a full audit.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
@@ -33,6 +35,8 @@ function normalizeUrl(input: string): string | null {
     const u = new URL(input.trim().startsWith("http") ? input.trim() : `https://${input.trim()}`);
     if (!["http:", "https:"].includes(u.protocol)) return null;
     if (isPrivateHost(u.hostname)) return null;
+    if (u.port && !["80", "443"].includes(u.port)) return null;
+    if (u.username || u.password) return null;
     return u.toString();
   } catch {
     return null;
@@ -40,15 +44,43 @@ function normalizeUrl(input: string): string | null {
 }
 
 
+// Resolves the host and refuses addresses on private or internal networks.
+async function resolvesPublic(host: string): Promise<boolean> {
+  if (/^[\d.]+$/.test(host) || host.includes(":")) return !isPrivateHost(host);
+  try {
+    const [a, aaaa] = await Promise.all([
+      Deno.resolveDns(host, "A").catch(() => [] as string[]),
+      Deno.resolveDns(host, "AAAA").catch(() => [] as string[]),
+    ]);
+    const all = [...a, ...aaaa];
+    return all.length > 0 && all.every((ip) => !isPrivateHost(ip));
+  } catch { return false; }
+}
+
+// Follows up to 4 redirects by hand, re-checking each destination.
+async function safeFetch(url: string, init: RequestInit): Promise<Response> {
+  let current = url;
+  for (let hop = 0; hop < 5; hop++) {
+    const u = new URL(current);
+    if (!["http:", "https:"].includes(u.protocol) || isPrivateHost(u.hostname) || !(await resolvesPublic(u.hostname))) {
+      throw new Error("blocked destination");
+    }
+    const res = await fetch(current, { ...init, redirect: "manual" });
+    const loc = res.headers.get("location");
+    if (res.status >= 300 && res.status < 400 && loc) { current = new URL(loc, current).toString(); continue; }
+    return res;
+  }
+  throw new Error("too many redirects");
+}
+
 async function checkCrawl(url: string) {
   const start = Date.now();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10_000);
   try {
-    const res = await fetch(url, {
+    const res = await safeFetch(url, {
       method: "GET",
       signal: controller.signal,
-      redirect: "follow",
       headers: {
         "User-Agent":
           "Mozilla/5.0 (compatible; DigitalPentaPreflight/1.0; +https://digitalpenta.com/audit)",
@@ -131,8 +163,13 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     const body = await req.json().catch(() => ({}));
-    const url = normalizeUrl(String(body?.url ?? ""));
-    if (!url) {
+    const url = normalizeUrl(String(body?.url ?? "").slice(0, 500));
+    const limiter = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    if (!(await underHourlyLimit(limiter, req, "audit_preflight", 15))) {
+      return new Response(JSON.stringify({ error: "Too many checks. Please try again in an hour." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (!url || !(await resolvesPublic(new URL(url).hostname))) {
       return new Response(
         JSON.stringify({ error: "Please provide a valid URL." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
