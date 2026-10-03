@@ -1,3 +1,4 @@
+import { csvCell } from "@/lib/exporters";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,7 @@ export default function ToolRuns() {
     if (!data?.length) return;
     const headers = ["Tool", "Email", "Company", "Created", "Inputs"];
     const rows = data.map((r: any) => [r.tool, r.email, r.company, r.created_at, JSON.stringify(r.inputs)]);
-    const csv = [headers.join(","), ...rows.map((r) => r.map((c: any) => `"${(c ?? "").toString().replace(/"/g, '""')}"`).join(","))].join("\n");
+    const csv = [headers.join(","), ...rows.map((r) => r.map((c: any) => csvCell(c)).join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);

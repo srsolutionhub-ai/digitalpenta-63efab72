@@ -16,6 +16,7 @@
 import { getFirstTouchAttribution, getLastTouch } from "./attribution";
 
 const VISITOR_KEY = "visitor_id";
+const VISITOR_SIG_KEY = "visitor_sig";
 const VISITS_KEY = "dp_visits_v1";
 const FIRST_TOUCH_KEY = "dp_first_touch_v1";
 const SESSION_KEY = "dp_session_v1";
@@ -68,6 +69,11 @@ export function getVisitorId(): string {
   let id = ls.get(VISITOR_KEY);
   if (!id) { id = uuid(); ls.set(VISITOR_KEY, id); }
   return id;
+}
+
+/** Server-issued proof that this browser owns its visitor id (needed to update the profile). */
+export function getVisitorSig(): string | null {
+  return ls.get(VISITOR_SIG_KEY);
 }
 
 export function getSessionId(): string {
@@ -192,6 +198,7 @@ function buildBody() {
   const ft = firstTouch();
   return JSON.stringify({
     visitorId: getVisitorId(),
+    visitorSig: getVisitorSig(),
     sessionId: getSessionId(),
     events: queue.splice(0, queue.length),
     profile: {
@@ -224,7 +231,18 @@ function send(useBeacon = false) {
     Authorization: `Bearer ${ANON_KEY}`,
   };
   // sendBeacon can't set headers, so keepalive fetch is used even on unload.
-  void fetch(FN_URL, { method: "POST", headers, body, keepalive: true }).catch(() => { /* silent */ });
+  void fetch(FN_URL, { method: "POST", headers, body, keepalive: true })
+    .then((r) => r.json())
+    .then((d: { visitor_sig?: string; reset?: boolean }) => {
+      if (d?.reset) {
+        // This id belongs to a profile we can't prove ownership of: start a fresh one.
+        ls.set(VISITOR_KEY, uuid());
+        try { localStorage.removeItem(VISITOR_SIG_KEY); } catch { /* noop */ }
+      } else if (d?.visitor_sig) {
+        ls.set(VISITOR_SIG_KEY, d.visitor_sig);
+      }
+    })
+    .catch(() => { /* silent */ });
   if (useBeacon) { /* keepalive fetch already handles unload */ }
 }
 

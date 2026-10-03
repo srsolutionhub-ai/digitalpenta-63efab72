@@ -4,11 +4,16 @@
 
 type Row = Record<string, string | number | null | undefined>;
 
+/** Quotes a CSV cell and neutralises spreadsheet formulas (=, +, -, @, tab, CR) so exported data can't run code in Excel/Sheets. */
+export function csvCell(v: unknown): string {
+  if (v === null || v === undefined) return '""';
+  let s = String(v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
 function csvEscape(v: unknown): string {
-  if (v === null || v === undefined) return "";
-  const s = String(v);
-  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-  return s;
+  return csvCell(v);
 }
 
 export function downloadCSV(filename: string, rows: Row[], headers?: string[]) {

@@ -1,3 +1,4 @@
+import { csvCell } from "@/lib/exporters";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,7 +68,7 @@ export default function Bookings() {
       b.company, b.topic, b.source, b.status, b.created_at,
     ]);
     const csv = [headers, ...rows]
-      .map((r) => r.map((c) => `"${(c ?? "").toString().replace(/"/g, '""')}"`).join(","))
+      .map((r) => r.map((c) => csvCell(c)).join(","))
       .join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     const a = document.createElement("a");

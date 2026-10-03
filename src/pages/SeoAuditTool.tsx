@@ -31,6 +31,7 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 
 interface AuditResult {
   audit_id: string;
+  audit_token?: string;
   url: string;
   overall: number;
   mobile: any;
@@ -159,6 +160,7 @@ export default function SeoAuditTool() {
       const aiRes = await supabase.functions.invoke("analyze-audit-ai", {
         body: {
           audit_id: data.audit_id,
+          audit_token: data.audit_token,
           url: data.url,
           scores: data.mobile ?? data.desktop,
           opportunities: data.opportunities,
@@ -208,7 +210,7 @@ export default function SeoAuditTool() {
         label: args.email,
       });
       const { data, error } = await supabase.functions.invoke("generate-audit-pdf", {
-        body: { audit_id: result.audit_id, name: args.name, email: args.email },
+        body: { audit_id: result.audit_id, audit_token: result.audit_token, name: args.name, email: args.email },
       });
       if (error || data?.error) throw new Error(data?.error || error?.message || "PDF failed");
       setPdfUrl(data.pdf_url);

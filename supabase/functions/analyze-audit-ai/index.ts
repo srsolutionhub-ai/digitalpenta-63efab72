@@ -1,3 +1,4 @@
+import { verifyAuditToken } from "../_shared/auditToken.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -50,7 +51,7 @@ const RECOMMENDATION_TOOL = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    const { audit_id, url, scores, opportunities, on_page } = await req.json();
+    const { audit_id, audit_token, url, scores, opportunities, on_page } = await req.json();
     if (!audit_id || !url) {
       return new Response(JSON.stringify({ error: "audit_id and url required" }), {
         status: 400,
@@ -64,9 +65,28 @@ serve(async (req) => {
       const guard = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
       const { data: row, error: rowErr } = await guard
         .from("audits")
-        .select("id, created_at")
+        .select("id, created_at, ai_recommendations")
         .eq("id", audit_id)
         .maybeSingle();
+      if (!(await verifyAuditToken(audit_id, audit_token))) {
+        return new Response(JSON.stringify({ error: "Not allowed" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (row?.ai_recommendations) {
+        // Already analysed once: return the saved result instead of paying for (and overwriting) a new one.
+        return new Response(JSON.stringify({ recommendations: (row.ai_recommendations as any)?.recommendations ?? row.ai_recommendations }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: budget } = await guard.rpc("bump_ai_budget", { _feature: "audit_ai", _cap: 300 });
+      if (Array.isArray(budget) && budget[0]?.allowed === false) {
+        return new Response(JSON.stringify({ error: "Daily AI limit reached. Try again tomorrow." }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       if (rowErr || !row) {
         return new Response(JSON.stringify({ error: "Unknown audit" }), {
           status: 404,

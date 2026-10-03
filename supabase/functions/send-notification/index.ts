@@ -219,7 +219,14 @@ Deno.serve(async (req) => {
       bcc = internalTo;
       replyTo = "support@digitalpenta.com";
       const greet = d.name ? `Hi ${esc(d.name)},` : "Hi there,";
-      const resumeUrl = d.resumeUrl || "https://digitalpenta.com/get-proposal";
+      // Only our own proposal page is ever linked — never a caller-chosen address.
+      let resumeUrl = "https://digitalpenta.com/get-proposal";
+      try {
+        const u = new URL(String(d.resumeUrl || ""));
+        if (u.protocol === "https:" && ["digitalpenta.com", "www.digitalpenta.com"].includes(u.hostname) && u.pathname.startsWith("/get-proposal")) {
+          resumeUrl = esc(`https://digitalpenta.com${u.pathname}${u.search}`);
+        }
+      } catch { /* keep default */ }
       subject = "Your Digital Penta proposal draft is waiting 👋";
       html = `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">

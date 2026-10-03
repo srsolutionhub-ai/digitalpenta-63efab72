@@ -1,3 +1,4 @@
+import { verifyLink } from "../_shared/linkSign.ts";
 // Public tracking endpoint for sequence emails.
 // GET ?e=<enrollment_id>&t=open        -> 1x1 gif, increments opens
 // GET ?e=<enrollment_id>&t=click&u=<url> -> increments clicks, 302 redirects to http(s) url only
@@ -30,8 +31,16 @@ Deno.serve(async (req) => {
   const enrollmentId = url.searchParams.get("e");
   const type = url.searchParams.get("t");
   const target = url.searchParams.get("u");
+  const sig = url.searchParams.get("s");
 
   if (!enrollmentId || !type) return gifResponse();
+
+  // Only links we signed when sending the email are counted or redirected.
+  const valid = await verifyLink(`${enrollmentId}|${type}|${type === "click" ? target ?? "" : ""}`, sig).catch(() => false);
+  if (!valid) {
+    if (type === "click") return new Response(null, { status: 302, headers: { ...corsHeaders, Location: "https://digitalpenta.com/" } });
+    return gifResponse();
+  }
 
   try {
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);

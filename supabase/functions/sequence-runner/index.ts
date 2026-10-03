@@ -1,3 +1,4 @@
+import { signLink } from "../_shared/linkSign.ts";
 // Sequence runner: sends due email_sequence_enrollments steps via the Resend gateway
 // (same pattern as send-email), logs to email_send_log, adds an open pixel + click
 // redirect (via email-track), then advances the enrollment.
@@ -24,12 +25,17 @@ function renderMerge(html: string, name: string) {
 }
 
 /** Rewrite <a href="http...">, adding a tracked redirect, and append an open pixel. */
-function instrument(html: string, enrollmentId: string, trackBase: string) {
+async function instrument(html: string, enrollmentId: string, trackBase: string) {
+  const urls = new Set<string>();
+  html.replace(/href="(https?:\/\/[^"]+)"/gi, (_m, url) => { urls.add(url); return _m; });
+  const signed = new Map<string, string>();
+  for (const url of urls) signed.set(url, await signLink(`${enrollmentId}|click|${url}`));
   const withClicks = html.replace(/href="(https?:\/\/[^"]+)"/gi, (_m, url) => {
-    const tracked = `${trackBase}?e=${encodeURIComponent(enrollmentId)}&t=click&u=${encodeURIComponent(url)}`;
+    const tracked = `${trackBase}?e=${encodeURIComponent(enrollmentId)}&t=click&u=${encodeURIComponent(url)}&s=${signed.get(url)}`;
     return `href="${tracked}"`;
   });
-  const pixel = `<img src="${trackBase}?e=${encodeURIComponent(enrollmentId)}&t=open" width="1" height="1" style="display:none" alt="" />`;
+  const openSig = await signLink(`${enrollmentId}|open|`);
+  const pixel = `<img src="${trackBase}?e=${encodeURIComponent(enrollmentId)}&t=open&s=${openSig}" width="1" height="1" style="display:none" alt="" />`;
   return `${withClicks}${pixel}`;
 }
 
@@ -97,7 +103,7 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        const html = instrument(renderMerge(step.body_html, enrollment.name ?? ""), enrollment.id, trackBase);
+        const html = await instrument(renderMerge(step.body_html, enrollment.name ?? ""), enrollment.id, trackBase);
         const subject = renderMerge(step.subject, enrollment.name ?? "");
 
         const resendRes = await fetch(`${GATEWAY_URL}/emails`, {
