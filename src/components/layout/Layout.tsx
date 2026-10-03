@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollProgressBar from "@/components/ui/scroll-progress-bar";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
+import VoiceAgentButton from "@/components/voice/VoiceAgentButton";
 import MobileStickyBar from "@/components/ui/mobile-sticky-bar";
 import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 
@@ -25,6 +26,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main id="main-content" className="flex-1 relative">{children}</main>
       <Footer />
       <WhatsAppFloat />
+      <VoiceAgentButton />
       <MobileStickyBar />
       <LeadCaptureBar />
     </div>
