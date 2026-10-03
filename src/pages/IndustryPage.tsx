@@ -78,9 +78,9 @@ export default function IndustryPage() {
             <span className="text-xs font-mono text-primary uppercase tracking-widest">{data.title} Industry</span>
             <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mt-4 mb-6 leading-tight">{data.tagline}</h1>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">{data.description}</p>
-            <div className="mt-8 flex gap-3">
-              <Link to="/get-proposal"><Button className="rounded-full px-8 font-display font-semibold">Get A Proposal</Button></Link>
-              <Link to="/contact"><Button variant="outline" className="rounded-full px-8 font-display font-semibold border-border/40">Talk to an Expert</Button></Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/get-proposal"><Button className="rounded-full px-6 sm:px-8 font-display font-semibold">Get A Proposal</Button></Link>
+              <Link to="/contact"><Button variant="outline" className="rounded-full px-6 sm:px-8 font-display font-semibold border-border/40">Talk to an Expert</Button></Link>
             </div>
           </motion.div>
         </div>

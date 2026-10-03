@@ -568,3 +568,17 @@
   .dash-main pre, .dash-main code { white-space: pre-wrap; word-break: break-word; }
   .dash-main img, .dash-main canvas, .dash-main svg.recharts-surface { max-width: 100%; }
 }
+
+/* Premium feel on every public page */
+html { scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
+body { overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; text-rendering: optimizeLegibility; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+::selection { background: hsl(var(--primary) / 0.35); color: hsl(var(--foreground)); }
+a, button, [role="button"] { touch-action: manipulation; }
+:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; border-radius: 6px; }
+/* Comfortable finger-sized links in the footer on phones and tablets */
+@media (max-width: 1023px) {
+  footer li > a, footer li > button { display: inline-block; padding-block: 0.4rem; }
+  footer a[href^="mailto:"], footer a[href^="tel:"] { display: inline-block; padding-block: 0.4rem; }
+}

@@ -210,11 +210,16 @@ export default function ClientTrustWallSection() {
                     <button
                       key={i}
                       aria-label={`Show result ${i + 1}`}
+                      aria-current={i === resultIdx}
                       onClick={() => setResultIdx(i)}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === resultIdx ? "w-6 bg-primary" : "w-1.5 bg-white/15"
-                      }`}
-                    />
+                      className="flex h-8 min-w-6 items-center justify-center px-1"
+                    >
+                      <span
+                        className={`block h-1.5 rounded-full transition-all ${
+                          i === resultIdx ? "w-6 bg-primary" : "w-1.5 bg-foreground/20"
+                        }`}
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
