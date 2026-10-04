@@ -62,7 +62,8 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
     },
     onMessage: (m: { source?: string; message?: string }) => {
       if (!m?.message) return;
-      setLines((l) => [...l, { from: m.source === "user" ? "you" : "penta", text: m.message! }].slice(-30));
+      const line: Line = { from: m.source === "user" ? "you" : "penta", text: m.message };
+      setLines((l) => [...l, line].slice(-30));
     },
     onError: () => setError("Connection problem. Please try again."),
   });
