@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useConversation } from "@elevenlabs/react";
 import { Mic, PhoneOff, X, Loader2 } from "lucide-react";
 import { submitLead } from "@/lib/submitLead";
+
+const VoiceAnimation = lazy(() => import("./VoiceAnimation"));
 
 type Lang = "hi" | "en" | "ar";
 
@@ -138,9 +140,14 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
       </div>
 
       <div className="flex flex-col items-center py-5">
-        <div className={`relative flex h-20 w-20 items-center justify-center rounded-full bg-primary/15 ${live ? "" : "opacity-80"}`}>
-          {live && <span className={`absolute inset-0 rounded-full bg-primary/25 ${conversation.isSpeaking ? "animate-ping" : "animate-pulse"}`} />}
-          <Mic className="relative h-8 w-8 text-primary" aria-hidden />
+        <div className="relative flex h-20 w-52 items-center justify-center overflow-hidden" aria-hidden="true">
+          {connecting || live ? (
+            <Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary" />}>
+              <VoiceAnimation state="active" className="h-full w-full" />
+            </Suspense>
+          ) : (
+            <Mic className="h-8 w-8 text-primary" />
+          )}
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           {connecting ? "Connecting…" : live ? (conversation.isSpeaking ? "Penta is speaking…" : "Listening… speak now") : "Tap start and speak naturally"}
