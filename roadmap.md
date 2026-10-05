@@ -11,4 +11,7 @@
 - [x] Scheduled sequence sending (hourly)
 - [x] Unsubscribe link + one-click unsubscribe + suppression
 - [x] Security pass: search filter escaping, safe links, webhook replay guard, broadcast limits, approval lock, staff-only rules, add-ons moved out of main schema
+- [ ] Refine WhatsApp/voice controls and verify idle/live Lottie animations across devices
+- [ ] Improve metadata across every public, indexable page family for stronger SERP CTR
+- [ ] Reconcile robots.txt and generated sitemap with current public routes
 - Blocked: WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user
