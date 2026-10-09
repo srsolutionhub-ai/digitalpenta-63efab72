@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { MessageCircle } from "lucide-react";
 import { overlayBus } from "@/lib/overlayOrchestrator";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 /**
  * WhatsApp floating button.
@@ -31,10 +31,10 @@ export default function WhatsAppFloat() {
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="fixed bottom-24 left-5 z-40 w-14 h-14 rounded-full bg-[#25D366] hidden lg:flex items-center justify-center shadow-lg shadow-[#25D366]/30 hover:scale-110 transition-transform duration-300 group"
+      className="fixed bottom-24 left-5 z-40 hidden h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg transition-transform duration-300 hover:-translate-y-0.5 hover:scale-105 lg:flex"
     >
-      <span className="absolute inset-0 rounded-full bg-[#25D366]/40 animate-ping" />
-      <MessageCircle className="w-6 h-6 text-white relative z-10" fill="white" />
+      <span className="absolute inset-0 -z-10 rounded-full bg-accent/30 motion-safe:animate-ping" />
+      <WhatsAppIcon className="h-7 w-7" />
     </a>
   );
 }

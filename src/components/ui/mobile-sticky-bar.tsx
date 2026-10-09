@@ -1,6 +1,7 @@
-import { Phone, MessageCircle, ArrowRight } from "lucide-react";
+import { Phone, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import WhatsAppIcon from "@/components/icons/WhatsAppIcon";
 
 export default function MobileStickyBar() {
   return (
@@ -12,7 +13,7 @@ export default function MobileStickyBar() {
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center gap-1 h-14 text-emerald-400 active:scale-95 transition-transform"
         >
-          <MessageCircle className="w-5 h-5" />
+          <WhatsAppIcon className="h-5 w-5" />
           <span className="text-[10px] font-display font-semibold">WhatsApp</span>
         </a>
         <a

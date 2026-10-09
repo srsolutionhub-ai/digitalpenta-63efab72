@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useConversation } from "@elevenlabs/react";
 import { Mic, PhoneOff, X, Loader2 } from "lucide-react";
 import { submitLead } from "@/lib/submitLead";
+import { Button } from "@/components/ui/button";
 
 const VoiceAnimation = lazy(() => import("./VoiceAnimation"));
 
@@ -119,9 +120,9 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
           <p className="font-semibold text-foreground">Talk to Penta</p>
           <p className="text-xs text-muted-foreground">AI voice assistant · replies in your language</p>
         </div>
-        <button onClick={() => { void conversation.endSession(); onClose(); }} aria-label="Close voice assistant" className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+        <Button variant="ghost" size="icon" onClick={() => { void conversation.endSession(); onClose(); }} aria-label="Close voice assistant" className="rounded-full text-muted-foreground hover:text-foreground">
           <X className="h-4 w-4" />
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-2 px-4 pt-3" role="radiogroup" aria-label="Language">
@@ -141,13 +142,9 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
 
       <div className="flex flex-col items-center py-5">
         <div className="relative flex h-20 w-52 items-center justify-center overflow-hidden" aria-hidden="true">
-          {connecting || live ? (
-            <Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary" />}>
-              <VoiceAnimation state="active" className="h-full w-full" />
-            </Suspense>
-          ) : (
-            <Mic className="h-8 w-8 text-primary" />
-          )}
+          <Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary" />}>
+            <VoiceAnimation state={connecting || live ? "active" : "idle"} className="h-full w-full" />
+          </Suspense>
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           {connecting ? "Connecting…" : live ? (conversation.isSpeaking ? "Penta is speaking…" : "Listening… speak now") : "Tap start and speak naturally"}
@@ -169,13 +166,13 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
 
       <div className="p-4">
         {live ? (
-          <button onClick={() => conversation.endSession()} className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground">
+          <Button variant="destructive" onClick={() => conversation.endSession()} className="h-12 w-full rounded-xl">
             <PhoneOff className="h-4 w-4" /> End call
-          </button>
+          </Button>
         ) : (
-          <button onClick={start} disabled={connecting} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:opacity-60">
+          <Button onClick={start} disabled={connecting} className="h-12 w-full rounded-xl">
             {connecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />} Start voice call
-          </button>
+          </Button>
         )}
         <p className="mt-2 text-center text-[11px] text-muted-foreground">Uses your microphone. Calls are handled by AI; we don't store audio.</p>
       </div>

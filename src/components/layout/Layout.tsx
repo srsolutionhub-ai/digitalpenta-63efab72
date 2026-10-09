@@ -11,7 +11,7 @@ import LeadCaptureBar from "@/components/ui/lead-capture-bar";
 /**
  * Bottom-of-viewport overlay layout (single source of truth):
  *   bottom-right : Penta AI chat FAB              (App.tsx, z-60)
- *   bottom-left  : WhatsApp float (desktop only)  (z-50)
+ *   bottom-left  : Voice above WhatsApp on desktop; voice above sticky bar on mobile (z-40)
  *   bottom-edge  : LeadCaptureBar (rotates w/ bus, mobile sits above sticky)
  *   bottom-strip : MobileStickyBar (mobile only)
  * SmartCTA and AiStrategistChat were removed — they duplicated PentaAiChat
