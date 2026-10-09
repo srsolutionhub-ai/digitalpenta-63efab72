@@ -245,8 +245,8 @@ export default function SeoAuditTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free Advanced SEO Audit — Lighthouse + AI | Digital Penta"
-        description="Run a deep SEO, Core Web Vitals, on-page and security audit on any URL in 60 seconds. Backed by Google Lighthouse + AI fix recommendations. Free PDF report."
+        title="Free SEO Audit Tool | Lighthouse + AI Report"
+        description="Audit any URL for SEO, Core Web Vitals, on-page and security issues. Get Lighthouse data, AI recommendations and a free downloadable report."
         canonical="https://digitalpenta.com/tools/seo-audit"
         ogType="website"
         schemas={[

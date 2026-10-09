@@ -20,10 +20,10 @@ export default function SubServicePage() {
   }
 
   const canonical = `https://digitalpenta.com/services/${category}/${subService}`;
-  const title = `${data.title} Agency in Delhi | Digital Penta`;
-  const description = data.heroDescription.length > 155
-    ? `${data.heroDescription.slice(0, 152).trim()}...`
-    : data.heroDescription;
+  const title = `${data.title} Agency in India | Digital Penta`;
+  const description = data.metaDescription.length > 158
+    ? `${data.metaDescription.slice(0, 155).trimEnd()}...`
+    : data.metaDescription;
   const categoryLabel = (category ?? "").replace(/-/g, " ");
 
   return (

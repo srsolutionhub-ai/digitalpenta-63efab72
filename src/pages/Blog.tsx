@@ -53,8 +53,8 @@ export default function Blog() {
   return (
     <Layout>
       <SEOHead
-        title="Digital Marketing Blog | Insights & Trends — Digital Penta"
-        description="Expert insights on SEO, AI marketing, automation, and growth strategy from Digital Penta — Delhi's top digital marketing agency."
+        title="Digital Marketing Blog | SEO, Ads & AI Insights"
+        description="Practical guides on SEO, paid media, AI marketing, automation and growth strategy from Digital Penta specialists working across India and the Gulf."
         canonical="https://digitalpenta.com/blog"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/blog" },

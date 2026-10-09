@@ -283,8 +283,8 @@ export default function GetProposal() {
   return (
     <Layout>
       <SEOHead
-        title="Get a Free Digital Marketing Proposal | Digital Penta"
-        description="Request a tailored SEO, paid media, web, AI or automation growth plan from Digital Penta. Complete the brief in under three minutes."
+        title="Free Digital Marketing Proposal | Digital Penta"
+        description="Request a tailored SEO, paid media, social, web or AI growth plan from Digital Penta. Share your goals in under three minutes with no obligation."
         canonical="https://digitalpenta.com/get-proposal"
         schemas={[
           breadcrumbSchema([

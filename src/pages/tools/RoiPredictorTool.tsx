@@ -24,8 +24,8 @@ export default function RoiPredictorTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free AI ROI Predictor — 90-Day Marketing Forecast | Digital Penta"
-        description="Predict your 90-day marketing ROI across SEO, Google Ads and Meta Ads. Free AI forecast across conservative, base and aggressive scenarios."
+        title="Free Marketing ROI Calculator & AI Forecast"
+        description="Estimate 90-day leads and revenue across SEO, Google Ads and Meta Ads with conservative, base and growth scenarios. Free from Digital Penta."
         canonical="https://digitalpenta.com/tools/roi-predictor"
         schemas={[
           breadcrumbSchema([

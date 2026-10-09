@@ -28,8 +28,8 @@ export default function Roadmap() {
   return (
     <Layout>
       <SEOHead
-        title="Public Roadmap | Digital Penta — What We're Building"
-        description="What Digital Penta is shipping now, next, and later. A transparent public roadmap of our agency platform and AI tooling."
+        title="Digital Penta Public Roadmap | Product Updates"
+        description="See what Digital Penta is improving now, next and later across its client platform, AI tools and agency operations."
         canonical="https://digitalpenta.com/roadmap"
         schemas={[
           breadcrumbSchema([

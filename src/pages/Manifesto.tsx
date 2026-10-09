@@ -14,8 +14,8 @@ export default function Manifesto() {
   return (
     <Layout>
       <SEOHead
-        title="Our Manifesto | Digital Penta — Built for Compounding Growth"
-        description="The four principles that define how Digital Penta builds compounding marketing engines for India and the Middle East's most ambitious brands."
+        title="Digital Penta Manifesto | How We Build Growth"
+        description="Read the four principles behind Digital Penta's integrated marketing, technology and AI work for ambitious brands across India and the Middle East."
         canonical="https://digitalpenta.com/manifesto"
         schemas={[
           breadcrumbSchema([

@@ -101,8 +101,8 @@ export default function About() {
   return (
     <Layout>
       <SEOHead
-        title="About Digital Penta — Marketing Agency in Delhi"
-        description="Meet Digital Penta — Delhi-based digital marketing agency serving 500+ brands across India, UAE, KSA. Five disciplines, one ROI-obsessed team."
+        title="About Digital Penta | Delhi Growth Agency"
+        description="Meet the Delhi agency trusted by 500+ clients across India and the Gulf. Explore Digital Penta's team, integrated expertise and approach to measurable growth."
         canonical="https://digitalpenta.com/about"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/about" },

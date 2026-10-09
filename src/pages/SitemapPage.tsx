@@ -46,8 +46,8 @@ export default function SitemapPage() {
   return (
     <Layout>
       <SEOHead
-        title="Sitemap | Digital Penta — Every Page Indexed"
-        description="Complete sitemap of Digital Penta — services, locations, intent-specific landing pages, blog and free tools. One crawlable index of the platform."
+        title="Digital Penta Sitemap | Services, Cities & Tools"
+        description="Browse Digital Penta services, city pages, industry expertise, case studies, marketing resources and free AI tools from one complete site index."
         canonical="https://digitalpenta.com/sitemap"
         schemas={[
           breadcrumbSchema([

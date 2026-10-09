@@ -27,8 +27,8 @@ export default function BlogOutlineTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free AI Blog Outline Generator | Digital Penta"
-        description="Generate SEO-optimised blog outlines in seconds — H2 structure, FAQs, internal-link map and authority sources. Free AI tool from Digital Penta."
+        title="Free AI Blog Outline Generator | SEO Content Plan"
+        description="Create an SEO-focused blog outline with H2 structure, FAQs, authority sources and internal-link ideas in seconds. Free from Digital Penta."
         canonical="https://digitalpenta.com/tools/blog-outline"
         schemas={[
           breadcrumbSchema([

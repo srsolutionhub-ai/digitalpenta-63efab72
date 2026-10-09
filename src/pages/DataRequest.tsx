@@ -63,6 +63,7 @@ export default function DataRequest() {
         title="Data Request (GDPR / DPDP) | Digital Penta"
         description="Submit a data subject request: access, delete, correct, export, or object to data processing. GDPR & India DPDP compliant."
         canonical="https://digitalpenta.com/data-request"
+        noindex
       />
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="text-center mb-8">

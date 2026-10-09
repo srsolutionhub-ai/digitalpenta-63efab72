@@ -27,8 +27,8 @@ export default function CompetitorXrayTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free Competitor X-Ray — AI Gap Analysis | Digital Penta"
-        description="Compare your website to a competitor across SEO, content, ads and CRO. Free AI competitive intelligence report from Digital Penta."
+        title="Free AI Competitor Analysis Tool | Digital Penta"
+        description="Compare your website with a competitor across SEO, content, advertising and conversion experience. Get a free AI-powered gap analysis."
         canonical="https://digitalpenta.com/tools/competitor-xray"
         schemas={[
           breadcrumbSchema([

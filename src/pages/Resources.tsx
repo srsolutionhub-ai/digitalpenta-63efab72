@@ -16,8 +16,8 @@ export default function Resources() {
   return (
     <Layout>
       <SEOHead
-        title="Free Resources & Tools | Digital Penta"
-        description="Free marketing resources from Digital Penta — AI tools, pricing calculator, free SEO audit, weekly playbooks and our public roadmap."
+        title="Free Digital Marketing Resources | Digital Penta"
+        description="Use free AI marketing tools, an SEO audit, a pricing calculator and practical playbooks from Digital Penta. No signup required for featured tools."
         canonical="https://digitalpenta.com/resources"
         schemas={[
           breadcrumbSchema([

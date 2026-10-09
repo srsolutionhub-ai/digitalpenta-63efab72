@@ -26,7 +26,7 @@ export default function IndustryPage() {
 
   const depth = getIndustryDepth(industry || "");
   const canonical = `https://digitalpenta.com/industries/${industry}`;
-  const title = `Digital Marketing for ${data.title} in India | Digital Penta`;
+  const title = `${data.title} Digital Marketing Agency | Digital Penta`;
 
   return (
     <Layout>
