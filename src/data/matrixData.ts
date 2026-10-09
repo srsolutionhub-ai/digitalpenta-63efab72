@@ -287,10 +287,10 @@ export function getMatrixPage(serviceSlug: string, citySlug: string): MatrixPage
   const cityName = city.city;
 
   // Unique meta per combo — kept under 60/160 char limits.
-  const metaTitle = `${service.name} Agency in ${cityName} | Digital Penta`;
+  const metaTitle = `${service.name} Agency in ${cityName} | Free Consultation`;
   const metaDescription =
-    `${service.longName} services in ${cityName}. ${service.metaIntent} with our specialist team. ` +
-    `Pricing from ${city.budgetMin}/month. Free strategy consultation.`;
+    `${service.longName} services in ${cityName} for ${city.industries.slice(0, 2).join(" and ")}. ` +
+    `Plans from ${city.budgetMin}/month. Request a free consultation.`;
 
   const h1 = `${service.name} Agency in ${cityName} — ${service.metaIntent[0].toUpperCase()}${service.metaIntent.slice(1)}`;
   const heroSubhead =

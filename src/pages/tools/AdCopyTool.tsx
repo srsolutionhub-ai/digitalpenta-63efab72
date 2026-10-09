@@ -24,8 +24,8 @@ export default function AdCopyTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free AI Ad Copy Generator — Google & Meta | Digital Penta"
-        description="Generate high-converting Google, Meta and LinkedIn ad copy in seconds. Free AI ad copywriter built by performance-marketing specialists."
+        title="Free AI Ad Copy Generator | Google, Meta & LinkedIn"
+        description="Create Google, Meta and LinkedIn ad variations in seconds. Generate headlines, primary text and calls to action with a free AI advertising tool."
         canonical="https://digitalpenta.com/tools/ad-copy"
         schemas={[
           breadcrumbSchema([

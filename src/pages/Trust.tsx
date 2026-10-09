@@ -22,8 +22,8 @@ export default function Trust() {
   return (
     <Layout>
       <SEOHead
-        title="Trust & Security | Digital Penta — How We Protect Client Data"
-        description="Digital Penta's security posture, sub-processors, compliance certifications and incident response process. Built for enterprise-grade trust."
+        title="Trust, Privacy & Security | Digital Penta"
+        description="Review how Digital Penta protects client data, manages sub-processors, handles privacy requests and responds to security incidents."
         canonical="https://digitalpenta.com/trust"
         schemas={[
           breadcrumbSchema([

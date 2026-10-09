@@ -29,8 +29,8 @@ export default function LocationsHub() {
   return (
     <Layout>
       <SEOHead
-        title="Our Locations | Digital Penta Agency Across India & Gulf"
-        description="Find your local Digital Penta team — digital marketing agency offices and service areas across Delhi, Mumbai, Bangalore, Lucknow, Dubai, Riyadh, Doha and more."
+        title="Digital Marketing Agency Locations | Digital Penta"
+        description="Find Digital Penta services across Delhi, Mumbai, Bangalore, Dubai, Riyadh, Doha and more. Explore local SEO, ads, social, web and AI expertise."
         canonical={CANONICAL}
         hreflangs={[
           { hreflang: "en", href: CANONICAL },

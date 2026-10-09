@@ -62,8 +62,8 @@ export default function PricingCalculator() {
   return (
     <Layout>
       <SEOHead
-        title="Pricing Calculator | Digital Penta — Instant Quote"
-        description="Get an instant indicative quote for SEO, PPC, social media, web development and AI from Digital Penta. India and GCC pricing supported."
+        title="Digital Marketing Pricing Calculator | Digital Penta"
+        description="Estimate SEO, PPC, social media, web development and AI service costs for India or the Gulf. Build an indicative Digital Penta quote online."
         canonical="https://digitalpenta.com/pricing-calculator"
         schemas={[
           breadcrumbSchema([

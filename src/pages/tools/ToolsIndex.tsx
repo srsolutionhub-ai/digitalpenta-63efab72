@@ -17,7 +17,7 @@ export default function ToolsIndex() {
     <Layout>
       <SEOHead
         title="Free AI Marketing Tools | Digital Penta"
-        description="Free AI-powered marketing tools — Growth Score, Ad Copy Generator, Meta Tag Generator, Blog Outline, Competitor X-Ray, ROI Predictor. No signup required."
+        description="Use free AI tools for website growth scoring, ad copy, meta tags, blog outlines, competitor research and ROI forecasts. No signup required."
         canonical="https://digitalpenta.com/tools"
         schemas={[
           breadcrumbSchema([

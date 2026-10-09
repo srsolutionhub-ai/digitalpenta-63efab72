@@ -102,8 +102,8 @@ export default function Contact() {
   return (
     <Layout>
       <SEOHead
-        title="Contact Digital Penta | Delhi Digital Marketing Agency"
-        description="Talk to Digital Penta — Delhi HQ, Dubai & Riyadh offices. Free 30-min strategy call, custom growth plan, launch in 7 days. Call +91-88601-00039."
+        title="Contact Digital Penta | Free Strategy Call"
+        description="Speak with Digital Penta about SEO, paid media, social, web or AI automation. Request a free 30-minute strategy call or phone +91-88601-00039."
         canonical="https://digitalpenta.com/contact"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/contact" },

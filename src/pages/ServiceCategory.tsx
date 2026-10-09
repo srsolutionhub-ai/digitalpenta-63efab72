@@ -240,9 +240,7 @@ export default function ServiceCategory() {
   const allFaqs = [...data.faqs, ...(depth?.faqs ?? [])];
   const canonical = `https://digitalpenta.com/services/${category}`;
   const title = `${data.title} Services in India & Dubai | Digital Penta`;
-  const description = data.description.length > 155
-    ? `${data.description.slice(0, 152).trim()}...`
-    : data.description;
+  const description = `${data.description} Explore strategy, delivery and a free consultation.`.slice(0, 158);
 
   return (
     <Layout>

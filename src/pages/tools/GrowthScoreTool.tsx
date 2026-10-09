@@ -21,8 +21,8 @@ export default function GrowthScoreTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free AI Growth Score — Audit Your Website | Digital Penta"
-        description="Paste your URL and get an instant AI Growth Score (0-100) plus a 6-step roadmap of the highest-impact growth moves for your business."
+        title="Free AI Website Growth Score | Digital Penta"
+        description="Paste your website URL to get an AI Growth Score from 0–100 and a prioritised six-step roadmap covering the highest-impact growth opportunities."
         canonical="https://digitalpenta.com/tools/growth-score"
         schemas={[
           breadcrumbSchema([

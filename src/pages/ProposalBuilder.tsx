@@ -78,8 +78,8 @@ export default function ProposalBuilder() {
   return (
     <Layout>
       <SEOHead
-        title="Free Growth Proposal Builder — Custom PDF in 60s | Digital Penta"
-        description="Build a custom, AI-priced digital marketing proposal in 60 seconds. SEO, Ads, Social, Web Dev, AI, WhatsApp — instant PDF + senior strategist call."
+        title="Free Marketing Proposal Builder | Digital Penta"
+        description="Build a tailored digital marketing proposal for SEO, ads, social, web, AI or WhatsApp. Review indicative pricing and download your custom PDF."
         canonical="https://digitalpenta.com/proposal-builder"
         schemas={[breadcrumbSchema([
           { name: "Home", url: "https://digitalpenta.com/" },

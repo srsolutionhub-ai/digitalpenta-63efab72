@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { Mic } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // The ElevenLabs SDK is only downloaded when a visitor opens the panel,
 // so it never affects page load speed.
@@ -11,17 +12,19 @@ export default function VoiceAgentButton() {
   return (
     <>
       {!open && (
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={() => setOpen(true)}
           aria-label="Talk to our voice assistant"
           title="Talk to Penta"
-          className="fixed z-50 left-4 bottom-36 h-16 w-16 overflow-hidden rounded-full border border-primary/40 bg-card/95 shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:left-6 lg:bottom-44"
+          className="fixed bottom-24 left-4 z-40 h-14 w-14 overflow-hidden rounded-full border-primary/40 bg-card/95 p-0 shadow-lg backdrop-blur transition-transform hover:-translate-y-0.5 hover:bg-card lg:bottom-44 lg:left-5"
         >
           <Suspense fallback={<Mic className="m-auto h-6 w-6 text-primary" aria-hidden="true" />}>
-            <VoiceAnimation state="idle" className="h-full w-full scale-110" />
+            <VoiceAnimation state="idle" className="h-full w-full" />
           </Suspense>
-        </button>
+        </Button>
       )}
       {open && (
         <Suspense fallback={null}>

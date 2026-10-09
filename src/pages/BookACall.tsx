@@ -35,8 +35,8 @@ export default function BookACall() {
   return (
     <Layout>
       <SEOHead
-        title="Book a Free Strategy Call | Digital Penta"
-        description="Lock in a 30-minute call with a senior strategist. No sales pitch — we audit your funnel, surface 3 fast wins, and tell you whether we're a fit. 100% free."
+        title="Book a Free Marketing Strategy Call | Digital Penta"
+        description="Book a free 30-minute call with a senior Digital Penta strategist. Review your funnel, identify practical growth opportunities and discuss the right next step."
         canonical="https://digitalpenta.com/book-a-call"
         schemas={[
           breadcrumbSchema([

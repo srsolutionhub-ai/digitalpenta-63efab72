@@ -88,7 +88,7 @@ const Index = () => {
     <Layout>
       <SEOHead
         title="Digital Marketing Agency in Delhi | Digital Penta"
-        description="Digital marketing agency in Delhi. SEO, Google Ads, social media & AI automation. 500+ clients, 4.9★, ₹10Cr+ ad budget managed. Free audit."
+        description="Grow with a Delhi digital marketing agency trusted by 500+ clients. SEO, Google Ads, social media and AI automation. Rated 4.9★. Get a free audit."
         canonical="https://digitalpenta.com/"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/" },

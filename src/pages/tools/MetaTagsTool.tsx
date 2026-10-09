@@ -27,8 +27,8 @@ export default function MetaTagsTool() {
   return (
     <Layout>
       <SEOHead
-        title="Free AI Meta Tag Generator — SEO Title & Description | Digital Penta"
-        description="Generate SEO-optimised page titles, meta descriptions, OG and Twitter tags in seconds. Free AI tool from Digital Penta."
+        title="Free AI Meta Tag Generator | SEO Titles & Descriptions"
+        description="Generate an SEO title, meta description, Open Graph tags and social metadata in seconds with Digital Penta's free AI meta tag tool."
         canonical="https://digitalpenta.com/tools/meta-tags"
         schemas={[
           breadcrumbSchema([

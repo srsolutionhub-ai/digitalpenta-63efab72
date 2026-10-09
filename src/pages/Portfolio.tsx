@@ -73,8 +73,8 @@ export default function Portfolio() {
   return (
     <Layout>
       <SEOHead
-        title="Portfolio & Case Studies | Digital Penta — Delhi Agency"
-        description="Real client results from Digital Penta — 340% lead growth, 8.2x ROAS, 50K+ users. Case studies across SEO, PPC, AI & development."
+        title="Digital Marketing Case Studies | Digital Penta"
+        description="See verified Digital Penta results, including 340% lead growth and 8.2x ROAS. Explore SEO, paid media, AI and web development case studies."
         canonical="https://digitalpenta.com/portfolio"
         hreflangs={[
           { hreflang: "en", href: "https://digitalpenta.com/portfolio" },
