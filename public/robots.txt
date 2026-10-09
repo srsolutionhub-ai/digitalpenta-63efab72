@@ -1,6 +1,4 @@
 # Digital Penta — crawler policy
-# Sitemap: https://digitalpenta.com/sitemap.xml
-
 # ── Search engines ──
 User-agent: Googlebot
 Allow: /
@@ -52,6 +50,11 @@ Allow: /
 Disallow: /api/
 Disallow: /dashboard/
 Disallow: /auth/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /data-request
 Disallow: /unsubscribe
 
 Sitemap: https://digitalpenta.com/sitemap.xml
