@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useConversation } from "@elevenlabs/react";
+import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { Mic, PhoneOff, X, Loader2 } from "lucide-react";
 import { submitLead } from "@/lib/submitLead";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ function langOptions(detected: Lang): Lang[] {
 
 interface Line { from: "you" | "penta"; text: string }
 
-export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
+function VoiceAgentPanelContent({ onClose }: { onClose: () => void }) {
   const detected = useRef(detectLang()).current;
   const [lang, setLang] = useState<Lang>(detected);
   const [connecting, setConnecting] = useState(false);
@@ -177,5 +177,13 @@ export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
         <p className="mt-2 text-center text-[11px] text-muted-foreground">Uses your microphone. Calls are handled by AI; we don't store audio.</p>
       </div>
     </div>
+  );
+}
+
+export default function VoiceAgentPanel({ onClose }: { onClose: () => void }) {
+  return (
+    <ConversationProvider>
+      <VoiceAgentPanelContent onClose={onClose} />
+    </ConversationProvider>
   );
 }
