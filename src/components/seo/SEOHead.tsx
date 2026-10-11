@@ -40,6 +40,21 @@ export interface SEOHeadProps {
 
 const SEO_MARKER = "data-seo";
 
+/** Keep snippets readable when data-driven page copy exceeds search display limits. */
+function compactTitle(value: string) {
+  if (value.length <= 60) return value;
+  const withoutBrand = value.replace(/\s*[|—-]\s*Digital Penta.*$/i, "").trim();
+  if (withoutBrand.length <= 60) return withoutBrand;
+  const clipped = withoutBrand.slice(0, 59);
+  return clipped.slice(0, Math.max(clipped.lastIndexOf(" "), 45)).trim();
+}
+
+function compactDescription(value: string) {
+  if (value.length <= 160) return value;
+  const clipped = value.slice(0, 157);
+  return `${clipped.slice(0, Math.max(clipped.lastIndexOf(" "), 140)).trim()}…`;
+}
+
 function setMeta(selector: string, attrName: "name" | "property", attrValue: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(selector);
   if (!el) {
@@ -80,20 +95,23 @@ export default function SEOHead({
   geo,
 }: SEOHeadProps) {
 
+  const searchTitle = compactTitle(title);
+  const searchDescription = compactDescription(description);
+
   useEffect(() => {
     // Title
-    document.title = title;
+    document.title = searchTitle;
 
     // Robots
     setMeta('meta[name="robots"]', "name", "robots",
       noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large,max-snippet:-1");
 
     // Description
-    setMeta('meta[name="description"]', "name", "description", description);
+    setMeta('meta[name="description"]', "name", "description", searchDescription);
 
     // Open Graph
-    setMeta('meta[property="og:title"]', "property", "og:title", title);
-    setMeta('meta[property="og:description"]', "property", "og:description", description);
+    setMeta('meta[property="og:title"]', "property", "og:title", searchTitle);
+    setMeta('meta[property="og:description"]', "property", "og:description", searchDescription);
     setMeta('meta[property="og:url"]', "property", "og:url", canonical);
     setMeta('meta[property="og:type"]', "property", "og:type", ogType);
     setMeta('meta[property="og:image"]', "property", "og:image", ogImage);
@@ -101,8 +119,8 @@ export default function SEOHead({
 
     // Twitter
     setMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
-    setMeta('meta[name="twitter:title"]', "name", "twitter:title", title);
-    setMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
+    setMeta('meta[name="twitter:title"]', "name", "twitter:title", searchTitle);
+    setMeta('meta[name="twitter:description"]', "name", "twitter:description", searchDescription);
     setMeta('meta[name="twitter:image"]', "name", "twitter:image", ogImage);
 
     // Optional Arabic alternates
@@ -154,7 +172,7 @@ export default function SEOHead({
       return [t].flat().some((x) => x === "WebPage" || x === "CollectionPage" || x === "AboutPage" || x === "ContactPage");
     });
     const allSchemas = [...(schemas ?? [])];
-    if (!noindex && !hasPageNode) allSchemas.push(webPageSchema({ url: canonical, name: title, description }));
+    if (!noindex && !hasPageNode) allSchemas.push(webPageSchema({ url: canonical, name: searchTitle, description: searchDescription }));
     if (allSchemas.length) {
       allSchemas.forEach(s => {
         const script = document.createElement("script");
@@ -172,7 +190,7 @@ export default function SEOHead({
       document.head.querySelectorAll(`meta[${SEO_MARKER}="geo"]`).forEach(n => n.remove());
     };
   }, [
-    title, description, canonical, ogImage, ogType, noindex,
+    searchTitle, searchDescription, canonical, ogImage, ogType, noindex,
     JSON.stringify(hreflangs), JSON.stringify(schemas),
     arabicTitle, arabicDescription, JSON.stringify(geo),
   ]);
