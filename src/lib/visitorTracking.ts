@@ -222,28 +222,33 @@ function buildBody() {
   });
 }
 
+let inFlight = false;
+
 function send(useBeacon = false) {
   if (!consented || queue.length === 0) return;
+  // One request at a time until this browser holds its signed id, so parallel
+  // first requests can't be treated as an impostor. On unload we always send.
+  if (inFlight && !useBeacon && !getVisitorSig()) { scheduleFlush(1500); return; }
+  inFlight = true;
   const body = buildBody();
   const headers = {
     "Content-Type": "application/json",
     apikey: ANON_KEY,
     Authorization: `Bearer ${ANON_KEY}`,
   };
-  // sendBeacon can't set headers, so keepalive fetch is used even on unload.
   void fetch(FN_URL, { method: "POST", headers, body, keepalive: true })
     .then((r) => r.json())
-    .then((d: { visitor_sig?: string; reset?: boolean }) => {
+    .then((d: { visitor_sig?: string; visitor_id?: string; reset?: boolean }) => {
+      if (d?.visitor_id) ls.set(VISITOR_KEY, d.visitor_id); // server moved us to a fresh id
       if (d?.reset) {
-        // This id belongs to a profile we can't prove ownership of: start a fresh one.
         ls.set(VISITOR_KEY, uuid());
         try { localStorage.removeItem(VISITOR_SIG_KEY); } catch { /* noop */ }
       } else if (d?.visitor_sig) {
         ls.set(VISITOR_SIG_KEY, d.visitor_sig);
       }
     })
-    .catch(() => { /* silent */ });
-  if (useBeacon) { /* keepalive fetch already handles unload */ }
+    .catch(() => { /* silent */ })
+    .finally(() => { inFlight = false; });
 }
 
 function scheduleFlush(delay = 4000) {

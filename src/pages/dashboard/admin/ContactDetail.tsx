@@ -63,7 +63,7 @@ export default function ContactDetail() {
             start: first.timestamp,
             source: first.data?.utm_source || first.data?.referrer || "direct",
             device: first.data?.device_type || first.data?.deviceType || "—",
-            pages: sorted.filter((r) => r.page_url).map((r) => ({ url: r.page_url, at: r.timestamp })),
+            pages: sorted.filter((r) => r.page_url && r.action === "page_view").map((r) => ({ url: r.page_url, at: r.timestamp })),
           };
         }).sort((a, b) => b.start.localeCompare(a.start));
       }
@@ -76,7 +76,11 @@ export default function ContactDetail() {
       (notes.data ?? []).forEach((n: any) => items.push({ at: n.created_at, kind: "note", icon: StickyNote, title: "Note", detail: n.body }));
       visits.forEach((v: any) => {
         if (!v.page_url) return;
-        items.push({ at: v.timestamp, kind: "visit", icon: Globe, title: `Viewed ${v.page_url.replace(/^https?:\/\/[^/]+/, "") || "/"}`, detail: v.action !== "page_view" ? v.action : undefined });
+        const path = v.page_url.replace(/^https?:\/\/[^/]+/, "") || "/";
+        // Keep the timeline readable: page views + real conversions only (not every scroll/click).
+        if (v.action === "page_view") items.push({ at: v.timestamp, kind: "visit", icon: Globe, title: `Viewed ${path}` });
+        else if (/lead_submitted|whatsapp_click|phone_click|email_click|free_audit_click/.test(v.action))
+          items.push({ at: v.timestamp, kind: "visit", icon: Globe, title: `${v.action.replace(/_/g, " ")} on ${path}` });
       });
       items.sort((a, b) => b.at.localeCompare(a.at));
       const a0 = audits.data?.[0];

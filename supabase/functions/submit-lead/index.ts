@@ -185,9 +185,16 @@ Deno.serve(async (req) => {
   // Link the anonymous website visitor to this lead so the CRM shows their journey.
   if (lead.visitor_id && (await verifyLink(`visitor|${lead.visitor_id}`, lead.visitor_sig ?? null).catch(() => false))) {
     const { error: linkErr } = await supabase.from("visitor_profiles")
-      .update({ lead_id: row.id, contact_email: lead.email.toLowerCase() })
+      .update({ lead_id: row.id, contact_email: lead.email.toLowerCase(), lead_score: Math.max(score.score, 60) })
       .eq("visitor_id", lead.visitor_id);
     if (linkErr) console.error("visitor link failed", linkErr.message);
+    // Server-confirmed conversion on the visitor's journey timeline + funnel.
+    await supabase.from("visitor_interactions").insert({
+      visitor_id: lead.visitor_id, action: "lead_submitted", page_url: lead.page ?? null,
+      data: { form: lead.form, service: lead.service || null, lead_id: row.id },
+    }).then(({ error: e }) => e && console.error("journey insert failed", e.message));
+  } else if (lead.visitor_id) {
+    console.warn("visitor link skipped: missing or invalid visitor signature");
   }
 
   // Notifications (fire-and-forget, never block the visitor)
