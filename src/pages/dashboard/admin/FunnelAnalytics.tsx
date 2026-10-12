@@ -26,19 +26,32 @@ export default function FunnelAnalytics() {
     queryKey: ["funnel-analytics-v2"],
     queryFn: async () => {
       const since = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+      // Exact totals come from count queries (row fetches are capped at 1000 by the API).
+      const head = (q: any) => q.then((r: any) => r.count ?? 0);
+      const ae = () => supabase.from("analytics_events").select("id", { count: "exact", head: true }).gte("created_at", since);
+      const [pageViews, toolPageViews, toolOpens] = await Promise.all([
+        head(ae().eq("event_name", "page_view")),
+        head(ae().eq("event_name", "page_view").ilike("page_url", "%/tools/%")),
+        head(ae().eq("event_name", "funnel_tool_open")),
+      ]);
+      // Recent sample (latest 1000) for the source + trend charts.
       const { data: events } = await supabase
         .from("analytics_events")
         .select("event_name, custom_properties, created_at")
         .gte("created_at", since)
-        .limit(10000);
+        .order("created_at", { ascending: false })
+        .limit(1000);
 
       const counts: Record<string, number> = {};
       const sources: Record<string, number> = {};
       const dailyEvents: Record<string, Record<string, number>> = {};
       events?.forEach((e: any) => {
         counts[e.event_name] = (counts[e.event_name] || 0) + 1;
-        const src = e.custom_properties?.utm_source || "direct";
-        sources[src] = (sources[src] || 0) + 1;
+        if (e.event_name === "page_view") {
+          const cp = e.custom_properties || {};
+          const src = cp.utm_source || cp.source_channel || "direct";
+          sources[src] = (sources[src] || 0) + 1;
+        }
         const day = e.created_at.slice(0, 10);
         dailyEvents[day] = dailyEvents[day] || {};
         dailyEvents[day][e.event_name] = (dailyEvents[day][e.event_name] || 0) + 1;
@@ -50,6 +63,8 @@ export default function FunnelAnalytics() {
 
       return {
         events: counts,
+        pageViews,
+        toolViews: Math.max(toolPageViews, toolOpens),
         dailyEvents,
         sources: Object.entries(sources).sort((a, b) => b[1] - a[1]).slice(0, 8),
         leadsTotal: leadsTotal ?? 0,
@@ -61,8 +76,8 @@ export default function FunnelAnalytics() {
 
   const stages = useMemo(() => {
     const c: Record<string, number> = {
-      page_view: data?.events.page_view || 0,
-      tool_view: data?.events.tool_view || 0,
+      page_view: data?.pageViews || 0,
+      tool_view: data?.toolViews || 0,
       tool_submit: data?.toolRunsTotal || 0,
       lead_capture: data?.leadsTotal || 0,
       booking_request: data?.bookingsTotal || 0,
