@@ -101,7 +101,7 @@ export default function FunnelAnalytics() {
     return Object.entries(data.dailyEvents)
       .sort((a, b) => a[0].localeCompare(b[0]))
       .slice(-14)
-      .map(([day, ev]) => ({ day: day.slice(5), views: ev.page_view || 0, submits: ev.tool_submit || 0 }));
+      .map(([day, ev]) => ({ day: day.slice(5), views: ev.page_view || 0, submits: (ev.funnel_tool_submit || 0) + (ev.form_submit_attempt || 0) }));
   }, [data]);
 
   const downloadPDF = () => {
