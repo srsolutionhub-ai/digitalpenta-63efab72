@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json().catch(() => ({}))) as Payload;
-    const visitorId = (body.visitorId ?? "").toString().slice(0, 64);
+    let visitorId = (body.visitorId ?? "").toString().slice(0, 64);
     if (!visitorId) return json({ error: "visitorId required" }, 400);
 
     const events = (Array.isArray(body.events) ? body.events : []).slice(0, 50);
@@ -167,16 +167,18 @@ Deno.serve(async (req) => {
     );
 
     // ── visitor profile (upsert, accumulate page views + time on site) ──
-    const { data: existing } = await admin
-      .from("visitor_profiles")
-      .select("id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city")
-      .eq("visitor_id", visitorId)
-      .maybeSingle();
+    const cols = "id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city";
+    let { data: existing } = await admin.from("visitor_profiles").select(cols).eq("visitor_id", visitorId).maybeSingle();
 
     // Only the browser that created a profile (and holds its signed proof) may update it.
+    // If the proof is missing (e.g. page reloaded before the first reply arrived), move this
+    // browser to a fresh server-issued id instead of dropping its events.
     const visitorSig = typeof body.visitorSig === "string" ? body.visitorSig : null;
+    let reassigned = false;
     if (existing && !(await verifyLink(`visitor|${visitorId}`, visitorSig).catch(() => false))) {
-      return json({ ok: false, reset: true });
+      visitorId = crypto.randomUUID();
+      existing = null;
+      reassigned = true;
     }
     const issuedSig = await signLink(`visitor|${visitorId}`);
 
@@ -283,7 +285,7 @@ Deno.serve(async (req) => {
       if (aErr) console.error("analytics_events insert", aErr.message);
     }
 
-    return json({ ok: true, stored: events.length, lead_score: leadScore, visitor_sig: issuedSig });
+    return json({ ok: true, stored: events.length, lead_score: leadScore, visitor_sig: issuedSig, ...(reassigned ? { visitor_id: visitorId } : {}) });
   } catch (e) {
     console.error("track-visitor error", e);
     return json({ error: "internal error" }, 500);
