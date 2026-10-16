@@ -20,8 +20,12 @@ function json(body: unknown, status = 200) {
   });
 }
 
-function renderMerge(html: string, name: string) {
-  return html.replace(/\{\{\s*name\s*\}\}/gi, name || "there");
+function escapeHtml(v: string) {
+  return v.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
+function renderMerge(html: string, name: string, escape = true) {
+  const safe = escape ? escapeHtml(name || "there") : (name || "there").replace(/[\r\n]/g, " ");
+  return html.replace(/\{\{\s*name\s*\}\}/gi, () => safe);
 }
 
 /** Rewrite <a href="http...">, adding a tracked redirect, and append an open pixel. */
@@ -104,7 +108,7 @@ Deno.serve(async (req) => {
         }
 
         const html = await instrument(renderMerge(step.body_html, enrollment.name ?? ""), enrollment.id, trackBase);
-        const subject = renderMerge(step.subject, enrollment.name ?? "");
+        const subject = renderMerge(step.subject, enrollment.name ?? "", false);
 
         const resendRes = await fetch(`${GATEWAY_URL}/emails`, {
           method: "POST",

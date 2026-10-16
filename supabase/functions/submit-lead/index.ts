@@ -124,13 +124,11 @@ Deno.serve(async (req) => {
 
   // Dedupe: same email + form within 24h → append note instead of new lead
   const dedupe_key = await sha(`${lead.email}|${lead.form}`);
-  const { data: existing } = await supabase.from("leads").select("id, notes")
+  const { data: existing } = await supabase.from("leads").select("id")
     .eq("dedupe_key", dedupe_key).gte("created_at", new Date(Date.now() - 86_400_000).toISOString())
     .order("created_at", { ascending: false }).limit(1).maybeSingle();
   if (existing) {
-    await supabase.from("leads").update({
-      notes: `${existing.notes ?? ""}\n\n[${new Date().toISOString()}] Follow-up: ${lead.message ?? ""}`.slice(0, 8000),
-    }).eq("id", existing.id);
+    // Do not modify the existing lead from an unauthenticated request.
     return json({ ok: true, lead_id: existing.id, duplicate: true });
   }
 
