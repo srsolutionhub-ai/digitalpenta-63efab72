@@ -116,6 +116,11 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    const authClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const { data: authData } = jwt ? await authClient.auth.getUser(jwt) : { data: { user: null } };
+    if (!authData?.user) return new Response(JSON.stringify({ error: "Please sign in to use this feature." }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const body = await req.json();
     const { tool, inputs, email, name, company, phone, utm, visitorId } = body ?? {};
 

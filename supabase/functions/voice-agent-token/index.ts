@@ -18,6 +18,12 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const jwt = authHeader.replace(/^Bearer\s+/i, "");
+  const authClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+  const { data: authData } = jwt ? await authClient.auth.getUser(jwt) : { data: { user: null } };
+  if (!authData?.user) return json({ error: "Please sign in to use this feature." }, 401);
+
   const apiKey = Deno.env.get("ELEVENLABS_API_KEY");
   if (!apiKey) return json({ error: "Voice assistant is not configured" }, 500);
   const agentId = Deno.env.get("ELEVENLABS_AGENT_ID") || DEFAULT_AGENT_ID;
