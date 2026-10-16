@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Building2, Plus, ExternalLink } from "lucide-react";
+import { Building2, Plus, ExternalLink, Users } from "lucide-react";
+import { CompanyLoginsDialog } from "@/components/dashboard/CompanyLoginsDialog";
 import { toast } from "sonner";
 
 const db = supabase as any;
@@ -49,6 +50,17 @@ export default function Companies() {
       const { data } = await db.from("projects").select("account_id");
       const counts: Record<string, number> = {};
       (data ?? []).forEach((p: any) => { if (p.account_id) counts[p.account_id] = (counts[p.account_id] || 0) + 1; });
+      return counts;
+    },
+  });
+
+  const [loginsFor, setLoginsFor] = useState<Account | null>(null);
+  const { data: memberCounts = {} } = useQuery({
+    queryKey: ["companies-member-counts"],
+    queryFn: async () => {
+      const { data } = await db.from("account_team_members").select("account_id");
+      const counts: Record<string, number> = {};
+      (data ?? []).forEach((m: any) => { counts[m.account_id] = (counts[m.account_id] || 0) + 1; });
       return counts;
     },
   });
@@ -100,6 +112,11 @@ export default function Companies() {
     { key: "status", header: "Status", render: (a) => a.status ? <StatusPill variant={STATUS_VARIANT[a.status] || "default"}>{a.status}</StatusPill> : "—" },
     { key: "mrr", header: "MRR", render: (a) => a.mrr != null ? `₹${Number(a.mrr).toLocaleString()}` : "—" },
     { key: "projects", header: "Projects", render: (a) => projectCounts[a.id] || 0 },
+    { key: "logins", header: "Client logins", render: (a) => (
+      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setLoginsFor(a); }}>
+        <Users className="w-3.5 h-3.5 mr-1.5" /> {memberCounts[a.id] || 0} · Manage
+      </Button>
+    ) },
     { key: "contact", header: "Primary Contact", render: (a) => (
       <div>
         <p>{a.primary_contact_name || "—"}</p>
@@ -142,6 +159,8 @@ export default function Companies() {
         <Link to="/dashboard/admin/deliverables" className="inline-flex items-center gap-1 hover:text-foreground"><ExternalLink className="w-3 h-3" /> Manage approvals & reports per account</Link>
         <Link to="/dashboard/admin/projects" className="inline-flex items-center gap-1 hover:text-foreground"><ExternalLink className="w-3 h-3" /> View projects</Link>
       </div>
+
+      <CompanyLoginsDialog account={loginsFor} onClose={() => setLoginsFor(null)} />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
