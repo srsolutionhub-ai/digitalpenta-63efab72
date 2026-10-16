@@ -44,6 +44,11 @@ export default function AiToolRunner<T = unknown>({
       toast({ title: "Valid email required", variant: "destructive" });
       return;
     }
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Please sign in", description: "Sign in to your account to use this free tool.", variant: "destructive" });
+      return;
+    }
     setRunning(true);
     setSubmitted(true);
     trackFunnel({ stage: "tool_submit", tool: toolSlug, source: "tool_page" });

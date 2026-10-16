@@ -88,9 +88,12 @@ function VoiceAgentPanelContent({ onClose }: { onClose: () => void }) {
       return;
     }
     try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Please sign in to talk with Penta, or WhatsApp us.");
       const res = await fetch(
         `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/voice-agent-token`,
-        { method: "POST", headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string, "Content-Type": "application/json" } },
+        { method: "POST", headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" } },
       );
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.token) throw new Error(data.error || "Voice assistant unavailable");

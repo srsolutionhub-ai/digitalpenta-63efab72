@@ -36,8 +36,11 @@ Deno.serve(async (req) => {
     if (!trusted && bearer) {
       const { data: u } = await sb.auth.getUser(bearer);
       if (u?.user) {
-        const { data: staff } = await sb.rpc("is_staff", { _uid: u.user.id });
-        trusted = staff === true;
+        const [{ data: isAdmin }, { data: isManager }] = await Promise.all([
+          sb.rpc("has_role", { _user_id: u.user.id, _role: "super_admin" }),
+          sb.rpc("has_role", { _user_id: u.user.id, _role: "account_manager" }),
+        ]);
+        trusted = isAdmin === true || isManager === true;
       }
     }
     if (!trusted) {
