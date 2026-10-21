@@ -182,6 +182,30 @@ function TopBarTitle() {
   );
 }
 
+/** Blocks staff roles from opening admin sections outside their job, even by URL. */
+function SectionGate({ children }: { children: React.ReactNode }) {
+  const { role } = useAuth();
+  const location = useLocation();
+  if (canAccessAdminPath(role, location.pathname)) return <>{children}</>;
+  return (
+    <div className="flex items-center justify-center py-24 px-4">
+      <div className="card-surface rounded-2xl p-10 max-w-md text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+          <ShieldCheck className="w-7 h-7 text-destructive" />
+        </div>
+        <h2 className="font-display font-bold text-xl text-foreground">Not part of your role</h2>
+        <p className="text-muted-foreground text-sm">
+          This section isn't available to the <span className="text-foreground font-medium capitalize">{role?.replace(/_/g, " ")}</span> role.
+          Ask a Super Admin if you need access.
+        </p>
+        <Link to="/dashboard/admin" className="text-primary text-sm hover:underline inline-block">
+          ← Back to dashboard
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function AdminLayoutInner() {
   const { user, role, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem("admin_sidebar_collapsed") === "true");
