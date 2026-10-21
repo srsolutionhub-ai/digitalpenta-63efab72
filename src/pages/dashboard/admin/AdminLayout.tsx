@@ -22,6 +22,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 import { DashboardTitleProvider, useDashboardTitle } from "@/components/dashboard/ui/dashboard-title-context";
+import { canAccessAdminPath, filterNavByRole } from "@/lib/roleAccess";
 
 // Data-driven nav: add new items/groups here without touching layout markup.
 // Other agents may append entries to any group's `items` array safely.
