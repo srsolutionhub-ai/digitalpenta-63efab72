@@ -108,9 +108,13 @@ function isActive(pathname: string, path: string) {
 
 function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const location = useLocation();
+  const { role } = useAuth();
+  const visibleGroups = navGroups
+    .map((g) => ({ ...g, items: filterNavByRole(role, g.items) }))
+    .filter((g) => g.items.length > 0);
   return (
     <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-      {navGroups.map((group) => (
+      {visibleGroups.map((group) => (
         <div key={group.label}>
           {!collapsed && (
             <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
@@ -354,7 +358,9 @@ function AdminLayoutInner() {
         </header>
 
         <main className="dash-main min-w-0 p-3 sm:p-6">
-          <DashboardOutlet />
+          <SectionGate>
+            <DashboardOutlet />
+          </SectionGate>
         </main>
 
         <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
