@@ -22,6 +22,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 import { DashboardTitleProvider, useDashboardTitle } from "@/components/dashboard/ui/dashboard-title-context";
+import { canAccessAdminPath, filterNavByRole } from "@/lib/roleAccess";
 
 // Data-driven nav: add new items/groups here without touching layout markup.
 // Other agents may append entries to any group's `items` array safely.
@@ -41,6 +42,7 @@ const navGroups = [
       { label: "Pipeline", icon: Kanban, path: "/dashboard/admin/crm" },
       { label: "Contacts", icon: Contact, path: "/dashboard/admin/contacts" },
       { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
+      { label: "Companies", icon: Briefcase, path: "/dashboard/admin/companies" },
       { label: "Tasks", icon: CheckSquare, path: "/dashboard/admin/tasks" },
       { label: "Bookings", icon: CalendarDays, path: "/dashboard/admin/bookings" },
     ],
@@ -70,6 +72,7 @@ const navGroups = [
       { label: "WA Templates", icon: FileText, path: "/dashboard/admin/whatsapp/templates" },
       { label: "WA Broadcasts", icon: Megaphone, path: "/dashboard/admin/whatsapp/broadcasts" },
       { label: "WA Analytics", icon: LineChart, path: "/dashboard/admin/whatsapp/analytics" },
+      { label: "WA Setup", icon: Plug, path: "/dashboard/admin/whatsapp/setup" },
     ],
   },
   {
@@ -105,9 +108,13 @@ function isActive(pathname: string, path: string) {
 
 function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const location = useLocation();
+  const { role } = useAuth();
+  const visibleGroups = navGroups
+    .map((g) => ({ ...g, items: filterNavByRole(role, g.items) }))
+    .filter((g) => g.items.length > 0);
   return (
     <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-      {navGroups.map((group) => (
+      {visibleGroups.map((group) => (
         <div key={group.label}>
           {!collapsed && (
             <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
@@ -171,6 +178,30 @@ function TopBarTitle() {
     <div className="min-w-0">
       <h2 className="font-display font-semibold text-foreground text-sm truncate">{title || "Agency OS"}</h2>
       {description && <p className="text-[11px] text-muted-foreground truncate hidden sm:block">{description}</p>}
+    </div>
+  );
+}
+
+/** Blocks staff roles from opening admin sections outside their job, even by URL. */
+function SectionGate({ children }: { children: React.ReactNode }) {
+  const { role } = useAuth();
+  const location = useLocation();
+  if (canAccessAdminPath(role, location.pathname)) return <>{children}</>;
+  return (
+    <div className="flex items-center justify-center py-24 px-4">
+      <div className="card-surface rounded-2xl p-10 max-w-md text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+          <ShieldCheck className="w-7 h-7 text-destructive" />
+        </div>
+        <h2 className="font-display font-bold text-xl text-foreground">Not part of your role</h2>
+        <p className="text-muted-foreground text-sm">
+          This section isn't available to the <span className="text-foreground font-medium capitalize">{role?.replace(/_/g, " ")}</span> role.
+          Ask a Super Admin if you need access.
+        </p>
+        <Link to="/dashboard/admin" className="text-primary text-sm hover:underline inline-block">
+          ← Back to dashboard
+        </Link>
+      </div>
     </div>
   );
 }
@@ -351,7 +382,9 @@ function AdminLayoutInner() {
         </header>
 
         <main className="dash-main min-w-0 p-3 sm:p-6">
-          <DashboardOutlet />
+          <SectionGate>
+            <DashboardOutlet />
+          </SectionGate>
         </main>
 
         <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />

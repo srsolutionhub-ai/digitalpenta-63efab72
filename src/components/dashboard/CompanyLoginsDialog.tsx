@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Trash2, UserPlus } from "lucide-react";
@@ -18,6 +19,33 @@ interface Props {
 export function CompanyLoginsDialog({ account, onClose }: Props) {
   const qc = useQueryClient();
   const [pick, setPick] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviting, setInviting] = useState(false);
+
+  /** Invite a brand-new client by email — sends them a set-password link. */
+  const invite = async () => {
+    const email = inviteEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Enter a valid email address");
+      return;
+    }
+    setInviting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("invite-client", {
+        body: { email, account_id: account!.id },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(data?.message ?? "Invite sent");
+      setInviteEmail("");
+      qc.invalidateQueries({ queryKey: ["client-logins"] });
+      refresh();
+    } catch (e: any) {
+      toast.error(e.message ?? "Invite failed");
+    } finally {
+      setInviting(false);
+    }
+  };
 
   const { data: clients = [] } = useQuery({
     queryKey: ["client-logins"],
@@ -106,6 +134,24 @@ export function CompanyLoginsDialog({ account, onClose }: Props) {
             <Button onClick={() => add.mutate()} disabled={!pick || add.isPending}>
               <UserPlus className="w-4 h-4 mr-1.5" /> Link
             </Button>
+          </div>
+          <div className="border-t border-border/20 pt-4 space-y-2">
+            <p className="text-xs font-medium text-foreground">Invite a new client by email</p>
+            <p className="text-[11px] text-muted-foreground">
+              They'll get an email to set their password, then land straight in this company's portal.
+            </p>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="client@theircompany.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); invite(); } }}
+              />
+              <Button variant="secondary" onClick={invite} disabled={inviting || !inviteEmail.trim()}>
+                {inviting ? "Sending…" : "Send invite"}
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>

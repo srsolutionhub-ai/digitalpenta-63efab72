@@ -35,11 +35,11 @@ export default function ClientProfile() {
     queryKey: ["client-profile-companies", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data: memberships } = await db.from("account_team_members").select("account_id, role").eq("user_id", user.id);
+      const { data: memberships } = await db.from("account_team_members").select("account_id, role_on_account").eq("user_id", user.id);
       const accountIds = (memberships ?? []).map((m: any) => m.account_id);
       if (!accountIds.length) return [];
       const { data } = await db.from("accounts").select("id,name,tier,status").in("id", accountIds);
-      return (data ?? []).map((a: any) => ({ ...a, role: memberships?.find((m: any) => m.account_id === a.id)?.role }));
+      return (data ?? []).map((a: any) => ({ ...a, role: memberships?.find((m: any) => m.account_id === a.id)?.role_on_account }));
     },
     enabled: !!user,
   });

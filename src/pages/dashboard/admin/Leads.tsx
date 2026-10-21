@@ -120,10 +120,19 @@ export default function Leads() {
 
   const totalPages = Math.ceil((data?.total ?? 0) / perPage);
 
-  const exportCSV = () => {
-    if (!data?.leads.length) return;
+  const exportCSV = async () => {
+    // Export EVERY lead matching the current filters, not just the page on screen.
+    let query = supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(10000);
+    const q = search.replace(/[,()*%\\]/g, " ").trim();
+    if (q) query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,company.ilike.%${q}%`);
+    if (intentFilter !== "all") query = query.eq("intent", intentFilter);
+    if (hotOnly) query = query.gte("lead_score", 70);
+    if (statusFilter !== "all") query = query.eq("status", statusFilter);
+    const { data: rows0, error } = await query;
+    if (error) { toast.error(error.message); return; }
+    if (!rows0?.length) { toast.info("No leads match the current filters"); return; }
     const headers = ["Name", "Email", "Phone", "Company", "Source", "UTM Source", "Intent", "Budget Band", "Score", "AI Summary", "Status", "Created"];
-    const rows = data.leads.map((l: any) => [l.name, l.email, l.phone, l.company, l.source, l.utm_source, l.intent, l.budget_band, l.lead_score, l.ai_summary, l.status, l.created_at]);
+    const rows = rows0.map((l: any) => [l.name, l.email, l.phone, l.company, l.source, l.utm_source, l.intent, l.budget_band, l.lead_score, l.ai_summary, l.status, l.created_at]);
     // Escape quotes and neutralise spreadsheet formula injection (=,+,-,@).
     const cell = (c: any) => {
       let v = String(c ?? "");

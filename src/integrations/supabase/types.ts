@@ -1053,6 +1053,7 @@ export type Database = {
           currency: string | null
           expected_close_date: string | null
           id: string
+          lead_id: string | null
           lost_reason: string | null
           notes: string | null
           owner_id: string | null
@@ -1073,6 +1074,7 @@ export type Database = {
           currency?: string | null
           expected_close_date?: string | null
           id?: string
+          lead_id?: string | null
           lost_reason?: string | null
           notes?: string | null
           owner_id?: string | null
@@ -1093,6 +1095,7 @@ export type Database = {
           currency?: string | null
           expected_close_date?: string | null
           id?: string
+          lead_id?: string | null
           lost_reason?: string | null
           notes?: string | null
           owner_id?: string | null
@@ -1117,6 +1120,13 @@ export type Database = {
             columns: ["audit_id"]
             isOneToOne: false
             referencedRelation: "audits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_deals_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
             referencedColumns: ["id"]
           },
           {
@@ -1558,6 +1568,7 @@ export type Database = {
       }
       invoices: {
         Row: {
+          account_id: string | null
           amount_paid: number
           cgst_amount: number | null
           client_email: string
@@ -1585,6 +1596,7 @@ export type Database = {
           total: number
         }
         Insert: {
+          account_id?: string | null
           amount_paid?: number
           cgst_amount?: number | null
           client_email: string
@@ -1612,6 +1624,7 @@ export type Database = {
           total: number
         }
         Update: {
+          account_id?: string | null
           amount_paid?: number
           cgst_amount?: number | null
           client_email?: string
@@ -1639,6 +1652,13 @@ export type Database = {
           total?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_quotation_id_fkey"
             columns: ["quotation_id"]
@@ -2103,8 +2123,10 @@ export type Database = {
           description: string | null
           end_date: string | null
           id: string
+          invoice_id: string | null
           name: string
           owner_id: string | null
+          quotation_id: string | null
           service_line: string | null
           start_date: string | null
           status: string | null
@@ -2117,8 +2139,10 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           id?: string
+          invoice_id?: string | null
           name: string
           owner_id?: string | null
+          quotation_id?: string | null
           service_line?: string | null
           start_date?: string | null
           status?: string | null
@@ -2131,8 +2155,10 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           id?: string
+          invoice_id?: string | null
           name?: string
           owner_id?: string | null
+          quotation_id?: string | null
           service_line?: string | null
           start_date?: string | null
           status?: string | null
@@ -2144,6 +2170,20 @@ export type Database = {
             columns: ["account_id"]
             isOneToOne: false
             referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_quotation_id_fkey"
+            columns: ["quotation_id"]
+            isOneToOne: false
+            referencedRelation: "quotations"
             referencedColumns: ["id"]
           },
         ]
@@ -2174,14 +2214,17 @@ export type Database = {
       }
       quotations: {
         Row: {
+          account_id: string | null
           cgst_amount: number | null
           client_email: string
           client_gstin: string | null
           client_id: string | null
           client_name: string
+          contact_id: string | null
           created_at: string | null
           created_by: string | null
           currency: string | null
+          deal_id: string | null
           decided_at: string | null
           decline_reason: string | null
           id: string
@@ -2203,14 +2246,17 @@ export type Database = {
           viewed_at: string | null
         }
         Insert: {
+          account_id?: string | null
           cgst_amount?: number | null
           client_email: string
           client_gstin?: string | null
           client_id?: string | null
           client_name: string
+          contact_id?: string | null
           created_at?: string | null
           created_by?: string | null
           currency?: string | null
+          deal_id?: string | null
           decided_at?: string | null
           decline_reason?: string | null
           id?: string
@@ -2232,14 +2278,17 @@ export type Database = {
           viewed_at?: string | null
         }
         Update: {
+          account_id?: string | null
           cgst_amount?: number | null
           client_email?: string
           client_gstin?: string | null
           client_id?: string | null
           client_name?: string
+          contact_id?: string | null
           created_at?: string | null
           created_by?: string | null
           currency?: string | null
+          deal_id?: string | null
           decided_at?: string | null
           decline_reason?: string | null
           id?: string
@@ -2260,7 +2309,29 @@ export type Database = {
           version?: number
           viewed_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quotations_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotations_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotations_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_data: {
         Row: {
@@ -2450,6 +2521,7 @@ export type Database = {
       }
       support_messages: {
         Row: {
+          account_id: string | null
           client_id: string
           created_at: string | null
           id: string
@@ -2457,6 +2529,7 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          account_id?: string | null
           client_id: string
           created_at?: string | null
           id?: string
@@ -2464,13 +2537,22 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          account_id?: string | null
           client_id?: string
           created_at?: string | null
           id?: string
           message?: string
           sender_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {

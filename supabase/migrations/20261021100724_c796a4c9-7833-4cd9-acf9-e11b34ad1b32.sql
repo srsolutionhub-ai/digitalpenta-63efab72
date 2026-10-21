@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.set_doc_account_id() FROM anon, authenticated;

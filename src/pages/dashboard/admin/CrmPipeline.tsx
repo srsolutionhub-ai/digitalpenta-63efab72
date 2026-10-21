@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -199,10 +199,14 @@ function Stat({ label, value }: { label: string; value: string }) {
 function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | null; stages: Stage[]; open: boolean; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState<any>({});
 
-  const handleOpen = () => {
-    if (deal) setForm(deal);
+  // Populate the form whenever the dialog opens. (onOpenChange only fires on
+  // user interaction, not when the parent flips `open`, so an effect is the
+  // reliable trigger — without it the edit form opened empty.)
+  useEffect(() => {
+    if (!open) return;
+    if (deal) setForm({ ...deal });
     else setForm({ title: "", value: 0, currency: "INR", stage_id: stages[0]?.id, service_interest: "", notes: "" });
-  };
+  }, [open, deal, stages]);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -231,7 +235,7 @@ function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | nul
   });
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); else handleOpen(); }}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-lg">
         <DialogHeader><DialogTitle className="font-display">{deal ? "Edit Deal" : "New Deal"}</DialogTitle></DialogHeader>
         <div className="space-y-4">
