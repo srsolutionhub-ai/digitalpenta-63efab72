@@ -1558,6 +1558,7 @@ export type Database = {
       }
       invoices: {
         Row: {
+          account_id: string | null
           amount_paid: number
           cgst_amount: number | null
           client_email: string
@@ -1585,6 +1586,7 @@ export type Database = {
           total: number
         }
         Insert: {
+          account_id?: string | null
           amount_paid?: number
           cgst_amount?: number | null
           client_email: string
@@ -1612,6 +1614,7 @@ export type Database = {
           total: number
         }
         Update: {
+          account_id?: string | null
           amount_paid?: number
           cgst_amount?: number | null
           client_email?: string
@@ -1639,6 +1642,13 @@ export type Database = {
           total?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_quotation_id_fkey"
             columns: ["quotation_id"]
@@ -2174,6 +2184,7 @@ export type Database = {
       }
       quotations: {
         Row: {
+          account_id: string | null
           cgst_amount: number | null
           client_email: string
           client_gstin: string | null
@@ -2203,6 +2214,7 @@ export type Database = {
           viewed_at: string | null
         }
         Insert: {
+          account_id?: string | null
           cgst_amount?: number | null
           client_email: string
           client_gstin?: string | null
@@ -2232,6 +2244,7 @@ export type Database = {
           viewed_at?: string | null
         }
         Update: {
+          account_id?: string | null
           cgst_amount?: number | null
           client_email?: string
           client_gstin?: string | null
@@ -2260,7 +2273,15 @@ export type Database = {
           version?: number
           viewed_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quotations_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_data: {
         Row: {
@@ -2450,6 +2471,7 @@ export type Database = {
       }
       support_messages: {
         Row: {
+          account_id: string | null
           client_id: string
           created_at: string | null
           id: string
@@ -2457,6 +2479,7 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          account_id?: string | null
           client_id: string
           created_at?: string | null
           id?: string
@@ -2464,13 +2487,22 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          account_id?: string | null
           client_id?: string
           created_at?: string | null
           id?: string
           message?: string
           sender_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {
