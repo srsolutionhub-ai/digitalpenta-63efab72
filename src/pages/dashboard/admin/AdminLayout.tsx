@@ -41,6 +41,7 @@ const navGroups = [
       { label: "Pipeline", icon: Kanban, path: "/dashboard/admin/crm" },
       { label: "Contacts", icon: Contact, path: "/dashboard/admin/contacts" },
       { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
+      { label: "Companies", icon: Briefcase, path: "/dashboard/admin/companies" },
       { label: "Tasks", icon: CheckSquare, path: "/dashboard/admin/tasks" },
       { label: "Bookings", icon: CalendarDays, path: "/dashboard/admin/bookings" },
     ],
@@ -70,6 +71,7 @@ const navGroups = [
       { label: "WA Templates", icon: FileText, path: "/dashboard/admin/whatsapp/templates" },
       { label: "WA Broadcasts", icon: Megaphone, path: "/dashboard/admin/whatsapp/broadcasts" },
       { label: "WA Analytics", icon: LineChart, path: "/dashboard/admin/whatsapp/analytics" },
+      { label: "WA Setup", icon: Plug, path: "/dashboard/admin/whatsapp/setup" },
     ],
   },
   {

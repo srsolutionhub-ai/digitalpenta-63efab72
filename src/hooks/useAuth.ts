@@ -93,5 +93,16 @@ export function useAuth() {
     setRole(null);
   };
 
-  return { user, session, role, loading, signOut };
+  /** Force a fresh role lookup (bypasses the 10-min cache). Used by the
+   *  "awaiting access" screen so a newly-assigned role shows up immediately. */
+  const refreshRole = async () => {
+    if (!user) return;
+    const token = ++fetchToken.current;
+    try {
+      const r = await loadRole(user.id, true);
+      if (fetchToken.current === token) setRole(r);
+    } catch { /* keep current role */ }
+  };
+
+  return { user, session, role, loading, signOut, refreshRole };
 }

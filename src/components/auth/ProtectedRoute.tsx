@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, role, loading, signOut } = useAuth();
+  const { user, role, loading, signOut, refreshRole } = useAuth();
 
   if (loading) {
     return (
@@ -37,6 +37,12 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
             assigned to your account yet. Please reach out to your administrator to get access to the dashboard.
           </p>
           <div className="flex items-center justify-center gap-4 pt-2">
+            <button
+              onClick={() => refreshRole()}
+              className="text-primary text-sm hover:underline font-medium"
+            >
+              Check again
+            </button>
             <button
               onClick={() => window.location.href = "/contact"}
               className="text-primary text-sm hover:underline"

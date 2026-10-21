@@ -5,6 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { Bell, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,7 +32,15 @@ type Notification = {
 export default function NotificationsDrawer() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const openNotification = (n: Notification) => {
+    if (!n.link) return;
+    setOpen(false);
+    if (n.link.startsWith("http")) window.open(n.link, "_blank", "noopener,noreferrer");
+    else navigate(n.link);
+  };
 
   const { data: items = [] } = useQuery<Notification[]>({
     queryKey: ["client-notifications", user?.id],
@@ -94,12 +103,12 @@ export default function NotificationsDrawer() {
             </div>
           ) : (
             items.map((n) => (
-              <a
+              <button
                 key={n.id}
-                href={n.link ?? "#"}
-                target={n.link?.startsWith("http") ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className={`block p-3 rounded-lg border transition-colors ${
+                type="button"
+                onClick={() => openNotification(n)}
+                disabled={!n.link}
+                className={`block w-full text-left p-3 rounded-lg border transition-colors ${n.link ? "cursor-pointer" : "cursor-default"} ${
                   n.read
                     ? "bg-white/[0.02] border-white/[0.04] hover:bg-white/[0.04]"
                     : "bg-primary/[0.06] border-primary/20 hover:bg-primary/[0.10]"
@@ -120,7 +129,7 @@ export default function NotificationsDrawer() {
                     minute: "2-digit",
                   })}
                 </p>
-              </a>
+              </button>
             ))
           )}
         </div>

@@ -22,13 +22,10 @@ export default function ForgotPassword() {
     });
 
     if (error) {
-      // Don't reveal whether the email exists — but do surface real
-      // transient errors (rate limit, network) so the user isn't confused.
-      if (error.status === 429 || (error.message || "").toLowerCase().includes("rate limit")) {
-        toast.error(friendlyAuthError(error));
-      } else {
-        setSent(true);
-      }
+      // Surface real failures (rate limit, network, config) instead of
+      // claiming the email was sent. Supabase does not error for unknown
+      // emails, so this doesn't reveal whether an account exists.
+      toast.error(friendlyAuthError(error));
     } else {
       setSent(true);
     }
