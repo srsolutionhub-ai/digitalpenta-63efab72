@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useClientCompanies } from "@/hooks/useClientCompanies";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,18 +32,8 @@ export default function ClientProfile() {
     enabled: !!user,
   });
 
-  const { data: companies = [] } = useQuery({
-    queryKey: ["client-profile-companies", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data: memberships } = await db.from("account_team_members").select("account_id, role_on_account").eq("user_id", user.id);
-      const accountIds = (memberships ?? []).map((m: any) => m.account_id);
-      if (!accountIds.length) return [];
-      const { data } = await db.from("accounts").select("id,name,tier,status").in("id", accountIds);
-      return (data ?? []).map((a: any) => ({ ...a, role: memberships?.find((m: any) => m.account_id === a.id)?.role_on_account }));
-    },
-    enabled: !!user,
-  });
+  // Shared cached lookup (also used by the other client pages).
+  const { data: companies = [] } = useClientCompanies();
 
   useEffect(() => {
     if (profile) {
