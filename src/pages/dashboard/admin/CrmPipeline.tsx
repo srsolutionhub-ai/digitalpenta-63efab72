@@ -48,15 +48,19 @@ export default function CrmPipeline() {
     },
   });
 
-  const { data: deals = [] } = useQuery<Deal[]>({
-    queryKey: ["pipeline-deals", search],
+  const [dealLimit, setDealLimit] = useState(200);
+
+  const { data: dealData } = useQuery<{ deals: Deal[]; total: number }>({
+    queryKey: ["pipeline-deals", search, dealLimit],
     queryFn: async () => {
-      let q = supabase.from("crm_deals").select("*").order("created_at", { ascending: false }).limit(500);
+      let q = supabase.from("crm_deals").select("*", { count: "exact" }).order("created_at", { ascending: false }).limit(dealLimit);
       if (search) q = q.ilike("title", `%${search}%`);
-      const { data } = await q;
-      return (data ?? []) as Deal[];
+      const { data, count } = await q;
+      return { deals: (data ?? []) as Deal[], total: count ?? 0 };
     },
   });
+  const deals = dealData?.deals ?? [];
+  const totalDeals = dealData?.total ?? 0;
 
   const moveStage = useMutation({
     mutationFn: async ({ id, stage_id }: { id: string; stage_id: string }) => {

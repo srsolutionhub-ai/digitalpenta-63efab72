@@ -13,11 +13,21 @@ export default function Tasks() {
   const qc = useQueryClient();
   const [view, setView] = useState<(typeof VIEWS)[number]>("today");
   const [form, setForm] = useState({ title: "", email: "", due: "", priority: "medium" });
+  const [limit, setLimit] = useState(200);
 
-  const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["crm-tasks"],
-    queryFn: async () => (await db.from("crm_tasks").select("*").order("due_at", { ascending: true, nullsFirst: false }).limit(1000)).data ?? [],
+  const { data: taskData, isLoading } = useQuery({
+    queryKey: ["crm-tasks", limit],
+    queryFn: async () => {
+      const { data, count } = await db
+        .from("crm_tasks")
+        .select("*", { count: "exact" })
+        .order("due_at", { ascending: true, nullsFirst: false })
+        .limit(limit);
+      return { tasks: data ?? [], total: count ?? 0 };
+    },
   });
+  const tasks = taskData?.tasks ?? [];
+  const totalTasks = taskData?.total ?? 0;
 
   const now = new Date(); const endToday = new Date(); endToday.setHours(23, 59, 59, 999);
   const bucket = (t: any) => {
@@ -85,6 +95,13 @@ export default function Tasks() {
           </li>
         ))}
       </ul>
+      {tasks.length < totalTasks && (
+        <div className="text-center">
+          <Button variant="outline" size="sm" onClick={() => setLimit((l) => l + 200)}>
+            Load more ({tasks.length} of {totalTasks})
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
