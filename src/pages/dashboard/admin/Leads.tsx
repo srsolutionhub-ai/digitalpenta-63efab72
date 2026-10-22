@@ -120,6 +120,33 @@ export default function Leads() {
 
   const totalPages = Math.ceil((data?.total ?? 0) / perPage);
 
+  /** Convert a lead into a pipeline deal (links back to the lead + contact). */
+  const convertToDeal = useMutation({
+    mutationFn: async (lead: any) => {
+      const { data: existing } = await supabase.from("crm_deals").select("id").eq("lead_id", lead.id).maybeSingle();
+      if (existing) throw new Error("This lead is already in the pipeline");
+      const { data: stage } = await supabase.from("crm_pipeline_stages").select("id").order("position").limit(1).maybeSingle();
+      if (!stage) throw new Error("No pipeline stage found");
+      const budgetMap: Record<string, number> = { "<50k": 40000, "50k-1L": 75000, "1L-5L": 300000, "5L+": 500000 };
+      const { error } = await supabase.from("crm_deals").insert({
+        title: `${lead.name || lead.email || "Lead"} — ${lead.service || "General"}`,
+        value: budgetMap[lead.budget_range] ?? 0,
+        currency: "INR",
+        stage_id: stage.id,
+        service_interest: lead.service || null,
+        notes: lead.notes || null,
+        contact_id: lead.contact_id || null,
+        lead_id: lead.id,
+      } as any);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Added to the sales pipeline");
+      setShowModal(false);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const exportCSV = async () => {
     // Export EVERY lead matching the current filters, not just the page on screen.
     let query = supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(10000);
@@ -255,6 +282,8 @@ export default function Leads() {
         open={showModal}
         onClose={() => setShowModal(false)}
         lead={selectedLead}
+        onConvertDeal={(lead: any) => convertToDeal.mutate(lead)}
+        converting={convertToDeal.isPending}
         onSave={(data: any) => {
           if (selectedLead) {
             updateLead.mutate({ id: selectedLead.id, updates: data });
@@ -267,7 +296,7 @@ export default function Leads() {
   );
 }
 
-function LeadModal({ open, onClose, lead, onSave }: { open: boolean; onClose: () => void; lead: any; onSave: (data: any) => void }) {
+function LeadModal({ open, onClose, lead, onSave, onConvertDeal, converting }: { open: boolean; onClose: () => void; lead: any; onSave: (data: any) => void; onConvertDeal?: (lead: any) => void; converting?: boolean }) {
   const [form, setForm] = useState<Record<string, string>>({});
 
   const handleOpen = () => {
@@ -318,7 +347,12 @@ function LeadModal({ open, onClose, lead, onSave }: { open: boolean; onClose: ()
           </div>
           <div><Label>Service</Label><Input value={form.service || ""} onChange={(e) => setForm({ ...form, service: e.target.value })} /></div>
           <div><Label>Notes</Label><Textarea value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} /></div>
-          <div className="flex gap-3 justify-end">
+          <div className="flex gap-3 justify-end flex-wrap">
+            {lead && onConvertDeal && (
+              <Button variant="secondary" onClick={() => onConvertDeal(lead)} disabled={converting} className="mr-auto">
+                {converting ? "Converting…" : "Convert to Deal"}
+              </Button>
+            )}
             <Button variant="outline" onClick={onClose}>Cancel</Button>
             <Button onClick={() => onSave(form)}>Save</Button>
           </div>
