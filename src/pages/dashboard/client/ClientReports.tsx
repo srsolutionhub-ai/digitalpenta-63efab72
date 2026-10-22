@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useClientCompanies } from "@/hooks/useClientCompanies";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,7 +39,7 @@ export default function ClientReports() {
       if (error) throw error;
       return { linked: true, reports: reports ?? [] };
     },
-    enabled: !!user,
+    enabled: !!user && !companiesLoading,
   });
 
   if (isLoading) {

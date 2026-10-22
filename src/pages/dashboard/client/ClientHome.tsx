@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useClientCompanies } from "@/hooks/useClientCompanies";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { FolderKanban, ClipboardCheck, FileText, BarChart3, MessageCircle, Building2, ArrowRight } from "lucide-react";
@@ -65,7 +66,7 @@ export default function ClientHome() {
         recentMessages: messagesRes.data ?? [],
       };
     },
-    enabled: !!user,
+    enabled: !!user && !companiesLoading,
   });
 
   if (isLoading) {
