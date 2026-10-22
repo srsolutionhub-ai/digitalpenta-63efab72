@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -198,6 +199,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | null; stages: Stage[]; open: boolean; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState<any>({});
+  const navigate = useNavigate();
 
   // Populate the form whenever the dialog opens. (onOpenChange only fires on
   // user interaction, not when the parent flips `open`, so an effect is the
@@ -251,7 +253,16 @@ function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | nul
           </div>
           <div><Label>Service Interest</Label><Input value={form.service_interest || ""} onChange={(e) => setForm({ ...form, service_interest: e.target.value })} placeholder="SEO, PPC, Web Design…" /></div>
           <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 flex-wrap">
+            {deal?.id && (
+              <Button
+                variant="secondary"
+                className="mr-auto"
+                onClick={() => { onClose(); navigate(`/dashboard/admin/quotations?deal=${deal.id}`); }}
+              >
+                Create quotation
+              </Button>
+            )}
             <Button variant="outline" onClick={onClose}>Cancel</Button>
             <Button onClick={() => save.mutate()} disabled={save.isPending}>Save</Button>
           </div>
