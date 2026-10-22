@@ -23,12 +23,13 @@ export default function ClientApprovals() {
   const qc = useQueryClient();
   const [comments, setComments] = useState<Record<string, string>>({});
 
+  const { data: companies = [], isLoading: companiesLoading } = useClientCompanies();
+  const accountIds = companies.map((c: any) => c.id);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["client-approvals-page", user?.id],
+    queryKey: ["client-approvals-page", user?.id, accountIds.join(",")],
     queryFn: async () => {
       if (!user) return { linked: false, approvals: [] as any[] };
-      const { data: memberships } = await db.from("account_team_members").select("account_id").eq("user_id", user.id);
-      const accountIds = (memberships ?? []).map((m: any) => m.account_id);
       if (accountIds.length === 0) return { linked: false, approvals: [] };
 
       const { data: approvals, error } = await db

@@ -20,12 +20,13 @@ function formatMonth(period: string) {
 export default function ClientReports() {
   const { user } = useAuth();
 
+  const { data: companies = [], isLoading: companiesLoading } = useClientCompanies();
+  const accountIds = companies.map((c: any) => c.id);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["client-reports-page", user?.id],
+    queryKey: ["client-reports-page", user?.id, accountIds.join(",")],
     queryFn: async () => {
       if (!user) return { linked: false, reports: [] as any[] };
-      const { data: memberships } = await db.from("account_team_members").select("account_id").eq("user_id", user.id);
-      const accountIds = (memberships ?? []).map((m: any) => m.account_id);
       if (accountIds.length === 0) return { linked: false, reports: [] };
 
       const { data: reports, error } = await db
