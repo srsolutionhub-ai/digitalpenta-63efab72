@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -47,15 +48,19 @@ export default function CrmPipeline() {
     },
   });
 
-  const { data: deals = [] } = useQuery<Deal[]>({
-    queryKey: ["pipeline-deals", search],
+  const [dealLimit, setDealLimit] = useState(200);
+
+  const { data: dealData } = useQuery<{ deals: Deal[]; total: number }>({
+    queryKey: ["pipeline-deals", search, dealLimit],
     queryFn: async () => {
-      let q = supabase.from("crm_deals").select("*").order("created_at", { ascending: false }).limit(500);
+      let q = supabase.from("crm_deals").select("*", { count: "exact" }).order("created_at", { ascending: false }).limit(dealLimit);
       if (search) q = q.ilike("title", `%${search}%`);
-      const { data } = await q;
-      return (data ?? []) as Deal[];
+      const { data, count } = await q;
+      return { deals: (data ?? []) as Deal[], total: count ?? 0 };
     },
   });
+  const deals = dealData?.deals ?? [];
+  const totalDeals = dealData?.total ?? 0;
 
   const moveStage = useMutation({
     mutationFn: async ({ id, stage_id }: { id: string; stage_id: string }) => {
@@ -198,6 +203,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | null; stages: Stage[]; open: boolean; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState<any>({});
+  const navigate = useNavigate();
 
   // Populate the form whenever the dialog opens. (onOpenChange only fires on
   // user interaction, not when the parent flips `open`, so an effect is the
@@ -251,7 +257,16 @@ function DealEditor({ deal, stages, open, onClose, onSaved }: { deal: Deal | nul
           </div>
           <div><Label>Service Interest</Label><Input value={form.service_interest || ""} onChange={(e) => setForm({ ...form, service_interest: e.target.value })} placeholder="SEO, PPC, Web Design…" /></div>
           <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 flex-wrap">
+            {deal?.id && (
+              <Button
+                variant="secondary"
+                className="mr-auto"
+                onClick={() => { onClose(); navigate(`/dashboard/admin/quotations?deal=${deal.id}`); }}
+              >
+                Create quotation
+              </Button>
+            )}
             <Button variant="outline" onClick={onClose}>Cancel</Button>
             <Button onClick={() => save.mutate()} disabled={save.isPending}>Save</Button>
           </div>

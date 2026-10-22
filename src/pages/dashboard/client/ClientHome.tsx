@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useClientCompanies } from "@/hooks/useClientCompanies";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { FolderKanban, ClipboardCheck, FileText, BarChart3, MessageCircle, Building2, ArrowRight } from "lucide-react";
@@ -24,24 +25,26 @@ function StatCard({ icon: Icon, label, value, to }: { icon: any; label: string; 
 export default function ClientHome() {
   const { user } = useAuth();
 
+  const { data: companies = [], isLoading: companiesLoading } = useClientCompanies();
+  const accountIds = companies.map((c: any) => c.id);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["client-home", user?.id],
+    queryKey: ["client-home", user?.id, accountIds.join(",")],
     queryFn: async () => {
       if (!user) return null;
-
-      const { data: memberships } = await db.from("account_team_members").select("account_id").eq("user_id", user.id);
-      const accountIds = (memberships ?? []).map((m: any) => m.account_id);
 
       if (accountIds.length === 0) {
         return { linked: false };
       }
 
+      // Invoices and support messages are scoped company-wide by access rules,
+      // so no per-person filter is needed here.
       const [projectsRes, approvalsRes, invoicesRes, reportsRes, messagesRes] = await Promise.all([
         db.from("projects").select("id,status").in("account_id", accountIds),
         db.from("client_approvals").select("id,status").in("account_id", accountIds),
-        db.from("invoices").select("id,total,status").eq("client_id", user.id),
+        db.from("invoices").select("id,total,status"),
         db.from("client_reports").select("*").in("account_id", accountIds).eq("published", true).order("period_month", { ascending: false }).limit(1).maybeSingle(),
-        db.from("support_messages").select("*").eq("client_id", user.id).order("created_at", { ascending: false }).limit(3),
+        db.from("support_messages").select("*").order("created_at", { ascending: false }).limit(3),
       ]);
 
       const projects = projectsRes.data ?? [];
@@ -63,7 +66,7 @@ export default function ClientHome() {
         recentMessages: messagesRes.data ?? [],
       };
     },
-    enabled: !!user,
+    enabled: !!user && !companiesLoading,
   });
 
   if (isLoading) {

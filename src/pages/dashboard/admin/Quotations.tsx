@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -23,7 +24,36 @@ const STATUS: Record<string, any> = { draft: "default", sent: "info", viewed: "i
 
 export default function Quotations() {
   const qc = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showCreate, setShowCreate] = useState(false);
+  const [linkedDeal, setLinkedDeal] = useState<any>(null);
+
+  // Opened from a pipeline deal (?deal=<id>): prefill the form and link the quote.
+  useEffect(() => {
+    const dealId = searchParams.get("deal");
+    if (!dealId) return;
+    (async () => {
+      const { data: deal } = await supabase.from("crm_deals").select("*").eq("id", dealId).maybeSingle();
+      if (!deal) return;
+      let contact: any = null;
+      if ((deal as any).contact_id) {
+        const { data } = await supabase.from("contacts").select("id,name,email,company").eq("id", (deal as any).contact_id).maybeSingle();
+        contact = data;
+      }
+      setLinkedDeal(deal);
+      setForm((f: any) => ({
+        ...f,
+        client_name: contact?.name || (deal as any).title || f.client_name,
+        client_email: contact?.email || f.client_email,
+        notes: `Deal: ${(deal as any).title}${(deal as any).service_interest ? ` · ${(deal as any).service_interest}` : ""}`,
+        deal_id: dealId,
+        contact_id: contact?.id ?? null,
+        items: [{ description: (deal as any).service_interest || (deal as any).title, quantity: 1, unit_price: Number((deal as any).value) || 0, hsn_sac: "998314", discount_percent: 0 }],
+      }));
+      setShowCreate(true);
+      setSearchParams({}, { replace: true });
+    })();
+  }, [searchParams, setSearchParams]);
   const [activityFor, setActivityFor] = useState<{ id: string; quote_number: string; client_name: string } | null>(null);
   const [printFor, setPrintFor] = useState<any>(null);
   const [declineFor, setDeclineFor] = useState<any>(null);
@@ -57,6 +87,8 @@ export default function Quotations() {
         validity_date: form.validity_date || null,
         status: "draft",
         quote_number: "DRAFT",
+        deal_id: form.deal_id || null,
+        contact_id: form.contact_id || null,
       };
       const extended = { ...base, client_gstin: form.client_gstin || null, place_of_supply: form.place_of_supply || null, cgst_amount: gst.cgst, sgst_amount: gst.sgst, igst_amount: gst.igst };
       let { error } = await supabase.from("quotations").insert(extended);
@@ -70,6 +102,7 @@ export default function Quotations() {
       qc.invalidateQueries({ queryKey: ["quotations"] });
       toast.success("Quotation created");
       setShowCreate(false);
+      setLinkedDeal(null);
       setForm({ client_name: "", client_email: "", validity_date: "", tax_rate: 18, currency: "INR", notes: "", items: [{ description: "", quantity: 1, unit_price: 0 }] });
     },
     onError: (e: any) => toast.error(e.message),
@@ -211,6 +244,11 @@ export default function Quotations() {
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle className="font-display">New Quotation</DialogTitle></DialogHeader>
           <div className="space-y-4">
+            {linkedDeal && (
+              <p className="text-xs text-primary bg-primary/10 border border-primary/20 rounded-lg px-3 py-2">
+                Linked to pipeline deal: <strong>{linkedDeal.title}</strong>
+              </p>
+            )}
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Client Name</Label><Input value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} /></div>
               <div><Label>Client Email</Label><Input type="email" value={form.client_email} onChange={(e) => setForm({ ...form, client_email: e.target.value })} /></div>

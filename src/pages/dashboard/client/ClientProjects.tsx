@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useClientCompanies } from "@/hooks/useClientCompanies";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,15 +19,13 @@ const STATUS_COLORS: Record<string, string> = {
 export default function ClientProjects() {
   const { user } = useAuth();
 
+  const { data: companies = [], isLoading: companiesLoading } = useClientCompanies();
+  const accountIds = companies.map((c: any) => c.id);
+
   const { data, isLoading } = useQuery({
-    queryKey: ["client-projects", user?.id],
+    queryKey: ["client-projects", user?.id, accountIds.join(",")],
     queryFn: async () => {
       if (!user) return { linked: false, projects: [] as any[] };
-      const { data: memberships } = await db
-        .from("account_team_members")
-        .select("account_id")
-        .eq("user_id", user.id);
-      const accountIds = (memberships ?? []).map((m: any) => m.account_id);
       if (accountIds.length === 0) return { linked: false, projects: [] };
 
       const { data: projects, error } = await db
@@ -54,7 +53,7 @@ export default function ClientProjects() {
 
       return { linked: true, projects: enriched };
     },
-    enabled: !!user,
+    enabled: !!user && !companiesLoading,
   });
 
   if (isLoading) {

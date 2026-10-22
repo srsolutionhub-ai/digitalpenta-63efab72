@@ -17,10 +17,11 @@ export default function ClientSupport() {
     queryKey: ["client-support", user?.id],
     queryFn: async () => {
       if (!user) return [];
+      // No client_id filter: access rules now cover the whole company, so
+      // colleagues at the same company share one support conversation.
       const { data, error } = await supabase
         .from("support_messages")
         .select("*")
-        .eq("client_id", user.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return data ?? [];
@@ -37,7 +38,6 @@ export default function ClientSupport() {
         event: "INSERT",
         schema: "public",
         table: "support_messages",
-        filter: `client_id=eq.${user.id}`,
       }, () => {
         queryClient.invalidateQueries({ queryKey: ["client-support", user.id] });
       })
