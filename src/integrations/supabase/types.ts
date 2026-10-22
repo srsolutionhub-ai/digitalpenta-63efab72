@@ -3475,6 +3475,7 @@ export type Database = {
         }
         Returns: number
       }
+      can_access_client_file: { Args: { _path: string }; Returns: boolean }
       check_rls_enabled: { Args: { table_name: string }; Returns: boolean }
       get_analytics_summary: {
         Args: { days_back?: number }
