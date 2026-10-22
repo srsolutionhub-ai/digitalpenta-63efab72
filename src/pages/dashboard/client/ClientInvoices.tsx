@@ -19,10 +19,11 @@ export default function ClientInvoices() {
     queryKey: ["client-invoices", user?.id],
     queryFn: async () => {
       if (!user) return [];
+      // No client_id filter: access rules now cover every invoice linked to
+      // the client's company, so colleagues see the same list.
       const { data, error } = await supabase
         .from("invoices")
         .select("*")
-        .eq("client_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
 
