@@ -177,6 +177,13 @@ Deno.serve(async (req) => {
       `;
     } else if (payload.type === "invoice_created") {
       const d = payload.data;
+      // The invoice email goes to the client; the team gets a BCC copy.
+      const clientTo = (d.client_email || "").trim();
+      if (clientTo && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientTo)) {
+        to = clientTo;
+        bcc = internalTo;
+        replyTo = "support@digitalpenta.com";
+      }
       subject = `💰 Invoice Created: ${esc(d.invoice_number || "")} — ${esc(d.client_name || "Client")}`;
       html = `
         <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background: #0D0D1A; color: #fff; border-radius: 16px; overflow: hidden;">
