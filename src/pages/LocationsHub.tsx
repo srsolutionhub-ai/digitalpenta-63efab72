@@ -17,6 +17,11 @@ export default function LocationsHub() {
   const all = getAllLocations();
   const india = all.filter((l) => l.region === "india");
   const mena = all.filter((l) => l.region === "middle-east");
+  // Group India cities by tier (registry-driven; unknown slugs fall into tier 2).
+  const tierOf = (slug: string) => getCityRegistryEntry(slug)?.tier ?? 2;
+  const indiaT1 = india.filter((l) => tierOf(l.slug) === 1);
+  const indiaT2 = india.filter((l) => tierOf(l.slug) === 2);
+  const indiaT3 = india.filter((l) => tierOf(l.slug) === 3);
 
   const items = all.map((l) => ({
     name: `Digital Marketing Agency in ${l.city}`,
