@@ -57,8 +57,8 @@
 - [x] Verify build/typecheck; report
 
 ## Full-Platform Deep Investigation round 2 (24 Oct 2026)
-- [ ] Admin workflows: full lifecycle code audit (leads→deals→quotes→invoices→projects→reports)
-- [ ] Client workflows + admin↔client connections audit
-- [ ] Backend: edge functions, triggers, RLS, data integrity audit
-- [ ] Fix all confirmed issues
-- [ ] Final verification + report
+- [x] Admin workflows: full lifecycle code audit (leads→deals→quotes→invoices→projects→reports)
+- [x] Client workflows + admin↔client connections audit
+- [x] Backend: edge functions, triggers, RLS, data integrity audit
+- [x] Fix all confirmed issues
+- [x] Final verification + report
