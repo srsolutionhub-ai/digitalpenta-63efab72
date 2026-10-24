@@ -47,7 +47,7 @@ async function runBroadcast(supa: any, broadcastId: string) {
   // receive the broadcast multiple times.
   const seenPhones = new Set<string>();
   const recipients = (leads ?? []).filter((lead: any) => {
-    const phone = String(lead.phone).replace(/[^\d+]/g, "");
+    const phone = String(lead.phone).replace(/\D/g, "");
     if (!phone || seenPhones.has(phone)) return false;
     seenPhones.add(phone);
     return true;
@@ -65,7 +65,7 @@ async function runBroadcast(supa: any, broadcastId: string) {
 
   for (const lead of recipients) {
     try {
-      const phone = String(lead.phone).replace(/[^\d+]/g, "");
+      const phone = String(lead.phone).replace(/\D/g, "");
       const bodyParams = Array.isArray(template.variables) && template.variables.length
         ? [{ type: "text", text: lead.name || "there" }]
         : [];

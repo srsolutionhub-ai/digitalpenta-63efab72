@@ -18,7 +18,7 @@ export default function ContactDetail() {
   const [note, setNote] = useState("");
   const [task, setTask] = useState({ title: "", due: "" });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["crm-contact", email],
     queryFn: async () => {
       // Escape LIKE wildcards so emails containing _ or % match exactly.
@@ -122,6 +122,12 @@ export default function ContactDetail() {
   return (
     <div className="space-y-6">
       <Link to="/dashboard/admin/contacts" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="w-4 h-4" />Contacts</Link>
+      {error && (
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          Couldn't load this contact's history: {(error as Error).message}
+          <Button variant="outline" size="sm" className="ml-3" onClick={refresh}>Retry</Button>
+        </div>
+      )}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground break-all">{p?.name || email}</h1>

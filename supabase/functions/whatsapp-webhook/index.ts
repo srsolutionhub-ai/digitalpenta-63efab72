@@ -139,7 +139,9 @@ Deno.serve(async (req) => {
       const contacts = change?.contacts || [];
 
       for (const msg of messages) {
-        const phone = msg.from;
+        // Normalize to digits-only so the same person never splits into two
+        // conversations ("+91 88..." vs "9188..."). Meta sends digits already.
+        const phone = String(msg.from).replace(/\D/g, "");
         const contactName = contacts.find((c: any) => c.wa_id === phone)?.profile?.name || null;
         const messageText = msg.text?.body || `[${msg.type}]`;
 
