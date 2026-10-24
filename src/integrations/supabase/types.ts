@@ -1248,6 +1248,24 @@ export type Database = {
           },
         ]
       }
+      doc_counters: {
+        Row: {
+          kind: string
+          last_value: number
+          year: number
+        }
+        Insert: {
+          kind: string
+          last_value?: number
+          year: number
+        }
+        Update: {
+          kind?: string
+          last_value?: number
+          year?: number
+        }
+        Relationships: []
+      }
       email_campaigns: {
         Row: {
           bounced_count: number | null
@@ -1390,6 +1408,7 @@ export type Database = {
           name: string | null
           next_send_at: string | null
           opens: number
+          processing_at: string | null
           sequence_id: string
           status: string
         }
@@ -1402,6 +1421,7 @@ export type Database = {
           name?: string | null
           next_send_at?: string | null
           opens?: number
+          processing_at?: string | null
           sequence_id: string
           status?: string
         }
@@ -1414,6 +1434,7 @@ export type Database = {
           name?: string | null
           next_send_at?: string | null
           opens?: number
+          processing_at?: string | null
           sequence_id?: string
           status?: string
         }
@@ -3512,6 +3533,28 @@ export type Database = {
       }
       can_access_client_file: { Args: { _path: string }; Returns: boolean }
       check_rls_enabled: { Args: { table_name: string }; Returns: boolean }
+      claim_due_sequence_enrollments: {
+        Args: { _limit?: number }
+        Returns: {
+          clicks: number
+          current_step: number
+          email: string
+          enrolled_at: string
+          id: string
+          name: string | null
+          next_send_at: string | null
+          opens: number
+          processing_at: string | null
+          sequence_id: string
+          status: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "email_sequence_enrollments"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_analytics_summary: {
         Args: { days_back?: number }
         Returns: {
@@ -3558,6 +3601,10 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _uid: string }; Returns: boolean }
+      next_doc_number: {
+        Args: { _kind: string; _year: number }
+        Returns: number
+      }
       notify_account_clients: {
         Args: {
           _account_id: string

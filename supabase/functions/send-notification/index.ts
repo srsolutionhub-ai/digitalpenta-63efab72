@@ -176,9 +176,53 @@ Deno.serve(async (req) => {
         </div>
       `;
     } else if (payload.type === "invoice_created") {
-      const d = payload.data;
+      // Staff-only: the caller must be a signed-in team member, and every
+      // field in the email is derived from the invoice row in the database —
+      // nothing client-supplied (recipient, amount, number) is trusted.
+      const authHeader = req.headers.get("Authorization") ?? "";
+      const userClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } },
+      );
+      const { data: userData } = await userClient.auth.getUser();
+      if (!userData.user) {
+        return new Response(JSON.stringify({ error: "Sign-in required" }), {
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const admin = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      );
+      const { data: roles } = await admin.from("user_roles").select("role").eq("user_id", userData.user.id);
+      const isStaff = (roles ?? []).some((r: any) =>
+        ["super_admin", "account_manager", "finance"].includes(r.role));
+      if (!isStaff) {
+        return new Response(JSON.stringify({ error: "Staff access required" }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const invoiceId = String((payload.data as any)?.invoice_id || "");
+      if (!/^[0-9a-f-]{36}$/i.test(invoiceId)) {
+        return new Response(JSON.stringify({ error: "Valid invoice_id required" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: inv } = await admin
+        .from("invoices")
+        .select("invoice_number, client_name, client_email, total, due_date, status")
+        .eq("id", invoiceId)
+        .maybeSingle();
+      if (!inv) {
+        return new Response(JSON.stringify({ error: "Invoice not found" }), {
+          status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const d = inv as Record<string, unknown>;
       // The invoice email goes to the client; the team gets a BCC copy.
-      const clientTo = (d.client_email || "").trim();
+      const clientTo = String(d.client_email || "").trim();
       if (clientTo && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientTo)) {
         to = clientTo;
         bcc = internalTo;
