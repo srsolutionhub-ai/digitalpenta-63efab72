@@ -130,7 +130,7 @@ export default function WhatsAppHub() {
       .on("postgres_changes", { event: "*", schema: "public", table: "whatsapp_conversations" }, () => {
         qc.invalidateQueries({ queryKey: ["wa-conversations"] });
       })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "whatsapp_messages_v2" }, (payload: any) => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "whatsapp_messages_v2" }, (payload: any) => {
         if (payload.new?.conversation_id === activeId) {
           qc.invalidateQueries({ queryKey: ["wa-messages", activeId] });
         }

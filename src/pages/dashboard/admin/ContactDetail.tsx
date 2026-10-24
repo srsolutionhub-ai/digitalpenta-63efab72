@@ -21,20 +21,26 @@ export default function ContactDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["crm-contact", email],
     queryFn: async () => {
-      const [leads, audits, tools, bookings, emails, notes, tasks, deals] = await Promise.all([
-        db.from("leads").select("*").ilike("email", email).order("created_at", { ascending: false }),
-        db.from("audits").select("id,url,overall_score,status,created_at,visitor_name,visitor_phone,visitor_company").ilike("visitor_email", email),
-        db.from("tool_runs").select("id,tool_slug,status,created_at").ilike("email", email),
-        db.from("strategy_call_bookings").select("*").ilike("email", email),
-        db.from("email_send_log").select("id,template,subject,status,created_at").ilike("to_email", email),
-        db.from("crm_notes").select("*").ilike("contact_email", email),
-        db.from("crm_tasks").select("*").ilike("contact_email", email).order("due_at", { ascending: true }),
-        db.from("crm_deals").select("id,title,value,currency,created_at,closed_at"),
+      // Escape LIKE wildcards so emails containing _ or % match exactly.
+      const emailPattern = email.replace(/[\\%_]/g, "\\$&");
+      const [leads, audits, tools, bookings, emails, notes, tasks] = await Promise.all([
+        db.from("leads").select("*").ilike("email", emailPattern).order("created_at", { ascending: false }),
+        db.from("audits").select("id,url,overall_score,status,created_at,visitor_name,visitor_phone,visitor_company").ilike("visitor_email", emailPattern),
+        db.from("tool_runs").select("id,tool_slug,status,created_at,name,company,phone").ilike("email", emailPattern),
+        db.from("strategy_call_bookings").select("*").ilike("email", emailPattern),
+        db.from("email_send_log").select("id,template,subject,status,created_at").ilike("to_email", emailPattern),
+        db.from("crm_notes").select("*").ilike("contact_email", emailPattern),
+        db.from("crm_tasks").select("*").ilike("contact_email", emailPattern).order("due_at", { ascending: true }),
       ]);
+      for (const res of [leads, audits, tools, bookings, emails, notes, tasks]) {
+        if (res.error) throw res.error;
+      }
       const lead = leads.data?.[0];
+      const t0 = tools.data?.[0];
+      const b0 = bookings.data?.[0];
 
       // ── Website visits: resolve visitor_id(s) linked to this email via leads.meta_data ──
-      const { data: linkedProfiles } = await db.from("visitor_profiles").select("visitor_id").ilike("contact_email", email);
+      const { data: linkedProfiles } = await db.from("visitor_profiles").select("visitor_id").ilike("contact_email", emailPattern);
       const visitorIds: string[] = Array.from(new Set([
         ...(leads.data ?? []).map((l: any) => l?.meta_data?.visitor_id),
         ...(linkedProfiles ?? []).map((v: any) => v.visitor_id),
@@ -85,8 +91,8 @@ export default function ContactDetail() {
       items.sort((a, b) => b.at.localeCompare(a.at));
       const a0 = audits.data?.[0];
       return {
-        profile: { name: lead?.name ?? a0?.visitor_name, company: lead?.company ?? a0?.visitor_company, phone: lead?.phone ?? a0?.visitor_phone, website: lead?.website, score: lead?.lead_score, status: lead?.status, summary: lead?.ai_summary, firstTouch: lead?.first_touch, utm: lead?.utm },
-        items, tasks: tasks.data ?? [], phone: lead?.phone ?? a0?.visitor_phone, sessions,
+        profile: { name: lead?.name ?? a0?.visitor_name ?? t0?.name ?? b0?.name, company: lead?.company ?? a0?.visitor_company ?? t0?.company ?? b0?.company, phone: lead?.phone ?? a0?.visitor_phone ?? t0?.phone ?? b0?.phone, website: lead?.website, score: lead?.lead_score, status: lead?.status, summary: lead?.ai_summary, firstTouch: lead?.first_touch, utm: lead?.utm },
+        items, tasks: tasks.data ?? [], phone: lead?.phone ?? a0?.visitor_phone ?? t0?.phone ?? b0?.phone, sessions,
       };
     },
   });
