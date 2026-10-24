@@ -1,3 +1,5 @@
+import { TIER23_LOCATIONS } from "./locationDataTier23";
+
 export interface LocationData {
   slug: string;
   city: string;
@@ -677,4 +679,7 @@ export function getLocationsByRegion(region: "india" | "middle-east"): LocationD
   return locations.filter(l => l.region === region);
 }
 
-export default locations;
+/** Metro/MENA set + tier-2/3 expansion (locationDataTier23.ts). */
+const ALL_LOCATIONS: LocationData[] = [...locations, ...TIER23_LOCATIONS];
+
+export default ALL_LOCATIONS;
