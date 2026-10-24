@@ -11,6 +11,7 @@ import SEOHead, {
   breadcrumbSchema, faqPageSchema, serviceSchema, organizationSchema, answerPageSchema,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
+import LpLeadForm from "@/components/seo/LpLeadForm";
 import { getKeywordLanding } from "@/data/keywordLandingData";
 import { getRelatedForLanding } from "@/lib/internalLinkGraph";
 
@@ -216,6 +217,35 @@ export default function KeywordLandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Service breakdown — which service does what, with real internal links */}
+      {data.serviceBreakdown && data.serviceBreakdown.length > 0 && (
+        <section className="py-20 bg-card/20 border-y border-border/30">
+          <div className="container mx-auto px-4">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-3">
+              Which Service Does <span className="text-gradient">What</span>
+            </h2>
+            <p className="text-muted-foreground mb-10 max-w-2xl">
+              Every engagement is a mix of these capabilities — each one links to its full service page if you want the deep detail.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {data.serviceBreakdown.map((s) => (
+                <Link
+                  key={s.name}
+                  to={s.href}
+                  className="group rounded-xl glass glow-border p-6 hover:border-primary/40 transition-colors"
+                >
+                  <h3 className="font-display font-semibold text-foreground mb-2 flex items-center gap-2">
+                    {s.name}
+                    <ArrowRight className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Why us */}
       <section id="why-us" className="py-16 bg-card/20 border-y border-border/30 scroll-mt-24">
