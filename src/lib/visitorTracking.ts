@@ -194,6 +194,28 @@ const queue: QueuedEvent[] = [];
 const interests = new Set<string>();
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 
+/* ── active engagement time (only while the tab is visible) ── */
+let activeMs = 0;
+let lastTick = Date.now();
+let lastSentEngagedSec = 0;
+let pageEnterTs = Date.now();
+let currentPath = "";
+
+function tickActive(): void {
+  const now = Date.now();
+  if (document.visibilityState === "visible") activeMs += now - lastTick;
+  lastTick = now;
+}
+
+/** Seconds of active (visible-tab) time not yet sent to the server. */
+function engagedDelta(): number {
+  tickActive();
+  const total = Math.round(activeMs / 1000);
+  const delta = Math.max(0, total - lastSentEngagedSec);
+  lastSentEngagedSec = total;
+  return delta;
+}
+
 function buildBody() {
   const ft = firstTouch();
   return JSON.stringify({
@@ -211,6 +233,7 @@ function buildBody() {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       pageViews: pageViewCount,
       timeOnSite: Math.round((Date.now() - started) / 1000),
+      engagedSeconds: engagedDelta(),
       interests: Array.from(interests),
       landingPage: ft.landing,
       lastPage: window.location.pathname,
@@ -282,6 +305,19 @@ export function setTrackingConsent(granted: boolean): void {
 }
 
 export function trackPagePath(path: string): void {
+  // Close out the previous page with the active seconds spent on it.
+  if (currentPath && currentPath !== path) {
+    tickActive();
+    const secs = Math.min(Math.round((Date.now() - pageEnterTs) / 1000), 600);
+    if (secs >= 2) {
+      queueVisitorEvent("page_engagement", {
+        data: { page: currentPath, active_seconds: secs },
+        value: secs,
+      });
+    }
+  }
+  currentPath = path;
+  pageEnterTs = Date.now();
   pageViewCount += 1;
   interestsFromPath(path).forEach((i) => interests.add(i));
   scheduleFlush();
@@ -309,7 +345,14 @@ export function initVisitorTracking(): void {
   });
 
   document.addEventListener("visibilitychange", () => {
+    tickActive();
     if (document.visibilityState === "hidden") send(true);
   });
   window.addEventListener("pagehide", () => send(true));
+  // Heartbeat every 30s so engaged time accumulates even on quiet pages.
+  setInterval(() => {
+    if (!consented || document.visibilityState !== "visible") return;
+    tickActive();
+    send();
+  }, 30_000);
 }
