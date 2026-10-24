@@ -271,9 +271,13 @@ Deno.serve(async (req) => {
       utm_term: p.utmTerm?.slice(0, 200) || null,
       utm_content: p.utmContent?.slice(0, 200) || null,
       click_ids: clickIds,
-      session_count: Math.max(p.visitNumber ?? 1, existing?.session_count ?? 1),
+      session_count: sessionCount,
+      engaged_seconds: engagedSeconds,
+      service_affinity: serviceAffinity,
+      lifecycle_stage: existing?.lifecycle_stage === "lead" ? "lead" : lifecycleStage,
       updated_at: new Date().toISOString(),
     };
+    if (!existing) (profileRow as Record<string, unknown>).first_seen = new Date().toISOString();
 
     let profileOk = true;
     if (existing) {
