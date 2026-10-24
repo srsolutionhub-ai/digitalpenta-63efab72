@@ -39,6 +39,12 @@
 - [x] LP hero image verified loading; screenshots captured
 - [x] Console ref warnings traced to Lovable preview harness (click-to-edit), not app code — no app change needed
 
+## Phase 9 — LP funnel upgrade (user feedback round)
+- [x] LP template: serviceBreakdown (linked service cards), processSteps (90-day funnel), midCta, inline LpLeadForm (submit-lead pipeline, honeypot, attribution)
+- [x] All 6 LPs: +1 deepSection each, service breakdown with real /services/ links, process funnel, mid-page CTA
+- [x] Verified: 1,430–1,614 words/page (was ~1,100), 13 H2 sections, 12–13 internal service links, lead form fillable, hero img loads, 0 overflow desktop+360px, 0 page errors
+- [x] Sitemap regenerated (161 URLs incl. all 6 LPs); robots.txt confirmed not blocking /lp/
+
 ## Standing constraints
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
 - Skip GSC/GTM/Resend/Meta setup.

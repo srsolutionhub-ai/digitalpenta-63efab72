@@ -44,6 +44,15 @@ export interface KeywordLandingData {
   deepSections?: { heading: string; paragraphs: string[] }[];
   /** Premium hero visual (imported asset). Rendered right of the hero copy on desktop. */
   heroImage?: string;
+  /**
+   * "Which service does what" breakdown — each item links to its real
+   * service page, doubling as contextual internal linking.
+   */
+  serviceBreakdown?: { name: string; desc: string; href: string }[];
+  /** Numbered delivery funnel — how an engagement actually runs. */
+  processSteps?: { step: string; desc: string }[];
+  /** Mid-page CTA shown after the long-form sections (before the FAQ). */
+  midCta?: { heading: string; text: string };
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
@@ -770,6 +779,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "Growth Marketing",
     relatedServiceHref: "/services/digital-marketing/performance",
     cta: "Get Your Free Growth Audit",
+    serviceBreakdown: [
+      { name: "Performance Marketing", desc: "Paid acquisition across Google, Meta and LinkedIn — the fast lane for pipeline while compounding channels build.", href: "/services/digital-marketing/performance" },
+      { name: "SEO & Content", desc: "The compounding lane: technical foundations, topical authority and content that keeps selling after the ad budget pauses.", href: "/services/digital-marketing/seo" },
+      { name: "Conversion Rate Optimisation", desc: "Landing page and funnel experiments that turn existing traffic into more revenue before you buy more traffic.", href: "/services/development/ui-ux" },
+      { name: "Email & Lifecycle", desc: "Welcome, nurture and win-back flows that lift repeat revenue — usually the cheapest growth lever you have.", href: "/services/digital-marketing/email" },
+      { name: "Marketing Automation", desc: "Lead scoring, routing and follow-up automation so no enquiry waits for a human to notice it.", href: "/services/automation/marketing" },
+      { name: "AI Strategy", desc: "Where AI genuinely helps your funnel — and where it's an expensive distraction. We tell you both.", href: "/services/ai-solutions/strategy" },
+    ],
+    processSteps: [
+      { step: "Growth audit & measurement setup", desc: "We map your full funnel, fix tracking gaps, and agree on the one number that defines success — usually revenue or qualified pipeline, never impressions." },
+      { step: "Experiment backlog", desc: "Every opportunity we find is scored by expected impact, confidence and effort. You see the whole backlog and help prioritise it." },
+      { step: "Two-week sprints begin", desc: "Each sprint ships a small set of experiments with written hypotheses and kill criteria. No six-month 'strategy phases' before anything ships." },
+      { step: "Review, scale, kill", desc: "Winners get scaled, losers get documented and killed. You get a plain-language review every sprint — including what didn't work and why." },
+      { step: "Compounding handover", desc: "Playbooks, dashboards and learnings are documented so your team can run the machine — with us or without us." },
+    ],
+    midCta: {
+      heading: "Want to see your funnel's leaks before you commit to anything?",
+      text: "The free growth audit maps your acquisition, activation and retention gaps — yours to keep whether or not we work together.",
+    },
     directAnswer:
       "A growth marketing agency plans and runs measurable experiments across your whole funnel — ads, SEO, conversion rate, email and retention — instead of managing one channel in isolation. Digital Penta runs two-week experiment sprints for brands in India, the US and the UK, with every activity reported against pipeline and revenue.",
     lastUpdated: "2026-10-24",
@@ -787,6 +815,13 @@ const keywordLandingPages: KeywordLandingData[] = [
           "Every engagement starts with a growth audit: we map your funnel, instrument the measurement, and list every leak we can find — from slow landing pages to follow-up gaps in your sales process. That list becomes a backlog, scored by expected impact, confidence and effort.",
           "Then we run two-week sprints. Each sprint ships a small number of experiments with a written hypothesis and a pre-agreed success metric. At the end of the sprint you get a plain-language review: what we tried, what happened, what we learned, and what happens next. Failed experiments are documented with the same care as winners, because a documented failure is what stops your next agency from repeating it.",
           "This rhythm does two things. It keeps momentum high — you're never waiting a quarter to find out whether something worked. And it keeps us honest, because our work is judged on a public scorecard you can check any time.",
+        ],
+      },
+      {
+        heading: "The metrics we report — and the ones we refuse to",
+        paragraphs: [
+          "Every growth engagement comes with a standing argument about metrics, so let's have it now. Impressions, reach and follower counts are diagnostics — useful for spotting problems, useless for judging success. We report them, but they never headline a review. The headline numbers are the ones your CFO recognises: qualified pipeline, cost per acquisition, conversion rate by stage, and revenue attributed by channel.",
+          "We also report experiment velocity — how many tests shipped, how many won, what we learned from the ones that didn't. A growth programme that isn't shipping experiments isn't a growth programme; it's a retainer with a dashboard. If you ever feel that's what you're looking at, the review call is the place to say it, and the backlog is where we fix it.",
         ],
       },
       {
@@ -837,6 +872,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "Public Relations",
     relatedServiceHref: "/services/public-relations",
     cta: "Book a Free PR Consultation",
+    serviceBreakdown: [
+      { name: "Media Relations", desc: "Story pitching and journalist relationships across national dailies, business press and TV — the core of classic PR.", href: "/services/public-relations/media-relations" },
+      { name: "Digital PR", desc: "Data stories and expert commentary that earn online coverage and authoritative backlinks at the same time.", href: "/services/public-relations/digital-pr" },
+      { name: "Press Releases", desc: "Announcements written for journalists, not for filing cabinets — with distribution that reaches the right desks.", href: "/services/public-relations/press-release" },
+      { name: "Thought Leadership", desc: "Founder bylines, interview placements and speaking slots that make your leadership the face of the brand.", href: "/services/public-relations/thought-leadership" },
+      { name: "Crisis Management", desc: "Pre-approved holding statements and response protocols, built before you need them.", href: "/services/public-relations/crisis" },
+      { name: "Brand Reputation", desc: "Review strategy, search-result management and monitoring — what buyers see when they google you.", href: "/services/public-relations/brand-reputation" },
+    ],
+    processSteps: [
+      { step: "Story audit", desc: "We dig into your business for genuinely newsworthy angles — data, milestones, contrarian takes, founder stories. Most companies have five good stories and have told none of them." },
+      { step: "Media map", desc: "We build your target list: the specific journalists and producers who cover your sector, not a generic database blast." },
+      { step: "Pitch & place", desc: "Short, relevant pitches from a name journalists recognise. Follow-ups are persistent but never spammy — relationships outlast any single story." },
+      { step: "Amplify", desc: "Every placement gets amplified: social, newsletter, sales deck, and SEO value captured through links and brand search." },
+      { step: "Measure & report", desc: "Monthly reporting on coverage quality, sentiment, referral traffic and links earned — outcomes, not column inches." },
+    ],
+    midCta: {
+      heading: "Not sure your story is newsworthy enough?",
+      text: "That's the most common thing we hear — and it's usually wrong. Book a free consultation and we'll tell you honestly what a journalist would pick up.",
+    },
     directAnswer:
       "A PR agency in Delhi manages your relationship with media, influencers and the public — securing press coverage, profiling founders, handling crises and building reputation. Digital Penta combines traditional Delhi media relations with digital PR that also earns backlinks and search visibility, so coverage compounds instead of fading.",
     lastUpdated: "2026-10-24",
@@ -853,6 +907,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "Delhi is home to the headquarters of most national English and Hindi dailies, the major TV news networks, and a dense circuit of business and trade publications. Covering this landscape remotely is possible; covering it well is not. Journalists respond to people they know, and knowing people requires showing up — press events, editorial meets, the occasional coffee in Connaught Place.",
           "Our team works from Katwaria Sarai, in the middle of this circuit. That proximity is why our pitches get read: they're short, relevant, and come from a name the journalist has actually met. It's an unglamorous advantage, but in PR it's the one that matters most.",
+        ],
+      },
+      {
+        heading: "PR for startups versus PR for established brands",
+        paragraphs: [
+          "A startup's PR problem is credibility: nobody has heard of you, and every pitch starts from zero. The work is founder-led — profiling the people, exploiting the novelty of what you're building, and turning every milestone (funding, launches, hires) into a story. Speed matters more than polish, and a single good placement in a publication your investors read can be worth a quarter of advertising.",
+          "An established brand's problem is different: you're already known, so the work is narrative control. What does page one say about you? Which stories are journalists coming to you for — and which are they writing without you? Here the craft is consistency: a steady drumbeat of expert commentary, data stories and leadership visibility that shapes how the market talks about you, rather than reacting to how it already does.",
         ],
       },
       {
@@ -903,6 +964,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "SEO",
     relatedServiceHref: "/services/digital-marketing/seo",
     cta: "Get Your Free Noida SEO Audit",
+    serviceBreakdown: [
+      { name: "Technical SEO", desc: "Crawl health, Core Web Vitals, schema and indexation — the foundation every ranking is built on.", href: "/services/digital-marketing/seo" },
+      { name: "Content Marketing", desc: "Keyword-mapped articles and landing pages written for humans first, search engines second.", href: "/services/digital-marketing/content" },
+      { name: "Local SEO", desc: "Google Business Profile, citations and hyper-local pages for Noida, Greater Noida and NCR 'near me' searches.", href: "/locations/noida" },
+      { name: "Digital PR & Links", desc: "Coverage and backlinks from relevant publications — the authority layer rankings can't happen without.", href: "/services/public-relations/digital-pr" },
+      { name: "Web Development", desc: "When the site itself is the bottleneck, our developers fix speed and structure at the code level.", href: "/services/development/website" },
+      { name: "AI Search Visibility", desc: "Structuring content so Google's AI Overviews and answer engines cite you — the new page one.", href: "/services/ai-solutions/marketing" },
+    ],
+    processSteps: [
+      { step: "Deep audit", desc: "Technical crawl, content gap analysis, competitor benchmarking and a keyword map for your specific Noida market — presented in a working session, not a PDF." },
+      { step: "Foundation fixes", desc: "Technical issues fixed in priority order: speed, indexation, schema, internal linking. This alone often moves rankings within weeks." },
+      { step: "Content engine starts", desc: "Core pages rewritten against the keyword map, then a publishing rhythm of genuinely useful content begins." },
+      { step: "Authority building", desc: "Digital PR and outreach earn the links that competitive keywords require. No link farms — ever." },
+      { step: "Compounding & reporting", desc: "Monthly reviews against leads and revenue, with the strategy adjusted to what the data shows." },
+    ],
+    midCta: {
+      heading: "Wondering why your Noida competitors outrank you?",
+      text: "The free audit shows exactly what they're doing that you're not — with a prioritised fix list you can use with us or without us.",
+    },
     directAnswer:
       "An SEO company in Noida improves your visibility on Google through technical fixes, content and authority building, tailored to Noida's mix of SaaS, IT, manufacturing and local services. Digital Penta runs SEO programmes across Noida, Greater Noida and the NCR from its Delhi HQ, with reporting tied to leads and revenue.",
     lastUpdated: "2026-10-24",
@@ -919,6 +999,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "Days 1–30 are foundation: a full technical audit, analytics and Search Console instrumentation, competitor gap analysis, and the keyword map that will govern everything after. You'll see the audit findings in a working session, not a PDF that arrives and is never discussed.",
           "Days 31–60 are fixing and building: technical issues resolved in priority order, core pages rewritten against the keyword map, and the first content assets published. Days 61–90 are authority: the first digital PR and outreach cycles, plus local citation work where relevant. By day 90 you have a clean technical base, a publishing rhythm, early ranking movement — and a dashboard that shows all of it.",
+        ],
+      },
+      {
+        heading: "Local SEO versus national SEO — which one do you need?",
+        paragraphs: [
+          "If your customers come from Noida and the NCR — clinics, showrooms, institutes, home services — local SEO is the highest-leverage work you can do. The map pack absorbs most of the clicks for service queries, and winning it is about Google Business Profile discipline, review velocity, citations and location pages, not about publishing blog posts nobody reads.",
+          "If your customers are anywhere in India or beyond — SaaS, e-commerce, B2B services — the game is national or global: topical authority, bottom-funnel comparison content, and links from publications your buyers trust. Many Noida businesses need both, sequenced correctly: local dominance first for cash flow, national authority second for scale. The audit tells you which order makes sense for your numbers.",
         ],
       },
       {
@@ -969,6 +1056,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "Branding",
     relatedServiceHref: "/services/public-relations/brand-reputation",
     cta: "Book a Free Brand Consultation",
+    serviceBreakdown: [
+      { name: "Brand Strategy", desc: "Positioning, audience research and messaging architecture — the decisions everything else is built on.", href: "/services/public-relations/brand-reputation" },
+      { name: "UI/UX Design", desc: "Your brand applied to the product and website experience — where identity meets conversion.", href: "/services/development/ui-ux" },
+      { name: "Content & Voice", desc: "Brand voice applied to real content: website copy, campaigns and editorial that sound like you.", href: "/services/digital-marketing/content" },
+      { name: "Social Media", desc: "Templates and systems that keep every post on-brand without slowing your team down.", href: "/services/digital-marketing/social-media" },
+      { name: "Video & Motion", desc: "Motion identity and video templates that carry the brand into the formats that get watched.", href: "/services/digital-marketing/video" },
+      { name: "Website Development", desc: "The new brand implemented on a fast, conversion-focused website — not just a style guide.", href: "/services/development/website" },
+    ],
+    processSteps: [
+      { step: "Discovery & research", desc: "Customer interviews, win-loss analysis and competitor mapping. We learn how your buyers actually talk before we write a single line." },
+      { step: "Positioning", desc: "Who it's for, what you stand for, why you over the alternative — decided with evidence, not boardroom preference." },
+      { step: "Identity & messaging", desc: "Visual system, voice and messaging developed together, tested against real customer language." },
+      { step: "Rollout", desc: "Templates, asset libraries and launch checklists across web, social, ads and print — the part most agencies skip." },
+      { step: "Governance handover", desc: "Usage rules and a template library your team can actually run, so the brand stays consistent after we leave." },
+    ],
+    midCta: {
+      heading: "Suspect your brand is costing you conversions?",
+      text: "Book a free consultation — we'll review your current identity and messaging and tell you honestly whether you need a refresh, a rebrand, or neither.",
+    },
     directAnswer:
       "A branding agency in Delhi builds your brand strategy, visual identity, messaging and rollout plan — the system that makes every marketing rupee work harder. Digital Penta creates research-led brand systems from its Delhi HQ, designed to stay consistent across web, ads, social and print long after launch.",
     lastUpdated: "2026-10-24",
@@ -985,6 +1091,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "Positioning answers three questions: who is this for, what do we stand for, and why us instead of the alternative. Those answers come from customer interviews, win-loss analysis and competitor mapping — not from a workshop where the loudest voice wins. When positioning is sharp, everything downstream gets cheaper: ads convert better, sales cycles shorten, and content writes itself.",
           "We test messaging against real customer language before it goes near a design file. If your buyers say 'reliable' and your brand says 'disruptive,' you have a translation problem that no amount of beautiful typography will fix.",
+        ],
+      },
+      {
+        heading: "Brand refresh or full rebrand — how to decide",
+        paragraphs: [
+          "A refresh keeps your name, your core mark and your recognition, and modernises everything around them: typography, colour, voice, templates. It's the right call when your brand is fundamentally sound but looks tired, or when inconsistency — not the identity itself — is the problem. It's faster, cheaper and carries almost no market risk.",
+          "A full rebrand is the right call when the strategy has changed: new audience, new category, a name or reputation that's actively holding you back, or a merger that needs a new story. It's a bigger investment and a bigger risk, which is why we insist on research before any design begins. If a refresh will do the job, we'll tell you — a smaller invoice for us, a better outcome for you.",
         ],
       },
       {
@@ -1034,6 +1147,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "Online Reputation Management",
     relatedServiceHref: "/services/public-relations/brand-reputation",
     cta: "Get Your Free Reputation Audit",
+    serviceBreakdown: [
+      { name: "Brand Reputation Management", desc: "The core ORM discipline: monitoring, response protocols and page-one management.", href: "/services/public-relations/brand-reputation" },
+      { name: "Crisis Management", desc: "When something goes wrong publicly — pre-built playbooks and rapid response.", href: "/services/public-relations/crisis" },
+      { name: "Digital PR", desc: "Positive coverage that earns its place on page one and pushes negatives down.", href: "/services/public-relations/digital-pr" },
+      { name: "SEO", desc: "The technical layer of suppression: making your owned assets outrank the negative ones.", href: "/services/digital-marketing/seo" },
+      { name: "Content Marketing", desc: "The positive asset engine — articles, profiles and thought leadership worth ranking.", href: "/services/digital-marketing/content" },
+      { name: "Social Media Management", desc: "Review and mention response across platforms, with escalation paths for anything serious.", href: "/services/digital-marketing/social-media" },
+    ],
+    processSteps: [
+      { step: "Reputation audit", desc: "We map everything ranking for your brand and key executives, your review profiles, and your share of page one versus competitors." },
+      { step: "Triage", desc: "What must be fixed now, what must be built over time, and what's already fine. You get the honest priority list." },
+      { step: "Repair track", desc: "Response protocols on negative reviews, suppression strategy for negative results, and crisis playbooks where needed." },
+      { step: "Build track", desc: "New positive assets published and promoted monthly — PR, profiles, thought leadership, review generation from real customers." },
+      { step: "Monitor track", desc: "Alerts within 24 hours of new mentions, plus a monthly sentiment report you can share with your board." },
+    ],
+    midCta: {
+      heading: "When did you last google your own brand?",
+      text: "The free reputation audit shows you exactly what a prospect sees — and what's quietly costing you deals.",
+    },
     directAnswer:
       "Online reputation management in India means controlling what appears when someone googles your brand: monitoring mentions and reviews, responding professionally, building positive content, and pushing negative results off page one. Digital Penta runs ethical ORM programmes — no fake reviews — combining PR, SEO and review strategy.",
     lastUpdated: "2026-10-24",
@@ -1050,6 +1182,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "There's a cottage industry selling review deletion and fake five-star profiles. Beyond being against platform rules and Indian consumer-protection law, these tactics share a flaw: they work until they don't, and the discovery does more damage than the original problem. We don't touch them.",
           "Durable ORM is slower and honest. You earn a steady flow of genuine reviews by asking happy customers at the right moment. You publish and promote assets — leadership articles, case studies, PR coverage, well-maintained profiles — that deserve to rank. You respond to criticism professionally and visibly, which often impresses readers more than the criticism damages you. And you monitor continuously, because a problem answered in a day is a footnote, while one found in a month is a narrative.",
+        ],
+      },
+      {
+        heading: "Reviews: the reputation asset you control",
+        paragraphs: [
+          "For most Indian businesses, Google reviews are the single most visible reputation asset — they appear before your website does. Yet most businesses leave them to chance, which means the angriest one percent of customers write the story for the happy ninety-nine. The fix isn't buying reviews; it's asking. A systematic request at the right moment — after a successful delivery, a resolved ticket, a repeat purchase — reliably lifts both volume and average rating.",
+          "Just as important is how you respond to the negative ones. A calm, specific, non-defensive reply to a one-star review is read by every future prospect who finds it. Handled well, a negative review becomes evidence that you take customers seriously. Handled badly — or ignored — it becomes evidence of the opposite. We write response protocols for both, so nobody on your team is improvising under stress.",
         ],
       },
       {
@@ -1099,6 +1238,25 @@ const keywordLandingPages: KeywordLandingData[] = [
     serviceCategory: "Email Marketing",
     relatedServiceHref: "/services/digital-marketing/email",
     cta: "Get Your Free Email Audit",
+    serviceBreakdown: [
+      { name: "Email Marketing", desc: "The core service: strategy, copy, design, automation and deliverability management.", href: "/services/digital-marketing/email" },
+      { name: "Marketing Automation", desc: "Lifecycle flows, lead scoring and CRM-connected journeys that run without manual effort.", href: "/services/automation/marketing" },
+      { name: "WhatsApp Marketing", desc: "The Indian inbox's twin channel — broadcasts and automation that complement email.", href: "/services/automation/whatsapp" },
+      { name: "Content Marketing", desc: "The editorial engine behind newsletters people actually open.", href: "/services/digital-marketing/content" },
+      { name: "CRM Automation", desc: "Connecting email behaviour to your sales pipeline so no engaged lead goes uncalled.", href: "/services/automation/crm" },
+      { name: "AI Content", desc: "AI-assisted personalisation and testing — with human editing as the quality gate.", href: "/services/ai-solutions/content-gen" },
+    ],
+    processSteps: [
+      { step: "Deliverability audit", desc: "Authentication (SPF, DKIM, DMARC), sender reputation and list health checked first — because nothing else matters if you land in spam." },
+      { step: "List & consent cleanup", desc: "DPDP-compliant consent capture, preference centres and suppression lists that are actually honoured." },
+      { step: "Core flows built", desc: "Welcome, abandonment, post-purchase and win-back automations — the flows that typically generate most email revenue." },
+      { step: "Editorial engine", desc: "A newsletter calendar with a point of view, written for humans — measured on revenue, not just opens." },
+      { step: "Test & compound", desc: "Subject line, content and timing experiments every month, with results fed back into the programme." },
+    ],
+    midCta: {
+      heading: "Is your list an asset or just a database?",
+      text: "The free email audit checks your deliverability, flows and content — and shows you the revenue you're leaving unclaimed.",
+    },
     directAnswer:
       "Email marketing services in India cover deliverability setup, automation flows, newsletters and lifecycle campaigns that turn your subscriber list into repeat revenue. Digital Penta runs full-stack email programmes — strategy, copy, design and sending — with DPDP-compliant consent and revenue-linked reporting.",
     lastUpdated: "2026-10-24",
@@ -1115,6 +1273,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "The foundation is infrastructure: authenticated sending domains, warmed-up IPs, clean lists and a sender reputation that's protected like a credit score. On top of that sit the automation flows — welcome, browse and cart abandonment, post-purchase, win-back — which typically generate the majority of email revenue while requiring no ongoing effort once built.",
           "Then comes the editorial layer: a newsletter or campaign calendar with a point of view, written for humans rather than inboxes. The brands that win at email in 2026 are the ones whose emails people would miss. That standard is harder than it sounds, and it's exactly the standard we build to.",
+        ],
+      },
+      {
+        heading: "What DPDP compliance actually means for your email list",
+        paragraphs: [
+          "India's DPDP Act changed the rules for marketing data: consent must be specific, informed and revocable, and the burden of proof sits with you, not the subscriber. In practice this means every email address on your list should have a provable consent trail — when they opted in, what they were told, and an easy way they could have said no.",
+          "The good news is that compliance and performance point the same direction. Lists built on genuine consent have higher engagement, better deliverability and fewer spam complaints — the exact signals inbox providers reward. Purchased lists and scraped databases were always a bad idea; now they're a legal liability too. If your list's origins are murky, the audit is where we untangle them.",
         ],
       },
       {

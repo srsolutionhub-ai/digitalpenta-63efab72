@@ -11,6 +11,7 @@ import SEOHead, {
   breadcrumbSchema, faqPageSchema, serviceSchema, organizationSchema, answerPageSchema,
 } from "@/components/seo/SEOHead";
 import RelatedLinks from "@/components/seo/RelatedLinks";
+import LpLeadForm from "@/components/seo/LpLeadForm";
 import { getKeywordLanding } from "@/data/keywordLandingData";
 import { getRelatedForLanding } from "@/lib/internalLinkGraph";
 
@@ -217,6 +218,35 @@ export default function KeywordLandingPage() {
         </div>
       </section>
 
+      {/* Service breakdown — which service does what, with real internal links */}
+      {data.serviceBreakdown && data.serviceBreakdown.length > 0 && (
+        <section className="py-20 bg-card/20 border-y border-border/30">
+          <div className="container mx-auto px-4">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-3">
+              Which Service Does <span className="text-gradient">What</span>
+            </h2>
+            <p className="text-muted-foreground mb-10 max-w-2xl">
+              Every engagement is a mix of these capabilities — each one links to its full service page if you want the deep detail.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {data.serviceBreakdown.map((s) => (
+                <Link
+                  key={s.name}
+                  to={s.href}
+                  className="group rounded-xl glass glow-border p-6 hover:border-primary/40 transition-colors"
+                >
+                  <h3 className="font-display font-semibold text-foreground mb-2 flex items-center gap-2">
+                    {s.name}
+                    <ArrowRight className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Why us */}
       <section id="why-us" className="py-16 bg-card/20 border-y border-border/30 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-3xl">
@@ -234,6 +264,40 @@ export default function KeywordLandingPage() {
         </div>
       </section>
 
+      {/* Delivery funnel — how an engagement actually runs, step by step */}
+      {data.processSteps && data.processSteps.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-10 text-center">
+              How Your First 90 Days <span className="text-gradient">Actually Run</span>
+            </h2>
+            <div className="space-y-0">
+              {data.processSteps.map((s, i) => (
+                <motion.div
+                  key={s.step}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="flex gap-5 pb-8 last:pb-0 relative"
+                >
+                  {i < data.processSteps!.length - 1 && (
+                    <div className="absolute left-[19px] top-10 bottom-0 w-px bg-border/40" />
+                  )}
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 font-mono text-sm text-primary font-bold">
+                    {i + 1}
+                  </div>
+                  <div className="pt-1.5">
+                    <h3 className="font-display font-semibold text-foreground mb-1">{s.step}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Long-form editorial depth — unique per page, human-written style */}
       {data.deepSections && data.deepSections.length > 0 && (
         <section className="py-20">
@@ -250,6 +314,25 @@ export default function KeywordLandingPage() {
                 ))}
               </article>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Mid-page CTA — catches readers convinced by the long-form content
+          before they reach the FAQ */}
+      {data.midCta && (
+        <section className="py-14 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
+          <div className="container mx-auto px-4 relative z-10 text-center max-w-2xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-3">
+              {data.midCta.heading}
+            </h2>
+            <p className="text-muted-foreground mb-6">{data.midCta.text}</p>
+            <Link to="/get-proposal">
+              <Button size="lg" className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg">
+                {data.cta} <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </section>
       )}
@@ -291,26 +374,26 @@ export default function KeywordLandingPage() {
         );
       })()}
 
-      {/* CTA */}
+      {/* CTA + inline lead capture — the page's real conversion point */}
       <section id="talk-to-us" className="py-20 relative overflow-hidden scroll-mt-24">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">
-            Ready to Win With {data.serviceCategory}?
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto mb-8">
-            Book a free 30-minute strategy call. We'll send you a custom plan within 48 hours.
-          </p>
-          <Link to="/get-proposal">
-            <Button
-              size="lg"
-              data-cta
-              data-audit-cta
-              className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
-            >
-              {data.cta} <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-10">
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">
+              Ready to Win With {data.serviceCategory}?
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Tell us where you want to grow — we'll reply within 24 hours with a specific plan, or book a free 30-minute strategy call directly.
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <LpLeadForm service={data.primaryKeyword} slug={data.slug} />
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/get-proposal" className="text-sm text-primary hover:underline font-mono">
+              Prefer a detailed brief? Use the full proposal form →
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
