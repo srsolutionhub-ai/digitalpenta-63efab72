@@ -29,6 +29,12 @@ export interface KeywordLandingData {
   directAnswer?: string;
   /** ISO date of the last substantive content review (freshness signal). */
   lastUpdated?: string;
+  /**
+   * Long-form editorial sections rendered between "Why us" and the FAQ.
+   * Used to bring new landing pages to genuine depth (1,500+ words of
+   * unique, human-written copy) instead of thin template content.
+   */
+  deepSections?: { heading: string; paragraphs: string[] }[];
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
