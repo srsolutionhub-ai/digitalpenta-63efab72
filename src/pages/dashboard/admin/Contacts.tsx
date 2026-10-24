@@ -30,13 +30,17 @@ export default function Contacts() {
   const { data: contacts = [], isLoading } = useQuery({
     queryKey: ["crm-contacts"],
     queryFn: async () => {
+      // Leads ordered oldest→newest so the NEWEST lead's status wins the stage.
       const [leads, audits, tools, bookings, subs] = await Promise.all([
-        db.from("leads").select("email,name,company,phone,status,lead_score,source,created_at").not("email", "is", null).limit(1000),
+        db.from("leads").select("email,name,company,phone,status,lead_score,source,created_at").not("email", "is", null).order("created_at", { ascending: true }).limit(1000),
         db.from("audits").select("visitor_email,visitor_name,visitor_company,visitor_phone,created_at").not("visitor_email", "is", null).limit(1000),
         db.from("tool_runs").select("email,name,company,phone,tool_slug,created_at").not("email", "is", null).limit(1000),
         db.from("strategy_call_bookings").select("email,name,company,phone,created_at").limit(1000),
         db.from("newsletter_subscribers").select("email,name,company,created_at").limit(1000),
       ]);
+      for (const res of [leads, audits, tools, bookings, subs]) {
+        if (res.error) throw res.error;
+      }
       const map = new Map<string, Contact>();
       const add = (email: string | null, src: string, row: any) => {
         if (!email) return;
