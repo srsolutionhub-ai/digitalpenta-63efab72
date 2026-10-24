@@ -11,12 +11,13 @@ export default function ClientKnowledge() {
   const [search, setSearch] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const { data: articles = [] } = useQuery({
+  const { data: articles = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["kb-articles", search],
     queryFn: async () => {
       let q = supabase.from("kb_articles").select("*").eq("is_published", true).order("category");
       if (search) q = q.or(`title.ilike.%${search}%,body.ilike.%${search}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data ?? [];
     },
   });
@@ -50,7 +51,14 @@ export default function ClientKnowledge() {
         <Input className="pl-9" placeholder="Search articles…" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      {articles.length === 0 ? (
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Loading articles…</p>
+      ) : isError ? (
+        <div className="card-surface rounded-2xl p-8 text-center space-y-3">
+          <p className="text-sm text-muted-foreground">Couldn't load the knowledge base.</p>
+          <Button size="sm" variant="outline" onClick={() => refetch()}>Try again</Button>
+        </div>
+      ) : articles.length === 0 ? (
         <EmptyState icon={BookOpen} title="No articles yet" description="Knowledge base will populate as your team publishes guides." />
       ) : (
         <div className="space-y-6">
