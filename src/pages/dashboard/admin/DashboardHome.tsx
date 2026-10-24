@@ -39,7 +39,12 @@ export default function DashboardHome() {
   const iso30d = new Date(now.getTime() - 30 * 86400000).toISOString();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
-  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().slice(0, 10);
+  // Local calendar date (not UTC-shifted) for comparing with preferred_date.
+  const todayDate = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
 
   const { data: leadStats, isLoading: loadingLeads } = useQuery({
     queryKey: ["admin-leads-kpi"],
@@ -48,6 +53,8 @@ export default function DashboardHome() {
         db.from("leads").select("*", { count: "exact", head: true }).gte("created_at", iso7d),
         db.from("leads").select("*", { count: "exact", head: true }).gte("created_at", iso30d),
       ]);
+      if (c7.error) throw c7.error;
+      if (c30.error) throw c30.error;
       return { last7: c7.count ?? 0, last30: c30.count ?? 0 };
     },
     refetchInterval: 60000,
@@ -56,7 +63,8 @@ export default function DashboardHome() {
   const { data: dealStats, isLoading: loadingDeals } = useQuery({
     queryKey: ["admin-open-deals-kpi"],
     queryFn: async () => {
-      const { data } = await db.from("crm_deals").select("value").is("closed_at", null);
+      const { data, error } = await db.from("crm_deals").select("value").is("closed_at", null);
+      if (error) throw error;
       const rows = data ?? [];
       return { count: rows.length, value: rows.reduce((s: number, d: any) => s + Number(d.value ?? 0), 0) };
     },
@@ -66,7 +74,8 @@ export default function DashboardHome() {
   const { data: taskStats, isLoading: loadingTasks } = useQuery({
     queryKey: ["admin-tasks-kpi"],
     queryFn: async () => {
-      const { data } = await db.from("crm_tasks").select("due_at").neq("status", "done");
+      const { data, error } = await db.from("crm_tasks").select("due_at").neq("status", "done");
+      if (error) throw error;
       const rows = data ?? [];
       const dueToday = rows.filter((t: any) => t.due_at && t.due_at >= todayStart && t.due_at < todayEnd).length;
       const overdue = rows.filter((t: any) => t.due_at && t.due_at < todayStart).length;
@@ -78,7 +87,8 @@ export default function DashboardHome() {
   const { data: unreadWhatsapp, isLoading: loadingWa } = useQuery({
     queryKey: ["admin-whatsapp-kpi"],
     queryFn: async () => {
-      const { data } = await db.from("whatsapp_conversations").select("unread_count");
+      const { data, error } = await db.from("whatsapp_conversations").select("unread_count");
+      if (error) throw error;
       return (data ?? []).reduce((s: number, c: any) => s + Number(c.unread_count ?? 0), 0);
     },
     refetchInterval: 60000,
@@ -87,7 +97,9 @@ export default function DashboardHome() {
   const { data: emailsSent30d, isLoading: loadingEmails } = useQuery({
     queryKey: ["admin-emails-kpi"],
     queryFn: async () => {
-      const { count } = await db.from("email_send_log").select("*", { count: "exact", head: true }).gte("created_at", iso30d);
+      // Only successful sends count — failed attempts are logged too.
+      const { count, error } = await db.from("email_send_log").select("*", { count: "exact", head: true }).eq("status", "sent").gte("created_at", iso30d);
+      if (error) throw error;
       return count ?? 0;
     },
     refetchInterval: 60000,
