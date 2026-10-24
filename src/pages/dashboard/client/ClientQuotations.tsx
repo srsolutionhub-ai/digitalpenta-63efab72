@@ -18,11 +18,12 @@ export default function ClientQuotations() {
   const { data: quotes, isLoading } = useQuery({
     queryKey: ["client-quotations", user?.id, user?.email],
     queryFn: async () => {
-      if (!user?.email) return [];
+      if (!user) return [];
+      // No personal filter: access rules already scope this list to quotes
+      // addressed to the client or anyone at their company.
       const { data, error } = await db
         .from("quotations")
         .select("*")
-        .or(`client_id.eq.${user.id},client_email.ilike.${user.email}`)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];

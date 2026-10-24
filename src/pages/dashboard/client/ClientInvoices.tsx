@@ -96,7 +96,7 @@ export default function ClientInvoices() {
           clientGstin={printFor.client_gstin}
           placeOfSupply={printFor.place_of_supply}
           items={printFor.items || []}
-          taxRate={Number(printFor.tax_rate) || 18}
+          taxRate={printFor.tax_rate == null ? 18 : Number(printFor.tax_rate)}
           currency={printFor.currency}
           notes={printFor.notes}
           status={printFor.status}
