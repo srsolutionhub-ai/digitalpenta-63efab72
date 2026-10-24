@@ -208,7 +208,7 @@ export default function SettingsPage() {
                     <select
                       value={m.role}
                       onChange={(e) =>
-                        updateRoleMutation.mutate({ userId: m.user_id, newRole: e.target.value as AppRole })
+                        updateRoleMutation.mutate({ roleId: m.id, newRole: e.target.value as AppRole })
                       }
                       disabled={m.user_id === user?.id}
                       className="h-8 rounded-md border border-input bg-background px-2 text-xs"
@@ -221,7 +221,7 @@ export default function SettingsPage() {
                   <td className="px-6 py-3 text-right">
                     {m.user_id !== user?.id && (
                       <button
-                        onClick={() => { if (confirm("Remove this user's role?")) deleteRoleMutation.mutate(m.user_id); }}
+                        onClick={() => { if (confirm("Remove this user's role?")) deleteRoleMutation.mutate(m.id); }}
                         className="p-1.5 text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="w-4 h-4" />
