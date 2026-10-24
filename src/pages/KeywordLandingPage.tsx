@@ -264,6 +264,40 @@ export default function KeywordLandingPage() {
         </div>
       </section>
 
+      {/* Delivery funnel — how an engagement actually runs, step by step */}
+      {data.processSteps && data.processSteps.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-10 text-center">
+              How Your First 90 Days <span className="text-gradient">Actually Run</span>
+            </h2>
+            <div className="space-y-0">
+              {data.processSteps.map((s, i) => (
+                <motion.div
+                  key={s.step}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="flex gap-5 pb-8 last:pb-0 relative"
+                >
+                  {i < data.processSteps!.length - 1 && (
+                    <div className="absolute left-[19px] top-10 bottom-0 w-px bg-border/40" />
+                  )}
+                  <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 font-mono text-sm text-primary font-bold">
+                    {i + 1}
+                  </div>
+                  <div className="pt-1.5">
+                    <h3 className="font-display font-semibold text-foreground mb-1">{s.step}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Long-form editorial depth — unique per page, human-written style */}
       {data.deepSections && data.deepSections.length > 0 && (
         <section className="py-20">
@@ -280,6 +314,25 @@ export default function KeywordLandingPage() {
                 ))}
               </article>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Mid-page CTA — catches readers convinced by the long-form content
+          before they reach the FAQ */}
+      {data.midCta && (
+        <section className="py-14 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
+          <div className="container mx-auto px-4 relative z-10 text-center max-w-2xl">
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-3">
+              {data.midCta.heading}
+            </h2>
+            <p className="text-muted-foreground mb-6">{data.midCta.text}</p>
+            <Link to="/get-proposal">
+              <Button size="lg" className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg">
+                {data.cta} <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </section>
       )}
