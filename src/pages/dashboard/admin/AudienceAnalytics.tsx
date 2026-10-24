@@ -31,10 +31,12 @@ export default function AudienceAnalytics() {
       const rows = interactions ?? [];
       const uniqueVisitors = new Set(rows.map((r: any) => r.visitor_id)).size;
       const uniqueSessions = new Set(rows.map((r: any) => r.session_id).filter(Boolean)).size;
-      const pageViews = rows.filter((r: any) => r.action === "page_view" || !!r.page_url).length;
+      // Only real page_view actions count — clicks etc. also carry a page_url.
+      const pageViewRows = rows.filter((r: any) => r.action === "page_view");
+      const pageViews = pageViewRows.length;
 
       const pageCounts: Record<string, number> = {};
-      rows.forEach((r: any) => {
+      pageViewRows.forEach((r: any) => {
         if (!r.page_url) return;
         const path = r.page_url.replace(/^https?:\/\/[^/]+/, "") || "/";
         pageCounts[path] = (pageCounts[path] || 0) + 1;

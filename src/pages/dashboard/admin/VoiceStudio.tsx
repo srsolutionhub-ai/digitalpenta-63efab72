@@ -62,12 +62,15 @@ export default function VoiceStudio() {
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
 
   const saveVoice = async (v: ElevenVoice) => {
+    // Don't clobber an already-saved voice's enabled state on re-save.
+    const { data: existing } = await supabase
+      .from("voice_settings").select("enabled_for_site").eq("voice_id", v.voice_id).maybeSingle();
     const { error } = await supabase.from("voice_settings").upsert({
       voice_id: v.voice_id,
       label: v.name,
       description: v.description ?? null,
       is_cloned: v.category === "cloned",
-      enabled_for_site: false,
+      enabled_for_site: existing?.enabled_for_site ?? false,
       preview_url: v.preview_url ?? null,
     }, { onConflict: "voice_id" });
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
@@ -85,15 +88,18 @@ export default function VoiceStudio() {
   };
 
   const setDefault = async (row: VoiceRow) => {
-    await supabase.from("voice_settings").update({ is_default: false }).neq("id", row.id);
-    await supabase.from("voice_settings").update({ is_default: true, enabled_for_site: true }).eq("id", row.id);
+    const { error: clearErr } = await supabase.from("voice_settings").update({ is_default: false }).neq("id", row.id);
+    if (clearErr) { toast({ title: "Couldn't update defaults", description: clearErr.message, variant: "destructive" }); return; }
+    const { error } = await supabase.from("voice_settings").update({ is_default: true, enabled_for_site: true }).eq("id", row.id);
+    if (error) { toast({ title: "Couldn't set default", description: error.message, variant: "destructive" }); return; }
     toast({ title: `${row.label} set as default` });
     load();
   };
 
   const removeSaved = async (row: VoiceRow) => {
     if (!confirm(`Remove ${row.label} from site voices?`)) return;
-    await supabase.from("voice_settings").delete().eq("id", row.id);
+    const { error } = await supabase.from("voice_settings").delete().eq("id", row.id);
+    if (error) { toast({ title: "Remove failed", description: error.message, variant: "destructive" }); return; }
     load();
   };
 
