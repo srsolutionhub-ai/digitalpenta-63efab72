@@ -24,7 +24,7 @@ export default function AudienceAnalytics() {
 
       const [{ data: interactions }, { data: profiles }, { data: leads }] = await Promise.all([
         db.from("visitor_interactions").select("visitor_id, action, page_url, session_id, data, timestamp").gte("timestamp", since).limit(10000),
-        db.from("visitor_profiles").select("visitor_id, device_type, location, country, city, browser, os, source_channel, search_engine, search_term, utm_term, landing_page, referral_source, utm_source, utm_medium, utm_campaign, last_visit, lead_id").gte("last_visit", since).limit(5000),
+        db.from("visitor_profiles").select("visitor_id, device_type, location, country, city, browser, os, source_channel, search_engine, search_term, utm_term, landing_page, referral_source, utm_source, utm_medium, utm_campaign, last_visit, lead_id, lifecycle_stage, service_affinity, engaged_seconds, lead_score, session_count").gte("last_visit", since).limit(5000),
         db.from("leads").select("first_touch").gte("created_at", since).limit(5000),
       ]);
 
@@ -76,6 +76,24 @@ export default function AudienceAnalytics() {
       (leads ?? []).forEach((l: any) => {
         const landing = l.first_touch?.landing_page ?? l.first_touch?.landing ?? l.first_touch?.page;
         if (landing) leadPageCounts[landing] = (leadPageCounts[landing] || 0) + 1;
+      });
+
+      // ── Ad-ready audiences: lifecycle + service-depth segments ──
+      const lifecycleCounts: Record<string, number> = {};
+      const serviceAudiences: Record<string, number> = {};
+      let returning3plus = 0;
+      let engagedMobile = 0;
+      (profiles ?? []).forEach((p: any) => {
+        const stage = p.lifecycle_stage || "new";
+        lifecycleCounts[stage] = (lifecycleCounts[stage] || 0) + 1;
+        if ((p.session_count ?? 1) >= 3) returning3plus++;
+        if (p.device_type === "mobile" && (p.engaged_seconds ?? 0) >= 60) engagedMobile++;
+        const aff = (p.service_affinity ?? {}) as Record<string, number>;
+        Object.entries(aff).forEach(([svc, n]) => {
+          if (svc !== "high_intent" && (n as number) >= 2) {
+            serviceAudiences[svc] = (serviceAudiences[svc] || 0) + 1;
+          }
+        });
       });
 
       return {
