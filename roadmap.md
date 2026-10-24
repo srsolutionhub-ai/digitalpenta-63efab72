@@ -15,9 +15,9 @@
 - [x] Reconcile robots.txt and generated sitemap with current public routes
 
 ## CRM audit fix plan (2026-10-20) — user approved all steps
-- [ ] Step 1 quick fixes: deal edit form empty; client position blank; forgot-password false success; leads export only 50; client notifications not clickable; login stuck on access failure; Companies + WhatsApp Setup missing from menu
-- [ ] Step 2: page access by role (Finance→Billing/Invoices; Content Writer→Blog; SEO Specialist→SEO pages; super_admin/account_manager→all)
-- [ ] Step 3: clients see invoices/support by company; invite-client flow from admin
-- [ ] Step 4: connect lead→deal→quotation→project (convert button, links)
-- [ ] Step 5: pagination for long lists; company-lookup caching; client file upload; invoice download; support status
+- [x] Step 1 quick fixes: deal edit form empty; client position blank; forgot-password false success; leads export only 50; client notifications not clickable; login stuck on access failure; Companies + WhatsApp Setup missing from menu
+- [x] Step 2: page access by role (Finance→Billing/Invoices; Content Writer→Blog; SEO Specialist→SEO pages; super_admin/account_manager→all)
+- [x] Step 3: clients see invoices/support by company; invite-client flow from admin (invite-client edge function)
+- [x] Step 4: connect lead→deal→quotation→project (convert button, deal→quote prefill, project→quote link)
+- [x] Step 5: pagination for long lists; company-lookup caching (useClientCompanies); client file upload; invoice download; support open/resolved status + admin Support Inbox
 - Blocked: WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user; signed-in QA needs user sign-in (external Supabase)

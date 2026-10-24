@@ -174,6 +174,14 @@ export default function CrmPipeline() {
         </div>
       </div>
 
+      {deals.length < totalDeals && (
+        <div className="text-center">
+          <Button variant="outline" size="sm" onClick={() => setDealLimit((l) => l + 200)}>
+            Load more deals ({deals.length} of {totalDeals})
+          </Button>
+        </div>
+      )}
+
       <DealEditor
         deal={editing}
         stages={stages}

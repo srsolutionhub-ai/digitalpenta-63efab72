@@ -65,6 +65,7 @@ const Contacts = lazyRetry(() => import("./pages/dashboard/admin/Contacts"));
 const Companies = lazyRetry(() => import("./pages/dashboard/admin/Companies"));
 const ContactDetail = lazyRetry(() => import("./pages/dashboard/admin/ContactDetail"));
 const CrmTasks = lazyRetry(() => import("./pages/dashboard/admin/Tasks"));
+const SupportInbox = lazyRetry(() => import("./pages/dashboard/admin/SupportInbox"));
 const Integrations = lazyRetry(() => import("./pages/dashboard/admin/Integrations"));
 const WhatsAppBot = lazyRetry(() => import("./pages/dashboard/admin/WhatsAppBot"));
 const EmailSequences = lazyRetry(() => import("./pages/dashboard/admin/EmailSequences"));
@@ -216,6 +217,7 @@ function AnimatedRoutes() {
               <Route path="companies" element={<Companies />} />
               <Route path="contacts/:email" element={<ContactDetail />} />
               <Route path="tasks" element={<CrmTasks />} />
+              <Route path="support" element={<SupportInbox />} />
               <Route path="integrations" element={<Integrations />} />
               <Route path="whatsapp/bot" element={<WhatsAppBot />} />
               <Route path="whatsapp/templates" element={<WhatsAppTemplates />} />
