@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight, MapPin, ArrowUpRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAllLocations } from "@/data/locationData";
+import { getCityRegistryEntry } from "@/data/cityRegistry";
 import SEOHead, {
   breadcrumbSchema,
   collectionPageSchema,
