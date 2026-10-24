@@ -94,7 +94,9 @@ export default function WhatsAppHub() {
   // Looks the phone up directly in the database — never infers existence from
   // the still-loading, capped conversation list — and re-runs when the param changes.
   useEffect(() => {
-    const phone = searchParams.get("phone");
+    // Digits-only: conversations are stored normalized, so "+91 88..." must
+    // resolve to the same thread as "9188...".
+    const phone = searchParams.get("phone")?.replace(/\D/g, "") ?? null;
     if (!phone || lastPhoneHandled.current === phone) return;
     lastPhoneHandled.current = phone;
     let cancelled = false;
