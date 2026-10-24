@@ -127,7 +127,7 @@ export default function SupportInbox() {
             {threads.map((t: any) => (
               <button
                 key={t.id}
-                onClick={() => setActive(t.account_id)}
+                onClick={() => { setActive(t.account_id); setReply(""); }}
                 className={`w-full text-left px-4 py-3 hover:bg-muted/30 transition-colors ${active === t.account_id ? "bg-primary/10" : ""}`}
               >
                 <div className="flex items-center justify-between gap-2">

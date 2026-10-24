@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import DashboardOutlet from "@/components/dashboard/ui/DashboardOutlet";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard, FileText, MessageCircle, LogOut, Calendar, Phone,
@@ -71,7 +71,18 @@ function TopBarTitle() {
 function ClientLayoutInner() {
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  /** Open a notification: mark it read, then follow its link if it has one. */
+  const openNotification = async (n: any) => {
+    if (!n.read) {
+      await supabase.from("notifications").update({ read: true }).eq("id", n.id);
+      queryClient.invalidateQueries({ queryKey: ["client-notifications", user?.id] });
+    }
+    if (n.link) navigate(n.link);
+  };
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["client-notifications", user?.id],
@@ -147,10 +158,14 @@ function ClientLayoutInner() {
                   {notifications.length === 0 ? (
                     <div className="p-8 text-center text-xs text-muted-foreground">All caught up.</div>
                   ) : notifications.map((n: any) => (
-                    <div key={n.id} className={`px-4 py-3 border-b border-border/10 ${!n.read ? "bg-primary/5" : ""}`}>
+                    <button
+                      key={n.id}
+                      onClick={() => openNotification(n)}
+                      className={`w-full text-left px-4 py-3 border-b border-border/10 transition-colors hover:bg-muted/30 ${!n.read ? "bg-primary/5" : ""}`}
+                    >
                       <p className="text-xs font-medium text-foreground">{n.title}</p>
                       {n.body && <p className="text-[11px] text-muted-foreground mt-0.5">{n.body}</p>}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </PopoverContent>
