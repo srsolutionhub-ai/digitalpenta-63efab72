@@ -264,6 +264,9 @@ const CITY_DEPTH: CityDepth[] = [
   },
 ];
 
+/** Metro depth set + tier-2/3 batch (cityDepthTier23.ts). */
+const ALL_DEPTH: CityDepth[] = [...CITY_DEPTH, ...CITY_DEPTH_TIER23];
+
 const DEPTH_INDEX = new Map(ALL_DEPTH.map((c) => [c.slug, c]));
 
 /** Cities with a hand-written depth layer — the GSC priority set. */
