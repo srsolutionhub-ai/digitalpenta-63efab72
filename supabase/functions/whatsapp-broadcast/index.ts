@@ -43,7 +43,15 @@ async function runBroadcast(supa: any, broadcastId: string) {
   if (filter.status) q = q.eq("status", filter.status);
   if (filter.source) q = q.eq("source", filter.source);
   const { data: leads } = await q.limit(MAX_RECIPIENTS);
-  const recipients = leads ?? [];
+  // One message per phone number — a person with several lead rows must not
+  // receive the broadcast multiple times.
+  const seenPhones = new Set<string>();
+  const recipients = (leads ?? []).filter((lead: any) => {
+    const phone = String(lead.phone).replace(/[^\d+]/g, "");
+    if (!phone || seenPhones.has(phone)) return false;
+    seenPhones.add(phone);
+    return true;
+  });
 
   await supa.from("wa_broadcasts").update({ status: "sending", recipient_count: recipients.length }).eq("id", broadcastId);
 

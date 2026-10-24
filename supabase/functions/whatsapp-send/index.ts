@@ -50,11 +50,31 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Conversation not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // Build the Cloud API payload: a real template message when a template is
+    // selected, otherwise a plain text message.
+    let apiPayload: any = { messaging_product: "whatsapp", to: conv.phone_number, type: "text", text: { body } };
+    if (template_id) {
+      const { data: tpl } = await supa.from("whatsapp_templates").select("*").eq("id", template_id).maybeSingle();
+      if (!tpl) {
+        return new Response(JSON.stringify({ error: "Template not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const varCount = Array.isArray(tpl.variables) ? tpl.variables.length : 0;
+      if (varCount > 1) {
+        return new Response(JSON.stringify({ error: "Templates with more than one variable aren't supported in quick send yet" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const templatePayload: any = { name: tpl.name, language: { code: tpl.language || "en" } };
+      if (varCount === 1) {
+        // {{1}} = contact name when known, otherwise a neutral greeting word.
+        templatePayload.components = [{ type: "body", parameters: [{ type: "text", text: body.trim() || "there" }] }];
+      }
+      apiPayload = { messaging_product: "whatsapp", to: conv.phone_number, type: "template", template: templatePayload };
+    }
+
     // Send via Cloud API
     const res = await fetch(`https://graph.facebook.com/v20.0/${settings.phone_number_id}/messages`, {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ messaging_product: "whatsapp", to: conv.phone_number, type: "text", text: { body } }),
+      body: JSON.stringify(apiPayload),
     });
     const result = await res.json();
 
