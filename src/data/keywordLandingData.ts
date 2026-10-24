@@ -5,6 +5,13 @@
  * commercial keywords that don't justify a full hub page but deserve a
  * dedicated, conversion-optimised landing page with unique meta + content.
  */
+import growthMarketingImg from "@/assets/lp/growth-marketing.jpg";
+import prAgencyDelhiImg from "@/assets/lp/pr-agency-delhi.jpg";
+import seoCompanyNoidaImg from "@/assets/lp/seo-company-noida.jpg";
+import brandingAgencyDelhiImg from "@/assets/lp/branding-agency-delhi.jpg";
+import ormIndiaImg from "@/assets/lp/orm-india.jpg";
+import emailMarketingImg from "@/assets/lp/email-marketing.jpg";
+
 export interface KeywordLandingData {
   slug: string;
   primaryKeyword: string;       // Exact match keyword the page targets

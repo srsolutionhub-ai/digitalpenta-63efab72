@@ -82,7 +82,7 @@ export default function KeywordLandingPage() {
         <div className="absolute inset-0 mesh-gradient opacity-60" />
         <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className={`container mx-auto px-4 relative z-10 ${data.heroImage ? "grid md:grid-cols-2 gap-10 items-center" : ""}`}>
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
