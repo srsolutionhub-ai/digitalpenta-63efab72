@@ -14,21 +14,37 @@ export default function InviteAccept() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
+  // checking → waiting for the invite session; ready → valid; invalid → bad link
+  const [state, setState] = useState<"checking" | "ready" | "invalid">("checking");
 
   useEffect(() => {
-    // Check for recovery/invite token in URL hash
-    const hash = window.location.hash;
-    if (hash && (hash.includes("type=invite") || hash.includes("type=recovery") || hash.includes("type=signup"))) {
-      setReady(true);
-    } else {
-      // Also check if user is already authenticated via invite link
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          setReady(true);
-        }
-      });
-    }
+    let cancelled = false;
+
+    // Listen FIRST so a session established during hash/code exchange is caught.
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (cancelled) return;
+      if ((event === "SIGNED_IN" || event === "USER_UPDATED" || event === "PASSWORD_RECOVERY") && session) {
+        setState("ready");
+      }
+    });
+
+    const init = async () => {
+      const search = new URLSearchParams(window.location.search);
+      const code = search.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (cancelled) return;
+        if (!error) { setState("ready"); return; }
+      }
+      // Hash-based invite tokens are exchanged by the SDK; verify a real
+      // session exists rather than trusting the hash text alone.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
+      setState(session ? "ready" : "invalid");
+    };
+    init();
+
+    return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, []);
 
   const handleSetPassword = async (e: React.FormEvent) => {
@@ -77,7 +93,15 @@ export default function InviteAccept() {
     setLoading(false);
   };
 
-  if (!ready) {
+  if (state === "checking") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (state === "invalid") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-sm text-center space-y-6">

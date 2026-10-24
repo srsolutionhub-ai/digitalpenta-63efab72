@@ -97,7 +97,7 @@ export default function Leads() {
       if (lead.source === "referral") score += 2;
       score = Math.min(score + 1, 10);
 
-      const { error } = await supabase.from("leads").insert({
+      const { data: created, error } = await supabase.from("leads").insert({
         name: lead.name || null,
         email: lead.email || null,
         phone: lead.phone || null,
@@ -109,8 +109,27 @@ export default function Leads() {
         status: lead.status || "new",
         lead_score: score,
         notes: lead.notes || null,
-      });
+      }).select("id").single();
       if (error) throw error;
+
+      // Link a contact so quotations can prefill client identity later.
+      if (created && lead.email) {
+        const emailNorm = lead.email.trim().toLowerCase();
+        const { data: existing } = await supabase.from("contacts").select("id").ilike("email", emailNorm).maybeSingle();
+        let contactId = existing?.id as string | undefined;
+        if (!contactId) {
+          const { data: c } = await supabase.from("contacts").insert({
+            email: emailNorm,
+            name: lead.name || null,
+            company: lead.company || null,
+            phone: lead.phone || null,
+          } as any).select("id").single();
+          contactId = c?.id;
+        }
+        if (contactId) {
+          await supabase.from("leads").update({ contact_id: contactId } as any).eq("id", created.id);
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-leads"] });

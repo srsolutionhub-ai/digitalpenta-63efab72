@@ -143,6 +143,14 @@ Deno.serve(async (req) => {
         const contactName = contacts.find((c: any) => c.wa_id === phone)?.profile?.name || null;
         const messageText = msg.text?.body || `[${msg.type}]`;
 
+        // Idempotency: Meta retries webhook deliveries — skip messages we
+        // already stored so retries can't duplicate messages, unread counts,
+        // or bot replies.
+        if (msg.id) {
+          const { data: already } = await supa.from("whatsapp_messages_v2").select("id").eq("meta_message_id", msg.id).maybeSingle();
+          if (already) continue;
+        }
+
         // Find or create conversation
         const { data: existing } = await supa.from("whatsapp_conversations").select("id, unread_count").eq("phone_number", phone).maybeSingle();
         let convId = existing?.id;

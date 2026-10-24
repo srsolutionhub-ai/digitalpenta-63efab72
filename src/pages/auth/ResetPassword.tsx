@@ -56,11 +56,18 @@ export default function ResetPassword() {
       }
 
       if (hash.includes("type=recovery")) {
-        // The onAuthStateChange handler above will also fire PASSWORD_RECOVERY;
-        // this covers browsers/timing where it doesn't.
-        setIsRecovery(true);
-        setChecking(false);
-        return;
+        // The SDK exchanges the hash tokens asynchronously; only trust the
+        // recovery flow once a real session exists — an expired/invalid token
+        // must show the invalid-link state, not a usable password form.
+        const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (session) {
+          setIsRecovery(true);
+          setChecking(false);
+          return;
+        }
+        // No session yet — fall through to the shared session check below,
+        // and let the PASSWORD_RECOVERY listener flip the state if it fires.
       }
 
       // Last resort — if the user is already authenticated (e.g. re-visits the

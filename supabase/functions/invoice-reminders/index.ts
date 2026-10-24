@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
 
     const { data: invoices, error } = await sb
       .from("invoices")
-      .select("id, invoice_number, client_name, client_email, total, currency, due_date, status")
+      .select("id, invoice_number, client_name, client_email, total, currency, due_date, status, reminder_sent_at")
       .not("status", "in", '("paid","cancelled","draft")')
       .not("due_date", "is", null)
       .lte("due_date", in3Days);
@@ -40,20 +40,25 @@ Deno.serve(async (req) => {
     let sent = 0;
     for (const inv of invoices ?? []) {
       const overdue = inv.due_date < today;
+      // Don't resend a reminder already sent in the last 3 days.
+      if (inv.reminder_sent_at && Date.now() - new Date(inv.reminder_sent_at).getTime() < 3 * 86400000) continue;
       const total = formatCurrency(Number(inv.total), inv.currency || "INR");
       try {
-        await sb.functions.invoke("send-email", {
+        const { data: sendRes, error: sendErr } = await sb.functions.invoke("send-email", {
           body: {
             template: "invoice-reminder",
             to: inv.client_email,
             data: { name: inv.client_name, invoiceNumber: inv.invoice_number, total, dueDate: inv.due_date, overdue },
           },
         });
-        sent++;
-        // Best-effort: mark invoice status overdue if past due and still unpaid.
-        if (overdue && inv.status !== "overdue") {
-          await sb.from("invoices").update({ status: "overdue" }).eq("id", inv.id);
+        if (sendErr || (sendRes && sendRes.ok === false)) {
+          throw sendErr ?? new Error("send-email reported failure");
         }
+        sent++;
+        await sb.from("invoices").update({
+          reminder_sent_at: new Date().toISOString(),
+          ...(overdue && inv.status !== "overdue" ? { status: "overdue" } : {}),
+        }).eq("id", inv.id);
       } catch (e) {
         console.error(`reminder failed for ${inv.invoice_number}:`, e);
       }

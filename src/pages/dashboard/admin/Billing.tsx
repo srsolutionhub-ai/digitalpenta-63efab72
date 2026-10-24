@@ -72,8 +72,8 @@ function QuotationsTab() {
       }
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 15);
-      const { error } = await supabase.from("invoices").insert({
-        invoice_number: "",
+      const { data: newInvoice, error } = await supabase.from("invoices").insert({
+        invoice_number: "DRAFT",
         quotation_id: quote.id,
         account_id: quote.account_id,
         client_id: quote.client_id,
@@ -92,7 +92,7 @@ function QuotationsTab() {
         currency: quote.currency,
         status: "sent",
         due_date: dueDate.toISOString().slice(0, 10),
-      } as any);
+      } as any).select("invoice_number").single();
       if (error) throw error;
       const { error: qErr } = await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
       if (qErr) throw qErr;
@@ -102,7 +102,7 @@ function QuotationsTab() {
         body: {
           type: "invoice_created",
           data: {
-            invoice_number: "Auto-generated",
+            invoice_number: newInvoice?.invoice_number || "",
             client_name: quote.client_name,
             client_email: quote.client_email,
             total: quote.total,
@@ -115,6 +115,7 @@ function QuotationsTab() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-quotations"] });
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
       toast.success("Invoice created from quotation");
     },
     onError: (e: any) => toast.error(e.message ?? "Couldn't create the invoice"),
@@ -193,10 +194,16 @@ function QuotationBuilder({ open, onClose, userId }: { open: boolean; onClose: (
   const save = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("quotations").insert({
-        quote_number: "",
+        quote_number: "DRAFT",
         client_name: clientName,
         client_email: clientEmail,
-        items: items as any,
+        // Persist line items in the shared document schema (quantity/unit_price)
+        // so the Quotations page and print view can render them.
+        items: items.map(({ description, qty, unitPrice }) => ({
+          description,
+          quantity: qty,
+          unit_price: unitPrice,
+        })) as any,
         subtotal,
         tax_rate: Number(taxRate),
         tax_amount: taxAmount,

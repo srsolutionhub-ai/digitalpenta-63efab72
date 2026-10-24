@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PageHeader } from "@/components/dashboard/PageHeader";
@@ -6,14 +6,35 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { StatusPill } from "@/components/dashboard/StatusPill";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const db = supabase as any;
 
-const STATUS_VARIANT: Record<string, any> = { draft: "default", sent: "info", accepted: "success", rejected: "danger", expired: "warning" };
+const STATUS_VARIANT: Record<string, any> = { draft: "default", sent: "info", viewed: "info", accepted: "success", declined: "danger", expired: "warning" };
 
 export default function ClientQuotations() {
   const { user } = useAuth();
+  const qc = useQueryClient();
+
+  /** Client decision on a sent quote — the trigger enforces allowed transitions. */
+  const decide = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "accepted" | "declined" }) => {
+      const { data, error } = await db
+        .from("quotations")
+        .update({ status })
+        .eq("id", id)
+        .select("id")
+        .single();
+      if (error) throw error;
+      if (!data) throw new Error("This quotation couldn't be updated");
+    },
+    onSuccess: (_d, vars) => {
+      toast.success(vars.status === "accepted" ? "Quotation accepted — your team has been notified" : "Quotation declined");
+      qc.invalidateQueries({ queryKey: ["client-quotations"] });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't save your decision"),
+  });
 
   const { data: quotes, isLoading, isError, refetch } = useQuery({
     queryKey: ["client-quotations", user?.id, user?.email],
@@ -70,10 +91,22 @@ export default function ClientQuotations() {
                   <p className="text-xs text-muted-foreground mt-1">{q.items.length} line item{q.items.length === 1 ? "" : "s"}</p>
                 )}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <p className="text-lg font-display font-bold text-foreground">
                   {q.currency || "INR"} {Number(q.total).toLocaleString()}
                 </p>
+                {(q.status === "sent" || q.status === "viewed") && (
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" disabled={decide.isPending}
+                      onClick={() => decide.mutate({ id: q.id, status: "declined" })}>
+                      <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline
+                    </Button>
+                    <Button size="sm" disabled={decide.isPending}
+                      onClick={() => decide.mutate({ id: q.id, status: "accepted" })}>
+                      <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> Accept
+                    </Button>
+                  </div>
+                )}
                 {q.pdf_url && (
                   <Button asChild size="sm" variant="outline">
                     <a href={q.pdf_url} target="_blank" rel="noopener noreferrer">

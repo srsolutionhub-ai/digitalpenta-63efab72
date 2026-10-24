@@ -28,13 +28,23 @@ export default function Projects() {
   const [showProject, setShowProject] = useState(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [showTask, setShowTask] = useState(false);
-  const [pForm, setPForm] = useState({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "" });
+  const [pForm, setPForm] = useState({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "", account_id: "" });
 
   // Accepted quotations can be linked so a project traces back to the sale.
   const { data: acceptedQuotes = [] } = useQuery({
     queryKey: ["quotations-accepted"],
     queryFn: async () => {
-      const { data } = await supabase.from("quotations").select("id,quote_number,client_name,total,currency").eq("status", "accepted").order("created_at", { ascending: false });
+      const { data } = await supabase.from("quotations").select("id,quote_number,client_name,total,currency,account_id").eq("status", "accepted").order("created_at", { ascending: false });
+      return data ?? [];
+    },
+  });
+
+  // Companies the project can belong to — required for the client portal to see it.
+  const { data: accounts = [] } = useQuery({
+    queryKey: ["accounts-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("accounts").select("id,name").order("name");
+      if (error) throw error;
       return data ?? [];
     },
   });
@@ -61,15 +71,15 @@ export default function Projects() {
 
   const createProject = useMutation({
     mutationFn: async () => {
-      const { quotation_id, ...rest } = pForm;
-      const { error } = await supabase.from("projects").insert({ ...rest, quotation_id: quotation_id || null } as any);
+      const { quotation_id, account_id, ...rest } = pForm;
+      const { error } = await supabase.from("projects").insert({ ...rest, quotation_id: quotation_id || null, account_id: account_id || null } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["projects-all"] });
       toast.success("Project created");
       setShowProject(false);
-      setPForm({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "" });
+      setPForm({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "", account_id: "" });
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -188,6 +198,19 @@ export default function Projects() {
             <div><Label>Description</Label><Textarea rows={2} value={pForm.description} onChange={(e) => setPForm({ ...pForm, description: e.target.value })} /></div>
             <div><Label>Budget (₹)</Label><Input type="number" value={pForm.budget} onChange={(e) => setPForm({ ...pForm, budget: Number(e.target.value) })} /></div>
             <div>
+              <Label>Company (client portal visibility)</Label>
+              <select
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                value={pForm.account_id}
+                onChange={(e) => setPForm({ ...pForm, account_id: e.target.value })}
+              >
+                <option value="">Internal only — not visible to a client</option>
+                {accounts.map((a: any) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
               <Label>Linked quotation (optional)</Label>
               <select
                 className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
@@ -201,6 +224,8 @@ export default function Projects() {
                     // Prefill from the quote when the fields are still empty.
                     name: pForm.name || (q ? `${q.client_name} — ${q.quote_number}` : pForm.name),
                     budget: pForm.budget || (q ? Number(q.total) : 0),
+                    // The quote's company owns the project too.
+                    account_id: pForm.account_id || (q?.account_id ?? ""),
                   });
                 }}
               >

@@ -3558,6 +3558,17 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _uid: string }; Returns: boolean }
+      notify_account_clients: {
+        Args: {
+          _account_id: string
+          _body: string
+          _client_id: string
+          _link: string
+          _title: string
+          _type: string
+        }
+        Returns: undefined
+      }
       project_billing_summary: {
         Args: { p_account_id?: string }
         Returns: {
