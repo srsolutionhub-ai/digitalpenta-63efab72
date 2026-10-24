@@ -28,13 +28,23 @@ export default function Projects() {
   const [showProject, setShowProject] = useState(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [showTask, setShowTask] = useState(false);
-  const [pForm, setPForm] = useState({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "" });
+  const [pForm, setPForm] = useState({ name: "", service_line: "", description: "", status: "planning", budget: 0, quotation_id: "", account_id: "" });
 
   // Accepted quotations can be linked so a project traces back to the sale.
   const { data: acceptedQuotes = [] } = useQuery({
     queryKey: ["quotations-accepted"],
     queryFn: async () => {
-      const { data } = await supabase.from("quotations").select("id,quote_number,client_name,total,currency").eq("status", "accepted").order("created_at", { ascending: false });
+      const { data } = await supabase.from("quotations").select("id,quote_number,client_name,total,currency,account_id").eq("status", "accepted").order("created_at", { ascending: false });
+      return data ?? [];
+    },
+  });
+
+  // Companies the project can belong to — required for the client portal to see it.
+  const { data: accounts = [] } = useQuery({
+    queryKey: ["accounts-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("accounts").select("id,name").order("name");
+      if (error) throw error;
       return data ?? [];
     },
   });
