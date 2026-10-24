@@ -282,6 +282,32 @@ export default function BlogArticle() {
         ]
       : related;
 
+  // Unknown slugs must not render as indexable placeholder articles —
+  // return an explicit noindex 404-style view instead.
+  if (!article) {
+    return (
+      <Layout>
+        <SEOHead
+          title="Article Not Found | Digital Penta Blog"
+          description="This article doesn't exist or has moved. Browse the latest Digital Penta insights on SEO, ads, AI and growth."
+          canonical="https://digitalpenta.com/blog"
+          noindex
+        />
+        <section className="pt-32 pb-24 text-center">
+          <div className="container mx-auto px-4 max-w-xl">
+            <h1 className="font-display font-bold text-3xl text-foreground">Article not found</h1>
+            <p className="text-muted-foreground mt-3">
+              This article doesn't exist or may have been moved.
+            </p>
+            <Link to="/blog" className="text-primary text-sm mt-6 inline-flex items-center gap-1">
+              <ArrowLeft className="w-4 h-4" /> Back to all articles
+            </Link>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <SEOHead
