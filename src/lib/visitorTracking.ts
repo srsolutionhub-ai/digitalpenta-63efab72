@@ -286,12 +286,12 @@ function scheduleFlush(delay = 4000) {
 /** Queue an event. Held in memory until consent is granted. */
 export function queueVisitorEvent(
   action: string,
-  opts: { data?: Record<string, unknown>; category?: string; label?: string; value?: number } = {},
+  opts: { data?: Record<string, unknown>; category?: string; label?: string; value?: number; pageUrl?: string } = {},
 ): void {
   if (typeof window === "undefined") return;
   queue.push({
     action,
-    pageUrl: window.location.href,
+    pageUrl: opts.pageUrl ?? window.location.href,
     sessionId: getSessionId(),
     ts: Date.now(),
     ...opts,
@@ -314,6 +314,9 @@ export function trackPagePath(path: string): void {
     const secs = Math.min(Math.round((Date.now() - pageEnterTs) / 1000), 600);
     if (secs >= 2) {
       queueVisitorEvent("page_engagement", {
+        // SPA navigation already changed the URL — attribute the time to the
+        // page it was actually spent on, not the one just opened.
+        pageUrl: currentPath,
         data: { page: currentPath, active_seconds: secs },
         value: secs,
       });
