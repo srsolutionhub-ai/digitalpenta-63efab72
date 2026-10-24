@@ -1,23 +1,26 @@
-# Roadmap — Sprint 9 (Agency CRM)
+# Roadmap — Full SEO Audit & Optimization (Oct 2026)
 
-- [x] CRM core: Contacts, contact profile + timeline, notes, Tasks
-- [x] Tracking integrations page + consent-gated tag loading
-- [x] WhatsApp auto-replies, delivery receipts, inbox upgrade, templates sync, broadcasts
-- [x] Visitor journey per contact + Audience analytics page
-- [x] Email sequences with open/click tracking, auto-enroll on lead submit
-- [x] Client portal: projects, approvals, reports; staff Client Deliverables page
-- [x] Admin home real KPIs, global search (Ctrl/Cmd+K), Team & Roles
-- [x] Scheduled sequence sending (hourly)
-- [x] Unsubscribe link + one-click unsubscribe + suppression
-- [x] Security pass: search filter escaping, safe links, webhook replay guard, broadcast limits, approval lock, staff-only rules
-- [x] Refine WhatsApp/voice controls and verify idle/live Lottie animations across devices
-- [x] Improve metadata across every public, indexable page family for stronger SERP CTR
-- [x] Reconcile robots.txt and generated sitemap with current public routes
+## Phase 1 — Research (evidence first)
+- [ ] Keyword research via Semrush (50–100 keywords: digital marketing, SEO, PR, PPC, city-based) — India DB primary, US/UK/UAE secondary
+- [ ] Domain snapshot: digitalpenta.lovable.app + digitalpenta.com
+- [ ] Competitor check for top terms
 
-## CRM audit fix plan (2026-10-20) — user approved all steps
-- [x] Step 1 quick fixes: deal edit form empty; client position blank; forgot-password false success; leads export only 50; client notifications not clickable; login stuck on access failure; Companies + WhatsApp Setup missing from menu
-- [x] Step 2: page access by role (Finance→Billing/Invoices; Content Writer→Blog; SEO Specialist→SEO pages; super_admin/account_manager→all)
-- [x] Step 3: clients see invoices/support by company; invite-client flow from admin (invite-client edge function)
-- [x] Step 4: connect lead→deal→quotation→project (convert button, deal→quote prefill, project→quote link)
-- [x] Step 5: pagination for long lists; company-lookup caching (useClientCompanies); client file upload; invoice download; support open/resolved status + admin Support Inbox
-- Blocked: WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user; signed-in QA needs user sign-in (external Supabase)
+## Phase 2 — Audit
+- [ ] Inventory all public pages (routes, meta, schema, breadcrumbs, word counts)
+- [ ] Technical: canonicals, sitemap, robots, errors, speed
+- [ ] Content: duplication, thin pages, keyword mapping gaps
+
+## Phase 3 — Implementation
+- [ ] Keyword → page mapping (no keyword stuffing; human-like, plagiarism-free copy)
+- [ ] Optimize existing page content/meta per mapping
+- [ ] Create missing landing pages (with premium graphics) where gaps found
+- [ ] Schema + breadcrumbs fixes
+- [ ] Performance checks
+
+## Phase 4 — Verification
+- [ ] Typecheck, build, schema QA
+- [ ] Evidence report for manual checking
+
+## Standing constraints
+- No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
+- Skip GSC/GTM/Resend/Meta setup.
