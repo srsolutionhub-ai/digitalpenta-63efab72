@@ -18,7 +18,7 @@ export default function ClientInvoices() {
   const { user } = useAuth();
   const [printFor, setPrintFor] = useState<any>(null);
 
-  const { data: invoices, isLoading } = useQuery({
+  const { data: invoices, isLoading, isError, refetch } = useQuery({
     queryKey: ["client-invoices", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -58,6 +58,11 @@ export default function ClientInvoices() {
           <tbody>
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => <tr key={i}><td colSpan={6} className="p-3"><Skeleton className="h-8" /></td></tr>)
+            ) : isError ? (
+              <tr><td colSpan={6} className="p-8 text-center">
+                <p className="text-muted-foreground text-sm mb-3">Couldn't load your invoices.</p>
+                <Button size="sm" variant="outline" onClick={() => refetch()}>Try again</Button>
+              </td></tr>
             ) : invoices?.length === 0 ? (
               <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No invoices yet</td></tr>
             ) : (

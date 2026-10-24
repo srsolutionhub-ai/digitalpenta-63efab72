@@ -28,7 +28,7 @@ export default function ClientHome() {
   const { data: companies = [], isLoading: companiesLoading } = useClientCompanies();
   const accountIds = companies.map((c: any) => c.id);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["client-home", user?.id, accountIds.join(",")],
     queryFn: async () => {
       if (!user) return null;
