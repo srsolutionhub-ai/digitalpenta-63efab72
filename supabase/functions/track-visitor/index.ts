@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
     );
 
     // ── visitor profile (upsert, accumulate page views + time on site) ──
-    const cols = "id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city";
+    const cols = "id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city, engaged_seconds, service_affinity, lifecycle_stage, contact_email, lead_id";
     let { data: existing } = await admin.from("visitor_profiles").select(cols).eq("visitor_id", visitorId).maybeSingle();
 
     // Only the browser that created a profile (and holds its signed proof) may update it.
@@ -219,6 +219,20 @@ Deno.serve(async (req) => {
     const interests = Array.from(
       new Set([...(existing?.interests ?? []), ...(p.interests ?? [])]),
     ).slice(0, 20);
+
+    // Active engagement (visible-tab seconds) accumulates across visits.
+    const engagedSeconds = (existing?.engaged_seconds ?? 0) + Math.min(Math.max(p.engagedSeconds ?? 0, 0), 600);
+
+    // Per-service depth: merge this batch's page-view counts into the profile.
+    const batchAffinity = affinityFromEvents(events);
+    const serviceAffinity: Record<string, number> = { ...((existing?.service_affinity as Record<string, number>) ?? {}) };
+    for (const [k, v] of Object.entries(batchAffinity)) serviceAffinity[k] = (serviceAffinity[k] ?? 0) + v;
+
+    const sessionCount = Math.max(p.visitNumber ?? 1, existing?.session_count ?? 1);
+    const lifecycleStage = deriveLifecycle({
+      hasIdentity: !!(existing?.contact_email || existing?.lead_id),
+      leadScore, pageViews, engagedSeconds, sessionCount, interests,
+    });
 
     // visitor_profiles.type is constrained to a fixed vocabulary.
     const ALLOWED_TYPES = ["b2b_client", "local_business", "returning_visitor", "enterprise", "startup"];
