@@ -216,6 +216,26 @@ export default function KeywordLandingPage() {
         </div>
       </section>
 
+      {/* Long-form editorial depth — unique per page, human-written style */}
+      {data.deepSections && data.deepSections.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4 max-w-3xl">
+            {data.deepSections.map((section) => (
+              <article key={section.heading} className="mb-14 last:mb-0">
+                <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-5">
+                  {section.heading}
+                </h2>
+                {section.paragraphs.map((para, i) => (
+                  <p key={i} className="text-muted-foreground leading-relaxed mb-4 last:mb-0 text-[15px] md:text-base">
+                    {para}
+                  </p>
+                ))}
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* FAQ */}
       <section id="faqs" className="py-20 scroll-mt-24">
         <div className="container mx-auto px-4 max-w-2xl">

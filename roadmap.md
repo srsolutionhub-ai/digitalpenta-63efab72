@@ -1,23 +1,29 @@
-# Roadmap — Sprint 9 (Agency CRM)
+# Roadmap — Full SEO Audit & Optimization (Oct 2026) ✅ COMPLETE
 
-- [x] CRM core: Contacts, contact profile + timeline, notes, Tasks
-- [x] Tracking integrations page + consent-gated tag loading
-- [x] WhatsApp auto-replies, delivery receipts, inbox upgrade, templates sync, broadcasts
-- [x] Visitor journey per contact + Audience analytics page
-- [x] Email sequences with open/click tracking, auto-enroll on lead submit
-- [x] Client portal: projects, approvals, reports; staff Client Deliverables page
-- [x] Admin home real KPIs, global search (Ctrl/Cmd+K), Team & Roles
-- [x] Scheduled sequence sending (hourly)
-- [x] Unsubscribe link + one-click unsubscribe + suppression
-- [x] Security pass: search filter escaping, safe links, webhook replay guard, broadcast limits, approval lock, staff-only rules
-- [x] Refine WhatsApp/voice controls and verify idle/live Lottie animations across devices
-- [x] Improve metadata across every public, indexable page family for stronger SERP CTR
-- [x] Reconcile robots.txt and generated sitemap with current public routes
+## Phase 1 — Research (evidence first)
+- [x] Keyword research via Semrush (80+ keywords, India + US DBs) → `docs/seo/KEYWORD_RESEARCH_2026-10.md`
+- [x] Domain snapshot: digitalpenta.lovable.app — no Semrush data yet (not indexed)
+- [x] Page inventory via sub-agent: 360 public URLs, full SEO state per family
 
-## CRM audit fix plan (2026-10-20) — user approved all steps
-- [x] Step 1 quick fixes: deal edit form empty; client position blank; forgot-password false success; leads export only 50; client notifications not clickable; login stuck on access failure; Companies + WhatsApp Setup missing from menu
-- [x] Step 2: page access by role (Finance→Billing/Invoices; Content Writer→Blog; SEO Specialist→SEO pages; super_admin/account_manager→all)
-- [x] Step 3: clients see invoices/support by company; invite-client flow from admin (invite-client edge function)
-- [x] Step 4: connect lead→deal→quotation→project (convert button, deal→quote prefill, project→quote link)
-- [x] Step 5: pagination for long lists; company-lookup caching (useClientCompanies); client file upload; invoice download; support open/resolved status + admin Support Inbox
-- Blocked: WHATSAPP_ACCESS_TOKEN from Meta; GTM/Pixel IDs on hold per user; signed-in QA needs user sign-in (external Supabase)
+## Phase 2 — Audit findings (all fixed)
+- [x] Unknown blog slugs rendered indexable placeholders → now noindex 404 view
+- [x] Invalid location pages (EN + AR) had no SEO handling → now noindex + canonical to /locations
+- [x] robots.txt: named bot groups bypassed wildcard Disallows → single wildcard group
+- [x] Blog/Contact/About missing page-type schema → Blog, ContactPage, AboutPage nodes added
+- [x] 8 blog articles thin (169–258 words) → expanded to ~700–950 words each, human style
+- [x] Keyword gaps vs research → 6 new landing pages
+
+## Phase 3 — Implementation
+- [x] 6 new keyword LPs (growth-marketing-agency, pr-agency-delhi, seo-company-noida,
+      branding-agency-delhi, online-reputation-management-india, email-marketing-services-india)
+      with deepSections long-form content (~1,100 rendered words each)
+- [x] KeywordLandingPage template: deepSections renderer added
+- [x] Sitemap regenerated: 155 → 161 URLs; schema validation 26/26 passed
+
+## Phase 4 — Verification (evidence)
+- [x] tsgo clean, build OK
+- [x] Playwright: new LPs render correct title/canonical/robots; blog+location 404s noindex; 0 page errors
+
+## Standing constraints
+- No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
+- Skip GSC/GTM/Resend/Meta setup.

@@ -110,6 +110,14 @@ export default function About() {
           { hreflang: "x-default", href: "https://digitalpenta.com/about" },
         ]}
         schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "@id": "https://digitalpenta.com/about#aboutpage",
+            name: "About Digital Penta",
+            url: "https://digitalpenta.com/about",
+            about: { "@id": "https://digitalpenta.com/#organization" },
+          },
           organizationSchema(),
           gmbBusinessSchema(),
           ceoPersonSchema(),

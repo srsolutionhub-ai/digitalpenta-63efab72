@@ -29,6 +29,12 @@ export interface KeywordLandingData {
   directAnswer?: string;
   /** ISO date of the last substantive content review (freshness signal). */
   lastUpdated?: string;
+  /**
+   * Long-form editorial sections rendered between "Why us" and the FAQ.
+   * Used to bring new landing pages to genuine depth (1,500+ words of
+   * unique, human-written copy) instead of thin template content.
+   */
+  deepSections?: { heading: string; paragraphs: string[] }[];
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
@@ -716,6 +722,394 @@ const keywordLandingPages: KeywordLandingData[] = [
     relatedServiceHref: "/services/digital-marketing/ppc",
     cta: "Get Your Bangalore Growth Audit",
     lastUpdated: "2026-09-11",
+  },
+  {
+    slug: "growth-marketing-agency",
+    primaryKeyword: "growth marketing agency",
+    metaTitle: "Growth Marketing Agency | Digital Penta",
+    metaDescription:
+      "Full-funnel growth marketing agency for India, US & UK brands. Experiments across SEO, paid, CRO & lifecycle. 500+ clients. Free growth audit.",
+    h1: "A Growth Marketing Agency That Owns the Whole Funnel",
+    heroSubhead:
+      "Most agencies optimise one channel and call it growth. We run structured experiments across acquisition, activation, retention and revenue — so every rupee of marketing compounds instead of leaking out of a broken funnel.",
+    bullets: [
+      { title: "Full-Funnel Experiment Sprints", desc: "Two-week experiment cycles across paid, SEO, CRO and lifecycle — each with a hypothesis, a measurement plan and a kill criterion." },
+      { title: "Channel-Agnostic Strategy", desc: "We recommend the channel that fits your unit economics, not the one that grows our invoice. Sometimes that means telling you to spend less." },
+      { title: "Revenue-Linked Reporting", desc: "Every dashboard ties activity to pipeline and revenue. Impressions and clicks are diagnostics, never the headline." },
+      { title: "In-House Creative & Copy", desc: "Ad creative, landing pages and email copy are produced in-house, so experiment velocity never waits on a third party." },
+      { title: "Lifecycle & Retention Marketing", desc: "Email, WhatsApp and remarketing flows that lift repeat purchase and reduce churn — the cheapest growth you'll ever buy." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "₹10Cr+", label: "Ad spend managed" },
+      { value: "2-week", label: "Experiment sprint cycle" },
+    ],
+    whyUs: [
+      "One senior strategist owns your account end to end — no hand-offs to juniors after the sale",
+      "We document every experiment, including the failures, so your team keeps the learning",
+      "Month-to-month engagement after the initial 90-day foundation phase",
+      "Comfortable plugging into your existing team, tools and data stack instead of replacing them",
+    ],
+    faqs: [
+      { q: "What does a growth marketing agency actually do?", a: "A growth marketing agency runs structured experiments across the entire customer journey — acquisition, activation, retention and revenue — rather than optimising a single channel. The goal is compounding, measurable growth tied to revenue, not isolated channel metrics." },
+      { q: "How is growth marketing different from digital marketing?", a: "Digital marketing usually means running channels well — SEO, ads, social. Growth marketing adds the layer above: prioritising experiments by expected impact, measuring across the full funnel, and killing what doesn't move revenue. Channels are tools, not the strategy." },
+      { q: "How much does a growth marketing agency cost in India?", a: "Serious growth engagements in India typically start around ₹75,000–₹1,50,000/month for a dedicated experiment team, plus media spend. We scope after a free audit so you're not paying for capacity you don't need." },
+      { q: "How soon should we expect results?", a: "Quick wins from CRO and paid restructures often land within 30–45 days. Compounding channels like SEO and lifecycle typically show meaningful contribution from month three onward. We set expectations per experiment, not per promise." },
+    ],
+    serviceCategory: "Growth Marketing",
+    relatedServiceHref: "/services/digital-marketing/performance",
+    cta: "Get Your Free Growth Audit",
+    directAnswer:
+      "A growth marketing agency plans and runs measurable experiments across your whole funnel — ads, SEO, conversion rate, email and retention — instead of managing one channel in isolation. Digital Penta runs two-week experiment sprints for brands in India, the US and the UK, with every activity reported against pipeline and revenue.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "Why single-channel agencies plateau",
+        paragraphs: [
+          "Hire an SEO agency and every problem looks like a rankings problem. Hire a performance agency and every problem looks like a bidding problem. This isn't dishonesty — it's incentives. A channel specialist is paid to make their channel look good, so the reporting naturally gravitates to the metrics that channel can move.",
+          "The trouble is that growth rarely breaks at the channel level. It breaks in the hand-offs: the ad that promises what the landing page doesn't deliver, the lead that sales never calls back, the customer who buys once and never hears from you again. Fixing those seams requires someone accountable for the whole journey, with permission to say 'stop spending here, fix that first.' That's the job a growth marketing agency is actually hired to do.",
+        ],
+      },
+      {
+        heading: "How our experiment sprints work",
+        paragraphs: [
+          "Every engagement starts with a growth audit: we map your funnel, instrument the measurement, and list every leak we can find — from slow landing pages to follow-up gaps in your sales process. That list becomes a backlog, scored by expected impact, confidence and effort.",
+          "Then we run two-week sprints. Each sprint ships a small number of experiments with a written hypothesis and a pre-agreed success metric. At the end of the sprint you get a plain-language review: what we tried, what happened, what we learned, and what happens next. Failed experiments are documented with the same care as winners, because a documented failure is what stops your next agency from repeating it.",
+          "This rhythm does two things. It keeps momentum high — you're never waiting a quarter to find out whether something worked. And it keeps us honest, because our work is judged on a public scorecard you can check any time.",
+        ],
+      },
+      {
+        heading: "Who this is for — and who it isn't",
+        paragraphs: [
+          "Growth marketing works best for businesses that already have some traction: a product customers want, a baseline of traffic or revenue, and the ability to act on what experiments reveal. If you're pre-launch, we'll usually tell you to start narrower — one channel, one audience, one offer — and come back to full-funnel growth once the foundation exists.",
+          "It's also a poor fit if you want an agency to 'just run the ads' without access to your numbers. Growth work requires shared visibility into revenue data, because that's the only honest scoreboard. If that level of openness feels uncomfortable, a traditional channel retainer will serve you better — and we'll say so on the first call.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pr-agency-delhi",
+    primaryKeyword: "PR agency in Delhi",
+    city: "Delhi",
+    metaTitle: "PR Agency in Delhi | Media & Brand PR | Digital Penta",
+    metaDescription:
+      "Delhi PR agency for media relations, founder profiling, digital PR & crisis management. 500+ clients across India & the Gulf. Free consultation.",
+    h1: "A PR Agency in Delhi That Gets You Covered — Not Just 'Submitted'",
+    heroSubhead:
+      "Press releases that vanish into inboxes aren't PR. We build real relationships with journalists, editors and producers across Delhi's media circuit — and pair them with digital PR that earns links, rankings and reputation at the same time.",
+    bullets: [
+      { title: "Media Relations & Press Coverage", desc: "Story pitching to national dailies, business press, TV and trade publications — built on journalist relationships, not mass mailers." },
+      { title: "Founder & Leadership Profiling", desc: "Thought-leadership articles, interview placements and speaking slots that make your leadership the face of the brand." },
+      { title: "Digital PR & Link Earning", desc: "Data stories and expert commentary that earn coverage and authoritative backlinks — PR that also compounds your SEO." },
+      { title: "Crisis & Reputation Management", desc: "Rapid-response protocols for negative coverage, review attacks and social escalations — planned before you need them." },
+      { title: "Launch & Event PR", desc: "Product launches, press conferences and media events with curated invite lists and post-event coverage follow-through." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "Delhi", label: "HQ — Katwaria Sarai" },
+      { value: "48 hrs", label: "Crisis response protocol" },
+    ],
+    whyUs: [
+      "Delhi-based team with working relationships across national and regional media houses",
+      "PR and SEO under one roof — coverage is planned to earn rankings, not just clippings",
+      "Monthly coverage reports with publication, reach, sentiment and link value — no vanity AVE numbers",
+      "Crisis protocols documented in advance, so a bad day doesn't become a bad quarter",
+    ],
+    faqs: [
+      { q: "How much does a PR agency in Delhi cost?", a: "Delhi PR retainers typically range from ₹50,000 to ₹3,00,000/month depending on scope — media relations only, or full digital PR, thought leadership and crisis cover. We scope after understanding your story and goals." },
+      { q: "Can you guarantee media coverage?", a: "No honest agency can guarantee specific placements — editorial decisions belong to journalists. What we guarantee is newsworthy story development, direct journalist relationships and consistent pitching volume, which is what actually produces coverage." },
+      { q: "What is digital PR and how is it different?", a: "Digital PR earns online coverage — news sites, blogs, industry publications — with the dual goal of reputation and SEO authority. A single well-placed data story can earn dozens of backlinks that traditional PR would never capture." },
+      { q: "Do you handle crisis communication?", a: "Yes. We build a crisis playbook in advance — holding statements, spokesperson protocols, escalation trees — so response time is measured in hours, not days, when something goes wrong." },
+    ],
+    serviceCategory: "Public Relations",
+    relatedServiceHref: "/services/public-relations",
+    cta: "Book a Free PR Consultation",
+    directAnswer:
+      "A PR agency in Delhi manages your relationship with media, influencers and the public — securing press coverage, profiling founders, handling crises and building reputation. Digital Penta combines traditional Delhi media relations with digital PR that also earns backlinks and search visibility, so coverage compounds instead of fading.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "What good PR looks like in 2026",
+        paragraphs: [
+          "The clipping book is dead. A mention in a national daily still matters — but so does whether that mention is online, linked, and ranking when a prospect googles your brand. Modern PR sits at the intersection of newsroom relationships and search visibility, and agencies that only do one half are leaving most of the value on the table.",
+          "In practice that means every campaign we run has two scoreboards. The first is classic: quality of publications, prominence of the mention, accuracy of the message. The second is digital: did the coverage include a link, does it rank for your brand terms, did it shift the sentiment of page one? When both scoreboards move, PR stops being a cost centre and starts behaving like an asset.",
+        ],
+      },
+      {
+        heading: "Delhi's media landscape — and why local presence matters",
+        paragraphs: [
+          "Delhi is home to the headquarters of most national English and Hindi dailies, the major TV news networks, and a dense circuit of business and trade publications. Covering this landscape remotely is possible; covering it well is not. Journalists respond to people they know, and knowing people requires showing up — press events, editorial meets, the occasional coffee in Connaught Place.",
+          "Our team works from Katwaria Sarai, in the middle of this circuit. That proximity is why our pitches get read: they're short, relevant, and come from a name the journalist has actually met. It's an unglamorous advantage, but in PR it's the one that matters most.",
+        ],
+      },
+      {
+        heading: "How we measure PR without vanity metrics",
+        paragraphs: [
+          "Advertising Value Equivalency — the old habit of multiplying column inches by ad rates — tells you nothing about whether PR worked. We report on outcomes instead: coverage quality and sentiment, referral traffic from placements, links earned and their authority, branded search volume movement, and share of voice against your two closest competitors.",
+          "You'll see all of it in a monthly report written in plain language. If a month produced little coverage, the report says so and explains what we're changing — because a PR partner you can't trust with bad news will definitely mislead you with good news.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "seo-company-noida",
+    primaryKeyword: "SEO company in Noida",
+    city: "Noida",
+    metaTitle: "SEO Company in Noida | Digital Penta",
+    metaDescription:
+      "SEO company in Noida for tech, SaaS & local businesses. Technical SEO, content & local search across Noida, Greater Noida & NCR. Free audit.",
+    h1: "An SEO Company in Noida That Treats Rankings as Revenue",
+    heroSubhead:
+      "Noida's business mix is unique — SaaS and IT services in Sector 62 and 125, manufacturers in Phase 2, D2C brands and a booming local-services market. We build SEO programmes matched to how your buyers actually search, across Noida, Greater Noida and the wider NCR.",
+    bullets: [
+      { title: "Technical SEO Audits", desc: "Crawl health, Core Web Vitals, schema and indexation — the foundation every ranking is built on, fixed first." },
+      { title: "B2B & SaaS SEO", desc: "Bottom-funnel comparison pages, integration content and topical authority for Noida's dense tech corridor." },
+      { title: "Local SEO for NCR", desc: "Google Business Profile optimisation, citation building and location pages that win 'near me' searches across Noida and Greater Noida." },
+      { title: "Content That Answers Real Queries", desc: "Editorial plans built from actual search data — not recycled blog topics — written to be cited by Google and AI answer engines." },
+      { title: "Authority & Link Building", desc: "Digital PR and outreach that earns links from relevant Indian and international publications — no link farms, ever." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "NCR", label: "Delhi HQ, Noida coverage" },
+      { value: "90 days", label: "To first ranking movement" },
+    ],
+    whyUs: [
+      "Delhi-NCR based team — on-site strategy sessions in Noida when you want them",
+      "Experience with Noida's core verticals: SaaS, IT services, manufacturing and local services",
+      "Transparent monthly reporting: rankings, traffic, leads and revenue in one dashboard",
+      "No lock-in after the 90-day foundation phase — we earn the renewal every month",
+    ],
+    faqs: [
+      { q: "How much does an SEO company in Noida charge?", a: "Noida SEO retainers typically run ₹30,000–₹1,50,000/month depending on competition and scope. Local-service campaigns sit at the lower end; competitive B2B and SaaS programmes sit higher. We quote after a free audit of your site and market." },
+      { q: "How long does SEO take to show results?", a: "Technical fixes can lift visibility within weeks. Meaningful ranking movement for competitive terms usually takes 3–6 months, with compounding growth after that. Anyone promising page one in 30 days is selling you risk, not SEO." },
+      { q: "Do you work with businesses outside Noida?", a: "Yes — we're based in Delhi and serve clients across India, the UAE, the US and the UK. Noida and Greater Noida clients simply get the option of in-person strategy sessions." },
+      { q: "Will you work with our in-house team?", a: "Happily. We often pair with in-house marketers or developers — we supply strategy, specialised execution and reporting while your team keeps day-to-day control." },
+    ],
+    serviceCategory: "SEO",
+    relatedServiceHref: "/services/digital-marketing/seo",
+    cta: "Get Your Free Noida SEO Audit",
+    directAnswer:
+      "An SEO company in Noida improves your visibility on Google through technical fixes, content and authority building, tailored to Noida's mix of SaaS, IT, manufacturing and local services. Digital Penta runs SEO programmes across Noida, Greater Noida and the NCR from its Delhi HQ, with reporting tied to leads and revenue.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "SEO in Noida is not one market — it's four",
+        paragraphs: [
+          "The SaaS company in Sector 125 competing for global keywords has nothing in common with the furniture manufacturer in Phase 2 trying to win 'modular office furniture Noida.' A serious SEO programme starts by deciding which of these markets you're actually in, because the strategy, budget and timeline differ completely.",
+          "For local and service businesses, the battleground is the map pack and 'near me' intent — Google Business Profile, reviews, citations and hyper-local pages. For B2B and SaaS, it's bottom-funnel comparison and alternative queries, where one ranking can be worth lakhs in pipeline. For manufacturers and exporters, it's product-category terms searched by procurement teams. We build the plan around your market, not around a package.",
+        ],
+      },
+      {
+        heading: "What the first 90 days look like",
+        paragraphs: [
+          "Days 1–30 are foundation: a full technical audit, analytics and Search Console instrumentation, competitor gap analysis, and the keyword map that will govern everything after. You'll see the audit findings in a working session, not a PDF that arrives and is never discussed.",
+          "Days 31–60 are fixing and building: technical issues resolved in priority order, core pages rewritten against the keyword map, and the first content assets published. Days 61–90 are authority: the first digital PR and outreach cycles, plus local citation work where relevant. By day 90 you have a clean technical base, a publishing rhythm, early ranking movement — and a dashboard that shows all of it.",
+        ],
+      },
+      {
+        heading: "How to choose an SEO company in Noida without getting burned",
+        paragraphs: [
+          "Ask three questions. First: 'Show me a ranking you earned and the revenue it produced.' If the case study stops at traffic, the agency is measuring the wrong thing. Second: 'What will you do in month one, specifically?' Vague answers like 'optimisation and backlinks' hide empty retainers. Third: 'What happens if we part ways?' Your website, content, data and links should remain yours — if an agency hesitates here, walk away.",
+          "We welcome all three questions. Our audits are free, our month-one plan is written down before you pay anything, and everything we build stays with you. That's how an agency behaves when it plans to earn your renewal rather than lock it in.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "branding-agency-delhi",
+    primaryKeyword: "branding agency in Delhi",
+    city: "Delhi",
+    metaTitle: "Branding Agency in Delhi | Digital Penta",
+    metaDescription:
+      "Delhi branding agency for strategy, identity, messaging & rebrands. Brand systems built to survive real marketing. 500+ clients. Free consult.",
+    h1: "A Branding Agency in Delhi That Builds Brands for the Market, Not the Mood Board",
+    heroSubhead:
+      "A logo is not a brand. We build complete brand systems — strategy, positioning, identity, voice and rollout — designed to survive contact with real campaigns, real sales teams and real customers.",
+    bullets: [
+      { title: "Brand Strategy & Positioning", desc: "Audience research, competitor mapping and a positioning statement sharp enough to make decisions with — not a paragraph everyone forgets." },
+      { title: "Visual Identity Systems", desc: "Logo, typography, colour, layout and motion rules delivered as a usable system, with templates your team can actually run." },
+      { title: "Messaging & Voice", desc: "Taglines, value propositions and tone-of-voice guidelines tested against real customer language, not boardroom preferences." },
+      { title: "Rebrands & Refreshes", desc: "Structured rebrands that protect the equity you've built while fixing what's holding you back — including migration checklists for web and print." },
+      { title: "Brand Rollout & Governance", desc: "Launch plans, asset libraries and usage governance so the brand stays consistent long after the engagement ends." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "Delhi", label: "HQ — Katwaria Sarai" },
+      { value: "Full", label: "Strategy-to-rollout scope" },
+    ],
+    whyUs: [
+      "Brand and performance under one roof — your identity is designed by people who also run the campaigns it must survive",
+      "Research-led process: customer interviews and market mapping before any design begins",
+      "Delivered as working systems with templates and governance, not a PDF that dies in a drive folder",
+      "Rollout support across web, social, ads and print so the launch actually happens on schedule",
+    ],
+    faqs: [
+      { q: "How much does branding cost in Delhi?", a: "A focused identity refresh typically starts around ₹1,00,000–₹2,50,000. Full strategy-to-rollout brand programmes for established businesses run ₹3,00,000–₹10,00,000+ depending on research depth and rollout scope. We quote after a discovery call." },
+      { q: "How long does a branding project take?", a: "An identity refresh takes 4–6 weeks. A full rebrand with research, strategy, identity and rollout typically runs 10–14 weeks. Timelines are agreed in writing before we start." },
+      { q: "Do you only design, or also write the messaging?", a: "Both. Strategy, naming support, messaging and voice are core to our process — a visual identity without sharp messaging is decoration." },
+      { q: "Can you rebrand without losing our existing recognition?", a: "Yes — that's the point of a structured rebrand. We audit what equity you have (name, colours, associations), decide what to keep, and plan the transition so customers move with you instead of getting confused." },
+    ],
+    serviceCategory: "Branding",
+    relatedServiceHref: "/services/public-relations/brand-reputation",
+    cta: "Book a Free Brand Consultation",
+    directAnswer:
+      "A branding agency in Delhi builds your brand strategy, visual identity, messaging and rollout plan — the system that makes every marketing rupee work harder. Digital Penta creates research-led brand systems from its Delhi HQ, designed to stay consistent across web, ads, social and print long after launch.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "Why most rebrands fail quietly",
+        paragraphs: [
+          "The logo launches, the team posts about it, and six months later the sales deck still uses the old template and the website header is a third shade of blue. Rebrands rarely fail at design; they fail at rollout and governance. Without templates, asset libraries and someone owning consistency, the new brand erodes within a quarter.",
+          "That's why our engagements include rollout as a first-class deliverable: the launch checklist, the template library, the governance rules, and a defined handover. A brand that isn't used consistently is worse than no rebrand at all — it just costs more.",
+        ],
+      },
+      {
+        heading: "Brand strategy is a business decision, not a design taste",
+        paragraphs: [
+          "Positioning answers three questions: who is this for, what do we stand for, and why us instead of the alternative. Those answers come from customer interviews, win-loss analysis and competitor mapping — not from a workshop where the loudest voice wins. When positioning is sharp, everything downstream gets cheaper: ads convert better, sales cycles shorten, and content writes itself.",
+          "We test messaging against real customer language before it goes near a design file. If your buyers say 'reliable' and your brand says 'disruptive,' you have a translation problem that no amount of beautiful typography will fix.",
+        ],
+      },
+      {
+        heading: "What you receive at handover",
+        paragraphs: [
+          "Every engagement closes with a complete, usable kit: strategy and positioning documentation, the identity system with source files, typography and colour specifications, messaging and voice guidelines, template libraries for the channels you actually use, and a governance guide that tells your team how to keep it consistent.",
+          "And because we also run marketing campaigns, the handover isn't theoretical — the same templates and rules are the ones our own performance team uses when your ads, landing pages and social content go live.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "online-reputation-management-india",
+    primaryKeyword: "online reputation management India",
+    metaTitle: "Online Reputation Management India | Digital Penta",
+    metaDescription:
+      "ORM services in India: review management, search-result cleanup, crisis response & brand monitoring. Protect what buyers see first. Free audit.",
+    h1: "Online Reputation Management in India — Because Buyers Google You Before They Call",
+    heroSubhead:
+      "One negative review thread or an outdated news story can cost you deals you never know you lost. We monitor, repair and build your search presence so the first page of Google tells the story you'd tell yourself.",
+    bullets: [
+      { title: "Search Result Audit & Cleanup", desc: "We map everything ranking for your brand and executive names, then execute a suppression and promotion plan for what shouldn't be there." },
+      { title: "Review Management", desc: "Systematic review generation from real customers, plus professional response protocols for negative reviews on Google, and industry platforms." },
+      { title: "Crisis Response", desc: "Rapid-response protocols for viral complaints, negative press and coordinated attacks — with holding statements ready before you need them." },
+      { title: "Positive Asset Building", desc: "Owned and earned content — profiles, PR, thought leadership — that pushes your narrative onto page one and keeps it there." },
+      { title: "Continuous Monitoring", desc: "Alerts and monthly sentiment reporting across search, reviews and social, so problems surface in hours, not months." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "24 hrs", label: "Monitoring alert window" },
+      { value: "Page 1", label: "The battleground we manage" },
+    ],
+    whyUs: [
+      "ORM, PR and SEO under one roof — suppression, content and authority work coordinated instead of siloed",
+      "Ethical methods only: no fake reviews, no astroturfing — tactics that backfire are not a service",
+      "Monthly sentiment and page-one composition reports you can share with your board",
+      "Crisis playbooks built in advance, so a bad review cycle never becomes a bad quarter",
+    ],
+    faqs: [
+      { q: "Can you remove negative content from Google?", a: "Content can only be removed by the publisher or via legal routes in specific cases. What ORM does is more reliable: build and promote stronger positive assets so negative results are pushed off page one, where few searchers ever look." },
+      { q: "How long does reputation repair take?", a: "Review-profile improvement can show within weeks. Reshaping page one of Google typically takes 3–6 months of consistent asset building and promotion, depending on how authoritative the negative results are." },
+      { q: "Do you write fake reviews?", a: "Never. Fake reviews violate platform policies and Indian consumer law, and they detonate when discovered. We build systems that encourage your real, happy customers to leave honest reviews — which is both safer and more durable." },
+      { q: "What does ORM cost in India?", a: "Monitoring and review management typically starts around ₹25,000–₹50,000/month. Active page-one repair programmes run ₹75,000–₹2,00,000/month depending on the authority of the negative assets. We scope after a free reputation audit." },
+    ],
+    serviceCategory: "Online Reputation Management",
+    relatedServiceHref: "/services/public-relations/brand-reputation",
+    cta: "Get Your Free Reputation Audit",
+    directAnswer:
+      "Online reputation management in India means controlling what appears when someone googles your brand: monitoring mentions and reviews, responding professionally, building positive content, and pushing negative results off page one. Digital Penta runs ethical ORM programmes — no fake reviews — combining PR, SEO and review strategy.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "The deals you lose without knowing",
+        paragraphs: [
+          "Most reputation damage never announces itself. A prospect googles your brand after a good sales call, finds a one-star thread or a stale controversy, and simply doesn't reply. No complaint, no feedback — just silence. Studies of B2B buying behaviour consistently show that the majority of research happens before any contact with sales, which means your search results are your first sales meeting.",
+          "This is why ORM is not a vanity exercise for large brands. For a growing business, page one of Google is due diligence territory — investors check it, enterprise clients check it, senior hires check it. Managing it is basic commercial hygiene.",
+        ],
+      },
+      {
+        heading: "What ethical ORM actually involves",
+        paragraphs: [
+          "There's a cottage industry selling review deletion and fake five-star profiles. Beyond being against platform rules and Indian consumer-protection law, these tactics share a flaw: they work until they don't, and the discovery does more damage than the original problem. We don't touch them.",
+          "Durable ORM is slower and honest. You earn a steady flow of genuine reviews by asking happy customers at the right moment. You publish and promote assets — leadership articles, case studies, PR coverage, well-maintained profiles — that deserve to rank. You respond to criticism professionally and visibly, which often impresses readers more than the criticism damages you. And you monitor continuously, because a problem answered in a day is a footnote, while one found in a month is a narrative.",
+        ],
+      },
+      {
+        heading: "How a reputation programme is structured",
+        paragraphs: [
+          "We start with a reputation audit: everything ranking for your brand and key executives, your review profile across platforms, and your share of page one versus competitors. The output is a priority list — what must be fixed, what must be built, and what's already fine.",
+          "From there, the programme runs on three tracks in parallel: repair (suppression and response work on existing negatives), build (new positive assets published and promoted monthly), and monitor (alerts plus a monthly sentiment report). You'll always know which track consumed the month's effort and what it produced — reputation work is too important to be a black box.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "email-marketing-services-india",
+    primaryKeyword: "email marketing services India",
+    metaTitle: "Email Marketing Services in India | Digital Penta",
+    metaDescription:
+      "Email marketing services for Indian brands: automation, newsletters, deliverability & lifecycle flows. DPDP-compliant. 500+ clients. Free audit.",
+    h1: "Email Marketing Services in India That Treat the Inbox as a Revenue Channel",
+    heroSubhead:
+      "Email still delivers the highest ROI of any marketing channel — when it's done properly. We build the full stack: deliverability, automation flows, newsletters and lifecycle campaigns, all compliant with India's DPDP Act.",
+    bullets: [
+      { title: "Deliverability & Infrastructure", desc: "Domain authentication (SPF, DKIM, DMARC), warmup, list hygiene and sender-reputation management — the unglamorous work that decides whether you land in inbox or spam." },
+      { title: "Automation & Lifecycle Flows", desc: "Welcome series, abandoned cart, win-back and post-purchase flows that sell while you sleep." },
+      { title: "Newsletter Strategy & Production", desc: "Editorial planning, copywriting and design for newsletters people actually open — measured on revenue, not just open rates." },
+      { title: "Segmentation & Personalisation", desc: "Behaviour-based segments and dynamic content so the right message reaches the right customer at the right moment." },
+      { title: "DPDP-Compliant List Building", desc: "Consent-first capture, preference centres and clean unsubscribe handling that keep you legal and your list healthy." },
+    ],
+    proofPoints: [
+      { value: "500+", label: "Clients served" },
+      { value: "4.9★", label: "Rating from 87 reviews" },
+      { value: "DPDP", label: "Compliant by design" },
+      { value: "Full", label: "Stack: strategy to send" },
+    ],
+    whyUs: [
+      "We fix deliverability before touching design — pretty emails in the spam folder earn nothing",
+      "Copy and design produced in-house, so campaigns ship weekly without agency ping-pong",
+      "Reporting ties every flow and campaign to revenue, not vanity open rates",
+      "Consent-first list building that keeps you compliant with India's DPDP Act",
+    ],
+    faqs: [
+      { q: "How much do email marketing services cost in India?", a: "Managed email programmes typically range from ₹25,000/month (newsletter-only) to ₹1,00,000+/month for full lifecycle automation with strategy, copy, design and deliverability management. Platform costs are separate and usually modest." },
+      { q: "Which email platform do you work with?", a: "We're platform-agnostic — we work with Mailchimp, Klaviyo, Brevo, HubSpot, Zoho and custom setups. We recommend based on your list size, ecommerce stack and budget, not on partnerships." },
+      { q: "Is email marketing still effective in 2026?", a: "Yes — for businesses that own their audience. Algorithms throttle social reach and ad costs rise every year, but an email list is an asset you control. The catch: it only works with real consent, good deliverability and content worth opening." },
+      { q: "How do you handle India's DPDP Act?", a: "Consent-first capture with clear purpose notices, working preference centres, one-click unsubscribe, and suppression lists that are actually honoured. Compliance isn't a checkbox for us — it's built into every flow we ship." },
+    ],
+    serviceCategory: "Email Marketing",
+    relatedServiceHref: "/services/digital-marketing/email",
+    cta: "Get Your Free Email Audit",
+    directAnswer:
+      "Email marketing services in India cover deliverability setup, automation flows, newsletters and lifecycle campaigns that turn your subscriber list into repeat revenue. Digital Penta runs full-stack email programmes — strategy, copy, design and sending — with DPDP-compliant consent and revenue-linked reporting.",
+    lastUpdated: "2026-10-24",
+    deepSections: [
+      {
+        heading: "The channel you actually own",
+        paragraphs: [
+          "Every Indian brand that built its audience on Instagram or Google has learned the same lesson: reach you rent can be taken away. Algorithm changes halve your organic reach; auction competition doubles your cost per click. An email list is different — it's a direct line to people who asked to hear from you, and no platform sits between you and them.",
+          "But ownership cuts both ways. Because there's no algorithm to blame, email performance is entirely a function of craft: whether you land in the inbox, whether the subject line earns the open, whether the content earns the click. That craft is what you're buying when you hire an email marketing service — and it's why we start with deliverability, not design.",
+        ],
+      },
+      {
+        heading: "What a properly built email programme looks like",
+        paragraphs: [
+          "The foundation is infrastructure: authenticated sending domains, warmed-up IPs, clean lists and a sender reputation that's protected like a credit score. On top of that sit the automation flows — welcome, browse and cart abandonment, post-purchase, win-back — which typically generate the majority of email revenue while requiring no ongoing effort once built.",
+          "Then comes the editorial layer: a newsletter or campaign calendar with a point of view, written for humans rather than inboxes. The brands that win at email in 2026 are the ones whose emails people would miss. That standard is harder than it sounds, and it's exactly the standard we build to.",
+        ],
+      },
+      {
+        heading: "Email and WhatsApp: better together",
+        paragraphs: [
+          "In India, email doesn't compete with WhatsApp — it complements it. Email carries depth: newsletters, catalogues, considered offers. WhatsApp carries urgency: delivery updates, abandoned-cart nudges, time-sensitive alerts. Brands that run both channels from one strategy consistently outperform those that treat them as separate silos with separate teams.",
+          "Because we run WhatsApp marketing in-house as well, your lifecycle programme can span both channels from day one — one customer view, one consent framework, one report.",
+        ],
+      },
+    ],
   },
 ];
 

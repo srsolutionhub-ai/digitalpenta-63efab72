@@ -43,10 +43,17 @@ export default function LocationPage() {
   if (!data) {
     return (
       <Layout>
+        <SEOHead
+          title="Location Not Found | Digital Penta"
+          description="This location page doesn't exist. Browse Digital Penta's service locations across India and the Gulf."
+          canonical="https://digitalpenta.com/locations"
+          noindex
+        />
         <section className="pt-32 pb-20 text-center">
           <div className="container mx-auto px-4">
             <h1 className="font-display font-bold text-3xl text-foreground">Location not found</h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← Back to Home</Link>
+            <p className="text-muted-foreground mt-3">We don't have a page for this location yet.</p>
+            <Link to="/locations" className="text-primary text-sm mt-4 inline-block">← Browse all locations</Link>
           </div>
         </section>
       </Layout>

@@ -61,12 +61,18 @@ export default function LocationPageAr() {
   if (!data || !enData) {
     return (
       <Layout>
+        <SEOHead
+          title="Location Not Found | Digital Penta"
+          description="This location page doesn't exist. Browse Digital Penta's service locations across India and the Gulf."
+          canonical="https://digitalpenta.com/locations"
+          noindex
+        />
         <section className="pt-32 pb-20 text-center" dir="rtl">
           <div className="container mx-auto px-4">
             <h1 className="font-bold text-3xl text-foreground" style={{ fontFamily: "Cairo, Tajawal, sans-serif" }}>
               الصفحة غير موجودة
             </h1>
-            <Link to="/" className="text-primary text-sm mt-4 inline-block">← العودة إلى الصفحة الرئيسية</Link>
+            <Link to="/ar" className="text-primary text-sm mt-4 inline-block">← العودة إلى الصفحة الرئيسية</Link>
           </div>
         </section>
       </Layout>
