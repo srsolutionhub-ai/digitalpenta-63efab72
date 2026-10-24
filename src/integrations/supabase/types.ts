@@ -2828,6 +2828,8 @@ export type Database = {
           country: string | null
           created_at: string | null
           device_type: string | null
+          engaged_seconds: number
+          first_seen: string | null
           geo_source: string | null
           id: string
           industry: string | null
@@ -2838,6 +2840,7 @@ export type Database = {
           last_visit: string | null
           lead_id: string | null
           lead_score: number | null
+          lifecycle_stage: string
           location: string | null
           os: string | null
           page_views: number | null
@@ -2846,6 +2849,7 @@ export type Database = {
           screen: string | null
           search_engine: string | null
           search_term: string | null
+          service_affinity: Json
           session_count: number
           source_channel: string | null
           time_on_site: number | null
@@ -2869,6 +2873,8 @@ export type Database = {
           country?: string | null
           created_at?: string | null
           device_type?: string | null
+          engaged_seconds?: number
+          first_seen?: string | null
           geo_source?: string | null
           id?: string
           industry?: string | null
@@ -2879,6 +2885,7 @@ export type Database = {
           last_visit?: string | null
           lead_id?: string | null
           lead_score?: number | null
+          lifecycle_stage?: string
           location?: string | null
           os?: string | null
           page_views?: number | null
@@ -2887,6 +2894,7 @@ export type Database = {
           screen?: string | null
           search_engine?: string | null
           search_term?: string | null
+          service_affinity?: Json
           session_count?: number
           source_channel?: string | null
           time_on_site?: number | null
@@ -2910,6 +2918,8 @@ export type Database = {
           country?: string | null
           created_at?: string | null
           device_type?: string | null
+          engaged_seconds?: number
+          first_seen?: string | null
           geo_source?: string | null
           id?: string
           industry?: string | null
@@ -2920,6 +2930,7 @@ export type Database = {
           last_visit?: string | null
           lead_id?: string | null
           lead_score?: number | null
+          lifecycle_stage?: string
           location?: string | null
           os?: string | null
           page_views?: number | null
@@ -2928,6 +2939,7 @@ export type Database = {
           screen?: string | null
           search_engine?: string | null
           search_term?: string | null
+          service_affinity?: Json
           session_count?: number
           source_channel?: string | null
           time_on_site?: number | null
@@ -3555,6 +3567,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      cleanup_tracking_data: { Args: never; Returns: undefined }
       get_analytics_summary: {
         Args: { days_back?: number }
         Returns: {
