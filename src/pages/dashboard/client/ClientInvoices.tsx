@@ -86,7 +86,7 @@ export default function ClientInvoices() {
         <DocumentPrintView
           open={!!printFor}
           onOpenChange={(v) => { if (!v) setPrintFor(null); }}
-          kind="Invoice"
+          kind="Tax Invoice"
           number={printFor.invoice_number}
           date={new Date(printFor.created_at).toLocaleDateString("en-IN")}
           validityOrDueLabel="Due Date"
