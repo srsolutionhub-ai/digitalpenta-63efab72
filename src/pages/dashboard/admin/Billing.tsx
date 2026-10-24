@@ -92,7 +92,7 @@ function QuotationsTab() {
         currency: quote.currency,
         status: "sent",
         due_date: dueDate.toISOString().slice(0, 10),
-      } as any).select("invoice_number").single();
+      } as any).select("id, invoice_number").single();
       if (error) throw error;
       const { error: qErr } = await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
       if (qErr) throw qErr;
