@@ -114,9 +114,10 @@ function QuotationsTab() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-quotations"] });
-      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      queryClient.invalidateQueries({ queryKey: ["invoices"] });
       toast.success("Invoice created from quotation");
     },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't create the invoice"),
   });
 
   return (
@@ -152,7 +153,7 @@ function QuotationsTab() {
                   <td className="p-3 text-muted-foreground text-xs">{new Date(q.created_at).toLocaleDateString()}</td>
                   <td className="p-3">
                     {q.status === "sent" && (
-                      <Button size="sm" variant="ghost" onClick={() => convertToInvoice.mutate(q)}>
+                      <Button size="sm" variant="ghost" disabled={convertToInvoice.isPending} onClick={() => convertToInvoice.mutate(q)}>
                         <FileText className="w-3 h-3 mr-1" /> Convert to Invoice
                       </Button>
                     )}
