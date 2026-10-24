@@ -44,6 +44,7 @@ const navGroups = [
       { label: "Leads", icon: Users, path: "/dashboard/admin/leads" },
       { label: "Companies", icon: Briefcase, path: "/dashboard/admin/companies" },
       { label: "Tasks", icon: CheckSquare, path: "/dashboard/admin/tasks" },
+      { label: "Support", icon: MessageCircle, path: "/dashboard/admin/support" },
       { label: "Bookings", icon: CalendarDays, path: "/dashboard/admin/bookings" },
     ],
   },
