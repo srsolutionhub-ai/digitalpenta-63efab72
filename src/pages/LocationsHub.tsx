@@ -105,7 +105,9 @@ export default function LocationsHub() {
         </div>
       </section>
 
-      <CityGrid heading="Digital marketing agency locations in India" cities={india} />
+      <CityGrid heading="Metro & major city teams" cities={indiaT1} />
+      <CityGrid heading="Tier-2 growth cities we serve" cities={indiaT2} />
+      <CityGrid heading="Tier-3 & emerging city coverage" cities={indiaT3} />
       <CityGrid heading="Digital marketing agency locations in the Middle East" cities={mena} />
     </Layout>
   );
