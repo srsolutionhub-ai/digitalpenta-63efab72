@@ -20,7 +20,11 @@ export default function SubServicePage() {
   }
 
   const canonical = `https://digitalpenta.com/services/${category}/${subService}`;
-  const title = `${data.title} Agency in India | Digital Penta`;
+  // "SEO Services Agency in India" is awkward and dilutes the high-volume
+  // "seo services" query — titles ending in "Services" drop the "Agency" word.
+  const title = data.title.endsWith("Services")
+    ? `${data.title} in India | Digital Penta`
+    : `${data.title} Agency in India | Digital Penta`;
   const description = data.metaDescription.length > 158
     ? `${data.metaDescription.slice(0, 155).trimEnd()}...`
     : data.metaDescription;

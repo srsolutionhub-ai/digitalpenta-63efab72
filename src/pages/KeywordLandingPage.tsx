@@ -82,7 +82,7 @@ export default function KeywordLandingPage() {
         <div className="absolute inset-0 mesh-gradient opacity-60" />
         <div className="absolute top-[20%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[150px] animate-breathe pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className={`container mx-auto px-4 relative z-10 ${data.heroImage ? "grid md:grid-cols-2 gap-10 items-center" : ""}`}>
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,9 +117,27 @@ export default function KeywordLandingPage() {
             </div>
           </motion.div>
 
+          {data.heroImage && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="hidden md:block"
+            >
+              <img
+                src={data.heroImage}
+                alt={`${data.primaryKeyword} — Digital Penta`}
+                width={1024}
+                height={768}
+                loading="eager"
+                className="w-full h-auto rounded-2xl border border-border/25 shadow-2xl"
+              />
+            </motion.div>
+          )}
+
           {/* Direct answer — snippet/AEO target and the anti-bounce block:
               the visitor's core question is answered before any scrolling. */}
-          <div className="max-w-3xl mt-10 rounded-2xl glass border border-border/25 p-6 md:p-7">
+          <div className={`max-w-3xl mt-10 rounded-2xl glass border border-border/25 p-6 md:p-7 ${data.heroImage ? "md:col-span-2" : ""}`}>
             <p className="type-label font-mono text-primary mb-3">Short answer</p>
             <p
               data-speakable

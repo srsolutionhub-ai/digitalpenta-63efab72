@@ -24,6 +24,21 @@
 - [x] tsgo clean, build OK
 - [x] Playwright: new LPs render correct title/canonical/robots; blog+location 404s noindex; 0 page errors
 
+## Phase 5 — Existing-page optimization per keyword research
+- [x] Sub-service titles: "SEO Services Agency in India" → "SEO Services in India" (targets "seo services" 18.1k/mo)
+- [x] Matrix SEO pages: "SEO company in {city}" variant woven into descriptions ("seo company in delhi" 3.6k/mo)
+
+## Phase 6 — Premium graphics
+- [x] 6 on-theme hero visuals generated (dark navy + purple, 75–99KB each) and wired into new LPs (desktop grid hero, eager LCP, width/height set)
+
+## Phase 7 — Performance
+- [x] Images lean (≤99KB); lazy-loading/chunking from earlier sprints intact; build OK
+
+## Phase 8 — End-to-end QA
+- [x] 18 routes × desktop + 4 × mobile 360px: 0 failures, 0 overflow, 1 H1 each, 8–14 schemas per page
+- [x] LP hero image verified loading; screenshots captured
+- [x] Console ref warnings traced to Lovable preview harness (click-to-edit), not app code — no app change needed
+
 ## Standing constraints
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
 - Skip GSC/GTM/Resend/Meta setup.
