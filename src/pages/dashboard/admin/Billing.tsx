@@ -73,7 +73,7 @@ function QuotationsTab() {
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 15);
       const { data: newInvoice, error } = await supabase.from("invoices").insert({
-        invoice_number: "",
+        invoice_number: "DRAFT",
         quotation_id: quote.id,
         account_id: quote.account_id,
         client_id: quote.client_id,
