@@ -81,7 +81,18 @@ Source: Semrush built-in tools. Database: India (`in`) unless noted. Volumes are
 | digital marketing company in bangalore | 1,900 | /locations/bangalore |
 
 ## Tier 4 — International (US database, checked 24 Oct 2026)
-See compare run: digital marketing agency dubai, seo agency dubai, ppc agency dubai, digital marketing agency new york, seo agency new york, digital marketing agency london, seo agency london, ppc agency london, growth hacking agency, growth marketing agency — results appended below after the run.
+| Keyword | Vol/mo | KDI | Target |
+|---|---|---|---|
+| seo agency new york | 3,600 | 41 | /locations/new-york/seo |
+| growth marketing agency | 2,900 | 22 | /services/growth-marketing (or growth-hacking page) |
+| digital marketing agency new york | 1,900 | 51 | /locations/new-york |
+| seo agency london | 1,300 | 54 | /locations/london/seo |
+| growth hacking agency | 1,000 | 16 | /growth-hacking pages (already exist) |
+| digital marketing agency london | 590 | 75 | /locations/london |
+| digital marketing agency dubai | 390 | 38 | /locations/dubai |
+| ppc agency london | 320 | 38 | /locations/london/ppc |
+| seo agency dubai | 320 | 54 | /locations/dubai/seo |
+| ppc agency dubai | 70 | 24 | /locations/dubai/ppc |
 
 ## Question keywords (FAQ/blog fuel — AEO/AI-Overview targets)
 - what does a digital marketing agency do (50)
