@@ -199,8 +199,10 @@ export default function EmailSequences() {
     const swapIdx = idx + direction;
     if (swapIdx < 0 || swapIdx >= sorted.length) return;
     const other = sorted[swapIdx];
-    await db.from("email_sequence_steps").update({ step_order: other.step_order }).eq("id", step.id);
-    await db.from("email_sequence_steps").update({ step_order: step.step_order }).eq("id", other.id);
+    const { error: e1 } = await db.from("email_sequence_steps").update({ step_order: other.step_order }).eq("id", step.id);
+    if (e1) { toast({ title: "Reorder failed", description: e1.message, variant: "destructive" }); return; }
+    const { error: e2 } = await db.from("email_sequence_steps").update({ step_order: step.step_order }).eq("id", other.id);
+    if (e2) { toast({ title: "Reorder half-applied — please refresh", description: e2.message, variant: "destructive" }); }
     await loadSteps(selected);
   };
 

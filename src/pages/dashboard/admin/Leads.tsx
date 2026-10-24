@@ -84,6 +84,7 @@ export default function Leads() {
       queryClient.invalidateQueries({ queryKey: ["admin-leads"] });
       toast.success("Lead updated");
     },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't update the lead"),
   });
 
   const createLead = useMutation({
@@ -116,6 +117,7 @@ export default function Leads() {
       toast.success("Lead created");
       setShowModal(false);
     },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't create the lead"),
   });
 
   const totalPages = Math.ceil((data?.total ?? 0) / perPage);
