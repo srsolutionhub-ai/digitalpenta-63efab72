@@ -108,7 +108,8 @@ export default function DashboardHome() {
   const { data: audits30d, isLoading: loadingAudits } = useQuery({
     queryKey: ["admin-audits-kpi"],
     queryFn: async () => {
-      const { count } = await db.from("audits").select("*", { count: "exact", head: true }).gte("created_at", iso30d);
+      const { count, error } = await db.from("audits").select("*", { count: "exact", head: true }).gte("created_at", iso30d);
+      if (error) throw error;
       return count ?? 0;
     },
     refetchInterval: 60000,
@@ -117,7 +118,8 @@ export default function DashboardHome() {
   const { data: bookingsUpcoming, isLoading: loadingBookings } = useQuery({
     queryKey: ["admin-bookings-kpi"],
     queryFn: async () => {
-      const { count } = await db.from("strategy_call_bookings").select("*", { count: "exact", head: true }).gte("preferred_date", todayDate);
+      const { count, error } = await db.from("strategy_call_bookings").select("*", { count: "exact", head: true }).gte("preferred_date", todayDate);
+      if (error) throw error;
       return count ?? 0;
     },
     refetchInterval: 60000,
@@ -126,12 +128,13 @@ export default function DashboardHome() {
   const { data: recentLeads, isLoading: loadingRecent } = useQuery({
     queryKey: ["admin-recent-leads"],
     queryFn: async () => {
-      const { data } = await db
+      const { data, error } = await db
         .from("leads")
         .select("id, name, email, company, service, created_at")
         .not("email", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
+      if (error) throw error;
       return data ?? [];
     },
     refetchInterval: 60000,
@@ -140,7 +143,8 @@ export default function DashboardHome() {
   const { data: topPages, isLoading: loadingTopPages } = useQuery({
     queryKey: ["admin-top-lead-pages"],
     queryFn: async () => {
-      const { data } = await db.from("leads").select("first_touch").gte("created_at", iso30d);
+      const { data, error } = await db.from("leads").select("first_touch").gte("created_at", iso30d);
+      if (error) throw error;
       const counts: Record<string, number> = {};
       (data ?? []).forEach((l: any) => {
         const ft = l.first_touch;
