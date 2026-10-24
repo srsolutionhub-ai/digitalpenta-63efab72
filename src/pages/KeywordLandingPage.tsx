@@ -374,26 +374,26 @@ export default function KeywordLandingPage() {
         );
       })()}
 
-      {/* CTA */}
+      {/* CTA + inline lead capture — the page's real conversion point */}
       <section id="talk-to-us" className="py-20 relative overflow-hidden scroll-mt-24">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">
-            Ready to Win With {data.serviceCategory}?
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto mb-8">
-            Book a free 30-minute strategy call. We'll send you a custom plan within 48 hours.
-          </p>
-          <Link to="/get-proposal">
-            <Button
-              size="lg"
-              data-cta
-              data-audit-cta
-              className="rounded-full px-10 font-display font-bold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
-            >
-              {data.cta} <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-10">
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-4">
+              Ready to Win With {data.serviceCategory}?
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Tell us where you want to grow — we'll reply within 24 hours with a specific plan, or book a free 30-minute strategy call directly.
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <LpLeadForm service={data.primaryKeyword} slug={data.slug} />
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/get-proposal" className="text-sm text-primary hover:underline font-mono">
+              Prefer a detailed brief? Use the full proposal form →
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
