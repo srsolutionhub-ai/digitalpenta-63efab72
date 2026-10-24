@@ -391,8 +391,9 @@ export default function LocationPage() {
       {/* Testimonial + Contact */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Testimonial */}
+          <div className={`grid gap-8 max-w-5xl mx-auto ${data.testimonial ? "md:grid-cols-2" : "max-w-xl"}`}>
+            {/* Testimonial — only shown for cities with a real confirmed quote */}
+            {data.testimonial && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -428,6 +429,7 @@ export default function LocationPage() {
                 </div>
               </MagneticCard>
             </motion.div>
+            )}
 
             {/* Contact card */}
             <motion.div
