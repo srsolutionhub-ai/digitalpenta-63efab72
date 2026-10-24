@@ -110,6 +110,7 @@ export default function AudienceAnalytics() {
         engines: topN(engineCounts, 6),
         browsers: topN(browserCounts, 8),
         landings: topN(landingCounts),
+        lifecycleCounts, serviceAudiences, returning3plus, engagedMobile,
       };
     },
   });
@@ -145,6 +146,36 @@ export default function AudienceAnalytics() {
           </div>
         ))}
       </div>
+
+      <Panel title="Ad-ready audiences (use these definitions in Google / Meta ad targeting)">
+        <p className="text-xs text-muted-foreground mb-4">
+          Anonymous visitors can't be exported — build these as remarketing audiences inside the ad platforms
+          (pixels fire only for visitors who accepted marketing cookies). Known leads with marketing consent can be exported from Contacts.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <AudienceCard label="High-intent visitors" count={data?.lifecycleCounts?.high_intent ?? 0}
+            hint="Viewed pricing/proposal/contact or score 60+ — target with conversion campaigns" />
+          <AudienceCard label="Engaged explorers" count={data?.lifecycleCounts?.engaged ?? 0}
+            hint="2+ min active or 5+ pages — nurture with case-study ads" />
+          <AudienceCard label="Returning 3+ times" count={data?.returning3plus ?? 0}
+            hint="Strong recall — remarketing with testimonials / offers" />
+          <AudienceCard label="Engaged on mobile" count={data?.engagedMobile ?? 0}
+            hint="60s+ active on mobile — mobile-first creatives, WhatsApp CTAs" />
+          {Object.entries(data?.serviceAudiences ?? {}).map(([svc, n]) => (
+            <AudienceCard key={svc} label={`${svc.replace(/_/g, " ")} readers`} count={n as number}
+              hint="Read 2+ pages of this service — service-specific ad sets" />
+          ))}
+          <AudienceCard label="Became leads" count={data?.lifecycleCounts?.lead ?? 0}
+            hint="Already enquired — exclude from prospecting, use for lookalikes" />
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {(["new", "exploring", "engaged", "high_intent", "lead"] as const).map((s) => (
+            <span key={s} className="text-[11px] rounded-full border border-border/40 px-2.5 py-1 text-muted-foreground">
+              {s.replace("_", " ")}: <span className="text-foreground font-medium">{fmt(data?.lifecycleCounts?.[s] ?? 0)}</span>
+            </span>
+          ))}
+        </div>
+      </Panel>
 
       <div className="grid lg:grid-cols-2 gap-4">
         <Panel title="How visitors found you (channel)">
