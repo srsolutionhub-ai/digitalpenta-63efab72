@@ -17,7 +17,8 @@ export interface LocationData {
   services: string[];
   industries: string[];
   whyUs: string[];
-  testimonial: { quote: string; name: string; role: string; company: string };
+  /** Optional — only cities with a real, confirmed client quote carry one. */
+  testimonial?: { quote: string; name: string; role: string; company: string };
   faqs: { q: string; a: string }[];
   mapEmbed: string;
   schema: {
