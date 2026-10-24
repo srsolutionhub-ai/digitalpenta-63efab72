@@ -818,6 +818,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         ],
       },
       {
+        heading: "The metrics we report — and the ones we refuse to",
+        paragraphs: [
+          "Every growth engagement comes with a standing argument about metrics, so let's have it now. Impressions, reach and follower counts are diagnostics — useful for spotting problems, useless for judging success. We report them, but they never headline a review. The headline numbers are the ones your CFO recognises: qualified pipeline, cost per acquisition, conversion rate by stage, and revenue attributed by channel.",
+          "We also report experiment velocity — how many tests shipped, how many won, what we learned from the ones that didn't. A growth programme that isn't shipping experiments isn't a growth programme; it's a retainer with a dashboard. If you ever feel that's what you're looking at, the review call is the place to say it, and the backlog is where we fix it.",
+        ],
+      },
+      {
         heading: "Who this is for — and who it isn't",
         paragraphs: [
           "Growth marketing works best for businesses that already have some traction: a product customers want, a baseline of traffic or revenue, and the ability to act on what experiments reveal. If you're pre-launch, we'll usually tell you to start narrower — one channel, one audience, one offer — and come back to full-funnel growth once the foundation exists.",
@@ -900,6 +907,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "Delhi is home to the headquarters of most national English and Hindi dailies, the major TV news networks, and a dense circuit of business and trade publications. Covering this landscape remotely is possible; covering it well is not. Journalists respond to people they know, and knowing people requires showing up — press events, editorial meets, the occasional coffee in Connaught Place.",
           "Our team works from Katwaria Sarai, in the middle of this circuit. That proximity is why our pitches get read: they're short, relevant, and come from a name the journalist has actually met. It's an unglamorous advantage, but in PR it's the one that matters most.",
+        ],
+      },
+      {
+        heading: "PR for startups versus PR for established brands",
+        paragraphs: [
+          "A startup's PR problem is credibility: nobody has heard of you, and every pitch starts from zero. The work is founder-led — profiling the people, exploiting the novelty of what you're building, and turning every milestone (funding, launches, hires) into a story. Speed matters more than polish, and a single good placement in a publication your investors read can be worth a quarter of advertising.",
+          "An established brand's problem is different: you're already known, so the work is narrative control. What does page one say about you? Which stories are journalists coming to you for — and which are they writing without you? Here the craft is consistency: a steady drumbeat of expert commentary, data stories and leadership visibility that shapes how the market talks about you, rather than reacting to how it already does.",
         ],
       },
       {
@@ -988,6 +1002,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         ],
       },
       {
+        heading: "Local SEO versus national SEO — which one do you need?",
+        paragraphs: [
+          "If your customers come from Noida and the NCR — clinics, showrooms, institutes, home services — local SEO is the highest-leverage work you can do. The map pack absorbs most of the clicks for service queries, and winning it is about Google Business Profile discipline, review velocity, citations and location pages, not about publishing blog posts nobody reads.",
+          "If your customers are anywhere in India or beyond — SaaS, e-commerce, B2B services — the game is national or global: topical authority, bottom-funnel comparison content, and links from publications your buyers trust. Many Noida businesses need both, sequenced correctly: local dominance first for cash flow, national authority second for scale. The audit tells you which order makes sense for your numbers.",
+        ],
+      },
+      {
         heading: "How to choose an SEO company in Noida without getting burned",
         paragraphs: [
           "Ask three questions. First: 'Show me a ranking you earned and the revenue it produced.' If the case study stops at traffic, the agency is measuring the wrong thing. Second: 'What will you do in month one, specifically?' Vague answers like 'optimisation and backlinks' hide empty retainers. Third: 'What happens if we part ways?' Your website, content, data and links should remain yours — if an agency hesitates here, walk away.",
@@ -1070,6 +1091,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "Positioning answers three questions: who is this for, what do we stand for, and why us instead of the alternative. Those answers come from customer interviews, win-loss analysis and competitor mapping — not from a workshop where the loudest voice wins. When positioning is sharp, everything downstream gets cheaper: ads convert better, sales cycles shorten, and content writes itself.",
           "We test messaging against real customer language before it goes near a design file. If your buyers say 'reliable' and your brand says 'disruptive,' you have a translation problem that no amount of beautiful typography will fix.",
+        ],
+      },
+      {
+        heading: "Brand refresh or full rebrand — how to decide",
+        paragraphs: [
+          "A refresh keeps your name, your core mark and your recognition, and modernises everything around them: typography, colour, voice, templates. It's the right call when your brand is fundamentally sound but looks tired, or when inconsistency — not the identity itself — is the problem. It's faster, cheaper and carries almost no market risk.",
+          "A full rebrand is the right call when the strategy has changed: new audience, new category, a name or reputation that's actively holding you back, or a merger that needs a new story. It's a bigger investment and a bigger risk, which is why we insist on research before any design begins. If a refresh will do the job, we'll tell you — a smaller invoice for us, a better outcome for you.",
         ],
       },
       {
@@ -1157,6 +1185,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         ],
       },
       {
+        heading: "Reviews: the reputation asset you control",
+        paragraphs: [
+          "For most Indian businesses, Google reviews are the single most visible reputation asset — they appear before your website does. Yet most businesses leave them to chance, which means the angriest one percent of customers write the story for the happy ninety-nine. The fix isn't buying reviews; it's asking. A systematic request at the right moment — after a successful delivery, a resolved ticket, a repeat purchase — reliably lifts both volume and average rating.",
+          "Just as important is how you respond to the negative ones. A calm, specific, non-defensive reply to a one-star review is read by every future prospect who finds it. Handled well, a negative review becomes evidence that you take customers seriously. Handled badly — or ignored — it becomes evidence of the opposite. We write response protocols for both, so nobody on your team is improvising under stress.",
+        ],
+      },
+      {
         heading: "How a reputation programme is structured",
         paragraphs: [
           "We start with a reputation audit: everything ranking for your brand and key executives, your review profile across platforms, and your share of page one versus competitors. The output is a priority list — what must be fixed, what must be built, and what's already fine.",
@@ -1238,6 +1273,13 @@ const keywordLandingPages: KeywordLandingData[] = [
         paragraphs: [
           "The foundation is infrastructure: authenticated sending domains, warmed-up IPs, clean lists and a sender reputation that's protected like a credit score. On top of that sit the automation flows — welcome, browse and cart abandonment, post-purchase, win-back — which typically generate the majority of email revenue while requiring no ongoing effort once built.",
           "Then comes the editorial layer: a newsletter or campaign calendar with a point of view, written for humans rather than inboxes. The brands that win at email in 2026 are the ones whose emails people would miss. That standard is harder than it sounds, and it's exactly the standard we build to.",
+        ],
+      },
+      {
+        heading: "What DPDP compliance actually means for your email list",
+        paragraphs: [
+          "India's DPDP Act changed the rules for marketing data: consent must be specific, informed and revocable, and the burden of proof sits with you, not the subscriber. In practice this means every email address on your list should have a provable consent trail — when they opted in, what they were told, and an easy way they could have said no.",
+          "The good news is that compliance and performance point the same direction. Lists built on genuine consent have higher engagement, better deliverability and fewer spam complaints — the exact signals inbox providers reward. Purchased lists and scraped databases were always a bad idea; now they're a legal liability too. If your list's origins are murky, the audit is where we untangle them.",
         ],
       },
       {
