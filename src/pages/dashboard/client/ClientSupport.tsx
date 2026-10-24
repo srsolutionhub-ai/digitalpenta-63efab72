@@ -13,6 +13,17 @@ export default function ClientSupport() {
   const [message, setMessage] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Conversation status (open / resolved) for the client's company.
+  const { data: thread } = useQuery({
+    queryKey: ["client-support-thread", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase.from("support_threads").select("status").limit(1).maybeSingle();
+      return data;
+    },
+  });
+  const resolved = thread?.status === "resolved";
+
   const { data: messages, isLoading } = useQuery({
     queryKey: ["client-support", user?.id],
     queryFn: async () => {
@@ -71,6 +82,12 @@ export default function ClientSupport() {
       <h1 className="font-display font-bold text-xl text-foreground">Support</h1>
 
       <div className="card-surface rounded-2xl flex flex-col h-[60vh]">
+        {resolved && (
+          <div className="px-4 py-2.5 border-b border-border/20 bg-emerald-500/10 text-emerald-300 text-xs flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            This conversation is marked resolved. Send a message and it reopens automatically.
+          </div>
+        )}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12 rounded-xl" />)
