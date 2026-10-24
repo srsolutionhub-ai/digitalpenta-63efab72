@@ -94,11 +94,15 @@ Deno.serve(async (req) => {
 
     for (const enrollment of due ?? []) {
       try {
+        // Tolerate deleted/reordered steps: take the first step at or after
+        // the enrollment's current position instead of an exact match.
         const { data: step } = await admin
           .from("email_sequence_steps")
           .select("*")
           .eq("sequence_id", enrollment.sequence_id)
-          .eq("step_order", enrollment.current_step)
+          .gte("step_order", enrollment.current_step)
+          .order("step_order", { ascending: true })
+          .limit(1)
           .maybeSingle();
 
         if (!step) {
@@ -145,11 +149,14 @@ Deno.serve(async (req) => {
         }
         sent++;
 
+        // Next step = first step after the one just sent (not +1 exactly).
         const { data: nextStep } = await admin
           .from("email_sequence_steps")
           .select("*")
           .eq("sequence_id", enrollment.sequence_id)
-          .eq("step_order", enrollment.current_step + 1)
+          .gt("step_order", step.step_order)
+          .order("step_order", { ascending: true })
+          .limit(1)
           .maybeSingle();
 
         if (nextStep) {
