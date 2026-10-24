@@ -24,7 +24,7 @@ export default function AudienceAnalytics() {
 
       const [{ data: interactions }, { data: profiles }, { data: leads }] = await Promise.all([
         db.from("visitor_interactions").select("visitor_id, action, page_url, session_id, data, timestamp").gte("timestamp", since).limit(10000),
-        db.from("visitor_profiles").select("visitor_id, device_type, location, country, city, browser, os, source_channel, search_engine, search_term, utm_term, landing_page, referral_source, utm_source, utm_medium, utm_campaign, last_visit, lead_id").gte("last_visit", since).limit(5000),
+        db.from("visitor_profiles").select("visitor_id, device_type, location, country, city, browser, os, source_channel, search_engine, search_term, utm_term, landing_page, referral_source, utm_source, utm_medium, utm_campaign, last_visit, lead_id, lifecycle_stage, service_affinity, engaged_seconds, lead_score, session_count").gte("last_visit", since).limit(5000),
         db.from("leads").select("first_touch").gte("created_at", since).limit(5000),
       ]);
 
@@ -78,6 +78,24 @@ export default function AudienceAnalytics() {
         if (landing) leadPageCounts[landing] = (leadPageCounts[landing] || 0) + 1;
       });
 
+      // ── Ad-ready audiences: lifecycle + service-depth segments ──
+      const lifecycleCounts: Record<string, number> = {};
+      const serviceAudiences: Record<string, number> = {};
+      let returning3plus = 0;
+      let engagedMobile = 0;
+      (profiles ?? []).forEach((p: any) => {
+        const stage = p.lifecycle_stage || "new";
+        lifecycleCounts[stage] = (lifecycleCounts[stage] || 0) + 1;
+        if ((p.session_count ?? 1) >= 3) returning3plus++;
+        if (p.device_type === "mobile" && (p.engaged_seconds ?? 0) >= 60) engagedMobile++;
+        const aff = (p.service_affinity ?? {}) as Record<string, number>;
+        Object.entries(aff).forEach(([svc, n]) => {
+          if (svc !== "high_intent" && (n as number) >= 2) {
+            serviceAudiences[svc] = (serviceAudiences[svc] || 0) + 1;
+          }
+        });
+      });
+
       return {
         uniqueVisitors, uniqueSessions, pageViews,
         topPages: topN(pageCounts),
@@ -92,6 +110,7 @@ export default function AudienceAnalytics() {
         engines: topN(engineCounts, 6),
         browsers: topN(browserCounts, 8),
         landings: topN(landingCounts),
+        lifecycleCounts, serviceAudiences, returning3plus, engagedMobile,
       };
     },
   });
@@ -127,6 +146,36 @@ export default function AudienceAnalytics() {
           </div>
         ))}
       </div>
+
+      <Panel title="Ad-ready audiences (use these definitions in Google / Meta ad targeting)">
+        <p className="text-xs text-muted-foreground mb-4">
+          Anonymous visitors can't be exported — build these as remarketing audiences inside the ad platforms
+          (pixels fire only for visitors who accepted marketing cookies). Known leads with marketing consent can be exported from Contacts.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <AudienceCard label="High-intent visitors" count={data?.lifecycleCounts?.high_intent ?? 0}
+            hint="Viewed pricing/proposal/contact or score 60+ — target with conversion campaigns" />
+          <AudienceCard label="Engaged explorers" count={data?.lifecycleCounts?.engaged ?? 0}
+            hint="2+ min active or 5+ pages — nurture with case-study ads" />
+          <AudienceCard label="Returning 3+ times" count={data?.returning3plus ?? 0}
+            hint="Strong recall — remarketing with testimonials / offers" />
+          <AudienceCard label="Engaged on mobile" count={data?.engagedMobile ?? 0}
+            hint="60s+ active on mobile — mobile-first creatives, WhatsApp CTAs" />
+          {Object.entries(data?.serviceAudiences ?? {}).map(([svc, n]) => (
+            <AudienceCard key={svc} label={`${svc.replace(/_/g, " ")} readers`} count={n as number}
+              hint="Read 2+ pages of this service — service-specific ad sets" />
+          ))}
+          <AudienceCard label="Became leads" count={data?.lifecycleCounts?.lead ?? 0}
+            hint="Already enquired — exclude from prospecting, use for lookalikes" />
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {(["new", "exploring", "engaged", "high_intent", "lead"] as const).map((s) => (
+            <span key={s} className="text-[11px] rounded-full border border-border/40 px-2.5 py-1 text-muted-foreground">
+              {s.replace("_", " ")}: <span className="text-foreground font-medium">{fmt(data?.lifecycleCounts?.[s] ?? 0)}</span>
+            </span>
+          ))}
+        </div>
+      </Panel>
 
       <div className="grid lg:grid-cols-2 gap-4">
         <Panel title="How visitors found you (channel)">
@@ -172,6 +221,16 @@ export default function AudienceAnalytics() {
           </div>
         </Panel>
       </div>
+    </div>
+  );
+}
+
+function AudienceCard({ label, count, hint }: { label: string; count: number; hint: string }) {
+  return (
+    <div className="rounded-xl border border-border/30 bg-background/40 p-4">
+      <p className="font-display font-bold text-xl text-foreground">{fmt(count)}</p>
+      <p className="text-sm font-medium text-foreground capitalize">{label}</p>
+      <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{hint}</p>
     </div>
   );
 }

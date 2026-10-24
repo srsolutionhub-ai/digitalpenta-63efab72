@@ -45,6 +45,7 @@ interface Payload {
     timezone?: string;
     pageViews?: number;
     timeOnSite?: number;
+    engagedSeconds?: number;
     interests?: string[];
     visitorType?: string;
     landingPage?: string;
@@ -125,6 +126,37 @@ function classifyChannel(referrer: string | undefined, utmSource?: string, utmMe
   return { channel: "direct", engine: null };
 }
 
+/** Per-service engagement depth from the pages viewed in this batch. */
+function affinityFromEvents(events: IncomingEvent[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const e of events) {
+    if (e.action !== "page_view" || !e.pageUrl) continue;
+    const p = e.pageUrl.toLowerCase();
+    const cats: string[] = [];
+    if (/seo/.test(p)) cats.push("seo");
+    if (/ppc|google-ads|meta-ads|advertising/.test(p)) cats.push("paid_ads");
+    if (/social/.test(p)) cats.push("social_media");
+    if (/web-development|website|app-development/.test(p)) cats.push("web_dev");
+    if (/ai-solutions|chatbot|automation/.test(p)) cats.push("ai_automation");
+    if (/content|blog|pr-agency|press/.test(p)) cats.push("content_pr");
+    if (/pricing|proposal|book-a-call|contact|get-proposal/.test(p)) cats.push("high_intent");
+    for (const c of cats) out[c] = (out[c] ?? 0) + 1;
+  }
+  return out;
+}
+
+/** Lifecycle stage for audience building — never downgrades a known lead. */
+function deriveLifecycle(opts: {
+  hasIdentity: boolean; leadScore: number; pageViews: number;
+  engagedSeconds: number; sessionCount: number; interests: string[];
+}): string {
+  if (opts.hasIdentity) return "lead";
+  if (opts.leadScore >= 60 || opts.interests.includes("high-intent")) return "high_intent";
+  if (opts.engagedSeconds >= 120 || opts.pageViews >= 5 || opts.sessionCount >= 3) return "engaged";
+  if (opts.pageViews >= 2) return "exploring";
+  return "new";
+}
+
 /** Cheap lead-score heuristic so the CRM can prioritise warm anonymous traffic. */
 function scoreVisitor(events: IncomingEvent[], pageViews: number): number {
   let score = Math.min(pageViews * 3, 30);
@@ -167,7 +199,7 @@ Deno.serve(async (req) => {
     );
 
     // ── visitor profile (upsert, accumulate page views + time on site) ──
-    const cols = "id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city";
+    const cols = "id, page_views, time_on_site, lead_score, interests, landing_page, source_channel, search_term, session_count, country, city, engaged_seconds, service_affinity, lifecycle_stage, contact_email, lead_id";
     let { data: existing } = await admin.from("visitor_profiles").select(cols).eq("visitor_id", visitorId).maybeSingle();
 
     // Only the browser that created a profile (and holds its signed proof) may update it.
@@ -187,6 +219,20 @@ Deno.serve(async (req) => {
     const interests = Array.from(
       new Set([...(existing?.interests ?? []), ...(p.interests ?? [])]),
     ).slice(0, 20);
+
+    // Active engagement (visible-tab seconds) accumulates across visits.
+    const engagedSeconds = (existing?.engaged_seconds ?? 0) + Math.min(Math.max(p.engagedSeconds ?? 0, 0), 600);
+
+    // Per-service depth: merge this batch's page-view counts into the profile.
+    const batchAffinity = affinityFromEvents(events);
+    const serviceAffinity: Record<string, number> = { ...((existing?.service_affinity as Record<string, number>) ?? {}) };
+    for (const [k, v] of Object.entries(batchAffinity)) serviceAffinity[k] = (serviceAffinity[k] ?? 0) + v;
+
+    const sessionCount = Math.max(p.visitNumber ?? 1, existing?.session_count ?? 1);
+    const lifecycleStage = deriveLifecycle({
+      hasIdentity: !!(existing?.contact_email || existing?.lead_id),
+      leadScore, pageViews, engagedSeconds, sessionCount, interests,
+    });
 
     // visitor_profiles.type is constrained to a fixed vocabulary.
     const ALLOWED_TYPES = ["b2b_client", "local_business", "returning_visitor", "enterprise", "startup"];
@@ -225,9 +271,13 @@ Deno.serve(async (req) => {
       utm_term: p.utmTerm?.slice(0, 200) || null,
       utm_content: p.utmContent?.slice(0, 200) || null,
       click_ids: clickIds,
-      session_count: Math.max(p.visitNumber ?? 1, existing?.session_count ?? 1),
+      session_count: sessionCount,
+      engaged_seconds: engagedSeconds,
+      service_affinity: serviceAffinity,
+      lifecycle_stage: existing?.lifecycle_stage === "lead" ? "lead" : lifecycleStage,
       updated_at: new Date().toISOString(),
     };
+    if (!existing) (profileRow as Record<string, unknown>).first_seen = new Date().toISOString();
 
     let profileOk = true;
     if (existing) {
