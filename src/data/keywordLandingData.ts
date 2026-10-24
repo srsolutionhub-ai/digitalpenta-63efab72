@@ -42,6 +42,8 @@ export interface KeywordLandingData {
    * unique, human-written copy) instead of thin template content.
    */
   deepSections?: { heading: string; paragraphs: string[] }[];
+  /** Premium hero visual (imported asset). Rendered right of the hero copy on desktop. */
+  heroImage?: string;
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
@@ -732,6 +734,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "growth-marketing-agency",
+    heroImage: growthMarketingImg,
     primaryKeyword: "growth marketing agency",
     metaTitle: "Growth Marketing Agency | Digital Penta",
     metaDescription:
@@ -797,6 +800,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "pr-agency-delhi",
+    heroImage: prAgencyDelhiImg,
     primaryKeyword: "PR agency in Delhi",
     city: "Delhi",
     metaTitle: "PR Agency in Delhi | Media & Brand PR | Digital Penta",
@@ -862,6 +866,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "seo-company-noida",
+    heroImage: seoCompanyNoidaImg,
     primaryKeyword: "SEO company in Noida",
     city: "Noida",
     metaTitle: "SEO Company in Noida | Digital Penta",
@@ -927,6 +932,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "branding-agency-delhi",
+    heroImage: brandingAgencyDelhiImg,
     primaryKeyword: "branding agency in Delhi",
     city: "Delhi",
     metaTitle: "Branding Agency in Delhi | Digital Penta",
@@ -992,6 +998,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "online-reputation-management-india",
+    heroImage: ormIndiaImg,
     primaryKeyword: "online reputation management India",
     metaTitle: "Online Reputation Management India | Digital Penta",
     metaDescription:
@@ -1056,6 +1063,7 @@ const keywordLandingPages: KeywordLandingData[] = [
   },
   {
     slug: "email-marketing-services-india",
+    heroImage: emailMarketingImg,
     primaryKeyword: "email marketing services India",
     metaTitle: "Email Marketing Services in India | Digital Penta",
     metaDescription:
