@@ -668,15 +668,15 @@ const locations: LocationData[] = [
 ];
 
 export function getLocationData(slug: string): LocationData | undefined {
-  return locations.find(l => l.slug === slug);
+  return ALL_LOCATIONS.find(l => l.slug === slug);
 }
 
 export function getAllLocations(): LocationData[] {
-  return locations;
+  return ALL_LOCATIONS;
 }
 
 export function getLocationsByRegion(region: "india" | "middle-east"): LocationData[] {
-  return locations.filter(l => l.region === region);
+  return ALL_LOCATIONS.filter(l => l.region === region);
 }
 
 /** Metro/MENA set + tier-2/3 expansion (locationDataTier23.ts). */
