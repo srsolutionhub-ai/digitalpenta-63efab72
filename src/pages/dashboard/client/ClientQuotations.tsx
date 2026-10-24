@@ -91,10 +91,22 @@ export default function ClientQuotations() {
                   <p className="text-xs text-muted-foreground mt-1">{q.items.length} line item{q.items.length === 1 ? "" : "s"}</p>
                 )}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <p className="text-lg font-display font-bold text-foreground">
                   {q.currency || "INR"} {Number(q.total).toLocaleString()}
                 </p>
+                {(q.status === "sent" || q.status === "viewed") && (
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" disabled={decide.isPending}
+                      onClick={() => decide.mutate({ id: q.id, status: "declined" })}>
+                      <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline
+                    </Button>
+                    <Button size="sm" disabled={decide.isPending}
+                      onClick={() => decide.mutate({ id: q.id, status: "accepted" })}>
+                      <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> Accept
+                    </Button>
+                  </div>
+                )}
                 {q.pdf_url && (
                   <Button asChild size="sm" variant="outline">
                     <a href={q.pdf_url} target="_blank" rel="noopener noreferrer">
