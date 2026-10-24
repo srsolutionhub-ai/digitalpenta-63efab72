@@ -73,7 +73,8 @@ export default function BlogManager() {
         featured_image: form.featured_image || null,
         seo_title: form.seo_title || null,
         seo_description: form.seo_description || null,
-        published_at: form.status === "published" ? new Date().toISOString() : null,
+        // Keep the original publication date on edits; only stamp it on first publish.
+        published_at: form.status === "published" ? (editing?.published_at ?? new Date().toISOString()) : null,
       };
 
       if (isNew) {
