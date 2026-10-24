@@ -62,6 +62,17 @@ export default function Blog() {
           { hreflang: "x-default", href: "https://digitalpenta.com/blog" },
         ]}
         schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "@id": "https://digitalpenta.com/blog#blog",
+            name: "Digital Penta Blog",
+            description:
+              "Practical guides on SEO, paid media, AI marketing, automation and growth strategy from Digital Penta specialists working across India and the Gulf.",
+            url: "https://digitalpenta.com/blog",
+            inLanguage: "en-IN",
+            publisher: { "@id": "https://digitalpenta.com/#organization" },
+          },
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
             { name: "Blog", url: "https://digitalpenta.com/blog" },

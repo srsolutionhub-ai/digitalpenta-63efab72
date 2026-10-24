@@ -111,6 +111,14 @@ export default function Contact() {
           { hreflang: "x-default", href: "https://digitalpenta.com/contact" },
         ]}
         schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "@id": "https://digitalpenta.com/contact#contactpage",
+            name: "Contact Digital Penta",
+            url: "https://digitalpenta.com/contact",
+            about: { "@id": "https://digitalpenta.com/#organization" },
+          },
           organizationSchema(),
           breadcrumbSchema([
             { name: "Home", url: "https://digitalpenta.com/" },
