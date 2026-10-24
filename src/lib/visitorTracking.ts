@@ -248,7 +248,10 @@ function buildBody() {
 let inFlight = false;
 
 function send(useBeacon = false) {
-  if (!consented || queue.length === 0) return;
+  // Send when there are events, or when ≥5s of new engaged time has piled up
+  // (heartbeat flushes engagement even on pages with no clicks).
+  const pendingEngaged = Math.round(activeMs / 1000) - lastSentEngagedSec;
+  if (!consented || (queue.length === 0 && pendingEngaged < 5)) return;
   // One request at a time until this browser holds its signed id, so parallel
   // first requests can't be treated as an impostor. On unload we always send.
   if (inFlight && !useBeacon && !getVisitorSig()) { scheduleFlush(1500); return; }

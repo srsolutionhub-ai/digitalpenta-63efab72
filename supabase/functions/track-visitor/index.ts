@@ -45,6 +45,7 @@ interface Payload {
     timezone?: string;
     pageViews?: number;
     timeOnSite?: number;
+    engagedSeconds?: number;
     interests?: string[];
     visitorType?: string;
     landingPage?: string;
@@ -123,6 +124,37 @@ function classifyChannel(referrer: string | undefined, utmSource?: string, utmMe
   if (src || m) return { channel: "campaign", engine: null };
   if (host) return { channel: "referral", engine: null };
   return { channel: "direct", engine: null };
+}
+
+/** Per-service engagement depth from the pages viewed in this batch. */
+function affinityFromEvents(events: IncomingEvent[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const e of events) {
+    if (e.action !== "page_view" || !e.pageUrl) continue;
+    const p = e.pageUrl.toLowerCase();
+    const cats: string[] = [];
+    if (/seo/.test(p)) cats.push("seo");
+    if (/ppc|google-ads|meta-ads|advertising/.test(p)) cats.push("paid_ads");
+    if (/social/.test(p)) cats.push("social_media");
+    if (/web-development|website|app-development/.test(p)) cats.push("web_dev");
+    if (/ai-solutions|chatbot|automation/.test(p)) cats.push("ai_automation");
+    if (/content|blog|pr-agency|press/.test(p)) cats.push("content_pr");
+    if (/pricing|proposal|book-a-call|contact|get-proposal/.test(p)) cats.push("high_intent");
+    for (const c of cats) out[c] = (out[c] ?? 0) + 1;
+  }
+  return out;
+}
+
+/** Lifecycle stage for audience building — never downgrades a known lead. */
+function deriveLifecycle(opts: {
+  hasIdentity: boolean; leadScore: number; pageViews: number;
+  engagedSeconds: number; sessionCount: number; interests: string[];
+}): string {
+  if (opts.hasIdentity) return "lead";
+  if (opts.leadScore >= 60 || opts.interests.includes("high-intent")) return "high_intent";
+  if (opts.engagedSeconds >= 120 || opts.pageViews >= 5 || opts.sessionCount >= 3) return "engaged";
+  if (opts.pageViews >= 2) return "exploring";
+  return "new";
 }
 
 /** Cheap lead-score heuristic so the CRM can prioritise warm anonymous traffic. */
