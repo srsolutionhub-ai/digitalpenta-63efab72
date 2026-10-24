@@ -225,6 +225,16 @@ export default function AudienceAnalytics() {
   );
 }
 
+function AudienceCard({ label, count, hint }: { label: string; count: number; hint: string }) {
+  return (
+    <div className="rounded-xl border border-border/30 bg-background/40 p-4">
+      <p className="font-display font-bold text-xl text-foreground">{fmt(count)}</p>
+      <p className="text-sm font-medium text-foreground capitalize">{label}</p>
+      <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{hint}</p>
+    </div>
+  );
+}
+
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="card-surface rounded-2xl p-6">
