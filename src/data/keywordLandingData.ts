@@ -44,6 +44,15 @@ export interface KeywordLandingData {
   deepSections?: { heading: string; paragraphs: string[] }[];
   /** Premium hero visual (imported asset). Rendered right of the hero copy on desktop. */
   heroImage?: string;
+  /**
+   * "Which service does what" breakdown — each item links to its real
+   * service page, doubling as contextual internal linking.
+   */
+  serviceBreakdown?: { name: string; desc: string; href: string }[];
+  /** Numbered delivery funnel — how an engagement actually runs. */
+  processSteps?: { step: string; desc: string }[];
+  /** Mid-page CTA shown after the long-form sections (before the FAQ). */
+  midCta?: { heading: string; text: string };
 }
 
 const keywordLandingPages: KeywordLandingData[] = [
