@@ -50,8 +50,8 @@
 - Skip GSC/GTM/Resend/Meta setup.
 
 ## CRM Deep Investigation (24 Oct 2026)
-- [ ] Admin panel pages: investigate bugs, broken flows, RLS issues
-- [ ] Client panel: investigate bugs, broken flows, RLS issues
-- [ ] Backend: RLS policies, edge functions, data errors
-- [ ] Fix + improve all found issues
-- [ ] Verify build/typecheck; report
+- [x] Admin panel pages: investigate bugs, broken flows, RLS issues
+- [x] Client panel: investigate bugs, broken flows, RLS issues
+- [x] Backend: RLS policies, edge functions, data errors
+- [x] Fix + improve all found issues
+- [x] Verify build/typecheck; report
