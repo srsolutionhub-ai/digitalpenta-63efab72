@@ -111,7 +111,7 @@ export default function Invoices() {
               key: "actions",
               header: "",
               render: (r: any) => r.status !== "paid" ? (
-                <Button size="sm" variant="ghost" onClick={() => markPaid.mutate(r.id)}><Check className="w-3 h-3 mr-1" /> Mark paid</Button>
+                <Button size="sm" variant="ghost" disabled={markPaid.isPending} onClick={() => markPaid.mutate(r)}><Check className="w-3 h-3 mr-1" /> Mark paid</Button>
               ) : null,
             },
           ]}

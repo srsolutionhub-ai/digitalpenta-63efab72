@@ -61,24 +61,41 @@ function QuotationsTab() {
 
   const convertToInvoice = useMutation({
     mutationFn: async (quote: any) => {
+      // Idempotent: if this quotation already produced an invoice, reuse it
+      // instead of creating a duplicate on every click.
+      const { data: existing, error: existErr } = await supabase
+        .from("invoices").select("id, invoice_number").eq("quotation_id", quote.id).maybeSingle();
+      if (existErr) throw existErr;
+      if (existing) {
+        toast.info(`Invoice ${existing.invoice_number} already exists for this quotation`);
+        return;
+      }
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + 15);
       const { error } = await supabase.from("invoices").insert({
         invoice_number: "",
         quotation_id: quote.id,
+        account_id: quote.account_id,
         client_id: quote.client_id,
         client_name: quote.client_name,
         client_email: quote.client_email,
+        client_gstin: quote.client_gstin,
+        place_of_supply: quote.place_of_supply,
         items: quote.items,
         subtotal: quote.subtotal,
+        tax_rate: quote.tax_rate,
         tax_amount: quote.tax_amount,
+        cgst_amount: quote.cgst_amount,
+        sgst_amount: quote.sgst_amount,
+        igst_amount: quote.igst_amount,
         total: quote.total,
         currency: quote.currency,
         status: "sent",
         due_date: dueDate.toISOString().slice(0, 10),
-      });
+      } as any);
       if (error) throw error;
-      await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
+      const { error: qErr } = await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
+      if (qErr) throw qErr;
 
       // Send email notification (fire-and-forget)
       supabase.functions.invoke("send-notification", {
