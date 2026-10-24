@@ -288,9 +288,13 @@ export function getMatrixPage(serviceSlug: string, citySlug: string): MatrixPage
 
   // Unique meta per combo — kept under 60/160 char limits.
   const metaTitle = `${service.name} Agency in ${cityName} | Free Consultation`;
-  const metaDescription =
-    `${service.longName} services in ${cityName} for ${city.industries.slice(0, 2).join(" and ")}. ` +
-    `Plans from ${city.budgetMin}/month. Request a free consultation.`;
+  // SEO pages also weave in the high-volume "SEO company in {city}" variant
+  // (e.g. "seo company in delhi" ~3,600/mo in India per Semrush, Oct 2026).
+  const metaDescription = service.slug === "seo"
+    ? `Trusted SEO company in ${cityName} for ${city.industries.slice(0, 2).join(" and ")}. ` +
+      `${service.longName} plans from ${city.budgetMin}/month. Request a free consultation.`
+    : `${service.longName} services in ${cityName} for ${city.industries.slice(0, 2).join(" and ")}. ` +
+      `Plans from ${city.budgetMin}/month. Request a free consultation.`;
 
   const h1 = `${service.name} Agency in ${cityName} — ${service.metaIntent[0].toUpperCase()}${service.metaIntent.slice(1)}`;
   const heroSubhead =
