@@ -130,6 +130,7 @@ export default function ClientDeliverables() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["deliverables-reports", accountId] }),
+    onError: (e: any) => toast.error(e.message ?? "Couldn't update the report"),
   });
 
   const accountOptions = useMemo(() => accounts, [accounts]);

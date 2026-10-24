@@ -53,7 +53,8 @@ export default function Tasks() {
   };
   const toggle = async (t: any) => {
     const done = t.status !== "done";
-    await db.from("crm_tasks").update({ status: done ? "done" : "open", completed_at: done ? new Date().toISOString() : null }).eq("id", t.id);
+    const { error } = await db.from("crm_tasks").update({ status: done ? "done" : "open", completed_at: done ? new Date().toISOString() : null }).eq("id", t.id);
+    if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["crm-tasks"] });
   };
 

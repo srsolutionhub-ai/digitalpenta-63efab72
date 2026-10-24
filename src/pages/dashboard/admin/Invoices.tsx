@@ -22,11 +22,28 @@ export default function Invoices() {
   });
 
   const markPaid = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("invoices").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id);
+    mutationFn: async (invoice: any) => {
+      // Record the money, not just the status: log the outstanding balance as
+      // a payment, then mark the invoice paid with the full amount settled.
+      const outstanding = Math.max(0, Number(invoice.total) - Number(invoice.amount_paid || 0));
+      if (outstanding > 0) {
+        const { error: payErr } = await supabase.from("invoice_payments").insert({
+          invoice_id: invoice.id,
+          amount: outstanding,
+          method: "manual",
+          paid_at: new Date().toISOString(),
+        } as any);
+        if (payErr) throw payErr;
+      }
+      const { error } = await supabase.from("invoices").update({
+        status: "paid",
+        paid_at: new Date().toISOString(),
+        amount_paid: Number(invoice.total),
+      } as any).eq("id", invoice.id);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["invoices"] }); toast.success("Marked as paid"); },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't mark as paid"),
   });
 
   const totals = {
@@ -94,7 +111,7 @@ export default function Invoices() {
               key: "actions",
               header: "",
               render: (r: any) => r.status !== "paid" ? (
-                <Button size="sm" variant="ghost" onClick={() => markPaid.mutate(r.id)}><Check className="w-3 h-3 mr-1" /> Mark paid</Button>
+                <Button size="sm" variant="ghost" disabled={markPaid.isPending} onClick={() => markPaid.mutate(r)}><Check className="w-3 h-3 mr-1" /> Mark paid</Button>
               ) : null,
             },
           ]}

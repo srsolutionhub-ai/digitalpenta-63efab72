@@ -50,13 +50,16 @@ export default function SupportInbox() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Thread list stays live even before a conversation is selected.
   useEffect(() => {
-    if (!active) return;
     const channel = supabase
-      .channel(`support-inbox-${active}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, () => {
-        qc.invalidateQueries({ queryKey: ["support-thread-messages", active] });
+      .channel("support-inbox-threads")
+      .on("postgres_changes", { event: "*", schema: "public", table: "support_threads" }, () => {
         qc.invalidateQueries({ queryKey: ["support-threads"] });
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, () => {
+        qc.invalidateQueries({ queryKey: ["support-threads"] });
+        if (active) qc.invalidateQueries({ queryKey: ["support-thread-messages", active] });
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -77,13 +80,15 @@ export default function SupportInbox() {
   const send = useMutation({
     mutationFn: async () => {
       if (!user || !active || !reply.trim()) return;
-      // Messages need a client_id — use any client login linked to the company.
-      const { data: member } = await db
+      // Messages need a client_id — use a client login linked to the company.
+      const { data: member, error: memberErr } = await db
         .from("account_team_members")
         .select("user_id")
         .eq("account_id", active)
+        .eq("role_on_account", "client")
         .limit(1)
         .maybeSingle();
+      if (memberErr) throw memberErr;
       if (!member) throw new Error("No client login is linked to this company yet");
       const { error } = await db.from("support_messages").insert({
         account_id: active,
@@ -122,7 +127,7 @@ export default function SupportInbox() {
             {threads.map((t: any) => (
               <button
                 key={t.id}
-                onClick={() => setActive(t.account_id)}
+                onClick={() => { setActive(t.account_id); setReply(""); }}
                 className={`w-full text-left px-4 py-3 hover:bg-muted/30 transition-colors ${active === t.account_id ? "bg-primary/10" : ""}`}
               >
                 <div className="flex items-center justify-between gap-2">

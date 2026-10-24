@@ -70,7 +70,11 @@ export default function ClientFiles() {
         size_bytes: file.size,
         mime_type: file.type || null,
       } as any);
-      if (rowErr) throw rowErr;
+      if (rowErr) {
+        // Don't leave an orphaned object in storage if the metadata row failed.
+        await supabase.storage.from("client-files").remove([path]).catch(() => {});
+        throw rowErr;
+      }
       toast.success("File shared with your account team");
       qc.invalidateQueries({ queryKey: ["client-files"] });
     } catch (e: any) {

@@ -32,7 +32,9 @@ function loadRole(userId: string, force = false): Promise<string | null> {
     return role;
   })();
   rolePromises.set(userId, p);
-  p.catch(() => rolePromises.delete(userId));
+  // Dedupe only in-flight requests: once settled, drop the entry so the next
+  // call re-validates the role instead of serving a stale in-memory result.
+  p.finally(() => { if (rolePromises.get(userId) === p) rolePromises.delete(userId); }).catch(() => {});
   return p;
 }
 

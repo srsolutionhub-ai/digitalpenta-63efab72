@@ -15,14 +15,15 @@ const STATUS_VARIANT: Record<string, any> = { draft: "default", sent: "info", ac
 export default function ClientQuotations() {
   const { user } = useAuth();
 
-  const { data: quotes, isLoading } = useQuery({
+  const { data: quotes, isLoading, isError, refetch } = useQuery({
     queryKey: ["client-quotations", user?.id, user?.email],
     queryFn: async () => {
-      if (!user?.email) return [];
+      if (!user) return [];
+      // No personal filter: access rules already scope this list to quotes
+      // addressed to the client or anyone at their company.
       const { data, error } = await db
         .from("quotations")
         .select("*")
-        .or(`client_id.eq.${user.id},client_email.ilike.${user.email}`)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -40,6 +41,11 @@ export default function ClientQuotations() {
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-2xl" />)}
+        </div>
+      ) : isError ? (
+        <div className="card-surface rounded-2xl p-8 text-center space-y-3">
+          <p className="text-sm text-muted-foreground">Couldn't load your quotations.</p>
+          <Button size="sm" variant="outline" onClick={() => refetch()}>Try again</Button>
         </div>
       ) : !quotes?.length ? (
         <EmptyState

@@ -48,3 +48,10 @@
 ## Standing constraints
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
 - Skip GSC/GTM/Resend/Meta setup.
+
+## CRM Deep Investigation (24 Oct 2026)
+- [x] Admin panel pages: investigate bugs, broken flows, RLS issues
+- [x] Client panel: investigate bugs, broken flows, RLS issues
+- [x] Backend: RLS policies, edge functions, data errors
+- [x] Fix + improve all found issues
+- [x] Verify build/typecheck; report

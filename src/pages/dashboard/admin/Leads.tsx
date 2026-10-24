@@ -84,6 +84,7 @@ export default function Leads() {
       queryClient.invalidateQueries({ queryKey: ["admin-leads"] });
       toast.success("Lead updated");
     },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't update the lead"),
   });
 
   const createLead = useMutation({
@@ -116,6 +117,7 @@ export default function Leads() {
       toast.success("Lead created");
       setShowModal(false);
     },
+    onError: (e: any) => toast.error(e.message ?? "Couldn't create the lead"),
   });
 
   const totalPages = Math.ceil((data?.total ?? 0) / perPage);
@@ -130,7 +132,7 @@ export default function Leads() {
       const budgetMap: Record<string, number> = { "<50k": 40000, "50k-1L": 75000, "1L-5L": 300000, "5L+": 500000 };
       const { error } = await supabase.from("crm_deals").insert({
         title: `${lead.name || lead.email || "Lead"} — ${lead.service || "General"}`,
-        value: budgetMap[lead.budget_range] ?? 0,
+        value: budgetMap[lead.budget] ?? 0,
         currency: "INR",
         stage_id: stage.id,
         service_interest: lead.service || null,
@@ -301,7 +303,7 @@ function LeadModal({ open, onClose, lead, onSave, onConvertDeal, converting }: {
 
   const handleOpen = () => {
     if (lead) {
-      setForm({ name: lead.name || "", email: lead.email || "", phone: lead.phone || "", company: lead.company || "", website: lead.website || "", source: lead.source || "", budget_range: lead.budget_range || "", service: lead.service || "", status: lead.status || "new", notes: lead.notes || "" });
+      setForm({ name: lead.name || "", email: lead.email || "", phone: lead.phone || "", company: lead.company || "", website: lead.website || "", source: lead.source || "", budget_range: lead.budget || "", service: lead.service || "", status: lead.status || "new", notes: lead.notes || "" });
     } else {
       setForm({ name: "", email: "", phone: "", company: "", website: "", source: "", budget_range: "", service: "", status: "new", notes: "" });
     }

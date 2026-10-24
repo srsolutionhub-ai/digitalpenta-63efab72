@@ -38,7 +38,7 @@ export default function WhatsAppHub() {
   const [draft, setDraft] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const startedFromQuery = useRef(false);
+  const lastPhoneHandled = useRef<string | null>(null);
 
   const { data: settings } = useQuery({
     queryKey: ["whatsapp-settings"],
@@ -91,12 +91,21 @@ export default function WhatsAppHub() {
   });
 
   // Open (or start) a conversation from ?phone= query param, e.g. links from Leads.
+  // Looks the phone up directly in the database — never infers existence from
+  // the still-loading, capped conversation list — and re-runs when the param changes.
   useEffect(() => {
     const phone = searchParams.get("phone");
-    if (!phone || startedFromQuery.current || conversations.length === undefined) return;
-    startedFromQuery.current = true;
+    if (!phone || lastPhoneHandled.current === phone) return;
+    lastPhoneHandled.current = phone;
+    let cancelled = false;
     (async () => {
-      const existing = conversations.find((c: any) => c.phone_number === phone);
+      const { data: existing, error: findErr } = await db
+        .from("whatsapp_conversations")
+        .select("id")
+        .eq("phone_number", phone)
+        .maybeSingle();
+      if (cancelled) return;
+      if (findErr) { toast.error(findErr.message); return; }
       if (existing) {
         setActiveId(existing.id);
         return;
@@ -106,11 +115,13 @@ export default function WhatsAppHub() {
         .insert({ phone_number: phone, status: "open" })
         .select("id")
         .single();
+      if (cancelled) return;
       if (error) { toast.error(error.message); return; }
       qc.invalidateQueries({ queryKey: ["wa-conversations"] });
       setActiveId(created.id);
     })();
-  }, [searchParams, conversations, qc]);
+    return () => { cancelled = true; };
+  }, [searchParams, qc]);
 
   // Realtime: refresh conversation list & active thread when new rows arrive.
   useEffect(() => {
@@ -137,6 +148,7 @@ export default function WhatsAppHub() {
   const openConversation = async (c: any) => {
     setActiveId(c.id);
     setSelectedTemplateId("");
+    setDraft(""); // never carry one conversation's draft into another
     if ((c.unread_count ?? 0) > 0) {
       await db.from("whatsapp_conversations").update({ unread_count: 0 }).eq("id", c.id);
       qc.invalidateQueries({ queryKey: ["wa-conversations"] });
