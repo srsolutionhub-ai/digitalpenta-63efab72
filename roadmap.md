@@ -55,3 +55,10 @@
 - [x] Backend: RLS policies, edge functions, data errors
 - [x] Fix + improve all found issues
 - [x] Verify build/typecheck; report
+
+## Full-Platform Deep Investigation round 2 (24 Oct 2026)
+- [ ] Admin workflows: full lifecycle code audit (leads→deals→quotes→invoices→projects→reports)
+- [ ] Client workflows + admin↔client connections audit
+- [ ] Backend: edge functions, triggers, RLS, data integrity audit
+- [ ] Fix all confirmed issues
+- [ ] Final verification + report
