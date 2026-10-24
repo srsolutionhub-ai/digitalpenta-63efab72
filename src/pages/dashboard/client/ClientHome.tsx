@@ -44,8 +44,11 @@ export default function ClientHome() {
         db.from("client_approvals").select("id,status").in("account_id", accountIds),
         db.from("invoices").select("id,total,status"),
         db.from("client_reports").select("*").in("account_id", accountIds).eq("published", true).order("period_month", { ascending: false }).limit(1).maybeSingle(),
-        db.from("support_messages").select("*").order("created_at", { ascending: false }).limit(3),
+        db.from("support_messages").select("*").in("account_id", accountIds).order("created_at", { ascending: false }).limit(3),
       ]);
+      // Surface real failures instead of rendering zeros as if nothing exists.
+      const firstError = projectsRes.error || approvalsRes.error || invoicesRes.error || reportsRes.error || messagesRes.error;
+      if (firstError) throw firstError;
 
       const projects = projectsRes.data ?? [];
       const approvals = approvalsRes.data ?? [];
@@ -76,6 +79,15 @@ export default function ClientHome() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-2xl" />)}
         </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="card-surface rounded-2xl p-12 text-center space-y-3">
+        <p className="text-muted-foreground text-sm">Couldn't load your dashboard right now.</p>
+        <button onClick={() => refetch()} className="text-sm text-primary hover:underline">Try again</button>
       </div>
     );
   }
