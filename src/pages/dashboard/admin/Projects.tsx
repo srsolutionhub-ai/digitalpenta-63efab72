@@ -95,6 +95,7 @@ export default function Projects() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks", activeProject] }),
+    onError: (e: any) => toast.error(e.message ?? "Couldn't move the task"),
   });
 
   return (
