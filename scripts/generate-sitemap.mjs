@@ -117,8 +117,14 @@ for (const svc of services) {
 // /locations/* pages for Pune, Hyderabad, Noida, etc. never reach Google.
 const locationSrc = path.join(ROOT, "src/data/locationData.ts");
 const locationText = fs.readFileSync(locationSrc, "utf8");
+// Tier-2/3 cities live in a separate data file (built from the registry).
+const tier23Src = path.join(ROOT, "src/data/locationDataTier23.ts");
+const tier23Text = fs.existsSync(tier23Src) ? fs.readFileSync(tier23Src, "utf8") : "";
+// locationDataTier23 builds entries via build("slug", ...) calls.
+const tier23Slugs = [...tier23Text.matchAll(/build\(\s*"([a-z-]+)"/g)].map(m => m[1]);
 const locationSlugs = [...locationText.matchAll(/slug:\s*"([a-z-]+)"/g)]
   .map(m => m[1])
+  .concat(tier23Slugs)
   // dedupe (multiple slug:"..." per record, we want unique top-level entries)
   .filter((v, i, arr) => arr.indexOf(v) === i);
 // Locations hub — the crawlable index that links every city page.

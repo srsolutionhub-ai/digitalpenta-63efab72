@@ -391,8 +391,9 @@ export default function LocationPage() {
       {/* Testimonial + Contact */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Testimonial */}
+          <div className={`grid gap-8 max-w-5xl mx-auto ${data.testimonial ? "md:grid-cols-2" : "max-w-xl"}`}>
+            {/* Testimonial — only shown for cities with a real confirmed quote */}
+            {data.testimonial && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -428,6 +429,7 @@ export default function LocationPage() {
                 </div>
               </MagneticCard>
             </motion.div>
+            )}
 
             {/* Contact card */}
             <motion.div
@@ -487,6 +489,77 @@ export default function LocationPage() {
                 </Button>
               </Link>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI services — the fastest-growing enquiry category (AI SEO, LLM
+          visibility, agents, automation). One shared section keeps the copy
+          consistent; city relevance comes from the surrounding depth layer. */}
+      <section className="py-20 border-t border-border/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+            className="max-w-3xl mx-auto text-center mb-10"
+          >
+            <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-4">
+              AI Services for <span className="text-gradient">{data.city}</span> Businesses
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              The fastest-growing enquiries we receive from {data.city} are no longer just
+              "build me a website" — they're "make AI work inside my business." Here's what
+              that actually means in practice.
+            </p>
+          </motion.div>
+          <div className="grid sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {[
+              {
+                t: "AI SEO & LLM Visibility",
+                d: `When someone in ${data.city} asks ChatGPT or Gemini "best ${data.industries[0]?.toLowerCase() ?? "business"} near me", your business should be in that answer. We optimise your presence for AI assistants — structured data, entity signals and answer-ready content — not just blue links.`,
+                href: "/services/ai-solutions",
+              },
+              {
+                t: "AI Agents & Chatbots",
+                d: `A trained AI agent on your website and WhatsApp that answers ${data.city} customers in Hindi and English, qualifies enquiries, books appointments and hands over to your team — working nights, weekends and festival rushes without a salary.`,
+                href: "/services/ai-solutions",
+              },
+              {
+                t: "Business Automation & CRM",
+                d: `Enquiry to follow-up to invoice — automated. We build CRM dashboards, WhatsApp automation and workflow systems so no ${data.city} lead goes cold because someone forgot to call back.`,
+                href: "/services/automation",
+              },
+              {
+                t: "AI-Built Websites & Apps",
+                d: `LLM-assisted development means your website, web app or mobile app ships in weeks, not months — with the same engineering standards. Faster builds, lower cost, no corner-cutting on quality.`,
+                href: "/services/development",
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={card.t}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+              >
+                <Link to={card.href} className="block h-full card-premium p-6 group hover:border-primary/30 transition-all duration-300">
+                  <h3 className="font-display font-semibold text-foreground mb-2 flex items-center justify-between">
+                    {card.t}
+                    <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{card.d}</p>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link to="/get-proposal">
+              <Button size="lg" className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg">
+                Discuss AI for Your {data.city} Business
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

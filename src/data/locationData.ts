@@ -1,3 +1,5 @@
+import { TIER23_LOCATIONS } from "./locationDataTier23";
+
 export interface LocationData {
   slug: string;
   city: string;
@@ -17,7 +19,8 @@ export interface LocationData {
   services: string[];
   industries: string[];
   whyUs: string[];
-  testimonial: { quote: string; name: string; role: string; company: string };
+  /** Optional — only cities with a real, confirmed client quote carry one. */
+  testimonial?: { quote: string; name: string; role: string; company: string };
   faqs: { q: string; a: string }[];
   mapEmbed: string;
   schema: {
@@ -665,15 +668,18 @@ const locations: LocationData[] = [
 ];
 
 export function getLocationData(slug: string): LocationData | undefined {
-  return locations.find(l => l.slug === slug);
+  return ALL_LOCATIONS.find(l => l.slug === slug);
 }
 
 export function getAllLocations(): LocationData[] {
-  return locations;
+  return ALL_LOCATIONS;
 }
 
 export function getLocationsByRegion(region: "india" | "middle-east"): LocationData[] {
-  return locations.filter(l => l.region === region);
+  return ALL_LOCATIONS.filter(l => l.region === region);
 }
 
-export default locations;
+/** Metro/MENA set + tier-2/3 expansion (locationDataTier23.ts). */
+const ALL_LOCATIONS: LocationData[] = [...locations, ...TIER23_LOCATIONS];
+
+export default ALL_LOCATIONS;

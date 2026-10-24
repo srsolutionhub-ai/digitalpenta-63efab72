@@ -13,6 +13,8 @@
  *  - Every city entry must be materially different from the others.
  */
 
+import { CITY_DEPTH_TIER23 } from "./cityDepthTier23";
+
 export interface CityDepth {
   slug: string;
   /** Local market narrative — 2 unique paragraphs. */
@@ -262,10 +264,13 @@ const CITY_DEPTH: CityDepth[] = [
   },
 ];
 
-const DEPTH_INDEX = new Map(CITY_DEPTH.map((c) => [c.slug, c]));
+/** Metro depth set + tier-2/3 batch (cityDepthTier23.ts). */
+const ALL_DEPTH: CityDepth[] = [...CITY_DEPTH, ...CITY_DEPTH_TIER23];
+
+const DEPTH_INDEX = new Map(ALL_DEPTH.map((c) => [c.slug, c]));
 
 /** Cities with a hand-written depth layer — the GSC priority set. */
-export const PRIORITY_CITY_SLUGS = CITY_DEPTH.map((c) => c.slug);
+export const PRIORITY_CITY_SLUGS = ALL_DEPTH.map((c) => c.slug);
 
 export function getCityDepth(slug: string): CityDepth | undefined {
   return DEPTH_INDEX.get(slug);
