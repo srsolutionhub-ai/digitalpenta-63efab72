@@ -21,6 +21,7 @@ const ROLES: { value: AppRole; label: string }[] = [
 ];
 
 interface TeamMember {
+  id: string; // user_roles row id — a user can hold multiple role rows
   user_id: string;
   role: AppRole;
   email: string;
@@ -39,7 +40,7 @@ export default function SettingsPage() {
     queryFn: async () => {
       const { data: roles, error } = await supabase
         .from("user_roles")
-        .select("user_id, role");
+        .select("id, user_id, role");
       if (error) throw error;
 
       // Get profiles for these users
@@ -52,6 +53,7 @@ export default function SettingsPage() {
       return roles.map((r) => {
         const profile = profiles?.find((p) => p.id === r.user_id);
         return {
+          id: r.id,
           user_id: r.user_id,
           role: r.role,
           email: profile?.email || "Unknown",
@@ -62,11 +64,11 @@ export default function SettingsPage() {
   });
 
   const updateRoleMutation = useMutation({
-    mutationFn: async ({ userId, newRole }: { userId: string; newRole: AppRole }) => {
+    mutationFn: async ({ roleId, newRole }: { roleId: string; newRole: AppRole }) => {
       const { error } = await supabase
         .from("user_roles")
         .update({ role: newRole })
-        .eq("user_id", userId);
+        .eq("id", roleId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -77,11 +79,11 @@ export default function SettingsPage() {
   });
 
   const deleteRoleMutation = useMutation({
-    mutationFn: async (userId: string) => {
+    mutationFn: async (roleId: string) => {
       const { error } = await supabase
         .from("user_roles")
         .delete()
-        .eq("user_id", userId);
+        .eq("id", roleId);
       if (error) throw error;
     },
     onSuccess: () => {
