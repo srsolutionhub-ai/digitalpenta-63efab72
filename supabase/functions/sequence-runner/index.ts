@@ -79,15 +79,19 @@ Deno.serve(async (req) => {
     const activeSeqIds = (sequences ?? []).map((s: any) => s.id);
     if (!activeSeqIds.length) return json({ ok: true, processed: 0, message: "No active sequences" });
 
-    const { data: due, error: dueErr } = await admin
-      .from("email_sequence_enrollments")
-      .select("*")
-      .eq("status", "active")
-      .in("sequence_id", activeSeqIds)
-      .lte("next_send_at", nowIso)
-      .order("next_send_at", { ascending: true })
-      .limit(BATCH_MAX);
+    // Atomically claim due enrollments (SKIP LOCKED lease) so overlapping
+    // runs can never send the same email twice. Stale leases (>10 min) are
+    // reclaimable, so a crashed run never strands an enrollment.
+    const { data: claimed, error: dueErr } = await admin
+      .rpc("claim_due_sequence_enrollments", { _limit: BATCH_MAX });
     if (dueErr) return json({ error: dueErr.message }, 500);
+
+    // Release claims on enrollments whose sequence is no longer active.
+    const due = (claimed ?? []).filter((e: any) => activeSeqIds.includes(e.sequence_id));
+    const released = (claimed ?? []).filter((e: any) => !activeSeqIds.includes(e.sequence_id)).map((e: any) => e.id);
+    if (released.length) {
+      await admin.from("email_sequence_enrollments").update({ processing_at: null }).in("id", released);
+    }
 
     let sent = 0, failed = 0, completed = 0;
     const results: unknown[] = [];
@@ -106,7 +110,7 @@ Deno.serve(async (req) => {
           .maybeSingle();
 
         if (!step) {
-          await admin.from("email_sequence_enrollments").update({ status: "completed" }).eq("id", enrollment.id);
+          await admin.from("email_sequence_enrollments").update({ status: "completed", processing_at: null }).eq("id", enrollment.id);
           completed++;
           continue;
         }
@@ -143,7 +147,7 @@ Deno.serve(async (req) => {
 
         if (!resendRes.ok) {
           failed++;
-          await admin.from("email_sequence_enrollments").update({ status: "failed" }).eq("id", enrollment.id);
+          await admin.from("email_sequence_enrollments").update({ status: "failed", processing_at: null }).eq("id", enrollment.id);
           results.push({ enrollment: enrollment.id, ok: false, error: resendBody.slice(0, 200) });
           continue;
         }
@@ -164,16 +168,17 @@ Deno.serve(async (req) => {
           await admin.from("email_sequence_enrollments").update({
             current_step: nextStep.step_order,
             next_send_at: nextSendAt,
+            processing_at: null,
           }).eq("id", enrollment.id);
         } else {
-          await admin.from("email_sequence_enrollments").update({ status: "completed" }).eq("id", enrollment.id);
+          await admin.from("email_sequence_enrollments").update({ status: "completed", processing_at: null }).eq("id", enrollment.id);
           completed++;
         }
         results.push({ enrollment: enrollment.id, ok: true });
       } catch (e) {
         console.error("sequence-runner enrollment error", enrollment.id, e);
         failed++;
-        await admin.from("email_sequence_enrollments").update({ status: "failed" }).eq("id", enrollment.id).catch(() => {});
+        await admin.from("email_sequence_enrollments").update({ status: "failed", processing_at: null }).eq("id", enrollment.id).catch(() => {});
       }
     }
 

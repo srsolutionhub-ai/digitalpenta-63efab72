@@ -97,19 +97,10 @@ function QuotationsTab() {
       const { error: qErr } = await supabase.from("quotations").update({ status: "accepted" }).eq("id", quote.id);
       if (qErr) throw qErr;
 
-      // Send email notification (fire-and-forget)
+      // Send email notification (fire-and-forget). The function is staff-only
+      // and derives every field from the invoice row itself.
       supabase.functions.invoke("send-notification", {
-        body: {
-          type: "invoice_created",
-          data: {
-            invoice_number: newInvoice?.invoice_number || "",
-            client_name: quote.client_name,
-            client_email: quote.client_email,
-            total: quote.total,
-            due_date: dueDate.toISOString().slice(0, 10),
-            status: "sent",
-          },
-        },
+        body: { type: "invoice_created", data: { invoice_id: newInvoice?.id } },
       }).catch(() => {});
     },
     onSuccess: () => {
