@@ -557,7 +557,7 @@ export default function LocationPage() {
         services={data.services}
       />
 
-      <CityDepthSection citySlug={data.slug} city={data.city} />
+      <CityDepthSection citySlug={data.slug} city={data.city} hideFaqs />
 
 
       {/* Map */}

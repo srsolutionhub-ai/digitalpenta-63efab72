@@ -5,6 +5,7 @@ interface Props {
   /** Location slug (e.g. "mumbai"). Renders nothing when no depth layer exists. */
   citySlug: string;
   city: string;
+  hideFaqs?: boolean;
 }
 
 /**
@@ -13,7 +14,7 @@ interface Props {
  * Pure presentation, no data fetching, no charts: renders only when the city
  * has a hand-written depth record so the perf budget stays intact.
  */
-export default function CityDepthSection({ citySlug, city }: Props) {
+export default function CityDepthSection({ citySlug, city, hideFaqs = false }: Props) {
   const depth = getCityDepth(citySlug);
   if (!depth) return null;
 
@@ -95,12 +96,12 @@ export default function CityDepthSection({ citySlug, city }: Props) {
         </div>
 
         {/* City FAQs — long-tail + AEO capture */}
-        <div className="mt-10">
+        {!hideFaqs && <div className="mt-10">
           <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
             <HelpCircle className="w-4 h-4 text-primary" /> Questions to consider in {city}
           </h3>
           <div className="space-y-3">
-            {depth.faqs.filter((f) => depth.budgets.length > 0).map((f) => (
+            {depth.faqs.map((f) => (
               <details
                 key={f.q}
                 className="group rounded-2xl glass border border-border/20 p-5 open:border-primary/30 transition-colors"
@@ -112,7 +113,7 @@ export default function CityDepthSection({ citySlug, city }: Props) {
               </details>
             ))}
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
