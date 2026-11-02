@@ -17,4 +17,4 @@ Disallow: /reset-password
 Disallow: /data-request
 Disallow: /unsubscribe
 
-Sitemap: https://digitalpenta.com/sitemap.xml
+Sitemap: https://digitalpenta.app/sitemap.xml
