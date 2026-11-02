@@ -49,6 +49,11 @@
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
 - Skip GSC/GTM/Resend/Meta setup.
 
+## City expansion — Batch 2 continuation
+- [ ] Restore and integrate 48 city-specific content records and page introductions.
+- [ ] Verify registry coverage, service-area claims, internal links, sitemap and crawler rules.
+- [ ] Run data tests, schema checks and desktop/mobile route QA; record actual coverage and outstanding depth requirements.
+
 ## CRM Deep Investigation (24 Oct 2026)
 - [x] Admin panel pages: investigate bugs, broken flows, RLS issues
 - [x] Client panel: investigate bugs, broken flows, RLS issues
