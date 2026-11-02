@@ -228,7 +228,7 @@ export default function LocationPage() {
               <Link to="/get-proposal">
                 <Button
                   size="lg"
-                  className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
+                  className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold"
                 >
                   Get Free Proposal for {data.city}
                 </Button>
@@ -237,7 +237,7 @@ export default function LocationPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 font-display font-semibold border-border/40"
+                  className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold border-border/40"
                 >
                   Talk to {data.city} Expert
                 </Button>
@@ -469,7 +469,7 @@ export default function LocationPage() {
               <Link to="/get-proposal" className="block">
                 <Button
                   size="lg"
-                  className="w-full rounded-full font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white"
+                  className="h-auto min-h-11 w-full whitespace-normal rounded-full px-6 py-3 font-display font-semibold"
                 >
                   Get Free Proposal for {data.city}
                 </Button>
@@ -664,7 +664,7 @@ export default function LocationPage() {
             <Link to="/get-proposal">
               <Button
                 size="lg"
-                className="rounded-full px-10 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
+                className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold"
               >
                 Get Your Free {data.city} Strategy →
               </Button>

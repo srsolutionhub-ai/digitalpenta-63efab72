@@ -69,7 +69,7 @@ function build(slug: string, tagline: string, description: string): LocationData
     industries: reg.industries,
     whyUs: AGENCY_WHY_US,
     faqs: depth?.faqs ?? [],
-    mapEmbed: `https://maps.google.com/maps?q=${encodeURIComponent(reg.city + ", " + reg.state)}&output=embed`,
+    mapEmbed: `https://www.google.com/maps?q=${encodeURIComponent(reg.city + ", " + reg.state)}&output=embed`,
     schema: {
       streetAddress: `${reg.city}, ${reg.state}`,
       postalCode: "",
