@@ -60,7 +60,8 @@
 ## Google Search Console — uploaded HTML verification
 - [x] Link Google account and confirm the uploaded FILE token matches that account.
 - [x] Serve the exact verification file and correct sitemap origin to the active published domain.
-- [ ] Publish with approval, confirm the live file, verify ownership, add property and submit sitemap.
+- [x] Publish with approval, confirm the live file, verify ownership, add property and submit sitemap.
+- Google returned FILE verification success and siteOwner for https://digitalpenta.app/; sitemap submission returned HTTP 204. Live sitemap contains 233 same-origin URLs. Indexing is not established by submission.
 
 ## CRM Deep Investigation (24 Oct 2026)
 - [x] Admin panel pages: investigate bugs, broken flows, RLS issues
