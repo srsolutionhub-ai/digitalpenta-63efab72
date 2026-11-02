@@ -195,7 +195,7 @@ export default function LocationPage() {
 
             {/* H1 carries the exact local query ("digital marketing agency in <city>");
                 the editorial tagline moves to the sub-headline. */}
-            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-4 leading-tight">
+            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-4 leading-tight [overflow-wrap:anywhere]">
               Digital Marketing Agency in{" "}
               <span className="text-gradient">{data.city}</span>
             </h1>
