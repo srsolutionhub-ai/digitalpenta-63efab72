@@ -14,6 +14,7 @@
 import type { LocationData } from "./locationData";
 import { getCityRegistryEntry } from "./cityRegistry";
 import { getCityDepth } from "./cityDepth";
+import { CITY_PAGES_BATCH2 } from "./cityDepthBatch2";
 
 const PHONE = "+91-88601-00039";
 const EMAIL = "support@digitalpenta.com";
@@ -33,7 +34,7 @@ const CORE_SERVICES = [
 
 const AGENCY_STATS = [
   { value: "500+", label: "Clients Served" },
-  { value: "3x", label: "Avg. Traffic Growth" },
+  { value: "3x", label: "Agency Avg. ROI" },
   { value: "24hr", label: "Response Time" },
   { value: "4.9★", label: "Google Rating" },
 ];
@@ -59,10 +60,10 @@ function build(slug: string, tagline: string, description: string): LocationData
     tagline,
     description,
     metaTitle: `Digital Marketing Agency in ${reg.city} | Free Audit`,
-    metaDescription: `${reg.city} digital marketing agency for SEO, Google Ads, AI automation, websites and apps. ${reg.localAngle}. Free audit — call ${PHONE}.`,
+    metaDescription: `${reg.city} SEO, PPC and AI automation for ${reg.industries.slice(0, 2).join(" and ").toLowerCase()}. Explore websites, CRM and qualified enquiry strategies. Get a free audit.`,
     phone: PHONE,
     email: EMAIL,
-    address: `Serving ${reg.city}, ${reg.state} — remote-first with on-site strategy sessions`,
+    address: `Serving ${reg.city}, ${reg.state} remotely from our New Delhi headquarters`,
     stats: AGENCY_STATS,
     services: CORE_SERVICES,
     industries: reg.industries,
@@ -79,6 +80,7 @@ function build(slug: string, tagline: string, description: string): LocationData
 }
 
 export const TIER23_LOCATIONS: LocationData[] = [
+  ...CITY_PAGES_BATCH2.map(({ slug, tagline, description }) => build(slug, tagline, description)),
   build(
     "kanpur",
     "Digital growth for Kanpur's leather, textile and industrial economy",

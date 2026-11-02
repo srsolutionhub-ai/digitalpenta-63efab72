@@ -14,6 +14,7 @@
  */
 
 import { CITY_DEPTH_TIER23 } from "./cityDepthTier23";
+import { CITY_DEPTH_BATCH2 } from "./cityDepthBatch2";
 
 export interface CityDepth {
   slug: string;
@@ -265,7 +266,7 @@ const CITY_DEPTH: CityDepth[] = [
 ];
 
 /** Metro depth set + tier-2/3 batch (cityDepthTier23.ts). */
-const ALL_DEPTH: CityDepth[] = [...CITY_DEPTH, ...CITY_DEPTH_TIER23];
+const ALL_DEPTH: CityDepth[] = [...CITY_DEPTH, ...CITY_DEPTH_TIER23, ...CITY_DEPTH_BATCH2];
 
 const DEPTH_INDEX = new Map(ALL_DEPTH.map((c) => [c.slug, c]));
 
