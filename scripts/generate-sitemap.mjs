@@ -15,7 +15,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const ROOT = process.cwd();
-const SITE = "https://digitalpenta.com";
+const SITE = "https://digitalpenta.app";
 
 // --- Lightweight TS source loader ---------------------------------------
 // We import the matrix data files directly. To avoid pulling in a TS toolchain

@@ -47,7 +47,7 @@
 
 ## Standing constraints
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
-- Skip GSC/GTM/Resend/Meta setup.
+- Skip GTM/Resend/Meta setup; Google Search Console setup explicitly authorized on 2 Nov 2026.
 
 ## City expansion — Batch 2 continuation
 - [x] Restore and integrate 48 city-specific content records and page introductions.
@@ -56,6 +56,11 @@
 - Verified coverage: 87 location pages (82 India, 5 MENA); Indian tiers 14 / 33 / 35. Sitemap: 233 URLs, no orphan city/service URLs.
 - Browser QA: 48 new routes at 1280px and 360px (96 checks), one H1, self-canonicals, service links and zero page exceptions. Fixed Lottie module crash, Google Maps CSP source, long-name CTA wrapping and heading clipping.
 - Remaining scope, not claimed complete: 100+ Indian cities, requested 30% metro coverage, 3,000+ substantive words per city (current rendered pages measured 1,269–1,371 words), independently sourced city research. No production publish or live ranking verification.
+
+## Google Search Console — uploaded HTML verification
+- [x] Link Google account and confirm the uploaded FILE token matches that account.
+- [x] Serve the exact verification file and correct sitemap origin to the active published domain.
+- [ ] Publish with approval, confirm the live file, verify ownership, add property and submit sitemap.
 
 ## CRM Deep Investigation (24 Oct 2026)
 - [x] Admin panel pages: investigate bugs, broken flows, RLS issues
