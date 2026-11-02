@@ -10,7 +10,7 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
-  breadcrumbSchema, faqPageSchema, localBusinessSchema, reviewedItemSchema,
+  breadcrumbSchema, faqPageSchema, reviewedItemSchema,
   serviceWithAreaSchema, cityPlaceSchema, answerPageSchema,
   type HreflangAlternate,
 } from "@/components/seo/SEOHead";
@@ -78,18 +78,6 @@ export default function LocationPage() {
   }
 
   const schemas: Record<string, unknown>[] = [
-    localBusinessSchema({
-      city: data.city,
-      countryCode,
-      url: canonical,
-      phone: data.phone,
-      email: data.email,
-      streetAddress: data.schema.streetAddress,
-      postalCode: data.schema.postalCode,
-      latitude: data.schema.latitude,
-      longitude: data.schema.longitude,
-      description: data.description,
-    }),
     breadcrumbSchema([
       { name: "Home", url: "https://digitalpenta.com/" },
       { name: "Locations", url: "https://digitalpenta.com/locations" },
@@ -108,7 +96,7 @@ export default function LocationPage() {
       url: canonical,
       answer: `Digital Penta is a digital marketing agency serving ${data.city}, ${data.country}, offering ${data.services
         .slice(0, 5)
-        .join(", ")}. The ${data.city} team runs local keyword research, Google Business Profile optimisation and competitor tracking, and can be reached on ${data.phone}.`,
+        .join(", ")}. Contact the delivery team for service-area research and an enquiry strategy at ${data.phone}.`,
       about: `Digital marketing agency in ${data.city}`,
     }),
   ];
@@ -121,8 +109,6 @@ export default function LocationPage() {
       url: canonical,
       services: data.services,
       description: data.description,
-      ratingValue: "4.9",
-      reviewCount: String(Math.max((LOCATION_REVIEWS[data.slug]?.length ?? 0), 24)),
     })
   );
   if (data.faqs.length) schemas.push(faqPageSchema(data.faqs));
@@ -138,7 +124,7 @@ export default function LocationPage() {
         description: data.description,
         reviews: cityReviews,
         ratingValue: "4.9",
-        reviewCount: String(Math.max(cityReviews.length, 12)),
+        reviewCount: String(cityReviews.length),
       })
     );
   }
@@ -209,7 +195,7 @@ export default function LocationPage() {
 
             {/* H1 carries the exact local query ("digital marketing agency in <city>");
                 the editorial tagline moves to the sub-headline. */}
-            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-4 leading-tight">
+            <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-4 leading-tight [overflow-wrap:anywhere]">
               Digital Marketing Agency in{" "}
               <span className="text-gradient">{data.city}</span>
             </h1>
@@ -242,7 +228,7 @@ export default function LocationPage() {
               <Link to="/get-proposal">
                 <Button
                   size="lg"
-                  className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
+                  className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold"
                 >
                   Get Free Proposal for {data.city}
                 </Button>
@@ -251,7 +237,7 @@ export default function LocationPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 font-display font-semibold border-border/40"
+                  className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold border-border/40"
                 >
                   Talk to {data.city} Expert
                 </Button>
@@ -483,7 +469,7 @@ export default function LocationPage() {
               <Link to="/get-proposal" className="block">
                 <Button
                   size="lg"
-                  className="w-full rounded-full font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white"
+                  className="h-auto min-h-11 w-full whitespace-normal rounded-full px-6 py-3 font-display font-semibold"
                 >
                   Get Free Proposal for {data.city}
                 </Button>
@@ -509,31 +495,30 @@ export default function LocationPage() {
               AI Services for <span className="text-gradient">{data.city}</span> Businesses
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              The fastest-growing enquiries we receive from {data.city} are no longer just
-              "build me a website" — they're "make AI work inside my business." Here's what
-              that actually means in practice.
+              Connect your website, enquiry handling and business systems with an AI plan
+              built around your actual processes, approved information and human oversight.
             </p>
           </motion.div>
           <div className="grid sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
             {[
               {
                 t: "AI SEO & LLM Visibility",
-                d: `When someone in ${data.city} asks ChatGPT or Gemini "best ${data.industries[0]?.toLowerCase() ?? "business"} near me", your business should be in that answer. We optimise your presence for AI assistants — structured data, entity signals and answer-ready content — not just blue links.`,
+                d: `Help people researching ${data.city} businesses understand your services through accurate entity information, structured data and useful answers. AI inclusion and search rankings are not guaranteed; visibility needs monitoring alongside qualified enquiries.`,
                 href: "/services/ai-solutions",
               },
               {
                 t: "AI Agents & Chatbots",
-                d: `A trained AI agent on your website and WhatsApp that answers ${data.city} customers in Hindi and English, qualifies enquiries, books appointments and hands over to your team — working nights, weekends and festival rushes without a salary.`,
+                d: `An enquiry assistant using approved service information can collect requirements and route conversations to your team. Choose languages your business supports, with human escalation and booking confirmation tied to real availability.`,
                 href: "/services/ai-solutions",
               },
               {
                 t: "Business Automation & CRM",
-                d: `Enquiry to follow-up to invoice — automated. We build CRM dashboards, WhatsApp automation and workflow systems so no ${data.city} lead goes cold because someone forgot to call back.`,
+                d: `Connect enquiry capture, follow-up tasks and quotation tracking for your ${data.city} business. CRM dashboards and reviewed automation make handoffs visible, with permissions, consent and failure alerts planned before launch.`,
                 href: "/services/automation",
               },
               {
                 t: "AI-Built Websites & Apps",
-                d: `LLM-assisted development means your website, web app or mobile app ships in weeks, not months — with the same engineering standards. Faster builds, lower cost, no corner-cutting on quality.`,
+                d: `Use LLM-assisted development where it fits the project, with reviewed code, testing and secure integration. Scope your website, software, SaaS dashboard or mobile app around real user journeys; timelines depend on complexity and approvals.`,
                 href: "/services/development",
               },
             ].map((card, i) => (
@@ -556,7 +541,7 @@ export default function LocationPage() {
           </div>
           <div className="text-center mt-10">
             <Link to="/get-proposal">
-              <Button size="lg" className="rounded-full px-8 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg">
+              <Button size="lg" className="h-auto min-h-11 whitespace-normal rounded-full px-8 py-3 font-display font-semibold">
                 Discuss AI for Your {data.city} Business
               </Button>
             </Link>
@@ -572,7 +557,7 @@ export default function LocationPage() {
         services={data.services}
       />
 
-      <CityDepthSection citySlug={data.slug} city={data.city} />
+      <CityDepthSection citySlug={data.slug} city={data.city} hideFaqs />
 
 
       {/* Map */}
@@ -587,7 +572,7 @@ export default function LocationPage() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title={`Digital Penta ${data.city} office location`}
+              title={`${data.city} service-area map`}
             />
           </div>
         </div>
@@ -679,7 +664,7 @@ export default function LocationPage() {
             <Link to="/get-proposal">
               <Button
                 size="lg"
-                className="rounded-full px-10 font-display font-semibold bg-gradient-to-r from-[hsl(20,90%,50%)] to-[hsl(30,100%,45%)] text-white shadow-lg"
+                className="h-auto min-h-11 max-w-full whitespace-normal rounded-full px-8 py-3 font-display font-semibold"
               >
                 Get Your Free {data.city} Strategy →
               </Button>

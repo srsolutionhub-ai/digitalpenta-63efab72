@@ -1,4 +1,4 @@
-# Roadmap — Full SEO Audit & Optimization (Oct 2026) ✅ COMPLETE
+# Roadmap — SEO Audit & City Expansion
 
 ## Phase 1 — Research (evidence first)
 - [x] Keyword research via Semrush (80+ keywords, India + US DBs) → `docs/seo/KEYWORD_RESEARCH_2026-10.md`
@@ -48,6 +48,14 @@
 ## Standing constraints
 - No publish unless asked. No fake claims/gamification; preserve confirmed real claims.
 - Skip GSC/GTM/Resend/Meta setup.
+
+## City expansion — Batch 2 continuation
+- [x] Restore and integrate 48 city-specific content records and page introductions.
+- [x] Verify registry coverage, service-area claims, internal links, sitemap and crawler rules.
+- [x] Run data tests, schema checks and desktop/mobile route QA; record actual coverage and outstanding depth requirements.
+- Verified coverage: 87 location pages (82 India, 5 MENA); Indian tiers 14 / 33 / 35. Sitemap: 233 URLs, no orphan city/service URLs.
+- Browser QA: 48 new routes at 1280px and 360px (96 checks), one H1, self-canonicals, service links and zero page exceptions. Fixed Lottie module crash, Google Maps CSP source, long-name CTA wrapping and heading clipping.
+- Remaining scope, not claimed complete: 100+ Indian cities, requested 30% metro coverage, 3,000+ substantive words per city (current rendered pages measured 1,269–1,371 words), independently sourced city research. No production publish or live ranking verification.
 
 ## CRM Deep Investigation (24 Oct 2026)
 - [x] Admin panel pages: investigate bugs, broken flows, RLS issues

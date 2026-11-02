@@ -28,9 +28,9 @@ export default function LocationsHub() {
     url: `https://digitalpenta.com/locations/${l.slug}`,
   }));
 
-  const answer = `Digital Penta is a digital marketing agency headquartered in New Delhi, India, with dedicated city teams serving ${all
+  const answer = `Digital Penta is a digital marketing agency headquartered in New Delhi, India, serving businesses in ${all
     .map((l) => l.city)
-    .join(", ")}. Each city team delivers SEO, Google Ads, social media, web development, PR and AI automation with local-market keyword, competitor and Google Business Profile strategy.`;
+    .join(", ")}. Explore SEO, paid advertising, websites and AI automation shaped around each service area's business needs. Service coverage does not imply a staffed office in each city.`;
 
   return (
     <Layout>
@@ -48,14 +48,14 @@ export default function LocationsHub() {
           collectionPageSchema({
             name: "Digital Penta Locations",
             description:
-              "City-level digital marketing teams and service areas operated by Digital Penta across India and the Middle East.",
+              "Digital marketing service areas across India and the Middle East.",
             url: CANONICAL,
             items,
           }),
           answerPageSchema({
             name: "Which cities does Digital Penta serve?",
             description:
-              "Digital Penta operates city teams across India and the Gulf, each with local SEO, paid media and Google Business Profile expertise.",
+              "Digital Penta serves businesses across India and the Gulf with SEO, paid media and technology services.",
             url: CANONICAL,
             answer,
             about: "Digital marketing agency locations in India and the Middle East",
@@ -85,7 +85,7 @@ export default function LocationsHub() {
           <div className="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full mb-6" />
           <h1 className="font-display font-extrabold text-4xl md:text-6xl text-foreground mb-5 leading-tight">
             Digital Penta Locations —{" "}
-            <span className="text-gradient">Agency Teams Across India &amp; the Gulf</span>
+            <span className="text-gradient">Service Areas Across India &amp; the Gulf</span>
           </h1>
           <p data-speakable className="text-muted-foreground text-lg leading-relaxed mb-8">
             {answer}
@@ -105,7 +105,7 @@ export default function LocationsHub() {
         </div>
       </section>
 
-      <CityGrid heading="Metro & major city teams" cities={indiaT1} />
+      <CityGrid heading="Metro & major city service areas" cities={indiaT1} />
       <CityGrid heading="Tier-2 growth cities we serve" cities={indiaT2} />
       <CityGrid heading="Tier-3 & emerging city coverage" cities={indiaT3} />
       <CityGrid heading="Digital marketing agency locations in the Middle East" cities={mena} />

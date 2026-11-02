@@ -5,6 +5,7 @@ interface Props {
   /** Location slug (e.g. "mumbai"). Renders nothing when no depth layer exists. */
   citySlug: string;
   city: string;
+  hideFaqs?: boolean;
 }
 
 /**
@@ -13,7 +14,7 @@ interface Props {
  * Pure presentation, no data fetching, no charts: renders only when the city
  * has a hand-written depth record so the perf budget stays intact.
  */
-export default function CityDepthSection({ citySlug, city }: Props) {
+export default function CityDepthSection({ citySlug, city, hideFaqs = false }: Props) {
   const depth = getCityDepth(citySlug);
   if (!depth) return null;
 
@@ -24,7 +25,7 @@ export default function CityDepthSection({ citySlug, city }: Props) {
           id="city-depth-heading"
           className="font-display font-bold text-2xl md:text-3xl text-foreground mb-6"
         >
-          The <span className="text-gradient">{city} market</span>, as we actually see it
+          Planning for the <span className="text-gradient">{city} market</span>
         </h2>
 
         <div className="space-y-4 text-muted-foreground leading-relaxed text-[15px]">
@@ -36,7 +37,7 @@ export default function CityDepthSection({ citySlug, city }: Props) {
         {/* Micro-markets — hyperlocal relevance signals */}
         <div className="mt-10">
           <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-primary" /> Business districts we work across in {city}
+            <Building2 className="w-4 h-4 text-primary" /> Local market areas to consider in {city}
           </h3>
           <ul className="flex flex-wrap gap-2">
             {depth.districts.map((d) => (
@@ -51,9 +52,9 @@ export default function CityDepthSection({ citySlug, city }: Props) {
         </div>
 
         {/* Budget benchmarks */}
-        <div className="mt-10">
+        {depth.budgets.length > 0 && <div className="mt-10">
           <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
-            <IndianRupee className="w-4 h-4 text-primary" /> What campaigns typically cost in {city}
+            <IndianRupee className="w-4 h-4 text-primary" /> Illustrative campaign planning ranges
           </h3>
           <div className="overflow-x-auto rounded-2xl glass border border-border/20">
             <table className="w-full text-left text-sm">
@@ -81,23 +82,23 @@ export default function CityDepthSection({ citySlug, city }: Props) {
             </table>
           </div>
           <p className="text-[11px] text-muted-foreground mt-3">
-            Indicative ranges based on current auction pricing and competitive depth in {city}; your
-            audit gives exact figures for your accounts.
+            Internal planning estimates, not measured local auction prices or a quotation.
+            Media, management and production costs need separate scoping for your business.
           </p>
-        </div>
+        </div>}
 
         {/* SERP reality — the honest competitive read */}
         <div className="mt-10 card-premium p-6">
           <h3 className="font-display font-semibold text-lg text-foreground mb-3 flex items-center gap-2">
-            <Target className="w-4 h-4 text-primary" /> What it takes to rank in {city}
+            <Target className="w-4 h-4 text-primary" /> Search-intent planning for {city}
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{depth.serpReality}</p>
         </div>
 
         {/* City FAQs — long-tail + AEO capture */}
-        <div className="mt-10">
+        {!hideFaqs && <div className="mt-10">
           <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-primary" /> {city} questions we get asked most
+            <HelpCircle className="w-4 h-4 text-primary" /> Questions to consider in {city}
           </h3>
           <div className="space-y-3">
             {depth.faqs.map((f) => (
@@ -112,7 +113,7 @@ export default function CityDepthSection({ citySlug, city }: Props) {
               </details>
             ))}
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
