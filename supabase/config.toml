@@ -3,8 +3,6 @@ project_id = "ygoxxqkcxunuowtuwdxr"
 [functions.run-seo-audit]
 verify_jwt = false
 
-[functions.audit-preflight]
-verify_jwt = false
 
 [functions.analyze-audit-ai]
 verify_jwt = false
