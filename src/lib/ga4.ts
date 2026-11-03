@@ -22,11 +22,23 @@ function MEASUREMENT_ID_(): string { return ENV_MEASUREMENT_ID || dynamicMeasure
 let loaded = false;
 let granted = false;
 
-function gtag(...args: unknown[]) {
+// gtag.js / GTM only honour commands pushed as a real `arguments` object —
+// an array is silently ignored, which used to drop Consent Mode commands.
+function gtag(..._args: unknown[]) {
   window.dataLayer = window.dataLayer || [];
-  // GA4 requires the raw arguments object shape.
-  (window.dataLayer as unknown[]).push(args);
+  // eslint-disable-next-line prefer-rest-params
+  (window.dataLayer as unknown[]).push(arguments);
 }
+
+/**
+ * GTM mode: when a Google Tag Manager container is configured, GA4 is
+ * expected to be configured *inside* GTM. We then never load gtag.js directly
+ * (prevents double-counted page views/conversions); events still reach GTM
+ * through the dataLayer pushes in analytics.ts.
+ */
+let gtmMode = false;
+export function setGa4GtmMode(on: boolean): void { gtmMode = on; }
+export function isGa4GtmMode(): boolean { return gtmMode; }
 
 export function isGa4Configured(): boolean {
   return Boolean(MEASUREMENT_ID_());
@@ -47,7 +59,7 @@ export function initGa4ConsentDefaults(): void {
 
 function loadTag(): void {
   const id = MEASUREMENT_ID_();
-  if (loaded || !id) return;
+  if (loaded || !id || gtmMode) return;
   loaded = true;
   const s = document.createElement("script");
   s.async = true;
@@ -79,12 +91,21 @@ export function setGa4Consent(analytics: boolean, marketing = false): void {
     ad_user_data: marketing ? "granted" : "denied",
     ad_personalization: marketing ? "granted" : "denied",
   });
-  if (analytics) loadTag();
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "dp_consent_update",
+    dp_consent_analytics: analytics ? "granted" : "denied",
+    dp_consent_marketing: marketing ? "granted" : "denied",
+  });
+  if (analytics) {
+    // Wait briefly for DB-configured GTM ID so GA4 is never loaded twice.
+    import("./trackingIntegrations").then((m) => m.whenIntegrationsReady()).then(() => loadTag());
+  }
 }
 
 /** Forwards one event to GA4. No-op until consent + measurement ID exist. */
 export function forwardToGa4(eventName: string, params: Record<string, unknown>): void {
-  if (typeof window === "undefined" || !granted || !MEASUREMENT_ID_()) return;
+  if (typeof window === "undefined" || !granted || gtmMode || !MEASUREMENT_ID_()) return;
   gtag("event", eventName, {
     ...params,
     user_id: getVisitorId(),
