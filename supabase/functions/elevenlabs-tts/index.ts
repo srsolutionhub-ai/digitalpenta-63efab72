@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
     let voiceId = DEFAULT_VOICE;
     if (requestedVoice && /^[A-Za-z0-9]{10,40}$/.test(requestedVoice)) {
       const { data: allowedVoice } = await supabase.from("voice_settings").select("id")
-        .eq("voice_id", requestedVoice).limit(1).maybeSingle();
+        .eq("voice_id", requestedVoice).eq("enabled_for_site", true).limit(1).maybeSingle();
       if (allowedVoice) voiceId = requestedVoice;
     }
 

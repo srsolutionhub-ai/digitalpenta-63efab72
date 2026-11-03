@@ -95,47 +95,29 @@ Deno.serve(async (req) => {
 
     // For payload types that send to arbitrary emails, validate the recipient
     // exists in our DB to prevent the function being used as an open relay.
-    if (payload.type === "booking_confirmed" || payload.type === "abandoned_draft") {
+    // Visitor-triggered emails: only a booking the caller just created (proved
+    // by its unguessable id + matching email) gets ONE confirmation. Unsubmitted
+    // proposal drafts never email the typed address — they alert the team only.
+    if (payload.type === "booking_confirmed") {
       const recip = String((payload.data as any)?.email || "").trim().toLowerCase();
-      if (!recip) {
-        return new Response(JSON.stringify({ error: "Email required" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      const bookingId = String((payload.data as any)?.booking_id || "");
+      if (!recip || !/^[0-9a-f-]{36}$/i.test(bookingId)) {
+        return new Response(JSON.stringify({ error: "Not allowed" }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      const guard = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      );
-      if (payload.type === "booking_confirmed") {
-        const { data: booking } = await guard
-          .from("strategy_call_bookings")
-          .select("id, created_at")
-          .eq("email", recip)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (!booking || (Date.now() - new Date(booking.created_at).getTime()) > 10 * 60_000) {
-          return new Response(JSON.stringify({ error: "No matching recent booking" }), {
-            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-      } else {
-        // abandoned_draft → must match a recent contact (last 24h)
-        const { data: c } = await guard
-          .from("contacts")
-          .select("id, created_at")
-          .eq("email", recip)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (!c || (Date.now() - new Date(c.created_at).getTime()) > 24 * 60 * 60_000) {
-          return new Response(JSON.stringify({ error: "No matching recent draft" }), {
-            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
+      const guard = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const since = new Date(Date.now() - 10 * 60_000).toISOString();
+      const { data: claimed } = await guard.from("strategy_call_bookings")
+        .update({ confirmation_sent_at: new Date().toISOString() })
+        .eq("id", bookingId).eq("email", recip).gte("created_at", since).is("confirmation_sent_at", null)
+        .select("id").maybeSingle();
+      if (!claimed) {
+        return new Response(JSON.stringify({ error: "Not allowed" }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
     }
-
 
     let subject = "";
     let html = "";
@@ -266,9 +248,9 @@ Deno.serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      to = recipient;
-      bcc = internalTo;
-      replyTo = "support@digitalpenta.com";
+      // Team-only alert: never email an address a visitor merely typed.
+      to = internalTo;
+      replyTo = recipient;
       const greet = d.name ? `Hi ${esc(d.name)},` : "Hi there,";
       // Only our own proposal page is ever linked — never a caller-chosen address.
       let resumeUrl = "https://digitalpenta.com/get-proposal";
