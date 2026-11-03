@@ -45,14 +45,15 @@ Deno.serve(async (req) => {
     }
     if (!trusted) {
       // Public visitors may only trigger their own newsletter welcome email, right after subscribing.
-      if (template !== "newsletter-welcome" || typeof to !== "string") return json({ error: "Not allowed" }, 403);
+      // Same reply whether or not the address is subscribed (no membership oracle).
+      if (template !== "newsletter-welcome" || typeof to !== "string") return json({ ok: true });
       const email = to.trim().toLowerCase();
       const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
       const { data: sub } = await sb.from("newsletter_subscribers").select("id").eq("email", email).gte("created_at", since).maybeSingle();
-      if (!sub) return json({ error: "Not allowed" }, 403);
+      if (!sub) return json({ ok: true });
       const { count } = await sb.from("email_send_log").select("id", { count: "exact", head: true })
         .eq("template", "newsletter-welcome").eq("to_email", email);
-      if ((count ?? 0) > 0) return json({ ok: true, skipped: true });
+      if ((count ?? 0) > 0) return json({ ok: true });
     }
 
     const templateData = sanitizeData(body?.data ?? {}, trusted);

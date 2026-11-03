@@ -133,7 +133,9 @@ export default function BookingCalendar({ trigger, source = "website", defaultTo
 
     setSubmitting(true);
     try {
+      const bookingId = crypto.randomUUID();
       const { error } = await supabase.from("strategy_call_bookings").insert({
+        id: bookingId,
         name: name.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim() || null,
@@ -165,6 +167,7 @@ export default function BookingCalendar({ trigger, source = "website", defaultTo
         body: {
           type: "booking_confirmed",
           data: {
+            booking_id: bookingId,
             name, email, phone, company,
             preferred_date: toIsoDate(date),
             preferred_slot: slot,

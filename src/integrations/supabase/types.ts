@@ -2489,6 +2489,7 @@ export type Database = {
       strategy_call_bookings: {
         Row: {
           company: string | null
+          confirmation_sent_at: string | null
           created_at: string
           email: string
           id: string
@@ -2506,6 +2507,7 @@ export type Database = {
         }
         Insert: {
           company?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string
           email: string
           id?: string
@@ -2523,6 +2525,7 @@ export type Database = {
         }
         Update: {
           company?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string
           email?: string
           id?: string
