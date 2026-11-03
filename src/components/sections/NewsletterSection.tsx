@@ -33,6 +33,7 @@ export default function NewsletterSection({ variant = "full" }: { variant?: "ful
         body: { template: "newsletter-welcome", to: email, data: { name } },
       }).catch(() => {});
 
+      void import("@/lib/events").then((m) => m.trackConversion("newsletter_signup", { form: "newsletter_section" }));
       setDone(true);
       toast.success("Subscribed! Check your inbox.");
     } catch (err) {

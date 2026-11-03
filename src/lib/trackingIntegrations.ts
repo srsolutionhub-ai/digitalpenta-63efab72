@@ -8,6 +8,12 @@ import { setGa4MeasurementId } from "./ga4";
 import { setGtmId, setPixelId, setLinkedInId } from "./marketingTags";
 
 let started = false;
+let resolveReady: () => void = () => {};
+const ready = new Promise<void>((r) => { resolveReady = r; });
+/** Resolves once DB tag IDs are applied (or after 4s, fail-soft). */
+export function whenIntegrationsReady(): Promise<void> {
+  return Promise.race([ready, new Promise<void>((r) => setTimeout(r, 4000))]);
+}
 
 async function fetchAndApply(): Promise<void> {
   try {
@@ -24,6 +30,7 @@ async function fetchAndApply(): Promise<void> {
       else if (r.provider === "linkedin") setLinkedInId(r.public_id);
     }
   } catch { /* fail soft — never breaks the site */ }
+  finally { resolveReady(); }
 }
 
 /** One-shot; call once from the cookie consent component. */

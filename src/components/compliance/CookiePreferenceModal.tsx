@@ -25,7 +25,7 @@ export function applyConsent(prefs: Prefs) {
   // GA4 Consent Mode v2 — loads/blocks the tag to match the visitor's choice
   setGa4Consent(!!prefs.analytics, !!prefs.marketing);
   // GTM / Meta Pixel / LinkedIn Insight — marketing consent only
-  setMarketingConsent(!!prefs.marketing);
+  setMarketingConsent(!!prefs.marketing, !!prefs.analytics);
   // Enables/discards the first-party audience pipeline (visitor_profiles + analytics_events)
   setTrackingConsent(!!prefs.analytics);
 }

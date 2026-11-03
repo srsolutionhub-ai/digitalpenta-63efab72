@@ -145,6 +145,7 @@ export default function BookingCalendar({ trigger, source = "website", defaultTo
         source,
       });
       if (error) throw error;
+      void import("@/lib/events").then((m) => m.trackConversion("book_call", { form: "booking_calendar", source }));
 
       // Internal lead alert
       supabase.functions.invoke("send-notification", {

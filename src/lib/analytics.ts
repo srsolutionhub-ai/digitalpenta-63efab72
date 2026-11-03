@@ -100,9 +100,11 @@ export const track = {
   generateLead: (formId: string, service?: string) =>
     trackEvent("generate_lead", { form_id: formId, service }),
 
-  phoneClick: (phone: string) => trackEvent("phone_click", { phone_number: phone }),
-  whatsappClick: (phone: string) => trackEvent("whatsapp_click", { phone_number: phone }),
-  emailClick: (email: string) => trackEvent("email_click", { email }),
+  // No phone numbers / email addresses in event params: Google & Meta forbid
+  // personal data in ordinary events. Routed as conversions so ads see them.
+  phoneClick: (_phone: string) => { void import("./events").then((m) => m.trackConversion("contact_phone", { channel: "phone" })); },
+  whatsappClick: (_href: string) => { void import("./events").then((m) => m.trackConversion("contact_whatsapp", { channel: "whatsapp" })); },
+  emailClick: (_email: string) => { void import("./events").then((m) => m.trackConversion("contact_email", { channel: "email" })); },
 
   outboundClick: (href: string, ctaText?: string) =>
     trackEvent("outbound_click", { outbound_url: href, cta_text: ctaText }),
