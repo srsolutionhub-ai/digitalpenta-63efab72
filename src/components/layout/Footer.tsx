@@ -77,7 +77,10 @@ export default function Footer() {
     e.preventDefault();
     if (email.includes("@")) {
       const { supabase } = await import("@/integrations/supabase/client");
-      await supabase.from("newsletter_subscribers").insert({ email, source: "Footer" });
+      const { error } = await supabase.from("newsletter_subscribers").insert({ email: email.trim().toLowerCase(), source: "Footer" });
+      // A duplicate email (23505) still means "already subscribed".
+      if (error && error.code !== "23505") return;
+      if (!error) void import("@/lib/events").then((m) => m.trackConversion("newsletter_signup", { form: "footer" }));
       setSubscribed(true);
       setEmail("");
     }
