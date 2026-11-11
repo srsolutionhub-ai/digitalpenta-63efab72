@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, Send, X, Loader2, Phone, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * AiStrategistChat — floating "Penta Strategist" assistant.
@@ -76,11 +77,16 @@ export default function AiStrategistChat() {
     abortRef.current = ctrl;
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error("Please sign in to chat with the strategist, or reach us on WhatsApp.");
+      }
       const resp = await fetch(`${SUPABASE_URL}/functions/v1/ai-strategist`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           messages: next,
@@ -93,6 +99,7 @@ export default function AiStrategistChat() {
       });
 
       if (!resp.ok || !resp.body) {
+        if (resp.status === 401) throw new Error("Please sign in to chat with the strategist.");
         if (resp.status === 429) throw new Error("Too many requests. Try again in a moment.");
         if (resp.status === 402) throw new Error("Strategist is offline. Please use WhatsApp or call us.");
         throw new Error("Couldn't reach the strategist. Please retry.");

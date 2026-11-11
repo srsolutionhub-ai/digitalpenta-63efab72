@@ -39,12 +39,20 @@ export default function ClientFiles() {
       window.open(url, "_blank", "noopener,noreferrer");
       return;
     }
-    const { data, error } = await supabase.storage.from("client-files").createSignedUrl(url, 120);
-    if (error || !data?.signedUrl) {
+    // Download through the access-checked storage API (no shareable signed link is issued).
+    const { data, error } = await supabase.storage.from("client-files").download(url);
+    if (error || !data) {
       toast.error("Couldn't open that file. Please try again.");
       return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    const blobUrl = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = url.split("/").pop() || "file";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000);
   };
 
   const upload = async (file: File) => {

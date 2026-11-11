@@ -73,7 +73,13 @@ Deno.serve(async (req) => {
   if (existingProfile) {
     userId = existingProfile.id;
   } else {
-    const origin = req.headers.get("origin") || "https://digitalpenta.com";
+    const ALLOWED_ORIGINS = [
+      "https://digitalpenta.app",
+      "https://www.digitalpenta.app",
+      "https://digitalpenta.lovable.app",
+    ];
+    const reqOrigin = req.headers.get("origin") || "";
+    const origin = ALLOWED_ORIGINS.includes(reqOrigin) ? reqOrigin : "https://digitalpenta.app";
     const { data: invite, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
       redirectTo: `${origin}/auth/invite-accept`,
       data: body.full_name ? { full_name: body.full_name } : undefined,
