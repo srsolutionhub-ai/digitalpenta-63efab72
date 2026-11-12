@@ -2,6 +2,7 @@ import { Star, Quote, BadgeCheck, Play } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { getMetric } from "@/data/siteMetrics";
 import testimonialsBanner from "@/assets/testimonials-banner-graphic.jpg";
 
 const testimonials = [
@@ -87,7 +88,7 @@ export default function TestimonialsSection() {
         >
           <span className="neon-chip">Testimonials</span>
           <h2 className="font-display type-h2 text-foreground mt-5 mb-4">
-            100+ Brands. Real Results.{" "}
+            {getMetric("clients_served")?.display} Brands. Real Results.{" "}
             <span className="text-gradient-hero">Real Reviews.</span>
           </h2>
         </motion.div>

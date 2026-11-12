@@ -9,8 +9,9 @@ import PressAwardsStrip from "@/components/sections/PressAwardsStrip";
 import SectionDivider from "@/components/ui/section-divider";
 import FloatingShapes from "@/components/ui/floating-shapes";
 import ScrollNavDots from "@/components/ui/scroll-nav-dots";
-import SEOHead, { breadcrumbSchema, faqPageSchema, organizationSchema, reviewedItemSchema, serviceSchema } from "@/components/seo/SEOHead";
-import { HOMEPAGE_REVIEWS } from "@/data/customerReviews";
+import SEOHead, { breadcrumbSchema, faqPageSchema, organizationSchema, serviceSchema } from "@/components/seo/SEOHead";
+import { HOMEPAGE_FAQS } from "@/data/homepageFaqs";
+import { getMetric } from "@/data/siteMetrics";
 
 const HOME_SECTIONS = [
   { id: "hero", label: "Top" },
@@ -56,7 +57,7 @@ function SectionFallback({ minH = "min-h-[420px]" }: { minH?: string }) {
 function TrustStrip() {
   const items = [
     { label: "★★★★★ 4.9 Google Rating", accent: "hsl(48 100% 65%)" },
-    { label: "100+ Clients Served", accent: "hsl(256 90% 75%)" },
+    { label: `${getMetric("clients_served")?.display ?? ""} Clients Served`, accent: "hsl(256 90% 75%)" },
     { label: "₹10Cr+ Ad Budget Managed", accent: "hsl(162 100% 50%)" },
     { label: "Google Partner", accent: "hsl(192 95% 70%)" },
     { label: "Delhi Based, Globally Trusted", accent: "hsl(322 90% 75%)" },
@@ -89,45 +90,45 @@ const Index = () => {
       <SEOHead
         title="Digital Marketing Agency in Delhi | Digital Penta"
         description="Grow with a Delhi digital marketing agency trusted by 500+ clients. SEO, Google Ads, social media and AI automation. Rated 4.9★. Get a free audit."
-        canonical="https://digitalpenta.com/"
+        canonical="https://digitalpenta.app/"
         hreflangs={[
-          { hreflang: "en", href: "https://digitalpenta.com/" },
-          { hreflang: "en-IN", href: "https://digitalpenta.com/" },
-          { hreflang: "x-default", href: "https://digitalpenta.com/" },
+          { hreflang: "en", href: "https://digitalpenta.app/" },
+          { hreflang: "en-IN", href: "https://digitalpenta.app/" },
+          { hreflang: "x-default", href: "https://digitalpenta.app/" },
         ]}
         schemas={[
-          breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.com/" }]),
+          breadcrumbSchema([{ name: "Home", url: "https://digitalpenta.app/" }]),
           organizationSchema(),
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "@id": "https://digitalpenta.com/#website",
-            url: "https://digitalpenta.com/",
+            "@id": "https://digitalpenta.app/#website",
+            url: "https://digitalpenta.app/",
             name: "Digital Penta",
-            publisher: { "@id": "https://digitalpenta.com/#organization" },
+            publisher: { "@id": "https://digitalpenta.app/#organization" },
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://digitalpenta.com/blog?q={search_term_string}",
+              target: "https://digitalpenta.app/blog?q={search_term_string}",
               "query-input": "required name=search_term_string",
             },
           },
           {
             "@context": "https://schema.org",
             "@type": "WebPage",
-            "@id": "https://digitalpenta.com/#webpage",
-            url: "https://digitalpenta.com/",
+            "@id": "https://digitalpenta.app/#webpage",
+            url: "https://digitalpenta.app/",
             name: "Digital Marketing Agency in Delhi | Digital Penta",
-            isPartOf: { "@id": "https://digitalpenta.com/#website" },
-            about: { "@id": "https://digitalpenta.com/#organization" },
-            primaryImageOfPage: "https://digitalpenta.com/og-image.png",
+            isPartOf: { "@id": "https://digitalpenta.app/#website" },
+            about: { "@id": "https://digitalpenta.app/#organization" },
+            primaryImageOfPage: "https://digitalpenta.app/og-image.png",
             inLanguage: "en-IN",
           },
           {
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
             name: "Digital Penta — Digital Marketing Agency",
-            image: "https://digitalpenta.com/og-image.png",
-            url: "https://digitalpenta.com/",
+            image: "https://digitalpenta.app/og-image.png",
+            url: "https://digitalpenta.app/",
             telephone: "+91-88601-00039",
             priceRange: "₹₹-₹₹₹₹",
             address: {
@@ -149,7 +150,7 @@ const Index = () => {
             name: "Digital Marketing Services",
             description:
               "Full-stack digital marketing — SEO, Google Ads, social, content, performance and AI automation — for brands across India and the Middle East.",
-            url: "https://digitalpenta.com/services/digital-marketing",
+            url: "https://digitalpenta.app/services/digital-marketing",
             serviceType: "Digital Marketing Agency",
           }),
           {
@@ -157,31 +158,17 @@ const Index = () => {
             "@type": "ItemList",
             name: "Digital Penta — Core Services",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "SEO Services", url: "https://digitalpenta.com/services/digital-marketing/seo" },
-              { "@type": "ListItem", position: 2, name: "Google Ads / PPC", url: "https://digitalpenta.com/services/digital-marketing/ppc" },
-              { "@type": "ListItem", position: 3, name: "Social Media Marketing", url: "https://digitalpenta.com/services/digital-marketing/social-media" },
-              { "@type": "ListItem", position: 4, name: "Content Marketing", url: "https://digitalpenta.com/services/digital-marketing/content" },
-              { "@type": "ListItem", position: 5, name: "Web Development", url: "https://digitalpenta.com/services/development/website" },
-              { "@type": "ListItem", position: 6, name: "AI Chatbot Development", url: "https://digitalpenta.com/services/ai-solutions/chatbot" },
-              { "@type": "ListItem", position: 7, name: "Marketing Automation", url: "https://digitalpenta.com/services/automation/marketing" },
-              { "@type": "ListItem", position: 8, name: "Public Relations", url: "https://digitalpenta.com/services/public-relations" },
+              { "@type": "ListItem", position: 1, name: "SEO Services", url: "https://digitalpenta.app/services/digital-marketing/seo" },
+              { "@type": "ListItem", position: 2, name: "Google Ads / PPC", url: "https://digitalpenta.app/services/digital-marketing/ppc" },
+              { "@type": "ListItem", position: 3, name: "Social Media Marketing", url: "https://digitalpenta.app/services/digital-marketing/social-media" },
+              { "@type": "ListItem", position: 4, name: "Content Marketing", url: "https://digitalpenta.app/services/digital-marketing/content" },
+              { "@type": "ListItem", position: 5, name: "Web Development", url: "https://digitalpenta.app/services/development/website" },
+              { "@type": "ListItem", position: 6, name: "AI Chatbot Development", url: "https://digitalpenta.app/services/ai-solutions/chatbot" },
+              { "@type": "ListItem", position: 7, name: "Marketing Automation", url: "https://digitalpenta.app/services/automation/marketing" },
+              { "@type": "ListItem", position: 8, name: "Public Relations", url: "https://digitalpenta.app/services/public-relations" },
             ],
           },
-          faqPageSchema([
-            { q: "How much does digital marketing cost in India?", a: "Digital marketing in India ranges from ₹15,000/month for startups to ₹5,00,000+/month for enterprises. Digital Penta's Starter plan begins at ₹9,999/month." },
-            { q: "How long does SEO take to show results?", a: "SEO typically shows initial improvement in 30–60 days, with significant organic growth in 3–6 months. Competitive keywords may take 6–12 months." },
-            { q: "Do you work with clients in Dubai and the UAE?", a: "Yes — we serve clients across India and the Middle East including Dubai, Abu Dhabi, Riyadh and Doha." },
-            { q: "What makes Digital Penta different?", a: "We integrate Marketing, PR, Development, AI and Automation under one roof — no fragmented agencies, no communication gaps, ROI-obsessed reporting." },
-          ]),
-          reviewedItemSchema({
-            itemName: "Digital Penta — Digital Marketing Agency",
-            itemUrl: "https://digitalpenta.com/",
-            itemType: "Organization",
-            description: "India's integrated digital marketing agency offering SEO, Google Ads, social media, AI and automation across India and the Middle East.",
-            reviews: HOMEPAGE_REVIEWS,
-            ratingValue: "4.9",
-            reviewCount: "87",
-          }),
+          faqPageSchema(HOMEPAGE_FAQS),
         ]}
       />
       {/* Above-the-fold — eager */}
