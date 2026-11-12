@@ -78,7 +78,8 @@
 - [x] Final verification + report
 
 ## Current failing SEO findings
-- [ ] Correct homepage and shared entity URLs to the primary .app domain.
-- [ ] Align homepage client totals with the existing verified metrics record.
-- [ ] Remove unmatched review markup and share visible FAQ data with its schema.
-- [ ] Link the existing favicon; verify homepage head and FAQ behavior before recording fixes.
+- [x] Correct homepage and shared entity URLs to the primary .app domain.
+- [x] Align homepage client totals with the existing verified metrics record.
+- [x] Remove unmatched review markup and share visible FAQ data with its schema.
+- [x] Link the existing favicon; verify homepage head and FAQ behavior before recording fixes.
+- Verification: 8 tests passed; schema 26/26; SEO checklist 0 errors (3 existing warnings); browser verified canonical, 8 FAQ answers, favicon HTTP 200, no page exceptions. Build OK. Not published; scanner verification pending.
