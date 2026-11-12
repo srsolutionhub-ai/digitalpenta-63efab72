@@ -76,3 +76,9 @@
 - [x] Backend: edge functions, triggers, RLS, data integrity audit
 - [x] Fix all confirmed issues
 - [x] Final verification + report
+
+## Current failing SEO findings
+- [ ] Correct homepage and shared entity URLs to the primary .app domain.
+- [ ] Align homepage client totals with the existing verified metrics record.
+- [ ] Remove unmatched review markup and share visible FAQ data with its schema.
+- [ ] Link the existing favicon; verify homepage head and FAQ behavior before recording fixes.
