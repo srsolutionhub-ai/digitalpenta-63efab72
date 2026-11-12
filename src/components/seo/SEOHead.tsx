@@ -85,7 +85,7 @@ export default function SEOHead({
   title,
   description,
   canonical,
-  ogImage = "https://digitalpenta.com/og-image.png",
+  ogImage = "https://digitalpenta.app/og-image.png",
   ogType = "website",
   noindex = false,
   hreflangs,
@@ -212,9 +212,9 @@ export function webPageSchema(opts: { url: string; name: string; description: st
     name: opts.name,
     description: opts.description,
     inLanguage: lang,
-    isPartOf: { "@type": "WebSite", "@id": "https://digitalpenta.com/#website", url: "https://digitalpenta.com/", name: "Digital Penta" },
-    about: { "@id": "https://digitalpenta.com/#organization" },
-    publisher: { "@id": "https://digitalpenta.com/#organization" },
+    isPartOf: { "@type": "WebSite", "@id": "https://digitalpenta.app/#website", url: "https://digitalpenta.app/", name: "Digital Penta" },
+    about: { "@id": "https://digitalpenta.app/#organization" },
+    publisher: { "@id": "https://digitalpenta.app/#organization" },
   };
 }
 
@@ -257,7 +257,7 @@ export function serviceSchema(opts: {
     provider: {
       "@type": "Organization",
       name: "Digital Penta",
-      url: "https://digitalpenta.com",
+      url: "https://digitalpenta.app",
     },
     areaServed: [
       { "@type": "Country", name: "India" },
@@ -337,11 +337,11 @@ export function personSchema(opts: {
     "@type": "Person",
     name: opts.name,
     jobTitle: opts.jobTitle,
-    url: opts.url ?? "https://digitalpenta.com/about",
+    url: opts.url ?? "https://digitalpenta.app/about",
     worksFor: {
       "@type": "Organization",
       name: "Digital Penta",
-      url: "https://digitalpenta.com",
+      url: "https://digitalpenta.app",
     },
     sameAs: opts.sameAs,
   };
@@ -355,10 +355,10 @@ export function organizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": "https://digitalpenta.com/#organization",
+    "@id": "https://digitalpenta.app/#organization",
     name: "Digital Penta",
-    url: "https://digitalpenta.com",
-    logo: "https://digitalpenta.com/logo.png",
+    url: "https://digitalpenta.app",
+    logo: "https://digitalpenta.app/logo.png",
     description:
       "Digital Penta is India's integrated digital marketing agency offering SEO, Google Ads, social media, web development, AI solutions and automation across India and the Middle East.",
     foundingDate: "2019",
@@ -371,13 +371,6 @@ export function organizationSchema() {
       availableLanguage: ["English", "Hindi", "Arabic"],
     },
     sameAs: SOCIAL_PROFILES,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "87",
-      bestRating: "5",
-      worstRating: "1",
-    },
   };
 }
 
@@ -435,7 +428,7 @@ export function reviewedItemSchema(opts: {
     block.provider = {
       "@type": "Organization",
       name: "Digital Penta",
-      url: "https://digitalpenta.com",
+      url: "https://digitalpenta.app",
     };
   }
   if (opts.description) block.description = opts.description;
@@ -493,14 +486,14 @@ export function articleSchema(opts: {
     author: {
       "@type": "Person",
       name: opts.authorName,
-      url: opts.authorUrl ?? "https://digitalpenta.com/about",
+      url: opts.authorUrl ?? "https://digitalpenta.app/about",
     },
     publisher: {
       "@type": "Organization",
       name: "Digital Penta",
       logo: {
         "@type": "ImageObject",
-        url: "https://digitalpenta.com/logo.png",
+        url: "https://digitalpenta.app/logo.png",
       },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": opts.url },
@@ -540,7 +533,7 @@ export function videoObjectSchema(opts: {
     publisher: {
       "@type": "Organization",
       name: "Digital Penta",
-      logo: { "@type": "ImageObject", url: "https://digitalpenta.com/logo.png" },
+      logo: { "@type": "ImageObject", url: "https://digitalpenta.app/logo.png" },
     },
   };
 }
@@ -610,7 +603,7 @@ export function softwareApplicationSchema(opts: {
     publisher: {
       "@type": "Organization",
       name: "Digital Penta",
-      url: "https://digitalpenta.com",
+      url: "https://digitalpenta.app",
     },
   };
 }
@@ -658,8 +651,8 @@ export function serviceWithAreaSchema(opts: {
     provider: {
       "@type": "Organization",
       name: "Digital Penta",
-      url: "https://digitalpenta.com",
-      logo: "https://digitalpenta.com/logo.png",
+      url: "https://digitalpenta.app",
+      logo: "https://digitalpenta.app/logo.png",
     },
     areaServed: {
       "@type": "City",
@@ -700,16 +693,16 @@ export function ceoPersonSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": "https://digitalpenta.com/#harish-kumar",
+    "@id": "https://digitalpenta.app/#harish-kumar",
     name: "Harish Kumar",
     givenName: "Harish",
     familyName: "Kumar",
     jobTitle: "Founder & Chief Executive Officer",
     description:
       "Harish Kumar is the founder and CEO of Digital Penta, an integrated digital marketing agency serving 500+ brands across India, UAE, KSA, Qatar and Bahrain. He leads strategy across SEO, paid media, PR, web development, AI and automation.",
-    url: "https://digitalpenta.com/about",
-    image: "https://digitalpenta.com/logo.png",
-    worksFor: { "@id": "https://digitalpenta.com/#organization" },
+    url: "https://digitalpenta.app/about",
+    image: "https://digitalpenta.app/logo.png",
+    worksFor: { "@id": "https://digitalpenta.app/#organization" },
     knowsAbout: [
       "Digital Marketing", "Search Engine Optimization", "Google Ads",
       "Performance Marketing", "AI Automation", "Public Relations",
@@ -733,22 +726,22 @@ export function gmbBusinessSchema() {
   return {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "ProfessionalService", "MarketingAgency"],
-    "@id": "https://digitalpenta.com/#localbusiness",
+    "@id": "https://digitalpenta.app/#localbusiness",
     name: "Digital Penta",
     alternateName: ["Digital Penta Agency", "DigitalPenta"],
     legalName: "Digital Penta",
     description:
       "Digital Penta is a Google-verified digital marketing agency in Delhi, India — offering SEO, Google Ads, social media, PR, web development, AI and automation across India and the Middle East.",
-    url: "https://digitalpenta.com",
-    logo: "https://digitalpenta.com/logo.png",
+    url: "https://digitalpenta.app",
+    logo: "https://digitalpenta.app/logo.png",
     image: [
-      "https://digitalpenta.com/logo.png",
-      "https://digitalpenta.com/og-image.png",
+      "https://digitalpenta.app/logo.png",
+      "https://digitalpenta.app/og-image.png",
     ],
     telephone: "+91-88601-00039",
     email: "support@digitalpenta.com",
     foundingDate: "2019",
-    founder: { "@id": "https://digitalpenta.com/#harish-kumar" },
+    founder: { "@id": "https://digitalpenta.app/#harish-kumar" },
     address: {
       "@type": "PostalAddress",
       streetAddress: "124 C Katwaria Sarai",
@@ -795,13 +788,6 @@ export function gmbBusinessSchema() {
       "AI Solutions", "Marketing Automation", "Ecommerce Marketing",
     ],
     slogan: "Five disciplines. One growth engine.",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "87",
-      bestRating: "5",
-      worstRating: "1",
-    },
     sameAs: SOCIAL_PROFILES,
   };
 }
@@ -833,8 +819,8 @@ export function serviceOfferCatalogSchema(opts: {
     url: opts.url,
     serviceType: opts.serviceType ?? opts.name,
     category: opts.category,
-    provider: { "@id": "https://digitalpenta.com/#organization" },
-    brand: { "@id": "https://digitalpenta.com/#organization" },
+    provider: { "@id": "https://digitalpenta.app/#organization" },
+    brand: { "@id": "https://digitalpenta.app/#organization" },
     ...(opts.areaServed?.length
       ? {
           areaServed: opts.areaServed.map((a) => ({
@@ -854,7 +840,7 @@ export function serviceOfferCatalogSchema(opts: {
           name: o.name,
           description: o.description,
           url: o.url,
-          provider: { "@id": "https://digitalpenta.com/#organization" },
+          provider: { "@id": "https://digitalpenta.app/#organization" },
         },
         ...(o.price
           ? { price: o.price, priceCurrency: o.priceCurrency ?? "INR" }
@@ -930,12 +916,12 @@ export function answerPageSchema(opts: {
     description: opts.description,
     url: opts.url,
     inLanguage: opts.inLanguage ?? "en",
-    isPartOf: { "@id": "https://digitalpenta.com/#organization" },
+    isPartOf: { "@id": "https://digitalpenta.app/#organization" },
     about: {
       "@type": "Thing",
       name: opts.about ?? "Digital Marketing Agency Services",
     },
-    publisher: { "@id": "https://digitalpenta.com/#organization" },
+    publisher: { "@id": "https://digitalpenta.app/#organization" },
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
     mainEntity: {
@@ -968,7 +954,7 @@ export function collectionPageSchema(opts: {
     name: opts.name,
     description: opts.description,
     url: opts.url,
-    isPartOf: { "@id": "https://digitalpenta.com/#organization" },
+    isPartOf: { "@id": "https://digitalpenta.app/#organization" },
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: opts.items.length,
