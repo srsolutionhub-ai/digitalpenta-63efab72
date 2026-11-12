@@ -45,17 +45,17 @@ const cities = [...matrixData.matchAll(/slug:\s*"([a-z0-9-]+)",\s*city:/g)].map(
 const services = ["seo", "ppc", "social-media", "web-development", "ai-solutions"];
 let missingMatrix = 0;
 for (const s of services) for (const c of cities) {
-  const u = `https://digitalpenta.com/${s}/${c}`;
+  const u = `https://digitalpenta.app/${s}/${c}`;
   if (!urls.includes(u)) { missingMatrix++; warn(`missing in sitemap: ${u}`); }
 }
 if (missingMatrix === 0) ok(`all ${services.length}×${cities.length} matrix pages in sitemap`);
 
 const required = [
-  "https://digitalpenta.com/",
-  "https://digitalpenta.com/about",
-  "https://digitalpenta.com/contact",
-  "https://digitalpenta.com/portfolio",
-  "https://digitalpenta.com/blog",
+  "https://digitalpenta.app/",
+  "https://digitalpenta.app/about",
+  "https://digitalpenta.app/contact",
+  "https://digitalpenta.app/portfolio",
+  "https://digitalpenta.app/blog",
 ];
 for (const u of required) if (!urls.includes(u)) err(`missing required URL: ${u}`);
 
@@ -101,8 +101,8 @@ for (const t of T1) {
     else warn(`"${t.kw}" missing in ${t.file}`);
   }
   if (t.path) {
-    const u = `https://digitalpenta.com${t.path}`;
-    if (urls.includes(u)) ok(`"${t.kw}" → ${t.path} indexed`);
+    const u = `https://digitalpenta.app${t.path}`;
+    if (urls.includes(u)) ok(`"${t.kw}" → ${t.path} listed in sitemap`);
     else err(`"${t.kw}" target ${t.path} missing from sitemap`);
   }
 }
