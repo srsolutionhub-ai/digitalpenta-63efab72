@@ -1,5 +1,17 @@
 # Roadmap — SEO Audit & City Expansion
 
+## City expansion — requested completion (15 Nov 2026)
+- [ ] Research and add at least 18 distinct Indian cities to reach 100 Indian location pages.
+- [ ] Expand existing and new location pages to at least 3,000 substantive words each, with city-specific research and no spun copy.
+- [ ] Check internal content overlap, unsupported claims, sources, readability and service-area accuracy.
+- [ ] Preserve loading performance; verify routes, sitemap, robots, schemas, mobile layouts and enquiry paths.
+- External plagiarism coverage is not verified by an internal duplicate check; do not claim a plagiarism-free guarantee or human authorship.
+
+## Security audit — 15 Nov 2026
+- [ ] Review the running deep scan when its completion notification arrives.
+- [ ] Investigate and carefully remediate the five production dependency advisories found in the initial check.
+- [ ] Verify corrections; leaked-password protection remains dependent on the Supabase hosted setting and plan.
+
 ## Phase 1 — Research (evidence first)
 - [x] Keyword research via Semrush (80+ keywords, India + US DBs) → `docs/seo/KEYWORD_RESEARCH_2026-10.md`
 - [x] Domain snapshot: digitalpenta.lovable.app — no Semrush data yet (not indexed)
