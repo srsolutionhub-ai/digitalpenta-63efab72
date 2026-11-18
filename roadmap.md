@@ -6,9 +6,10 @@
 - [ ] Check internal content overlap, unsupported claims, sources, readability and service-area accuracy.
 - [ ] Preserve loading performance; verify routes, sitemap, robots, schemas, mobile layouts and enquiry paths.
 - External plagiarism coverage is not verified by an internal duplicate check; do not claim a plagiarism-free guarantee or human authorship.
+- Pilot implementation: Kanpur and Varanasi have sourced long-form guides, per-city downloads, contents navigation and contextual proposal links. Other city guides and the 18 additional routes remain unfinished; researched candidates are not published pages.
 
 ## Security audit — 15 Nov 2026
-- [ ] Review the running deep scan when its completion notification arrives.
+- [x] Review the completed deep scan: arbitrary outbound website probes, caller-targeted PageSpeed requests and arbitrary-user role lookup remain open for investigation; do not claim them fixed.
 - [ ] Investigate and carefully remediate the five production dependency advisories found in the initial check.
 - [ ] Verify corrections; leaked-password protection remains dependent on the Supabase hosted setting and plan.
 

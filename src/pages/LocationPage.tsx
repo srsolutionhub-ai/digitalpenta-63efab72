@@ -7,7 +7,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { getLocationData } from "@/data/locationData";
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
+import { lazyRetry } from "@/lib/lazyRetry";
 import MagneticCard from "@/components/ui/magnetic-card";
 import SEOHead, {
   breadcrumbSchema, faqPageSchema, reviewedItemSchema,
@@ -24,6 +25,7 @@ import { getGeoRegion } from "@/data/geoRegions";
 
 
 const ease = [0.16, 1, 0.3, 1] as const;
+const CityEditorialArticle = lazyRetry(() => import("@/components/seo/CityEditorialArticle"));
 
 const COUNTRY_CODE: Record<string, string> = {
   India: "IN", UAE: "AE", "Saudi Arabia": "SA", Qatar: "QA", Bahrain: "BH",
@@ -558,6 +560,10 @@ export default function LocationPage() {
       />
 
       <CityDepthSection citySlug={data.slug} city={data.city} hideFaqs />
+
+      <Suspense fallback={null}>
+        <CityEditorialArticle key={data.slug} citySlug={data.slug} city={data.city} />
+      </Suspense>
 
 
       {/* Map */}
